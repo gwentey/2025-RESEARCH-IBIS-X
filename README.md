@@ -6,7 +6,7 @@ Research: M2 MIAGE
 
 ## À propos du projet
 
-IBIS X est un pipeline intégré conçu pour démocratiser l'accès au Machine Learning pour les utilisateurs non-experts. Le système unifie trois phases traditionnellement fragmentées :
+IBIS X est un pipeline intégré révolutionnaire conçu pour démocratiser l'accès au Machine Learning pour les utilisateurs non-experts. Le système unifie trois phases traditionnellement fragmentées :
 
 - Sélection éthique des datasets avec critères techniques et conformité RGPD
 - Pipeline ML guidé avec assistance IA contextuelle
@@ -37,14 +37,19 @@ Le code source complet sera rendu public après la soutenance du mémoire. Cette
 
 ## Architecture technique (aperçu)
 
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Sélection     │───▶│   Pipeline ML   │───▶│   XAI Engine    │
-│   Datasets      │    │   Interactif    │    │   Adaptatif     │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         ▼                       ▼                       ▼
-   Heat Map + Scoring      9 étapes guidées      Explications
-   Multi-critères         + Assistance IA        Multi-niveaux
+```mermaid
+graph LR
+    A[Sélection<br/>Datasets] --> B[Pipeline ML<br/>Interactif]
+    B --> C[XAI Engine<br/>Adaptatif]
+    
+    A --> A1[Heat Map +<br/>Scoring Multi-critères]
+    B --> B1[9 étapes guidées +<br/>Assistance IA]
+    C --> C1[Explications<br/>Multi-niveaux]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+```
 
 Stack technique :
 - Backend : FastAPI, Celery, Redis, PostgreSQL
