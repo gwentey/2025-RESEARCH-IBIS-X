@@ -68,6 +68,8 @@ Le système a été validé auprès de 18 participants avec des résultats signi
 
 Si vous souhaitez référencer ce travail avant la publication du code :
 
+**Format BibTeX :**
+```bibtex
 @mastersthesis{rodrigues2025ibis,
   title={Développement d'un outil pour les non-spécialistes en Machine Learning : de la Sélection des jeux de données à l'Analyse jusqu'à l'Explicabilité},
   author={Rodrigues, Anthony},
@@ -75,6 +77,10 @@ Si vous souhaitez référencer ce travail avant la publication du code :
   school={Université Paris 1 Panthéon-Sorbonne},
   type={Mémoire de Master 2 MIAGE}
 }
+```
+
+**Format APA :**
+Rodrigues, A. (2025). Développement d'un outil pour les non-spécialistes en Machine Learning : de la Sélection des jeux de données à l'Analyse jusqu'à l'Explicabilité [Mémoire de Master 2 MIAGE]. Université Paris 1 Panthéon-Sorbonne.
 
 ## Contact
 
