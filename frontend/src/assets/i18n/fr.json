@@ -1,0 +1,3084 @@
+{
+  "HOME": {
+    "TITLE": "IBIS X - L'IA Explicable pour Tous",
+    "META": {
+      "DESCRIPTION": "Plateforme révolutionnaire d'intelligence artificielle explicable. Sélectionnez vos données, entraînez des modèles et obtenez des explications compréhensibles."
+    },
+    "NAV": {
+      "EXPLORE": "Explorer",
+      "FEATURES": "Fonctionnalités",
+      "PRICING": "Tarifs",
+      "GET_STARTED": "Commencer"
+    },
+    "VIDEO": {
+      "TITLE": "Découvrir IBIS X"
+    },
+    "HERO": {
+      "BADGE": "IA Explicable Nouvelle Génération",
+      "TITLE": "L'apprentissage automatique ",
+      "TITLE_HIGHLIGHT": "rendu simple et explicable",
+      "DESCRIPTION": "L'apprentissage automatique rendu simple et explicable",
+      "CTA_PRIMARY": "Commencer maintenant",
+      "CTA_SECONDARY": "Voir la démo"
+    },
+    "STEPS": {
+      "TITLE": "Un pipeline complet en 3 étapes",
+      "SUBTITLE": "De la sélection des données aux explications détaillées, IBIS X vous guide à chaque étape",
+      "DATA_SELECTION": {
+        "TITLE": "1. Sélection Intelligente",
+        "DESCRIPTION": "Choisissez le dataset parfait grâce à notre système de scoring éthique et technique avancé.",
+        "FEATURE_1": "Filtrage multicritères",
+        "FEATURE_2": "Score de qualité",
+        "FEATURE_3": "Recommandations IA"
+      },
+      "ML_TRAINING": {
+        "TITLE": "2. Entraînement Guidé",
+        "DESCRIPTION": "Entraînez des modèles performants avec des algorithmes optimisés et un préprocessing automatique.",
+        "FEATURE_1": "Preprocessing automatique",
+        "FEATURE_2": "Algorithmes optimisés",
+        "FEATURE_3": "Validation croisée"
+      },
+      "XAI_EXPLANATION": {
+        "TITLE": "3. Explications Claires",
+        "DESCRIPTION": "Comprenez vos modèles avec des explications adaptées à votre niveau et vos objectifs.",
+        "FEATURE_1": "Explications visuelles",
+        "FEATURE_2": "Chat IA intégré",
+        "FEATURE_3": "Rapports détaillés"
+      }
+    },
+    "MINI_STEPS": {
+      "STEP": "Étape"
+    },
+    "DASHBOARD": {
+      "RECENT_PROJECTS": "Projets récents",
+      "CARD_1": "Dataset Éducation",
+      "CARD_2": "Modèle Classification",
+      "ACCURACY": "précision",
+      "COMPLETE": "terminé"
+    },
+    "FEATURES": {
+      "TITLE": "Pourquoi choisir IBIS-X ?",
+      "SUBTITLE": "Une plateforme conçue pour démocratiser l'intelligence artificielle explicable",
+      "AI_GUIDED": {
+        "TITLE": "100% Explicable",
+        "DESCRIPTION": "Chaque prédiction est accompagnée d'explications claires et visuelles, adaptées à votre niveau d'expertise."
+      },
+      "FAST_SETUP": {
+        "TITLE": "Démarrage Ultra-Rapide",
+        "DESCRIPTION": "Commencez votre analyse en moins de 15 secondes. Interface intuitive, pas de code requis."
+      },
+      "EXPLAINABLE": {
+        "TITLE": "Ajout de Datasets Facile",
+        "DESCRIPTION": "Uploadez vos propres données ou choisissez parmi notre sélection de datasets de qualité."
+      },
+      "SECURE": {
+        "TITLE": "Choix Intelligent",
+        "DESCRIPTION": "Notre système vous aide à sélectionner les meilleurs datasets selon vos critères éthiques et techniques."
+      }
+    },
+    "DEMO": {
+      "TITLE": "Voyez IBIS-X en action",
+      "DESCRIPTION": "Découvrez comment notre plateforme révolutionne l'approche de l'intelligence artificielle explicable.",
+      "CTA": "Démarrer l'essai gratuit"
+    },
+    "CTA": {
+      "TITLE": "Prêt à Découvrir l'IA Explicable ?",
+      "DESCRIPTION": "Testez IBIS X et découvrez comment notre pipeline intégré peut transformer votre approche de l'intelligence artificielle.",
+      "PRIMARY": "Commencer l'Exploration",
+      "SECONDARY": "Se connecter"
+    },
+    "CONCEPT": {
+      "BADGE": "Le Concept",
+      "TITLE": "Rendre l'Intelligence Artificielle Accessible à Tous",
+      "DESCRIPTION": "IBIS X est un pipeline intégré conçu spécifiquement pour les utilisateurs non-experts en data science. Notre mission : démocratiser l'accès à l'intelligence artificielle explicable grâce à une approche guidée et intuitive.",
+      "HIGHLIGHTS": {
+        "NON_EXPERTS": {
+          "TITLE": "Pour Non-Spécialistes",
+          "DESCRIPTION": "Conçu pour les utilisateurs sans expertise technique en science des données."
+        },
+        "INTEGRATED": {
+          "TITLE": "Pipeline Intégré",
+          "DESCRIPTION": "Un workflow complet de la sélection des données aux explications détaillées."
+        },
+        "EXPLAINABLE": {
+          "TITLE": "Vraiment Explicable",
+          "DESCRIPTION": "Chaque prédiction est accompagnée d'explications claires et compréhensibles."
+        }
+      },
+      "OUTCOME": {
+        "TITLE": "Résultat",
+        "DESCRIPTION": "Des insights explicables et actionnables pour vos données"
+      }
+    },
+    "PIPELINE": {
+      "BADGE": "Comment ça marche",
+      "TITLE": "Un Pipeline Intelligent en 3 Étapes Simples",
+      "DESCRIPTION": "IBIS-X automatise le processus d'analyse avec IA explicable. Simple, rapide, efficace.",
+      "BENEFITS": {
+        "SPEED": {
+          "TITLE": "Configuration Ultra-Rapide",
+          "DESCRIPTION": "Démarrez en moins de 15 secondes."
+        },
+        "SMART": {
+          "TITLE": "IA Intelligente",
+          "DESCRIPTION": "Algorithmes optimisés automatiquement."
+        }
+      },
+      "CTA": "Tester le Pipeline",
+      "VISUAL": {
+        "TITLE": "Démonstration Interactive"
+      },
+      "RESULT": {
+        "TITLE": "Insights Explicables",
+        "DESCRIPTION": "Obtenez des explications claires et actionnables pour vos données"
+      },
+      "PLAY": "Démarrer la démo",
+      "PAUSE": "Mettre en pause",
+      "SUCCESS": "Terminé avec succès",
+      "TERMINAL_RESULT": "Pipeline exécuté → Insights explicables générés",
+      "CONTROLS": {
+        "AUTO_PLAY": "Lecture automatique",
+        "RESET": "Redémarrer"
+      }
+    },
+    "PROCESS": {
+      "BADGE": "Processus Guidé",
+      "TITLE": "Maîtrisez l'IA Explicable en 3 Étapes Simples",
+      "SUBTITLE": "Un processus optimisé qui transforme vos données en insights explicables rapidement et facilement."
+    },
+    "INTERMEDIATE_CTA": {
+      "BADGE": "Prêt à commencer ?",
+      "TITLE": "Transformez Vos Données en Insights Explicables",
+      "DESCRIPTION": "Rejoignez la révolution de l'intelligence artificielle explicable avec IBIS-X.",
+      "PRIMARY": "Démarrer maintenant",
+      "SECONDARY": "Découvrir les fonctionnalités"
+    },
+    "ALL_FEATURES": {
+      "BADGE": "Fonctionnalités Complètes",
+      "TITLE": "Tout ce dont Vous Avez Besoin, Rien de Superflu",
+      "SUBTITLE": "Une suite complète d'outils pour l'intelligence artificielle explicable, conçue pour tous les niveaux d'expertise.",
+      "SEARCH": {
+        "TITLE": "Recherche Intelligente",
+        "DESCRIPTION": "Trouvez rapidement les datasets parfaits grâce à notre moteur de recherche sémantique avancé."
+      },
+      "FILTERS": {
+        "TITLE": "Filtres Avancés",
+        "DESCRIPTION": "Affinez votre sélection avec des critères éthiques, techniques et de qualité précis."
+      },
+      "UPLOAD": {
+        "TITLE": "Upload Simplifié",
+        "DESCRIPTION": "Importez vos propres datasets en quelques clics avec validation automatique."
+      },
+      "AUTO_ML": {
+        "TITLE": "ML Automatisé",
+        "DESCRIPTION": "Entraînement automatique avec sélection intelligente des meilleurs algorithmes."
+      },
+      "CHAT": {
+        "TITLE": "Chat IA Intégré",
+        "DESCRIPTION": "Posez des questions sur vos résultats et obtenez des explications personnalisées."
+      },
+      "ANALYTICS": {
+        "TITLE": "Analytics Avancées",
+        "DESCRIPTION": "Visualisations interactives et métriques détaillées pour comprendre vos modèles."
+      }
+    },
+    "INTELLIGENT_FEATURES": {
+      "BADGE": "Fonctionnalités IA",
+      "TITLE": "Une Intelligence Artificielle au Service de Votre Analyse",
+      "SUBTITLE": "Découvrez comment IBIS-X révolutionne l'analyse de données grâce à son intelligence artificielle avancée et ses recommandations personnalisées.",
+      "UPLOAD": {
+        "TITLE": "Upload Intelligent avec Analyse Automatique",
+        "DESCRIPTION": "Uploadez votre dataset et obtenez instantanément une analyse complète avec recommandations ML personnalisées.",
+        "FEATURE1": "Analyse automatique des métadonnées",
+        "FEATURE2": "Détection intelligente du type de problème",
+        "FEATURE3": "Validation de qualité en temps réel"
+      },
+      "SEARCH": {
+        "TITLE": "Recherche Avancée avec Critères Éthiques",
+        "DESCRIPTION": "Trouvez le dataset parfait grâce à notre système de scoring qui combine critères techniques et éthiques.",
+        "FEATURE1": "Filtrage par critères éthiques avancés",
+        "FEATURE2": "Scoring technique automatisé",
+        "FEATURE3": "Recommandations basées sur vos besoins"
+      },
+      "AI_GUIDE": {
+        "TITLE": "Guide IA Personnalisé",
+        "DESCRIPTION": "Notre IA analyse votre dataset et vous recommande la meilleure approche ML avec justifications détaillées.",
+        "FEATURE1": "Recommandations algorithme personnalisées",
+        "FEATURE2": "Justifications intelligentes détaillées",
+        "FEATURE3": "Identification automatique des défis"
+      }
+    },
+    "AI_GUIDE_EXAMPLE": {
+      "BADGE": "Guide IA par l'Exemple",
+      "TITLE": "Comment Notre IA Guide Votre Analyse : Un Exemple Concret",
+      "SUBTITLE": "Découvrez étape par étape comment IBIS-X analyse vos données et vous recommande les meilleures approches ML.",
+      "STEP1_TITLE": "Vos Données Brutes",
+      "STEP1_DESC": "Vous uploadez un dataset de ventes avec différentes colonnes : commandes, types clients, produits...",
+      "SALES_DATA": "Données de Ventes - sales_data.csv",
+      "ORDER_ID": "ID Commande",
+      "CUSTOMER_TYPE": "Type Client",
+      "PRODUCT": "Produit",
+      "AMOUNT": "Montant",
+      "SEASON": "Saison",
+      "MORE_ROWS": "... et 15,243 autres lignes",
+      "STEP2_TITLE": "L'IA Analyse Automatiquement",
+      "STEP2_DESC": "Notre intelligence artificielle examine vos données et identifie les opportunités d'analyse :",
+      "CLASSIFICATION_DETECTED": "Classification détectée",
+      "CLASSIFICATION_REASON": "L'IA détecte qu'on peut prédire le \"Type Client\" (Premium/Standard) à partir des autres variables",
+      "REGRESSION_POSSIBLE": "Régression possible",
+      "REGRESSION_REASON": "L'IA voit qu'on peut prédire le \"Montant\" des ventes à partir des caractéristiques produit/saison",
+      "STEP3_TITLE": "Recommandations Personnalisées",
+      "STEP3_DESC": "L'IA vous propose les meilleurs algorithmes avec justifications :",
+      "RECOMMENDED": "Recommandé",
+      "DECISION_TREE": "Decision Tree",
+      "DECISION_TREE_WHY": "Parfait pour comprendre quels critères déterminent le type de client. Résultats très explicables.",
+      "BEST_CHOICE": "Meilleur choix",
+      "ALTERNATIVE": "Alternative",
+      "RANDOM_FOREST": "Random Forest",
+      "RANDOM_FOREST_WHY": "Plus précis si vous privilégiez la performance sur l'explicabilité.",
+      "GOOD_OPTION": "Bonne option",
+      "KEY_TAKEAWAYS": "Points Clés Retenus",
+      "TAKEAWAY1": "L'IA comprend automatiquement la nature de vos données",
+      "TAKEAWAY2": "Les recommandations sont adaptées à vos objectifs",
+      "TAKEAWAY3": "Chaque choix est justifié de manière claire",
+      "CTA_TEXT": "Prêt à voir ce que l'IA peut découvrir dans vos propres données ?",
+      "CTA_BUTTON": "Tester le Guide IA"
+    },
+    "ML_PIPELINE": {
+      "BADGE": "Pipeline ML Complet",
+      "TITLE": "9 Étapes pour Vos Insights Explicables",
+      "SUBTITLE": "Découvrez notre pipeline ML automatisé qui transforme vos données en modèles explicables en quelques clics.",
+      "STEPS": {
+        "DATA_COLLECTION": {
+          "TITLE": "Collecte de Données",
+          "DESCRIPTION": "Import intelligent de vos datasets avec validation automatique",
+          "ICON": "cloud_upload"
+        },
+        "DATA_EXPLORATION": {
+          "TITLE": "Exploration des Données",
+          "DESCRIPTION": "Analyse automatique des patterns et anomalies",
+          "ICON": "search"
+        },
+        "DATA_PREPROCESSING": {
+          "TITLE": "Préparation des Données",
+          "DESCRIPTION": "Nettoyage et transformation automatisées",
+          "ICON": "tune"
+        },
+        "FEATURE_SELECTION": {
+          "TITLE": "Sélection des Caractéristiques",
+          "DESCRIPTION": "Identification intelligente des variables importantes",
+          "ICON": "filter_list"
+        },
+        "DATA_SPLITTING": {
+          "TITLE": "Division des Données",
+          "DESCRIPTION": "Séparation train/test optimisée automatiquement",
+          "ICON": "call_split"
+        },
+        "MODEL_SELECTION": {
+          "TITLE": "Sélection du Modèle",
+          "DESCRIPTION": "Choix automatique de l'algorithme optimal",
+          "ICON": "psychology"
+        },
+        "MODEL_TRAINING": {
+          "TITLE": "Entraînement du Modèle",
+          "DESCRIPTION": "Apprentissage avec hyperparamètres optimisés",
+          "ICON": "fitness_center"
+        },
+        "MODEL_EVALUATION": {
+          "TITLE": "Évaluation du Modèle",
+          "DESCRIPTION": "Métriques de performance automatiques",
+          "ICON": "assessment"
+        },
+        "EXPLAINABILITY": {
+          "TITLE": "Explicabilité & Déploiement",
+          "DESCRIPTION": "Génération d'explications SHAP/LIME ready",
+          "ICON": "insights"
+        }
+      }
+    },
+    "ACADEMIC": {
+      "BADGE": "Projet Académique",
+      "TITLE": "Développé par la MIAGE pour la MIAGE",
+      "SUBTITLE": "IBIS X est une application développée dans le cadre du Master MIAGE à Paris 1 Panthéon-Sorbonne.",
+      "UNIVERSITY": {
+        "NAME": "Université Paris 1 Panthéon-Sorbonne",
+        "PROGRAM": "Master MIAGE",
+        "DESCRIPTION": "Projet réalisé dans le cadre du Master MIAGE pour l'apprentissage de l'IA explicable."
+      },
+      "RESEARCH": {
+        "FOCUS": "IA Explicable Appliquée",
+        "GOAL": "Outil pédagogique pour l'apprentissage",
+        "INNOVATION": "Interface simplifiée pour étudiants"
+      },
+      "PROJECT": {
+        "TYPE": "Projet Étudiant",
+        "YEAR": "2025",
+        "UNIVERSITY": "Paris 1"
+      }
+    },
+    "FAQ": {
+      "BADGE": "Questions Fréquentes",
+      "TITLE": "Tout ce que Vous Devez Savoir",
+      "SUBTITLE": "Réponses aux questions les plus courantes sur IBIS X et l'intelligence artificielle explicable.",
+      "Q1": {
+        "QUESTION": "Qu'est-ce que l'intelligence artificielle explicable ?",
+        "ANSWER": "L'IA explicable permet de comprendre comment et pourquoi un modèle prend ses décisions. Contrairement aux 'boîtes noires', nos explications vous montrent clairement les facteurs qui influencent chaque prédiction."
+      },
+      "Q2": {
+        "QUESTION": "Puis-je utiliser mes propres données ?",
+        "ANSWER": "Absolument ! IBIS X vous permet d'importer vos propres datasets facilement. Notre système s'adapte automatiquement à vos données et vous guide dans le processus d'analyse."
+      },
+      "Q3": {
+        "QUESTION": "Combien de temps faut-il pour commencer ?",
+        "ANSWER": "Vous pouvez lancer votre première analyse en moins de 15 secondes. Notre interface intuitive et nos algorithmes automatisés éliminent la complexité technique."
+      },
+      "Q4": {
+        "QUESTION": "Quels types de modèles sont supportés ?",
+        "ANSWER": "IBIS X supporte actuellement les arbres de décision (Decision Tree) et les forêts aléatoires (Random Forest). Ces algorithmes sont particulièrement adaptés à l'explicabilité."
+      },
+      "Q5": {
+        "QUESTION": "Mes données sont-elles sécurisées ?",
+        "ANSWER": "Oui, nous respectons les normes RGPD les plus strictes. Vos données sont chiffrées et vous gardez un contrôle total sur leur utilisation et leur partage."
+      },
+      "Q6": {
+        "QUESTION": "Ai-je besoin de connaissances techniques ?",
+        "ANSWER": "Aucune connaissance technique n'est requise ! IBIS X a été conçu pour rendre l'IA accessible à tous, des débutants aux experts."
+      },
+      "MORE_HELP": "Besoin d'aide supplémentaire ?",
+      "CONTACT": "Nous contacter"
+    },
+    "FOOTER": {
+      "TAGLINE": "L'intelligence artificielle explicable à portée de tous",
+      "RIGHTS": "Tous droits réservés."
+    }
+  },
+  "MENU": {
+    "NAVIGATION": "Navigation",
+    "DATA_ANALYSIS": "Données & Analyse",
+    "DASHBOARD": "Tableau de bord",
+    "PROJECTS": "Projets",
+    "DATASETS": "Jeux de données",
+    "ML_PIPELINE": "Pipeline ML",
+    "XAI_EXPLANATIONS": "Explications XAI",
+    "PROFILE": "Profil",
+    "HELP": "Aide et Support",
+    "ADMINISTRATION": "Administration",
+    "ADMIN_DASHBOARD": "Administration",
+    "DATASET_MANAGEMENT": "Gestion Datasets",
+    "USER_MANAGEMENT": "Gestion Utilisateurs",
+    "ETHICAL_TEMPLATES": "Templates Éthiques"
+  },
+  "ADD_DATASET": "Ajouter un dataset",
+  "ADMIN": {
+    "DASHBOARD": {
+      "TITLE": "Tableau de Bord Administration",
+      "SUBTITLE": "Vue d'ensemble de votre plateforme et gestion système",
+      "TOTAL_DATASETS": "Total Datasets",
+      "TOTAL_USERS": "Total Utilisateurs",
+      "RECENT_UPLOADS": "Uploads Récents",
+      "STORAGE_USED": "Stockage Utilisé",
+      "QUICK_ACTIONS": "Actions Rapides",
+      "ADMIN_INFO": "Informations Administrateur",
+      "MANAGE_DATASETS": "Gérer les Datasets",
+      "MANAGE_USERS": "Gérer les Utilisateurs",
+      "ETHICAL_TEMPLATES": "Templates Éthiques",
+      "ADD_DATASET": "Ajouter Dataset"
+    },
+    "DATASETS": {
+      "TITLE": "Gestion des Datasets",
+      "SUBTITLE": "Gérez tous les jeux de données de la plateforme",
+      "ADD_DATASET": "Ajouter un Dataset",
+      "SEARCH": "Rechercher",
+      "SEARCH_PLACEHOLDER": "Rechercher par nom, créateur...",
+      "STATUS": "Statut",
+      "STATUS_ACTIVE": "Actif",
+      "STATUS_PENDING": "En attente",
+      "STATUS_ARCHIVED": "Archivé",
+      "DOMAIN": "Domaine",
+      "CLEAR_FILTERS": "Effacer les filtres",
+      "DATASETS_LIST": "Liste des Datasets",
+      "DATASETS_FOUND": "datasets trouvés",
+      "TABLE": {
+        "NAME": "Nom",
+        "CREATOR": "Créateur",
+        "CREATED": "Date de création",
+        "FILES": "Fichiers",
+        "SIZE": "Taille",
+        "STATUS": "Statut",
+        "ACTIONS": "Actions"
+      },
+      "VIEW_DETAILS": "Voir les détails",
+      "EDIT": "Modifier",
+      "DELETE": "Supprimer",
+      "LOADING": "Chargement des datasets...",
+      "NO_DATASETS": "Aucun dataset trouvé",
+      "NO_DATASETS_MESSAGE": "Aucun dataset ne correspond à vos critères de recherche.",
+      "ADD_FIRST_DATASET": "Ajouter le premier dataset"
+    },
+    "USERS": {
+      "TITLE": "Gestion des Utilisateurs",
+      "SUBTITLE": "Gérez les comptes utilisateurs et leurs permissions",
+      "INVITE_USER": "Inviter un utilisateur",
+      "TOTAL_USERS": "Total Utilisateurs",
+      "ACTIVE_USERS": "Utilisateurs Actifs",
+      "ADMIN_USERS": "Administrateurs",
+      "CONTRIBUTOR_USERS": "Contributeurs",
+      "SEARCH": "Rechercher",
+      "SEARCH_PLACEHOLDER": "Rechercher par nom, email...",
+      "ROLE": "Rôle",
+      "ROLE_ADMIN": "Administrateur",
+      "ROLE_CONTRIBUTOR": "Contributeur",
+      "ROLE_USER": "Utilisateur",
+      "STATUS": "Statut",
+      "STATUS_ACTIVE": "Actif",
+      "STATUS_INACTIVE": "Inactif",
+      "STATUS_VERIFIED": "Vérifié",
+      "STATUS_UNVERIFIED": "Non vérifié",
+      "CLEAR_FILTERS": "Effacer les filtres",
+      "USERS_LIST": "Liste des Utilisateurs",
+      "USERS_FOUND": "utilisateurs trouvés",
+      "TABLE": {
+        "USER": "Utilisateur",
+        "ROLE": "Rôle",
+        "STATUS": "Statut",
+        "CREATED": "Date de création",
+        "LAST_LOGIN": "Dernière connexion",
+        "DATASETS": "Datasets",
+        "ACTIONS": "Actions"
+      },
+      "EDIT_USER": "Modifier l'utilisateur",
+      "ACTIVATE": "Activer",
+      "DEACTIVATE": "Désactiver",
+      "DELETE_USER": "Supprimer l'utilisateur",
+      "NEVER": "Jamais",
+      "LOADING": "Chargement des utilisateurs...",
+      "NO_USERS": "Aucun utilisateur trouvé",
+      "NO_USERS_MESSAGE": "Aucun utilisateur ne correspond à vos critères de recherche."
+    }
+  },
+  "AUTH": {
+    "LOGIN": "Connexion",
+    "REGISTER": "Inscription",
+    "LOGOUT": "Déconnexion",
+    "EMAIL": "E-mail",
+    "PASSWORD": "Mot de passe",
+    "CONFIRM_PASSWORD": "Confirmer le mot de passe",
+    "REMEMBER_ME": "Se souvenir de moi",
+    "FORGOT_PASSWORD": "Mot de passe oublié ?",
+    "SIGN_IN": "Se connecter",
+    "SIGN_UP": "S'inscrire",
+    "WELCOME_BACK": "Bon retour",
+    "CREATE_ACCOUNT": "Créer votre compte",
+    "OR_CONTINUE_WITH": "Ou continuer avec",
+    "GOOGLE": "Google",
+    "MICROSOFT": "Microsoft",
+    "LOGIN": {
+      "TITLE": "Bon retour ",
+      "SUBTITLE": "Connectez-vous pour accéder à votre espace IBIS-X",
+      "EMAIL_LABEL": "Adresse e-mail",
+      "PASSWORD_LABEL": "Mot de passe",
+      "SUBMIT": "Se connecter",
+      "GOOGLE": "Se connecter avec Google",
+      "GOOGLE_LOADING": "Connexion avec Google en cours...",
+      "FORGOT_PASSWORD": "Mot de passe oublié ?",
+      "CREATE_ACCOUNT": "Pas de compte ? Créez-en un",
+      "EMAIL_REQUIRED": "L'e-mail est obligatoire",
+      "EMAIL_INVALID": "Veuillez saisir une adresse e-mail valide",
+      "PASSWORD_REQUIRED": "Le mot de passe est obligatoire",
+      "FORM_INVALID": "Veuillez corriger les erreurs ci-dessous",
+      "INVALID_CREDENTIALS": "E-mail ou mot de passe incorrect"
+    },
+    "REGISTER": {
+      "TITLE": "Créer un compte",
+      "SUBTITLE": "Rejoignez la plateforme IBIS-X pour commencer",
+      "EMAIL_LABEL": "Adresse e-mail",
+      "PASSWORD_LABEL": "Mot de passe",
+      "CONFIRM_PASSWORD_LABEL": "Confirmer le mot de passe",
+      "FIRST_NAME_LABEL": "Prénom",
+      "LAST_NAME_LABEL": "Nom",
+      "SUBMIT": "Créer le compte",
+      "GOOGLE": "S'inscrire avec Google",
+      "SIGN_IN_LINK": "Déjà un compte ? Connectez-vous",
+      "TERMS_ACCEPTANCE": "J'accepte les Conditions d'utilisation et la Politique de confidentialité",
+      "SUCCESS": "Compte créé avec succès",
+      "PASSWORD_MISMATCH": "Les mots de passe ne correspondent pas",
+      "TERMS_REQUIRED": "Vous devez accepter les conditions pour continuer"
+    }
+  },
+  "COMMON": {
+    "FILTER_ADVANCED": "Découvrir le Dataset Parfait",
+    "FILTER_DESCRIPTION": "Trouvez exactement ce que vous cherchez",
+    "LOADING": "Chargement...",
+    "NEXT": "Suivant",
+    "BACK": "Retour",
+    "CANCEL": "Annuler",
+    "MANAGE": "Gérer",
+    "CONFIGURE": "Configurer",
+    "VIEW_ALL": "Voir tout",
+    "UPLOAD_NEW": "Télécharger nouveau",
+    "VIEW_ALL_USERS": "Voir tous les utilisateurs",
+    "ADD_NEW_USER": "Ajouter un nouvel utilisateur",
+    "COLLAPSE": "Réduire",
+    "EXPAND": "Développer",
+    "FILTER": "Filtrer",
+    "CLEAR": "Effacer",
+    "REFRESH": "Actualiser",
+    "MINIMUM": "Minimum",
+    "MAXIMUM": "Maximum",
+    "POOR": "Faible",
+    "GOOD": "Bon",
+    "EXCELLENT": "Excellent"
+  },
+  "DASHBOARD": {
+    "TITLE": "Tableau de Bord IBIS-X",
+    "SUBTITLE": "Vue d'ensemble de votre plateforme d'IA explicable",
+    "REFRESH": "Actualiser",
+    "NEW_PROJECT": "Nouveau Projet",
+    "METRICS": {
+      "DATASETS": {
+        "TITLE": "DATASETS DISPONIBLES",
+        "CHANGE": "+{{count}} cette semaine"
+      },
+      "PIPELINES": {
+        "TITLE": "PIPELINES ML ACTIFS",
+        "CHANGE": "{{count}} en cours"
+      },
+      "EXPLANATIONS": {
+        "TITLE": "EXPLICATIONS XAI",
+        "CHANGE": "+{{count}} ce mois"
+      },
+      "USERS": {
+        "TITLE": "UTILISATEURS ACTIFS",
+        "CHANGE": "Aujourd'hui"
+      }
+    },
+    "ACTIVITY": {
+      "TITLE": "Activité Récente",
+      "SUBTITLE": "Dernières actions sur la plateforme",
+      "ITEMS": {
+        "DATASET_ADDED": {
+          "TITLE": "Dataset EdNet ajouté",
+          "DESCRIPTION": "Nouveau dataset éducationnel avec 5 fichiers",
+          "TIMESTAMP": "Il y a 2 heures"
+        },
+        "PIPELINE_COMPLETED": {
+          "TITLE": "Pipeline ML terminé",
+          "DESCRIPTION": "Classification des étudiants - Accuracy: 94.2%",
+          "TIMESTAMP": "Il y a 5 heures"
+        },
+        "EXPLANATION_GENERATED": {
+          "TITLE": "Explication SHAP générée",
+          "DESCRIPTION": "Analyse des features importantes pour la prédiction",
+          "TIMESTAMP": "Hier"
+        },
+        "USER_LOGIN": {
+          "TITLE": "Connexion utilisateur",
+          "DESCRIPTION": "Nouvel utilisateur connecté via OAuth",
+          "TIMESTAMP": "Il y a 1 jour"
+        }
+      }
+    },
+    "DATASETS": {
+      "TITLE": "Répartition des Datasets",
+      "SUBTITLE": "{{total}} datasets disponibles",
+      "DOMAINS": {
+        "EDUCATION": "Éducation",
+        "HEALTH": "Santé",
+        "FINANCE": "Finance",
+        "OTHER": "Autres"
+      }
+    },
+    "QUICK_ACTIONS": {
+      "TITLE": "Actions Rapides",
+      "SUBTITLE": "Démarrez votre analyse",
+      "ITEMS": {
+        "EXPLORE_DATASETS": {
+          "TITLE": "Explorer les Datasets",
+          "DESCRIPTION": "Parcourir et sélectionner vos données"
+        },
+        "CREATE_PIPELINE": {
+          "TITLE": "Créer un Pipeline ML",
+          "DESCRIPTION": "Entraîner un nouveau modèle"
+        },
+        "GENERATE_EXPLANATIONS": {
+          "TITLE": "Générer des Explications",
+          "DESCRIPTION": "Comprendre vos modèles avec XAI"
+        },
+        "VIEW_DOCUMENTATION": {
+          "TITLE": "Voir la Documentation",
+          "DESCRIPTION": "Guides et tutoriels IBIS-X"
+        }
+      }
+    },
+    "SYSTEM_STATUS": {
+      "TITLE": "État du Système",
+      "SUBTITLE": "Services IBIS-X",
+      "API_GATEWAY": "API Gateway",
+      "DATASET_SERVICE": "Service Datasets",
+      "ML_PIPELINE": "Pipeline ML",
+      "XAI_ENGINE": "Moteur XAI",
+      "ONLINE": "En ligne",
+      "DEVELOPMENT": "En développement",
+      "LAST_UPDATE": "Dernière mise à jour: il y a 5 min"
+    }
+  },
+  "PROJECTS": {
+    "TITLE": "Mes Projets",
+    "NEW_PROJECT": "Nouveau Projet",
+    "PROJECT_NAME": "Nom du Projet",
+    "PROJECT_DESCRIPTION": "Description du Projet",
+    "DATASET": "Jeu de données",
+    "SELECT_DATASET": "Sélectionner un jeu de données",
+    "CREATED": "Créé",
+    "UPDATED": "Dernière mise à jour",
+    "ACTIONS": "Actions",
+    "EDIT": "Modifier",
+    "DELETE": "Supprimer",
+    "VIEW": "Voir",
+    "NO_PROJECTS": "Aucun projet trouvé",
+    "CREATE_FIRST": "Créez votre premier projet pour commencer",
+    "RECENT": "Récent",
+    "STATUS": {
+      "ACTIVE": "Actif",
+      "COMPLETED": "Terminé",
+      "DRAFT": "Brouillon"
+    },
+    "FORM": {
+      "CREATE_PROJECT": "Créer un Nouveau Projet",
+      "EDIT_PROJECT": "Modifier le Projet",
+      "CREATE_SUBTITLE": "Créez un nouveau projet d'analyse ML avec scoring automatique",
+      "EDIT_SUBTITLE": "Modifiez les paramètres de votre projet",
+      "NAME_REQUIRED": "Le nom du projet est obligatoire",
+      "DESCRIPTION_REQUIRED": "La description est obligatoire",
+      "DATASET_REQUIRED": "Veuillez sélectionner un jeu de données",
+      "SAVE": "Créer le Projet",
+      "UPDATE": "Mettre à Jour",
+      "CANCEL": "Annuler",
+      "PROJECT_INFO": "Informations du Projet",
+      "SELECTION_CRITERIA": "Critères de Sélection",
+      "NAME_LABEL": "Nom du Projet",
+      "NAME_PLACEHOLDER": "Saisissez un nom descriptif pour votre projet",
+      "DESCRIPTION_LABEL": "Description (optionnelle)",
+      "DESCRIPTION_PLACEHOLDER": "Décrivez l'objectif et le contexte de votre projet",
+      "DATASET_LABEL": "Sélection du Jeu de Données",
+      "DATASET_PLACEHOLDER": "Choisissez un jeu de données pour l'analyse",
+      "LOADING": "Création du projet en cours..."
+    },
+    "DETAIL": {
+      "TITLE": "Détails du Projet",
+      "OVERVIEW": "Vue d'ensemble",
+      "CONFIGURATION": "Configuration",
+      "RESULTS": "Résultats",
+      "EDIT": "Modifier le Projet",
+      "DELETE": "Supprimer le Projet",
+      "PIPELINE_STATUS": "Statut du Pipeline",
+      "LAST_RUN": "Dernière Exécution",
+      "ACCURACY": "Précision du Modèle"
+    },
+    "LIST": {
+      "RESULTS_COUNT": "{{count}} projets trouvés",
+      "LOADING": "Chargement des projets...",
+      "LOADING_ERROR": "Erreur lors du chargement des projets. Veuillez réessayer.",
+      "LOADING_ERROR_TITLE": "Erreur de chargement",
+      "NO_PROJECTS": "Aucun projet disponible",
+      "NO_PROJECTS_TITLE": "Aucun projet",
+      "NO_PROJECTS_MESSAGE": "Créez votre premier projet pour commencer à organiser vos recherches de datasets.",
+      "NO_SEARCH_RESULTS_TITLE": "Aucun projet trouvé",
+      "NO_SEARCH_RESULTS_MESSAGE": "Aucun projet ne correspond à votre recherche \"{{searchTerm}}\".",
+      "CREATE_FIRST_PROJECT": "Créer mon premier projet",
+      "CREATE_NEW_PROJECT": "Créer un nouveau projet",
+      "CLEAR_SEARCH": "Effacer la recherche",
+      "SEARCH_PLACEHOLDER": "Rechercher des projets...",
+      "SORT_BY": "Trier par",
+      "SORT_NAME": "Nom",
+      "SORT_DATE": "Date de création",
+      "FILTER_STATUS": "Filtrer par Statut"
+    },
+    "DELETE": {
+      "CONFIRM_MESSAGE": "Êtes-vous sûr de vouloir supprimer le projet \"{{name}}\" ?",
+      "ERROR": "Erreur lors de la suppression du projet."
+    },
+    "CRITERIA": {
+      "ETHICAL_SCORE": "Score Éthique",
+      "TECHNICAL_SCORE": "Score Technique",
+      "POPULARITY_SCORE": "Popularité",
+      "ANONYMIZATION": "Anonymisation",
+      "DOCUMENTATION": "Documentation",
+      "DATA_QUALITY": "Qualité des Données",
+      "SUBTITLE": "Définissez les critères pour filtrer les datasets",
+      "PROJECT_CONTEXT": "Contexte du Projet",
+      "OBJECTIVE_DESCRIPTION": "Description ou mots-clés de l'objectif",
+      "OBJECTIVE_PLACEHOLDER": "Ex: analyse prédictive, classification étudiants, détection anomalies...",
+      "OBJECTIVE_HINT": "Décrivez le type d'analyse ou d'objectif recherché",
+      "APPLICATION_DOMAIN": "Domaine d'Application",
+      "ACTIVITY_SECTORS": "Secteurs d'activité",
+      "SELECT_SECTORS_HINT": "Sélectionnez un ou plusieurs secteurs",
+      "ML_TASK_TYPE": "Type de tâche ML",
+      "ALGORITHMS_HINT": "Types d'algorithmes envisagés",
+      "DOMAINS": {
+        "EDUCATION": "Éducation",
+        "HEALTH": "Santé",
+        "FINANCE": "Finance",
+        "TRANSPORT": "Transport",
+        "RETAIL": "Commerce"
+      },
+      "TASKS": {
+        "CLASSIFICATION": "Classification",
+        "REGRESSION": "Régression",
+        "CLUSTERING": "Clustering",
+        "NLP": "NLP",
+        "COMPUTER_VISION": "Vision"
+      },
+      "TECHNICAL_REQUIREMENTS": "Exigences Techniques",
+      "OPTIONAL": "optionnel",
+      "INSTANCES_NUMBER": "Nombre d'instances",
+      "FEATURES_NUMBER": "Nombre de variables",
+      "MIN": "Min",
+      "MAX": "Max",
+      "TO": "à",
+      "CREATION_PERIOD": "Période de création",
+      "MIN_ETHICAL_SCORE": "Score éthique minimum",
+      "NO_REQUIREMENT": "Aucune exigence",
+      "ACCEPTABLE": "Acceptable",
+      "GOOD": "Bon",
+      "VERY_GOOD": "Très bon",
+      "EXCELLENT": "Excellent",
+      "CHARACTERISTICS": "Caractéristiques",
+      "ALREADY_SPLIT": "Déjà divisé (train/test)",
+      "ANONYMIZED": "Anonymisé",
+      "PUBLIC_ACCESS": "Accès public"
+    },
+    "WEIGHTS": {
+      "TITLE": "Pondération des Critères",
+      "SUBTITLE": "Ajustez l'importance de chaque critère de scoring",
+      "DEFAULT_VALUES": "Valeurs par défaut",
+      "ACTIVE_CRITERIA": "Critères actifs :"
+    },
+    "RECOMMENDATIONS": {
+      "TOP_3": "Top 3 Recommandations",
+      "CALCULATING": "Calcul en cours...",
+      "NO_DATASETS_FOUND": "Aucun dataset trouvé",
+      "ADJUST_CRITERIA": "Ajustez vos critères"
+    },
+    "HEATMAP": {
+      "TITLE": "Heat Map des Recommandations Apache ECharts",
+      "SUBTITLE": "Visualisation interactive Apache ECharts - {{datasets}} datasets sur {{criteria}} critères",
+      "LEGEND": {
+        "LOW": "Faible (0-30%)",
+        "MEDIUM": "Moyen (30-60%)",
+        "GOOD": "Bon (60-85%)",
+        "EXCELLENT": "Excellent (85%+)"
+      },
+      "INFO": {
+        "CRITERIA_ANALYZED": "{{count}} critères analysés",
+        "DATASETS_COMPARED": "{{count}} datasets comparés",
+        "CDN_POWERED": "Apache ECharts CDN"
+      },
+      "LOADING": "Chargement d'ECharts...",
+      "NO_DATA": "Configurez des poids pour afficher la heat map ECharts",
+      "VISUAL_MAP_LOW": "Faible",
+      "VISUAL_MAP_HIGH": "Excellent",
+      "SERIES_NAME": "Scores par critère",
+      "CRITERIA_LABELS": {
+        "ETHICAL_SCORE": "Éthique",
+        "TECHNICAL_SCORE": "Technique",
+        "POPULARITY_SCORE": "Popularité",
+        "ANONYMIZATION": "Anonymisation",
+        "TRANSPARENCY": "Transparence",
+        "INFORMED_CONSENT": "Consentement",
+        "DOCUMENTATION": "Documentation",
+        "DATA_QUALITY": "Qualité"
+      }
+    }
+  },
+  "DATASETS": {
+    "TITLE": "Jeux de Données Disponibles",
+    "SEARCH": "Rechercher des jeux de données...",
+    "FILTER": "Filtrer",
+    "FILTERS": {
+      "MODERN": {
+        "TITLE": "Filtres avancés",
+        "SUBTITLE": "Affinez votre recherche de datasets"
+      },
+      "ACTIVE_FILTERS_LABEL": "Filtres actifs",
+      "ACTIVE_FILTERS": "{count} filtre(s) actif(s)",
+      "CLEAR_ALL_TOOLTIP": "Supprimer tous les filtres",
+      "CLEAR_ALL": "Tout effacer",
+      "ACTIVE_CHIPS_LABEL": "Liste des filtres actifs",
+      "CHIP_LABEL": "Filtre: {filter}",
+      "REMOVE_CHIP": "Supprimer le filtre {filter}",
+      "HIDDEN_CHIPS": "{count} filtre(s) supplémentaire(s)",
+      "NO_ACTIVE_FILTERS": "Aucun filtre actif",
+      "GROUPS": {
+        "CATEGORIES": {
+          "TITLE": "Catégories",
+          "DESCRIPTION": "Filtrer par domaine d'application et type de tâche"
+        },
+        "NUMERICAL": {
+          "TITLE": "Caractéristiques numériques",
+          "DESCRIPTION": "Filtrer par nombre d'instances, de features et année"
+        },
+        "QUALITY": {
+          "TITLE": "Qualité et éthique",
+          "DESCRIPTION": "Filtrer par score éthique et critères de qualité"
+        }
+      }
+    },
+    "TYPE": "Type",
+    "SIZE": "Taille",
+    "LAST_UPDATED": "Dernière mise à jour",
+    "DESCRIPTION": "Description",
+    "DOWNLOAD": "Télécharger",
+    "PREVIEW": "Aperçu",
+    "SELECT": "Sélectionner",
+    "SELECTED": "Sélectionné",
+    "NO_DATASETS": "Aucun jeu de données disponible",
+    "EDUCATIONAL": "Éducationnel",
+    "BEHAVIORAL": "Comportemental",
+    "ENGAGEMENT": "Engagement",
+    "LISTING": {
+      "TITLE": "Collection de Jeux de Données",
+      "SUBTITLE": "Explorez et sélectionnez parmi nos jeux de données organisés",
+      "SEARCH_PLACEHOLDER": "Rechercher par nom, type...",
+      "GRID_VIEW": "Vue en Grille",
+      "LIST_VIEW": "Vue en Liste",
+      "SORT_BY": "Trier par",
+      "SORT_NAME": "Nom",
+      "SORT_SIZE": "Taille",
+      "SORT_DATE": "Date d'ajout",
+      "FILTER_TYPE": "Filtrer par Type",
+      "FILTER_SIZE": "Filtrer par Taille",
+      "NO_RESULTS": "Aucun jeu de données ne correspond à vos critères",
+      "NO_RESULTS_MESSAGE": "Essayez de modifier vos critères de recherche ou de filtrage.",
+      "LOADING": "Chargement des jeux de données...",
+      "ERROR_TITLE": "Erreur de chargement",
+      "TOTAL_DATASETS": "{{count}} jeux de données disponibles",
+      "FILTERED": "filtrés",
+      "NO_DATASETS_TITLE": "Aucun jeu de données disponible",
+      "NO_DATASETS_MESSAGE": "Aucun jeu de données n'est actuellement disponible dans le système."
+    },
+    "SORT": {
+      "DATASET_NAME": "Nom",
+      "YEAR": "Année",
+      "INSTANCES_NUMBER": "Nombre d'instances",
+      "FEATURES_NUMBER": "Nombre de features",
+      "NUM_CITATIONS": "Citations",
+      "CREATED_AT": "Date de création",
+      "UPDATED_AT": "Dernière modification"
+    },
+    "SELECT_FOR_ML": "Créer Pipeline ML",
+    "FILTERS": {
+      "TITLE": "Filtres Intelligents",
+      "CTA_TITLE": "Trouvez Votre Dataset Idéal",
+      "CTA_SUBTITLE": "Système de filtrage avancé avec IA",
+      "APPLY": "Appliquer les Filtres",
+      "CLEAR": "Tout Effacer",
+      "MODIFY": "Modifier les filtres",
+      "TYPE_LABEL": "Type de Jeu de Données",
+      "SIZE_LABEL": "Taille du Jeu de Données",
+      "DATE_LABEL": "Plage de Dates",
+      "DOMAIN_LABEL": "Domaine",
+      "RESET": "Réinitialiser les Filtres",
+      "ACTIVE_FILTERS_COUNT": "{{count}} filtre(s) actif(s) :",
+      "MODERN": {
+        "TITLE": "Filtres Intelligents",
+        "SUBTITLE": "Trouvez le dataset parfait avec précision",
+        "SUMMARY": "{{count}} critère(s) configuré(s)",
+        "LOADING": "Optimisation des résultats en cours...",
+        "PROGRESS": "Configuration : {{percentage}}%",
+        "LIVE_PREVIEW": "Aperçu en temps réel",
+        "ESTIMATED_RESULTS": "{{count}} résultat(s) estimé(s)",
+        "OPTIMIZATION_COMPLETE": "Optimisation terminée !"
+      },
+      "RESET_ALL": "Tout réinitialiser",
+      "RESET_ALL_TOOLTIP": "Supprimer tous les filtres actifs",
+      "CLEAR_ALL": "Tout effacer",
+      "CLEAR_ALL_TOOLTIP": "Effacer tous les filtres appliqués",
+      "ACTIVE_COUNT_TOOLTIP": "{{count}} filtre(s) actuellement appliqué(s)",
+      "ACTIVE_FILTERS": "{{count}} filtre(s) actif(s)",
+      "ACTIVE_FILTERS_LABEL": "Filtres actuellement appliqués",
+      "ACTIVE_CHIPS_LABEL": "Liste des filtres actifs",
+      "NO_ACTIVE_FILTERS": "Aucun filtre appliqué",
+      "CHIP_LABEL": "Filtre : {{filter}}",
+      "REMOVE_CHIP": "Supprimer le filtre {{filter}}",
+      "HIDDEN_CHIPS": "{{count}} filtre(s) supplémentaire(s)",
+      "SUMMARY": "{{count}} filtre(s) appliqué(s)",
+      "LOADING": "Mise à jour des filtres...",
+      "GROUPS": {
+        "TEXT_SEARCH": {
+          "TITLE": "Recherche textuelle",
+          "DESCRIPTION": "Rechercher par nom ou description du dataset"
+        },
+        "CATEGORIES": {
+          "TITLE": "Domaines et Tâches ML",
+          "DESCRIPTION": "Filtrer par domaine d'application et type de tâche"
+        },
+        "NUMERICAL": {
+          "TITLE": "Caractéristiques numériques",
+          "DESCRIPTION": "Filtrer par taille, nombre de features et année"
+        },
+        "QUALITY": {
+          "TITLE": "Critères de qualité",
+          "DESCRIPTION": "Propriétés éthiques et critères de qualité"
+        }
+      },
+      "GROUP_HAS_ACTIVE_FILTERS": "Ce groupe contient des filtres actifs",
+      "RESET_GROUP": "Réinitialiser {{group}}",
+      "RESET_GROUP_TOOLTIP": "Effacer tous les filtres de la section {{group}}",
+      "CLEAR_SECTION": "Effacer cette section",
+      "DATASET_NAME": "Nom du dataset",
+      "DATASET_NAME_PLACEHOLDER": "Ex: EdNet, MNIST, ImageNet...",
+      "DATASET_NAME_HINT": "Recherche dans les noms de datasets",
+      "OBJECTIVE": "Description/Objectif",
+      "OBJECTIVE_PLACEHOLDER": "Mots-clés sur l'objectif ou le contenu du dataset...",
+      "OBJECTIVE_HINT": "Recherche dans les descriptions et objectifs",
+      "DOMAINS": "Domaines d'application",
+      "SELECT_DOMAINS": "Sélectionner des domaines",
+      "DOMAINS_PLACEHOLDER": "Choisir un ou plusieurs domaines",
+      "DOMAINS_HINT": "Filtrer par domaine d'application",
+      "SELECTED_DOMAINS": "Domaines sélectionnés",
+      "REMOVE_DOMAIN": "Supprimer le domaine {{domain}}",
+      "TASKS": "Types de tâches ML",
+      "SELECT_TASKS": "Sélectionner des tâches",
+      "TASKS_PLACEHOLDER": "Choisir un ou plusieurs types de tâches",
+      "TASKS_HINT": "Filtrer par type de tâche d'apprentissage automatique",
+      "SELECTED_TASKS": "Tâches sélectionnées",
+      "REMOVE_TASK": "Supprimer la tâche {{task}}",
+      "INSTANCES_COUNT": "Nombre d'instances",
+      "INSTANCES_MIN_PLACEHOLDER": "Ex: 1000",
+      "INSTANCES_MAX_PLACEHOLDER": "Ex: 1000000",
+      "INSTANCES_UNIT": "instances",
+      "FEATURES_COUNT": "Nombre de features",
+      "FEATURES_MIN_PLACEHOLDER": "Ex: 5",
+      "FEATURES_MAX_PLACEHOLDER": "Ex: 100",
+      "FEATURES_UNIT": "features",
+      "CREATION_YEAR": "Année de création",
+      "SINCE": "Depuis",
+      "UNTIL": "Jusqu'à",
+      "YEAR_MIN_PLACEHOLDER": "Ex: 2015",
+      "YEAR_MAX_PLACEHOLDER": "Ex: 2024",
+      "ETHICAL_SCORE": "Score éthique minimum",
+      "MIN_SCORE_REQUIRED": "Score minimum requis",
+      "NO_CRITERIA": "Aucun critère",
+      "EXCELLENT_80": "Excellent (80%+)",
+      "GOOD_60": "Bon (60%+)",
+      "ACCEPTABLE_40": "Acceptable (40%+)",
+      "ALL_SCORES": "Tous scores",
+      "ETHICAL_SCORE_HINT": "Filtrer par score de conformité éthique",
+      "REPRESENTATIVITY_LEVEL": "Niveau de représentativité",
+      "MIN_LEVEL": "Niveau minimum",
+      "ALL_LEVELS": "Tous niveaux",
+      "HIGH_ONLY": "Élevée uniquement",
+      "MEDIUM_AND_UP": "Moyenne et plus",
+      "ALL_INCLUDING_LOW": "Tous (y compris faible)",
+      "REPRESENTATIVITY_HINT": "Évaluation de la représentativité des données",
+      "REQUIRED_CHARACTERISTICS": "Caractéristiques requises",
+      "DATASET_SPLIT": "Dataset divisé (train/test)",
+      "DATASET_SPLIT_HINT": "Dataset pré-divisé en ensembles d'entraînement et de test",
+      "ANONYMIZED_DATA": "Données anonymisées",
+      "ANONYMIZED_DATA_HINT": "Données personnelles anonymisées ou pseudonymisées",
+      "TEMPORAL_FACTORS": "Facteurs temporels",
+      "TEMPORAL_FACTORS_HINT": "Dataset contient des éléments temporels ou séquentiels",
+      "PUBLIC_ACCESS_ONLY": "Accès public uniquement",
+      "PUBLIC_ACCESS_HINT": "Limiter aux datasets avec accès libre et public"
+    }
+  },
+  "PROFILE": {
+    "TITLE": "Profil Utilisateur",
+    "SUBTITLE": "Gérez vos informations personnelles et préférences",
+    "BACK_TO_DASHBOARD": "Retour au Tableau de Bord",
+    "CHANGE_PHOTO": "Changer la Photo",
+    "UPLOADING": "Téléchargement...",
+    "CONFIRM": "Confirmer",
+    "CANCEL": "Annuler",
+    "STATUS": {
+      "VERIFIED": "Vérifié",
+      "ACTIVE": "Actif"
+    },
+    "CREDITS": {
+      "TITLE": "Crédits disponibles",
+      "DESCRIPTION": "Vos crédits pour l'entraînement ML",
+      "ML_USAGE": "Utilisés pour créer et entraîner vos modèles d'IA",
+      "REMAINING": "crédits restants",
+      "REFILL_BUTTON": "Recharger les crédits"
+    },
+    "PERSONAL_INFO": {
+      "TITLE": "Informations Personnelles",
+      "EMAIL": "Adresse E-mail",
+      "EMAIL_PLACEHOLDER": "Votre adresse e-mail",
+      "EMAIL_READONLY": "L'adresse e-mail ne peut pas être modifiée",
+      "PSEUDO": "Nom d'utilisateur",
+      "PSEUDO_PLACEHOLDER": "Choisissez un nom d'utilisateur",
+      "LANGUAGE": "Langue",
+      "FIRST_NAME": "Prénom",
+      "FIRST_NAME_PLACEHOLDER": "Votre prénom",
+      "LAST_NAME": "Nom de famille",
+      "LAST_NAME_PLACEHOLDER": "Votre nom de famille",
+      "EDUCATION_LEVEL": "Niveau d'éducation",
+      "AGE": "Âge",
+      "AGE_PLACEHOLDER": "Votre âge",
+      "AGE_MIN_ERROR": "L'âge doit être d'au moins 13 ans",
+      "AGE_MAX_ERROR": "L'âge ne peut pas dépasser 120 ans",
+      "AI_FAMILIARITY": "Familiarité avec l'IA",
+      "AI_FAMILIARITY_1": "Débutant",
+      "AI_FAMILIARITY_2": "Novice",
+      "AI_FAMILIARITY_3": "Intermédiaire",
+      "AI_FAMILIARITY_4": "Avancé",
+      "AI_FAMILIARITY_5": "Expert",
+      "RESET": "Réinitialiser",
+      "SAVE": "Enregistrer",
+      "SAVING": "Enregistrement..."
+    },
+    "LANGUAGES": {
+      "FRENCH": "Français",
+      "ENGLISH": "Anglais",
+      "SPANISH": "Espagnol",
+      "GERMAN": "Allemand"
+    },
+    "EDUCATION_LEVELS": {
+      "NO_FORMAL": "Aucune éducation formelle",
+      "HIGH_SCHOOL": "Lycée",
+      "BACHELOR": "Licence",
+      "MASTER": "Master",
+      "PHD": "Doctorat",
+      "OTHER": "Autre"
+    },
+         "PASSWORD": {
+       "TITLE": "Changer le Mot de Passe",
+       "CURRENT_PASSWORD": "Mot de passe actuel",
+       "CURRENT_PASSWORD_PLACEHOLDER": "Saisissez votre mot de passe actuel",
+       "NEW_PASSWORD": "Nouveau mot de passe",
+       "NEW_PASSWORD_PLACEHOLDER": "Choisissez un nouveau mot de passe",
+       "CONFIRM_PASSWORD": "Confirmer le mot de passe",
+       "CONFIRM_PASSWORD_PLACEHOLDER": "Confirmez votre nouveau mot de passe",
+       "SAVE": "Changer le Mot de Passe",
+       "SAVING": "Modification...",
+       "RESET": "Réinitialiser"
+     },
+     "SECURITY": {
+       "TITLE": "Paramètres de Sécurité",
+       "CURRENT_PASSWORD": "Mot de passe actuel",
+       "CURRENT_PASSWORD_PLACEHOLDER": "Saisissez votre mot de passe actuel",
+       "CURRENT_PASSWORD_REQUIRED": "Le mot de passe actuel est obligatoire",
+       "NEW_PASSWORD": "Nouveau mot de passe",
+       "NEW_PASSWORD_PLACEHOLDER": "Choisissez un nouveau mot de passe",
+       "NEW_PASSWORD_REQUIRED": "Le nouveau mot de passe est obligatoire",
+       "PASSWORD_MIN_LENGTH": "Le mot de passe doit contenir au moins 8 caractères",
+       "CONFIRM_PASSWORD": "Confirmer le mot de passe",
+       "CONFIRM_PASSWORD_PLACEHOLDER": "Confirmez votre nouveau mot de passe",
+       "CONFIRM_PASSWORD_REQUIRED": "La confirmation du mot de passe est obligatoire",
+       "PASSWORDS_MISMATCH": "Les mots de passe ne correspondent pas",
+       "CANCEL": "Annuler",
+       "UPDATING": "Mise à jour...",
+       "UPDATE_PASSWORD": "Modifier le Mot de Passe"
+     },
+     "DELETE_ACCOUNT": {
+       "TITLE": "Zone Dangereuse",
+       "BUTTON": "Supprimer mon compte",
+       "DIALOG_TITLE": "Confirmer la suppression de compte",
+       "DIALOG_WARNING": "Cette action est irréversible et supprimera définitivement votre compte.",
+       "DIALOG_DETAILS": "Toutes vos données seront immédiatement supprimées :",
+       "DIALOG_DETAILS_LIST": [
+         "Votre profil utilisateur",
+         "Tous vos projets",
+         "Vos modèles entraînés",
+         "Vos explications XAI",
+         "Votre historique d'activité"
+       ],
+       "DIALOG_FINAL_WARNING": "Aucune information ne sera conservée et vous perdrez tout accès à la plateforme.",
+       "PASSWORD_REQUIRED": "Veuillez saisir votre mot de passe pour confirmer",
+       "PASSWORD_LABEL": "Mot de passe actuel",
+       "PASSWORD_PLACEHOLDER": "Saisissez votre mot de passe pour confirmer",
+       "EMAIL_REQUIRED": "Veuillez saisir votre email pour confirmer",
+       "EMAIL_LABEL": "Adresse email",
+       "EMAIL_PLACEHOLDER": "Saisissez votre adresse email pour confirmer",
+       "EMAIL_MISMATCH": "L'email saisi ne correspond pas à votre adresse email",
+       "EMAIL_INSTRUCTION": "Confirmez la suppression en saisissant votre adresse email",
+       "CONFIRM_BUTTON": "Oui, supprimer définitivement mon compte",
+       "CANCEL_BUTTON": "Non, conserver mon compte",
+       "DELETING": "Suppression du compte en cours...",
+       "SUCCESS": "Votre compte a été supprimé avec succès",
+       "ERROR": "Erreur lors de la suppression du compte"
+     },
+    "MESSAGES": {
+      "PROFILE_UPDATED": "Profil mis à jour avec succès",
+      "PASSWORD_UPDATED": "Mot de passe modifié avec succès",
+      "PICTURE_UPLOADED": "Photo de profil mise à jour"
+    },
+    "ERRORS": {
+      "LOAD_PROFILE": "Erreur lors du chargement du profil",
+      "UPDATE_PROFILE": "Erreur lors de la mise à jour du profil",
+      "UPDATE_PASSWORD": "Erreur lors du changement de mot de passe",
+      "UPLOAD_PICTURE": "Erreur lors du téléchargement de la photo",
+      "LOADING_USER_DATA": "Erreur lors du chargement des données utilisateur"
+    }
+  },
+  "ONBOARDING": {
+    "WELCOME_TITLE": "Bienvenue {{name}} !",
+    "WELCOME_SUBTITLE": "Quelques questions rapides pour personnaliser votre expérience",
+    "STEP_PROGRESS": "Question {{current}} sur {{total}}",
+    "INTRO": {
+      "PERSONALIZATION": "Expérience personnalisée",
+      "QUICK": "Rapide et simple",
+      "CUSTOMIZABLE": "Modifiable à tout moment"
+    },
+    "STEP1": {
+      "TITLE": "Niveau d'éducation",
+      "LABEL": "Quel est votre niveau d'éducation le plus élevé ?"
+    },
+    "STEP2": {
+      "TITLE": "Votre âge",
+      "LABEL": "Quel âge avez-vous ?"
+    },
+    "STEP3": {
+      "TITLE": "Familiarité avec l'IA",
+      "LABEL": "Comment évaluez-vous votre niveau en IA ?"
+    },
+    "EDUCATION_LEVELS": {
+      "NO_FORMAL": "Aucune éducation formelle",
+      "HIGH_SCHOOL": "Lycée",
+      "BACHELOR": "Licence",
+      "MASTER": "Master",
+      "PHD": "Doctorat",
+      "ENGINEER": "Ingénieur",
+      "OTHER": "Autre"
+    },
+    "AI_FAMILIARITY": {
+      "BEGINNER": "Débutant",
+      "NOVICE": "Novice",
+      "INTERMEDIATE": "Intermédiaire",
+      "ADVANCED": "Avancé",
+      "EXPERT": "Expert"
+    },
+    "PREVIOUS": "Précédent",
+    "NEXT": "Suivant",
+    "COMPLETE": "Terminer la configuration",
+    "ERRORS": {
+      "INVALID_STEP": "Veuillez compléter cette étape avant de continuer",
+      "INVALID_FORM": "Veuillez compléter tous les champs obligatoires",
+      "SAVE_FAILED": "Erreur lors de la sauvegarde des données d'onboarding"
+    },
+    "VALIDATION": {
+      "AGE_TOO_LOW": "L'âge doit être d'au moins 13 ans",
+      "AGE_TOO_HIGH": "L'âge ne peut pas dépasser 120 ans"
+    }
+  },
+  "DASHBOARD": {
+    "TITLE": "Tableau de Bord IBIS-X",
+    "SUBTITLE": "Vue d'ensemble de vos projets d'apprentissage automatique et jeux de données",
+    "WELCOME": "Bienvenue sur la Plateforme IBIS-X",
+    "METRICS": {
+      "DATASETS_AVAILABLE": "Jeux de Données Disponibles",
+      "ACTIVE_PROJECTS": "Projets Actifs",
+      "MODELS_TRAINED": "Modèles Entraînés",
+      "EXPLANATIONS_GENERATED": "Explications Générées"
+    },
+    "RECENT_ACTIVITY": "Activité Récente",
+    "QUICK_ACTIONS": "Actions Rapides",
+    "SYSTEM_STATUS": "Statut du Système",
+    "NO_ACTIVITY": "Aucune activité récente",
+    "ALL_SYSTEMS_OPERATIONAL": "Tous les systèmes sont opérationnels",
+    "CREATE_PROJECT": "Créer un Nouveau Projet",
+    "EXPLORE_DATASETS": "Explorer les Jeux de Données",
+    "VIEW_EXPLANATIONS": "Voir les Explications",
+    "ACTIVITY": {
+      "PROJECT_CREATED": "Projet créé",
+      "MODEL_TRAINED": "Entraînement du modèle terminé",
+      "EXPLANATION_GENERATED": "Explication générée",
+      "DATASET_UPLOADED": "Jeu de données téléchargé"
+    }
+  },
+  "CARDS": {
+    "PROJECT": {
+      "VIEW": "Voir le Projet",
+      "EDIT": "Modifier",
+      "DELETE": "Supprimer",
+      "CONFIGURED": "Configuré",
+      "NOT_CONFIGURED": "Non Configuré",
+      "NO_DESCRIPTION": "Aucune description disponible",
+      "CREATED_ON": "Créé le",
+      "LAST_MODIFIED": "Dernière modification",
+      "VIEW_RECOMMENDATIONS": "Voir les Recommandations"
+    },
+    "DATASET": {
+      "PUBLIC": "Public",
+      "PRIVATE": "Privé",
+      "INSTANCES": "Instances",
+      "FEATURES": "Caractéristiques",
+      "SPLIT": "Division Train/Test",
+      "ANONYMOUS": "Anonymisé",
+      "ETHICS_SCORE": "Score Éthique",
+      "VIEW": "Voir les Détails",
+      "SELECT": "Sélectionner le Jeu de Données",
+      "DOWNLOAD": "Télécharger",
+      "EXPLORE": "Explorer",
+      "TYPE": "Type",
+      "SIZE": "Taille",
+      "DOMAIN": "Domaine",
+      "LICENSE": "Licence"
+    },
+    "UPLOAD": {
+      "TOOLTIP": "Ajouter un nouveau dataset",
+      "TITLE": "Upload Dataset",
+      "SUBTITLE": "Ajouter un nouveau jeu de données"
+    }
+  },
+  "FORMS": {
+    "VALIDATION": {
+      "REQUIRED": "Ce champ est obligatoire",
+      "EMAIL_INVALID": "Veuillez saisir une adresse e-mail valide",
+      "PASSWORD_TOO_SHORT": "Le mot de passe doit contenir au moins 8 caractères",
+      "PASSWORDS_MISMATCH": "Les mots de passe ne correspondent pas",
+      "NAME_TOO_SHORT": "Le nom doit contenir au moins 2 caractères",
+      "NAME_TOO_LONG": "Le nom ne peut pas dépasser 255 caractères",
+      "DESCRIPTION_TOO_SHORT": "La description doit contenir au moins 10 caractères"
+    },
+    "PROJECT": {
+      "NAME_LABEL": "Nom du Projet",
+      "NAME_PLACEHOLDER": "Saisissez le nom du projet",
+      "NAME_REQUIRED": "Le nom du projet est obligatoire",
+      "DESCRIPTION_LABEL": "Description du Projet",
+      "DESCRIPTION_PLACEHOLDER": "Décrivez les objectifs de votre projet",
+      "DESCRIPTION_REQUIRED": "La description du projet est obligatoire"
+    },
+    "USER": {
+      "FIRST_NAME_LABEL": "Prénom",
+      "LAST_NAME_LABEL": "Nom",
+      "EMAIL_LABEL": "Adresse E-mail",
+      "USERNAME_LABEL": "Nom d'utilisateur",
+      "PASSWORD_LABEL": "Mot de passe",
+      "CONFIRM_PASSWORD_LABEL": "Confirmer le mot de passe"
+    }
+  },
+  "COMMON": {
+    "SAVE": "Enregistrer",
+    "CANCEL": "Annuler",
+    "DELETE": "Supprimer",
+    "EDIT": "Modifier",
+    "VIEW": "Voir",
+    "CLOSE": "Fermer",
+    "CONFIRM": "Confirmer",
+    "YES": "Oui",
+    "NO": "Non",
+    "LOADING": "Chargement...",
+    "ERROR": "Erreur",
+    "SUCCESS": "Succès",
+    "WARNING": "Avertissement",
+    "INFO": "Information",
+    "SEARCH": "Rechercher",
+    "FILTER": "Filtrer",
+    "SORT": "Trier",
+    "EXPORT": "Exporter",
+    "IMPORT": "Importer",
+    "REFRESH": "Actualiser",
+    "CLEAR": "Effacer",
+    "RETRY": "Réessayer"
+  },
+  "NOTIFICATIONS": {
+    "ML_PIPELINE_COMPLETED": "Pipeline ML Terminé",
+    "MODEL_READY": "Votre modèle de classification est prêt",
+    "NEW_XAI_EXPLANATION": "Nouvelle Explication XAI",
+    "SHAP_GENERATED": "Explication SHAP générée avec succès",
+    "DATASET_UPDATED": "Jeu de Données Mis à Jour",
+    "DATASET_SYNCHRONIZED": "Jeu de données EdNet synchronisé",
+    "ANALYSIS_COMPLETED": "Analyse Terminée",
+    "PERFORMANCE_CALCULATED": "Métriques de performance calculées",
+    "REPORT_GENERATED": "Rapport Généré",
+    "EXPLANATIONS_AVAILABLE": "Rapport d'explications disponible"
+  },
+  "HEADER": {
+    "SEARCH_PLACEHOLDER": "Rechercher dans IBIS-X...",
+    "SEARCH_ARIA_LABEL": "Barre de recherche principale",
+    "SEARCH_TOOLTIP": "Rechercher des pages, projets ou datasets (Ctrl+K)",
+    "SEARCH_DIALOG_PLACEHOLDER": "Rechercher des pages, projets, datasets...",
+    "SEARCH_NO_RESULTS": "Aucun résultat trouvé",
+    "SEARCH_TRY_DIFFERENT": "Essayez avec des mots-clés différents",
+    "SEARCH_RESULTS": "Résultats de recherche",
+    "SEARCH_QUICK_LINKS": "Liens rapides",
+    "SEARCH_NAVIGATE": "Naviguer",
+    "SEARCH_SELECT": "Sélectionner",
+    "SEARCH_CLOSE": "Fermer",
+    "NOTIFICATIONS": "Notifications",
+    "SHORTCUTS": "Raccourcis",
+    "DATASETS": "Jeux de données",
+    "USER_PROFILE": "Profil Utilisateur",
+    "LOGOUT": "Déconnexion",
+    "DATASETS_EXPLORE": "Explorer les jeux de données disponibles",
+    "PROFILE_MENU": {
+      "MY_PROFILE": "Mon Profil",
+      "ACCOUNT_SETTINGS": "Paramètres du Compte",
+      "PREFERENCES": "Préférences",
+      "IBIS_X_CONFIGURATION": "Configuration IBIS-X",
+      "HELP_SUPPORT": "Aide et Support",
+      "DOCUMENTATION": "Documentation et FAQ"
+    }
+  },
+  "ERRORS": {
+    "GENERIC": "Une erreur s'est produite",
+    "NETWORK": "Erreur réseau",
+    "UNAUTHORIZED": "Accès non autorisé",
+    "NOT_FOUND": "Ressource non trouvée",
+    "VALIDATION": "Erreur de validation",
+    "REQUIRED_FIELD": "Ce champ est obligatoire",
+    "PAGE_NOT_FOUND_TITLE": "Page Non Trouvée",
+    "PAGE_NOT_FOUND_MESSAGE": "La page que vous recherchez n'existe pas",
+    "GO_HOME": "Aller à l'Accueil",
+    "LOADING_PROJECTS": "Erreur lors du chargement des projets",
+    "NO_PROJECTS_FOUND": "Aucun projet trouvé",
+    "LOADING_DATASETS": "Erreur lors du chargement des jeux de données",
+    "NO_DATASETS_FOUND": "Aucun jeu de données trouvé",
+    "SAVE_FAILED": "Échec de la sauvegarde",
+    "DELETE_FAILED": "Échec de la suppression",
+    "NETWORK_ERROR": "Erreur de connexion réseau",
+    "SERVER_ERROR": "Erreur serveur",
+    "AUTHENTICATION_FAILED": "Échec de l'authentification",
+    "ACCESS_DENIED": "Accès refusé",
+    "EMAIL_ALREADY_LINKED_TO_OAUTH": "Votre compte est déjà associé à un compte Google. Veuillez vous connecter avec Google.",
+    "EMAIL_ALREADY_EXISTS": "Un compte est déjà associé à cette adresse email. Veuillez vous connecter ou utiliser une autre adresse."
+  },
+  "WIDGETS": {
+    "DEMO_CONTENT": "Contenu de Démonstration",
+    "SAMPLE_DATA": "Données d'Exemple",
+    "PLACEHOLDER_TEXT": "Ceci est un contenu de remplacement",
+    "EXAMPLE_WIDGET": "Widget d'Exemple",
+    "TEST_COMPONENT": "Composant de Test"
+  },
+  "TOOLTIPS": {
+    "DATASET_DETAIL": {
+      "OVERALL_SCORE": "Score global de qualité basé sur la complétude, consistance, précision et conformité éthique des données. Plus le score est élevé, plus le dataset est fiable pour vos analyses.",
+      "GLOBAL_SCORE_METRIC": "Évaluation générale combinant tous les critères de qualité : complétude, consistance, précision et conformité éthique",
+      "COMPLETENESS": "Pourcentage de données présentes par rapport aux données attendues. Une complétude élevée signifie peu de valeurs manquantes",
+      "CONSISTENCY": "Mesure la cohérence des données : formats uniformes, absence de doublons, respect des contraintes. Une consistance élevée facilite l'analyse",
+      "ETHICAL_COMPLIANCE": "Évalue le respect des principes éthiques : consentement éclairé, anonymisation, transparence, équité et protection des données personnelles",
+      "GENERAL_INFO_ICON": "Métadonnées et caractéristiques techniques du dataset : source, accessibilité, représentativité et structure des données",
+      "QUALITY_METRICS_ICON": "Évaluation automatique de la qualité du dataset selon 4 critères : complétude, consistance, conformité éthique et fiabilité générale",
+      "REPRESENTATIVITY": "Indique dans quelle mesure l'échantillon de données représente fidèlement la population cible. Une bonne représentativité assure la validité des analyses.",
+      "BALANCE": "Mesure l'équilibre entre les différentes classes ou catégories dans le dataset. Un bon équilibre évite les biais dans les modèles ML.",
+      "SPLIT": "Indique si le dataset est déjà divisé en ensembles d'entraînement et de test, facilitant l'évaluation des modèles ML",
+      "ANONYMIZATION": "Confirme que les données personnelles identifiables ont été anonymisées ou pseudonymisées pour protéger la vie privée",
+      "TEMPORAL_FACTORS": "Indique si le dataset contient des variables temporelles importantes à considérer dans l'analyse (dates, séries temporelles)",
+      "METADATA": "Confirme que des métadonnées détaillées accompagnent le dataset (descriptions des colonnes, contexte, méthodologie)"
+    }
+  },
+  "DATASET_DETAIL": {
+    "BACK": "Retour",
+    "DOWNLOAD": "Télécharger",
+    "FAVORITES": "Favoris",
+    "SHARE": "Partager",
+    "REPORT": "Signaler",
+    "SCORE": "Score",
+    "INSTANCES": "instances",
+    "FEATURES": "features",
+    "CITATIONS": "citations",
+    "DOMAINS": "Domaines",
+    "ML_TASKS": "Tâches ML",
+    "QUALITY_ALERTS": {
+      "TITLE": "Alertes de Qualité",
+      "SUBTITLE": "point(s) d'attention détecté(s)",
+      "SEVERITY": "Sévérité"
+    },
+    "TABS": {
+      "OVERVIEW": "Vue d'ensemble",
+      "FILES_STRUCTURE": "Fichiers et Structure",
+      "DATA_PREVIEW": "Aperçu des Données",
+      "AI_GUIDE": "Guide IA"
+    },
+    "OVERVIEW": {
+      "QUICK_STATS": "Statistiques Rapides",
+      "GENERAL_INFO": {
+        "TITLE": "Informations Générales",
+        "SOURCE": "Source",
+        "ACCESS": "Accès",
+        "AVAILABILITY": "Disponibilité",
+        "REPRESENTATIVITY": "Représentativité",
+        "BALANCE": "Équilibre",
+        "SPLIT": "Dataset divisé (train/test)",
+        "ANONYMIZED": "Anonymisation appliquée",
+        "TEMPORAL": "Facteurs temporels",
+        "METADATA": "Métadonnées fournies"
+      },
+      "ETHICS": {
+        "TITLE": "Conformité Éthique",
+        "SUBTITLE": "Respect des principes de protection des données",
+        "INFORMED_CONSENT": "Consentement éclairé",
+        "TRANSPARENCY": "Transparence",
+        "USER_CONTROL": "Contrôle utilisateur",
+        "NON_DISCRIMINATION": "Non-discrimination",
+        "SECURITY": "Mesures de sécurité",
+        "ACCOUNTABILITY": "Responsabilité définie"
+      },
+      "QUALITY": {
+        "TITLE": "Métriques de Qualité",
+        "OVERALL_SCORE": "Score Global",
+        "COMPLETENESS": "Complétude",
+        "CONSISTENCY": "Consistance",
+        "ETHICAL_COMPLIANCE": "Conformité Éthique"
+      },
+      "SIMILAR": {
+        "TITLE": "Datasets Similaires",
+        "SUBTITLE": "Découvrez des datasets connexes"
+      }
+    },
+    "FILES": {
+      "TITLE": "Fichiers du Dataset",
+      "SUBTITLE": "fichier(s) disponible(s)",
+      "SELECTED": "sélectionné",
+      "DETAILS": "Détails du fichier",
+      "LOGICAL_ROLE": "Rôle logique",
+      "FORMAT": "Format",
+      "SIZE": "Taille",
+      "ROWS": "Lignes",
+      "COLUMNS": "Colonnes",
+      "DESCRIPTION": "Description",
+      "NOT_SPECIFIED": "Non spécifié",
+      "COLUMNS_TABLE": {
+        "POSITION": "Position",
+        "NAME": "Nom",
+        "TYPE": "Type",
+        "NULLABLE": "Nullable",
+        "EXAMPLES": "Exemples",
+        "DESCRIPTION": "Description",
+        "PII": "Données personnelles identifiables",
+        "PRIMARY_KEY": "Clé primaire",
+        "NOT_SPECIFIED": "Non spécifiée"
+      },
+      "NO_FILES": {
+        "TITLE": "Aucun fichier disponible",
+        "MESSAGE": "Ce dataset ne contient pas de fichiers accessibles pour l'aperçu."
+      }
+    },
+    "PREVIEW": {
+      "HEADER": {
+        "TOTAL_ROWS": "lignes totales",
+        "COLUMNS": "colonnes",
+        "DISPLAYED_ROWS": "lignes affichées"
+      },
+      "DATA_TABLE": {
+        "TITLE": "Échantillon de Données",
+        "LIMITED_NOTE": "Affichage limité aux 50 premières lignes.",
+        "ADDITIONAL_ROWS": "lignes supplémentaires disponibles."
+      },
+      "COLUMN_STATS": {
+        "TITLE": "Statistiques des Colonnes",
+        "SUBTITLE": "Analyse descriptive des données",
+        "NON_NULL": "Non-null",
+        "UNIQUE_VALUES": "Valeurs uniques",
+        "MEAN": "Moyenne",
+        "STD": "Écart-type",
+        "EXAMPLES": "Exemples"
+      },
+      "NO_PREVIEW": {
+        "TITLE": "Aperçu non disponible",
+        "MESSAGE": "L'aperçu des données n'est pas disponible pour ce dataset."
+      }
+    },
+    "ANALYTICS": {
+      "CORRELATIONS": {
+        "TITLE": "Corrélations entre Features",
+        "SUBTITLE": "corrélations les plus fortes",
+        "FEATURE1": "Feature 1",
+        "FEATURE2": "Feature 2",
+        "CORRELATION": "Corrélation",
+        "TYPE": "Type"
+      },
+      "MISSING_PATTERNS": {
+        "TITLE": "Patterns de Données Manquantes",
+        "SUBTITLE": "Analyse des patterns de valeurs manquantes",
+        "OCCURRENCES": "occurrences"
+      },
+      "CLASS_DISTRIBUTION": {
+        "TITLE": "Distribution des Classes",
+        "TARGET_VARIABLE": "Variable cible"
+      },
+      "FEATURE_IMPORTANCE": {
+        "TITLE": "Importance des Features",
+        "SUBTITLE": "Contribution relative de chaque feature"
+      }
+    },
+    "QUALITY_ALERTS_MESSAGES": {
+      "MISSING_DATA": "Données manquantes importantes",
+      "OUTLIERS": "Valeurs aberrantes détectées",
+      "PII_RISK": "Risque d'exposition de données personnelles",
+      "MISSING_DATA_RECOMMENDATION": "Considérez des techniques d'imputation ou filtrez les colonnes avec trop de valeurs manquantes",
+      "OUTLIERS_RECOMMENDATION": "Analysez ces valeurs pour déterminer si elles sont légitimes ou doivent être traitées",
+      "PII_RECOMMENDATION": "Vérifiez l'anonymisation et la conformité RGPD avant utilisation"
+    },
+    "LOADING": {
+      "TITLE": "Chargement des détails du dataset...",
+      "MESSAGE": "Veuillez patienter pendant que nous récupérons toutes les informations."
+    },
+    "ERROR": {
+      "TITLE": "Erreur de chargement",
+      "RETRY": "Réessayer",
+      "BACK": "Retour"
+    }
+  },
+  "STARTER": {
+    "WELCOME": "Bienvenue sur IBIS-X",
+    "SUBTITLE": "Page d'accueil simple",
+    "VIEW_DATASETS": "Voir les datasets",
+    "VIEW_PROJECTS": "Voir les projets"
+  },
+  "DASHBOARD": {
+    "WELCOME": {
+      "TITLE": "Tableau de bord IBIS-X",
+      "SUBTITLE": "Votre centre de contrôle pour l'IA explicable"
+    },
+    "METRICS": {
+      "TOTAL_EXPERIMENTS": "Expériences totales",
+      "ACTIVE_PROJECTS": "Projets actifs",
+      "SUCCESS_RATE": "Taux de réussite",
+      "AVG_TRAINING_TIME": "Temps d'entraînement moyen",
+      "ACTIVE": "Actif",
+      "AVERAGE": "Moyenne",
+      "OPERATIONAL": "Opérationnel"
+    },
+    "RECENT_ACTIVITIES": {
+      "TITLE": "Activités récentes",
+      "VIEW_ALL": "Voir tout",
+      "NO_ACTIVITIES": "Aucune activité récente",
+      "START_PROJECT": "Créer un projet",
+      "EXPERIMENT": {
+        "COMPLETED": "Expérience terminée",
+        "RUNNING": "Expérience en cours",
+        "FAILED": "Expérience échouée",
+        "PENDING": "Expérience en attente",
+        "DESCRIPTION": "avec l'algorithme {{algorithm}}"
+      },
+      "PROJECT": {
+        "CREATED": "Projet créé"
+      }
+    },
+    "TUTORIALS": {
+      "TITLE": "Tutoriels vidéo",
+      "SUBTITLE": "Maîtrisez l'IA explicable avec nos guides experts",
+      "VIDEO_1": {
+        "TITLE": "Guide Complet de l'Interprétabilité en Machine Learning",
+        "DESCRIPTION": "LIME, SHAP, et DPD expliqués de A à Z avec des exemples concrets"
+      },
+      "VIDEO_2": {
+        "TITLE": "Valeurs SHAP pour Débutants",
+        "DESCRIPTION": "Comprendre ce que signifient les valeurs SHAP et leurs applications pratiques"
+      },
+      "VIDEO_3": {
+        "TITLE": "Tout savoir sur le Random Forest",
+        "DESCRIPTION": "Maîtrisez les modèles d'arbres et leurs avantages pour l'explicabilité"
+      },
+      "VIDEO_4": {
+        "TITLE": "Classification par Arbres de Décision Expliquée Clairement",
+        "DESCRIPTION": "Comprenez les fondements des arbres de décision avec des exemples visuels"
+      },
+      "VIDEO_5": {
+        "TITLE": "Qu'est-ce que Random Forest ?",
+        "DESCRIPTION": "Découvrez le fonctionnement des forêts aléatoires et leurs applications"
+      },
+      "VIDEO_6": {
+        "TITLE": "Qu'est-ce que la Génération Augmentée par Récupération (RAG) ?",
+        "DESCRIPTION": "Explorez cette technique avancée d'IA générative et ses cas d'usage"
+      },
+      "DIFFICULTY": {
+        "BEGINNER": "Débutant",
+        "INTERMEDIATE": "Intermédiaire",
+        "ADVANCED": "Avancé"
+      }
+    },
+    "QUICK_ACTIONS": {
+      "TITLE": "Actions rapides",
+      "SUBTITLE": "Commencer une nouvelle tâche en un clic",
+      "NEW_PROJECT": {
+        "TITLE": "Nouveau projet",
+        "DESCRIPTION": "Créer un projet d'analyse ML"
+      },
+      "BROWSE_DATASETS": {
+        "TITLE": "Parcourir les datasets",
+        "DESCRIPTION": "Explorer les données disponibles"
+      },
+      "TRAIN_MODEL": {
+        "TITLE": "Entraîner un modèle",
+        "DESCRIPTION": "Lancer un nouvel entraînement"
+      },
+      "VIEW_EXPLANATIONS": {
+        "TITLE": "Voir les explications",
+        "DESCRIPTION": "Explorer vos modèles XAI"
+      }
+    },
+    "RECENT_PROJECTS": {
+      "TITLE": "Projets récents",
+      "VIEW_ALL": "Voir tous"
+    },
+    "SYSTEM_STATUS": {
+      "TITLE": "État du système",
+      "ML_PIPELINE": "Pipeline ML",
+      "XAI_ENGINE": "Moteur XAI",
+      "DATASETS": "Datasets",
+      "OPERATIONAL": "Opérationnel",
+      "AVAILABLE": "disponibles",
+      "VERSION": "Version"
+    }
+  },
+  "ML_PIPELINE": {
+    "TITLE": "Pipeline ML",
+    "WIZARD": {
+      "TITLE": "Assistant ML Pipeline",
+      "SUBTITLE": "Configurez et lancez votre modèle d'apprentissage automatique en quelques étapes simples",
+      "STEP_PROGRESS": "Étape {{current}} sur {{total}}",
+      "BACK_TO_APP": "Retour à l'application",
+      "HELP": "Aide"
+    },
+    "HERO": {
+      "TITLE": "Intelligence Artificielle Révolutionnaire",
+      "SUBTITLE": "Exploitez la puissance du Machine Learning avec notre technologie brevetée IBIS-X"
+    },
+    "STATS": {
+      "EXPERIMENTS": "Expériences",
+      "SUCCESS_RATE": "Taux de Succès",
+      "AVG_ACCURACY": "Précision Moyenne",
+      "AVG_TIME": "Temps Moyen"
+    },
+    "WORKFLOW": {
+      "DATASET_STATUS": "État du Dataset",
+      "NO_DATASET": "Aucun dataset sélectionné",
+      "SELECT_DATASET_FIRST": "Commencez par sélectionner un dataset pour débloquer la puissance du ML"
+    },
+    "ACTIONS": {
+      "START_TRAINING": "Lancer l'Entraînement ML",
+      "SELECT_DATASET": "Sélectionner un Dataset",
+      "LAUNCH_ML": "Lancer le ML"
+    },
+    "ALGORITHMS": {
+      "TITLE": "Algorithmes de Pointe",
+      "SUBTITLE": "Choisissez parmi nos algorithmes optimisés pour des performances exceptionnelles",
+      "CLASSIFICATION": "Classification",
+      "REGRESSION": "Régression",
+      "PERFORMANCE": "Performance",
+      "USE_CASES": "Cas d'Usage"
+    },
+    "RECENT": {
+      "TITLE": "Expériences Récentes",
+      "VIEW_ALL": "Voir Toutes"
+    },
+    "STATUS": {
+      "COMPLETED": "Terminé",
+      "RUNNING": "En cours",
+      "FAILED": "Échoué",
+      "PENDING": "En attente"
+    },
+    "QUEUE": {
+      "TITLE": "Vous êtes en file d'attente",
+      "MESSAGE": "Cela peut prendre plusieurs minutes",
+      "DETAILS": "Le système traite actuellement d'autres demandes...",
+      "LOG_WAITING": "⏳ Vous êtes en file d'attente - cela peut prendre plusieurs minutes...",
+      "LOG_RESUMED": "✅ Traitement reprend - file d'attente terminée"
+    },
+    "METRICS": {
+      "ACCURACY": "Précision"
+    },
+    "PIPELINE_STEPS": {
+      "TITLE": "Pipeline ML en 8 Étapes",
+      "SUBTITLE": "Votre parcours de données brutes aux prédictions intelligentes",
+      "STEP_1": "Dataset",
+      "STEP_1_DESC": "Choisir ou importer vos données",
+      "STEP_2": "Nettoyage",
+      "STEP_2_DESC": "Corriger valeurs manquantes",
+      "STEP_3": "Objectif",
+      "STEP_3_DESC": "Définir quoi prédire",
+      "STEP_4": "Division",
+      "STEP_4_DESC": "Séparer train/test",
+      "STEP_5": "Préparation",
+      "STEP_5_DESC": "Ingénierie des features",
+      "STEP_6": "Algorithme",
+      "STEP_6_DESC": "Sélection du modèle IA",
+      "STEP_7": "Paramètres",
+      "STEP_7_DESC": "Optimiser réglages",
+      "STEP_8": "Entraînement",
+      "STEP_8_DESC": "Apprendre & expliquer"
+    },
+    "EXPLAINABILITY": {
+      "TITLE": "Comprenez Chaque Prédiction",
+      "SUBTITLE": "Notre IA explicable vous montre exactement pourquoi chaque décision a été prise",
+      "DEMO": {
+        "BADGE": "Exemple de Prédiction IA",
+        "CONFIDENCE": "Fiabilité",
+        "RESULT_TITLE": "ACHAT PROBABLE",
+        "RESULT_DESC": "Ce client achètera probablement dans les 30 jours",
+        "TRY_PREDICTION": "Tester une Prédiction",
+        "LEARN_MORE": "Comment ça marche"
+      },
+      "EXPLANATION": {
+        "HEADER": "Pourquoi cette prédiction ?",
+        "SUBTITLE": "Analyse des facteurs d'influence",
+        "SUMMARY_TITLE": "Résumé de l'Analyse",
+        "SUMMARY_TEXT": "L'historique d'achat est le facteur déterminant principal"
+      }
+    },
+    "DASHBOARD": {
+      "ACTIVE_EXPERIMENTS": "Expériences Actives",
+      "ML_CONCEPTS": "Concepts ML",
+      "YOUR_STATS": "Vos Statistiques ML",
+      "LEARNING_RESOURCES": "Ressources d'Apprentissage",
+      "NO_ACTIVE_EXPERIMENTS": "Aucune expérience active",
+      "START_FIRST_EXPERIMENT": "Démarrer la Première Expérience",
+      "VIEW_ALL_TUTORIALS": "Voir tous les tutoriels"
+    },
+    "QUICK_ACTIONS": {
+      "START_NEW_TRAINING": "Démarrer Nouvel Entraînement",
+      "CONTINUE_LATEST": "Reprendre le Dernier",
+      "VIEW_RESULTS": "Voir les Résultats",
+      "LEARN_ML": "Apprendre le ML",
+      "CREDITS_AVAILABLE": "crédits disponibles",
+      "MODELS_READY": "modèles prêts",
+      "VIDEOS_AVAILABLE": "vidéos disponibles"
+    },
+    "ACTIVITY_FEED": {
+      "TITLE": "Activité Récente",
+      "VIEW_ALL": "Voir Tout"
+    },
+    "GUIDE": {
+      "TITLE": "Comment ça Marche",
+      "STEP1_TITLE": "Sélectionnez vos Données",
+      "STEP1_DESC": "Choisissez un dataset parmi notre collection organisée",
+      "STEP2_TITLE": "Configurez le Pipeline",
+      "STEP2_DESC": "Ajustez les paramètres de prétraitement et d'entraînement",
+      "STEP3_TITLE": "Lancez l'Entraînement",
+      "STEP3_DESC": "Notre IA optimise automatiquement le processus d'apprentissage",
+      "STEP4_TITLE": "Analysez les Résultats",
+      "STEP4_DESC": "Explorez les métriques et visualisations détaillées"
+    },
+    "PRESENTATION": {
+      "HERO": {
+        "BADGE": "Pipeline Machine Learning",
+        "TITLE": "Construisez votre pipeline IA en quelques clics",
+        "SUBTITLE": "Comprenez chaque étape, testez, comparez et améliorez vos modèles d'apprentissage automatique avec IBIS-X.",
+        "START_BUTTON": "Démarrer une nouvelle expérimentation",
+        "WATCH_TUTORIALS": "Voir les tutoriels",
+        "EXAMPLES_BUTTON": "Voir des exemples",
+        "FLOW_TEXT": "Flux de données en temps réel"
+      },
+      "STATUS": {
+        "CREDITS_TITLE": "Crédits disponibles",
+        "CREDITS_SUBTITLE": "Pour l'entraînement",
+        "CREDITS_REFILL": "Recharger",
+        "EXPERIMENTS_TITLE": "Expériences en cours",
+        "EXPERIMENTS_SUBTITLE": "En traitement",
+        "EXPERIMENTS_VIEW_ALL": "Voir tout"
+      },
+      "STEPS": {
+        "TITLE": "8 Étapes vers l'Excellence IA",
+        "SUBTITLE": "Découvrez notre approche méthodologique pour créer des modèles d'IA performants et explicables",
+        "LEARN_MORE": "En savoir plus"
+      },
+      "VISUALIZATION": {
+        "TITLE": "Visualisation Interactive du Pipeline",
+        "SUBTITLE": "Observez comment vos données se transforment en intelligence artificielle",
+        "DATA_INPUT": "Données d'entrée",
+        "PIPELINE": "Pipeline ML",
+        "AI_MODEL": "Modèle IA",
+        "XAI_OUTPUT": "Explications XAI",
+        "PROCESSING_TIME": "Temps de traitement",
+        "ACCURACY": "Précision moyenne",
+        "AUTOMATION": "Automatisation"
+      },
+      "FAQ": {
+        "TITLE": "Questions Fréquentes",
+        "SUBTITLE": "Tout ce que vous devez savoir sur notre pipeline d'apprentissage automatique"
+      },
+      "CTA": {
+        "TITLE": "Prêt à créer votre première IA ?",
+        "DESCRIPTION": "Rejoignez des milliers d'utilisateurs qui font confiance à IBIS-X pour leurs projets d'intelligence artificielle.",
+        "WIZARD_BUTTON": "Lancer l'Assistant IA",
+        "DATASETS_BUTTON": "Explorer les Datasets"
+      }
+    },
+    "STEPS": {
+      "DATASET": "Dataset",
+      "DATASET_OVERVIEW": "Aperçu du Dataset",
+      "DATA_QUALITY": "Analyse de Qualité des Données",
+      "ALGORITHM": "Sélection de l'Algorithme",
+      "HYPERPARAMETERS": "Configuration des Hyperparamètres",
+      "SUMMARY": "Résumé et Lancement"
+    },
+    "DATASET": {
+      "TITLE": "Dataset Sélectionné",
+      "ROWS": "lignes",
+      "FEATURES": "caractéristiques",
+      "YEAR": "Année",
+      "QUALITY": "Qualité",
+      "DATA_QUALITY": "Qualité des données",
+      "DESCRIPTION": "Sélectionnez le dataset pour votre modèle d'apprentissage automatique",
+      "QUALITY_SCORE": "Score de Qualité",
+      "CONFIRM": "Je confirme l'utilisation de ce dataset pour l'entraînement"
+    },
+    "DATA_QUALITY": {
+      "TITLE": "Configuration du Prétraitement",
+      "DESCRIPTION": "Configurez le prétraitement et la qualité de vos données",
+      "TARGET_SELECTION": "Sélection de la cible",
+      "PREPROCESSING": "Prétraitement",
+      "ADVANCED_OPTIONS": "Options avancées",
+      "FEATURE_SCALING_DESC": "Normalise les valeurs des caractéristiques pour améliorer les performances",
+      "TARGET_COLUMN": "Colonne Cible",
+      "TASK_TYPE": "Type de Tâche",
+      "CLASSIFICATION": "Classification",
+      "REGRESSION": "Régression",
+      "MISSING_VALUES": "Stratégie pour Valeurs Manquantes",
+      "DROP": "Supprimer les lignes",
+      "MEAN": "Remplacer par la moyenne",
+      "MEDIAN": "Remplacer par la médiane",
+      "FORWARD_FILL": "Propagation avant",
+      "TEST_SIZE": "Taille de l'Ensemble de Test",
+      "TEST_SIZE_HINT": "Proportion des données réservées pour le test (10-50%)",
+      "FEATURE_SCALING": "Normalisation des Caractéristiques",
+              "ENCODING": "Encodage des Variables Catégorielles"
+    },
+    "STEPS": {
+      "STEP1": {
+        "TITLE": "Sélection du Dataset",
+        "DESCRIPTION": "Choisissez le jeu de données parfait pour votre projet IA",
+        "DETAIL1": "Explorez notre collection de datasets soigneusement sélectionnés",
+        "DETAIL2": "Filtrez par domaine, taille et qualité des données",
+        "DETAIL3": "Prévisualisez les données avant de commencer",
+        "EXAMPLE": "Ex: Dataset d'images médicales pour diagnostic IA"
+      },
+      "STEP2": {
+        "TITLE": "Nettoyage des Données",
+        "DESCRIPTION": "Préparez vos données pour un entraînement optimal",
+        "DETAIL1": "Détection automatique des valeurs manquantes",
+        "DETAIL2": "Suppression des doublons et outliers",
+        "DETAIL3": "Normalisation et standardisation des variables",
+        "EXAMPLE": "Ex: Imputation intelligente pour 15% de données manquantes"
+      },
+      "STEP3": {
+        "TITLE": "Analyse des Données Manquantes",
+        "DESCRIPTION": "Analysez et traitez les valeurs manquantes intelligemment",
+        "DETAIL1": "Visualisation des patterns de données manquantes",
+        "DETAIL2": "Stratégies d'imputation personnalisées par colonne",
+        "DETAIL3": "Impact estimé sur la performance du modèle",
+        "EXAMPLE": "Ex: Analyse de corrélation pour stratégie d'imputation"
+      },
+      "STEP4": {
+        "TITLE": "Choix de la Tâche ML",
+        "DESCRIPTION": "Définissez le type de problème à résoudre",
+        "DETAIL1": "Classification binaire ou multi-classes",
+        "DETAIL2": "Régression pour valeurs continues",
+        "DETAIL3": "Clustering pour découverte de patterns",
+        "EXAMPLE": "Ex: Classification d'emails (spam/légitimes)"
+      },
+      "STEP5": {
+        "TITLE": "Sélection de l'Algorithme",
+        "DESCRIPTION": "Choisissez l'algorithme optimal pour votre problème",
+        "DETAIL1": "Recommandations basées sur vos données",
+        "DETAIL2": "Mode AutoML pour sélection automatique",
+        "DETAIL3": "Comparaison de performance entre algorithmes",
+        "EXAMPLE": "Ex: Random Forest vs SVM pour classification d'images"
+      },
+      "STEP6": {
+        "TITLE": "Entraînement du Modèle",
+        "DESCRIPTION": "Laissez notre IA optimiser votre modèle",
+        "DETAIL1": "Optimisation automatique des hyperparamètres",
+        "DETAIL2": "Validation croisée pour robustesse",
+        "DETAIL3": "Monitoring en temps réel de l'entraînement",
+        "EXAMPLE": "Ex: 1000 combinaisons testées en 5 minutes"
+      },
+      "STEP7": {
+        "TITLE": "Évaluation des Performances",
+        "DESCRIPTION": "Mesurez et analysez les performances de votre modèle",
+        "DETAIL1": "Métriques complètes (précision, rappel, F1-score)",
+        "DETAIL2": "Matrices de confusion interactives",
+        "DETAIL3": "Courbes ROC et analyses de performance",
+        "EXAMPLE": "Ex: 94.2% de précision sur données de test"
+      },
+      "STEP8": {
+        "TITLE": "Explicabilité (XAI)",
+        "DESCRIPTION": "Comprenez comment votre IA prend ses décisions",
+        "DETAIL1": "Importance des variables avec SHAP",
+        "DETAIL2": "Explications locales pour chaque prédiction",
+        "DETAIL3": "Visualisations intuitives pour non-experts",
+        "EXAMPLE": "Ex: 'Le modèle se base à 65% sur l'âge du patient'"
+      }
+    },
+    "FAQ": {
+      "Q1": {
+        "QUESTION": "Dois-je connaître le Machine Learning pour utiliser IBIS-X ?",
+        "ANSWER": "Pas du tout ! IBIS-X est conçu pour les non-experts. Notre interface guidée vous accompagne à chaque étape, avec des explications claires et des recommandations automatiques."
+      },
+      "Q2": {
+        "QUESTION": "Combien de temps prend l'entraînement d'un modèle ?",
+        "ANSWER": "Cela dépend de la taille de vos données et de la complexité du modèle. En général, entre 2 et 15 minutes pour la plupart des projets. Notre système optimise automatiquement les performances."
+      },
+      "Q3": {
+        "QUESTION": "Puis-je utiliser mes propres données ?",
+        "ANSWER": "Absolument ! Vous pouvez uploader vos datasets au format CSV, Excel, JSON ou Parquet. Notre système analyse automatiquement la qualité et suggère les prétraitements appropriés."
+      },
+      "Q4": {
+        "QUESTION": "Comment fonctionne l'explicabilité (XAI) ?",
+        "ANSWER": "Nous utilisons SHAP et LIME pour expliquer chaque prédiction. Vous verrez quelles variables influencent le plus les décisions de votre modèle, avec des visualisations simples à comprendre."
+      },
+      "Q5": {
+        "QUESTION": "Mes données sont-elles sécurisées ?",
+        "ANSWER": "La sécurité est notre priorité. Vos données sont chiffrées, stockées sur des serveurs sécurisés, et vous gardez le contrôle total. Nous respectons le RGPD et les standards de sécurité les plus stricts."
+      }
+    },
+    "ALGORITHM": {
+      "TITLE": "Choisir un Algorithme d'Apprentissage",
+      "DESCRIPTION": "Choisissez l'algorithme d'apprentissage automatique le plus adapté à vos données",
+      "RECOMMENDED": "Recommandé",
+      "SPEED": "Vitesse",
+      "ACCURACY": "Précision",
+      "KEY_FEATURES": "Caractéristiques clés",
+      "CLASSIFICATION": "Classification",
+      "REGRESSION": "Régression"
+    },
+    "HYPERPARAMETERS": {
+      "TITLE": "Configuration des Hyperparamètres",
+      "DESCRIPTION": "Ajustez finement les paramètres de votre algorithme pour des performances optimales",
+      "ENABLE": "Activer"
+    },
+    "SUMMARY": {
+      "TITLE": "Résumé de la Configuration",
+      "DESCRIPTION": "Vérifiez votre configuration et lancez l'entraînement du modèle",
+      "CONFIGURATION": "Configuration d'Entraînement",
+      "DATASET": "Dataset",
+      "ALGORITHM": "Algorithme",
+      "TARGET": "Colonne Cible",
+      "TASK_TYPE": "Type de Tâche",
+      "CONFIRM": "Je confirme le lancement de l'entraînement avec cette configuration"
+    },
+    "TRAINING": {
+      "START": "Lancer l'Entraînement",
+      "IN_PROGRESS": "Entraînement en Cours",
+      "COMPLETE": "complété",
+      "STATUS": "Statut",
+      "INITIALIZING": "Initialisation du pipeline ML...",
+      "LOADING_DATA": "Chargement des données...",
+      "PREPROCESSING": "Prétraitement en cours...",
+      "TRAINING_MODEL": "Entraînement du modèle...",
+      "FINALIZING": "Finalisation et sauvegarde...",
+      "COMPLETED": "Entraînement terminé avec succès!",
+      "FAILED": "L'entraînement a échoué",
+      "STARTED": "L'entraînement a démarré avec succès",
+      "SUCCESS": "Modèle entraîné avec succès!",
+      "DATA_LOADED": "Données chargées",
+      "PREPROCESSING_DONE": "Prétraitement terminé",
+      "MODEL_TRAINED": "Modèle entraîné"
+    },
+    "RESULTS": {
+      "TITLE": "Résultats de l'Entraînement",
+      "DESCRIPTION": "Votre modèle a été entraîné avec succès !",
+      "CONFUSION_MATRIX": "Matrice de confusion",
+      "FEATURE_IMPORTANCE": "Importance des caractéristiques",
+      "METRICS": "Métriques de Performance",
+      "BACK_TO_PROJECT": "Retour au Projet"
+    },
+    "MODERN": {
+      "STATUS_BADGE": "Propulsé par l'IA",
+      "HERO": {
+        "TITLE": "Créez des modèles IA puissants en minutes, pas en heures",
+        "SUBTITLE": "Transformez vos données en insights avec notre pipeline d'apprentissage automatique guidé. Aucun code requis.",
+        "START_BUTTON": "Commencer maintenant",
+        "VIEW_EXAMPLES": "Voir des exemples"
+      },
+      "HOW_IT_WORKS": {
+        "TITLE": "Comment ça fonctionne",
+        "SUBTITLE": "Quatre étapes simples pour créer votre modèle d'apprentissage automatique"
+      },
+      "STEPS": {
+        "UPLOAD": {
+          "TITLE": "Téléchargez vos données",
+          "DESCRIPTION": "Commencez par télécharger votre jeu de données. Nous supportons CSV, Excel et autres formats courants.",
+          "DETAIL1": "Validation automatique des données",
+          "DETAIL2": "Détection intelligente des colonnes"
+        },
+        "CONFIGURE": {
+          "TITLE": "Configurez votre modèle",
+          "DESCRIPTION": "Sélectionnez votre variable cible et laissez notre système recommander les meilleurs paramètres.",
+          "DETAIL1": "Prétraitement intelligent",
+          "DETAIL2": "Sélection automatique d'algorithme"
+        },
+        "TRAIN": {
+          "TITLE": "Entraînez votre modèle",
+          "DESCRIPTION": "Regardez notre IA entraîner votre modèle en utilisant les meilleures pratiques de l'industrie.",
+          "DETAIL1": "Suivi du progrès en temps réel",
+          "DETAIL2": "Réglage automatique des hyperparamètres"
+        },
+        "RESULTS": {
+          "TITLE": "Analysez les résultats",
+          "DESCRIPTION": "Obtenez des insights complets avec des visualisations et métriques de performance.",
+          "DETAIL1": "Visualisations interactives",
+          "DETAIL2": "Insights d'IA explicable"
+        }
+      },
+      "FEATURES": {
+        "FAST": {
+          "TITLE": "Ultra rapide",
+          "DESCRIPTION": "Obtenez des résultats en minutes avec notre pipeline ML optimisé"
+        },
+        "SMART": {
+          "TITLE": "Propulsé par l'IA",
+          "DESCRIPTION": "L'automatisation intelligente gère les décisions complexes pour vous"
+        },
+        "RELIABLE": {
+          "TITLE": "Prêt pour l'entreprise",
+          "DESCRIPTION": "Conçu avec la sécurité et la scalabilité à l'esprit"
+        },
+        "INSIGHTS": {
+          "TITLE": "IA explicable",
+          "DESCRIPTION": "Comprenez exactement comment votre modèle fait ses prédictions"
+        }
+      },
+      "CTA": {
+        "TITLE": "Prêt à commencer ?",
+        "SUBTITLE": "Rejoignez des milliers d'utilisateurs qui créent des modèles ML avec notre plateforme",
+        "START_BUTTON": "Commencer",
+        "LEARN_MORE": "En savoir plus"
+      }
+    }
+  },
+  "ML_STUDIO": {
+    "TITLE": "ML Studio - Configuration Avancée",
+    "STEPS": {
+      "STEP1": "Configuration des Données",
+      "STEP2": "Prétraitement",
+      "STEP3": "Sélection de l'Algorithme",
+      "STEP4": "Hyperparamètres"
+    },
+    "DATA_CONFIG": {
+      "TITLE": "Configuration des Données",
+      "DESCRIPTION": "Définissez la colonne cible et le type de problème à résoudre",
+      "TARGET_SELECTION": "Sélection de la Variable Cible",
+      "TARGET_COLUMN": "Colonne Cible",
+      "TARGET_HINT": "La variable que vous souhaitez prédire",
+      "TASK_TYPE": "Type de Problème ML",
+      "CLASSIFICATION": "Classification",
+      "REGRESSION": "Régression",
+      "TEST_SIZE": "Taille du Jeu de Test",
+      "TEST_SIZE_HINT": "Pourcentage des données réservées pour l'évaluation"
+    },
+    "DATA_QUALITY": {
+      "TITLE": "Analyse de Qualité",
+      "COMPLETENESS": "Complétude",
+      "ACCURACY": "Exactitude",
+      "CONSISTENCY": "Cohérence",
+      "VALIDITY": "Validité",
+      "UNIQUENESS": "Unicité",
+      "SCORE": "Score",
+      "GOOD_QUALITY": "Qualité optimale détectée",
+      "SAMPLES": "échantillons",
+      "FEATURES": "variables"
+    },
+    "PREPROCESSING": {
+      "TITLE": "Configuration du Prétraitement",
+      "DESCRIPTION": "Optimisez vos données pour un apprentissage optimal",
+      "ADVANCED_OPTIONS": "Options Avancées",
+      "MISSING_VALUES": "Valeurs Manquantes",
+      "STRATEGY": "Stratégie",
+      "DROP": "Supprimer",
+      "MEAN": "Moyenne",
+      "MEDIAN": "Médiane",
+      "FORWARD_FILL": "Propagation",
+      "FEATURE_ENGINEERING": "Ingénierie des Variables",
+      "SCALING": "Normalisation des données",
+      "ENCODING": "Encodage",
+      "OUTLIERS": "Valeurs Aberrantes",
+      "REMOVE_OUTLIERS": "Supprimer les outliers",
+      "THRESHOLD": "Seuil"
+    },
+    "PRESETS": {
+      "TITLE": "Configurations Prédéfinies",
+      "QUICK": "Rapide",
+      "QUICK_DESC": "Entraînement rapide pour prototypage",
+      "BALANCED": "Équilibré",
+      "BALANCED_DESC": "Équilibre optimal entre vitesse et précision",
+      "ACCURATE": "Précis",
+      "ACCURATE_DESC": "Maximise la précision du modèle"
+    },
+    "ALGORITHM": {
+      "TITLE": "Sélection de l'Algorithme",
+      "DESCRIPTION": "Choisissez l'algorithme le plus adapté à votre problème",
+      "USE_CASES": "Cas d'Usage Recommandés",
+      "CLASSIFICATION": "Classification",
+      "REGRESSION": "Régression"
+    },
+    "HYPERPARAMETERS": {
+      "TITLE": "Réglage des Hyperparamètres",
+      "DESCRIPTION": "Affinez les paramètres pour optimiser les performances"
+    },
+    "SUMMARY": {
+      "TITLE": "Résumé de Configuration",
+      "DATASET": "Dataset",
+      "ALGORITHM": "Algorithme",
+      "TARGET": "Variable Cible",
+      "TASK": "Type de Tâche"
+    },
+    "ACTIONS": {
+      "PREVIOUS": "Précédent",
+      "NEXT": "Suivant",
+      "CANCEL": "Annuler",
+      "START_TRAINING": "Lancer l'Entraînement"
+    },
+    "TRAINING": {
+      "IN_PROGRESS": "Entraînement en Cours",
+      "INITIALIZING": "Initialisation...",
+      "LOADING_DATA": "Chargement des données...",
+      "PREPROCESSING": "Prétraitement...",
+      "TRAINING_MODEL": "Entraînement du modèle...",
+      "FINALIZING": "Finalisation...",
+      "COMPLETED": "Terminé!",
+      "FAILED": "Échec",
+      "STARTED": "Entraînement démarré",
+      "SUCCESS": "Entraînement réussi!",
+      "DATA_LOADED": "Données chargées",
+      "PREPROCESSING_DONE": "Prétraitement terminé",
+      "MODEL_TRAINED": "Modèle entraîné"
+    },
+    "ERRORS": {
+      "LOAD_DATASET": "Erreur lors du chargement du dataset",
+      "START_TRAINING": "Erreur lors du démarrage de l'entraînement",
+      "TRAINING_FAILED": "L'entraînement a échoué"
+    }
+  },
+  "ML_RESULTS": {
+    "TITLE": "Résultats de l'Expérience",
+    "DOWNLOAD_MODEL": "Télécharger le Modèle",
+    "NEW_EXPERIMENT": "Nouvelle Expérience",
+    "PERFORMANCE_METRICS": "Métriques de Performance",
+    "METRICS": {
+      "ACCURACY": "Précision",
+      "PRECISION": "Précision",
+      "RECALL": "Rappel",
+      "F1_SCORE": "Score F1",
+      "MAE": "Erreur Absolue Moyenne",
+      "MSE": "Erreur Quadratique Moyenne",
+      "RMSE": "Racine de l'Erreur Quadratique Moyenne",
+      "R2": "Coefficient R²",
+      "ROC_AUC": "Aire sous la Courbe ROC"
+    },
+    "VISUALIZATIONS": "Visualisations",
+    "CONFUSION_MATRIX": "Matrice de Confusion",
+    "CONFUSION_MATRIX_DESC": "La matrice de confusion montre les prédictions correctes et incorrectes pour chaque classe.",
+    "ROC_CURVE": "Courbe ROC",
+    "ROC_CURVE_DESC": "La courbe ROC illustre la performance du classificateur à différents seuils de décision.",
+    "FEATURE_IMPORTANCE": "Importance des Caractéristiques",
+    "FEATURE_IMPORTANCE_DESC": "Ce graphique montre quelles caractéristiques ont le plus contribué aux prédictions du modèle.",
+    "REGRESSION_PLOT": "Graphique de Régression",
+    "REGRESSION_PLOT_DESC": "Comparaison entre les valeurs prédites et les valeurs réelles.",
+    "EXPERIMENT_DETAILS": "Détails de l'Expérience",
+    "EXPERIMENT_ID": "ID de l'Expérience",
+    "ALGORITHM": "Algorithme",
+    "STATUS": "Statut",
+    "CREATED": "Créée",
+    "HYPERPARAMETERS": "Hyperparamètres",
+    "NEXT_STEPS": "Prochaines Étapes",
+    "IMPROVE_MODEL": "Améliorer le Modèle",
+    "DEPLOY_MODEL": "Déployer le Modèle",
+    "SHARE_RESULTS": "Partager les Résultats",
+    "EXPORT_CODE": "Exporter le Code",
+    "LOADING": "Chargement des résultats..."
+  },
+  "ML_EXPERIMENTS": {
+    "TITLE": "Expériences d'Apprentissage Automatique",
+    "SUBTITLE": "Explorez et analysez vos modèles ML avec des insights intelligents",
+    "NEW_EXPERIMENT": "Nouvelle Expérience",
+    "VIEW_INSIGHTS": "Voir les Insights",
+    "COMPLETED_EXPERIMENTS": "Expériences terminées",
+    "AVERAGE_PERFORMANCE": "Performance moyenne",
+    "SUCCESS_RATE": "Taux de réussite",
+    
+    "FILTER_EXPERIMENTS": "Filtrer et analyser",
+    "EXPERIMENTS_FOUND": "expériences trouvées",
+    "INTELLIGENT_SEARCH": "Recherche intelligente",
+    "SEARCH_PLACEHOLDER_ENHANCED": "Recherchez par ID, algorithme, métrique, ou performance...",
+    "QUICK_FILTERS": "Filtres rapides",
+    "HIGH_PERFORMANCE": "Haute performance",
+    "RECENT": "Récentes",
+    
+    "PANDAS_INSIGHTS": "Insights de données",
+    "PANDAS_INSIGHTS_DESC": "Analyse automatique style pandas/jupyter pour comprendre vos expériences",
+    
+    "NO_EXPERIMENTS_TITLE": "Pas encore d'expériences",
+    "NO_EXPERIMENTS_DESC": "Créez votre première expérience ML pour commencer à analyser vos données et entraîner des modèles intelligents",
+    "LOADING_EXPERIMENTS": "Chargement des expériences...",
+    "LOADING_DESC": "Récupération et analyse de vos expériences ML",
+    
+    "VIEW_DETAILS": "Voir les détails",
+    "DELETE": "Supprimer",
+    "TRAINING_IN_PROGRESS": "Entraînement en cours...",
+    "TRAINING_FAILED": "Échec de l'entraînement",
+    
+    "SEARCH": "Rechercher",
+    "SEARCH_PLACEHOLDER": "Rechercher par ID ou algorithme...",
+    "STATUS_FILTER": "Filtrer par statut",
+    "ALL_STATUS": "Tous les statuts",
+    "ALGORITHM_FILTER": "Filtrer par algorithme",
+    "ALL_ALGORITHMS": "Tous les algorithmes",
+    "SHOWING": "Affichage",
+    "OF": "sur",
+    "EXPERIMENTS": "expériences",
+    "ALGORITHM": "Algorithme",
+    "STATUS": "Statut",
+    "ACCURACY": "Précision",
+    "CREATED": "Date de création",
+    "ACTIONS": "Actions",
+    "VIEW_RESULTS": "Voir les résultats",
+    "DUPLICATE": "Dupliquer",
+    "NO_EXPERIMENTS": "Aucune expérience trouvée",
+    "CREATE_FIRST": "Créer votre première expérience",
+    "COMPLETED_COUNT": "Expériences terminées",
+    "RUNNING_COUNT": "En cours d'exécution",
+    "AVG_ACCURACY": "Précision moyenne",
+    "BACK_TO_LIST": "Retour à la liste",
+    
+    "OBJECTIVE_STEP_ENHANCED": {
+      "TITLE": "Choix de la Tâche & Variable Cible",
+      "SUBTITLE": "Définissez votre objectif d'apprentissage avec intelligence artificielle",
+      "TARGET_SELECTION": {
+        "TITLE": "🎯 Variable Cible à Prédire",
+        "DESCRIPTION": "Choisissez la colonne que vous voulez que l'IA apprenne à prédire",
+        "SELECT_PLACEHOLDER": "Choisissez une colonne cible...",
+        "ANALYZING_DISTRIBUTION": "Analyse de la distribution...",
+        "DISTRIBUTION_PREVIEW": "Aperçu de la Distribution",
+        "TYPE": "Type",
+        "UNIQUE_VALUES": "Valeurs uniques",
+        "EXAMPLES": "Exemples"
+      },
+      "TASK_SUGGESTION": {
+        "TITLE": "🧠 Suggestion Automatique IA",
+        "DESCRIPTION": "Notre IA analyse vos données et recommande la tâche d'apprentissage optimale",
+        "SUGGESTED_TASK": "Tâche suggérée",
+        "CONFIDENCE": "Confiance",
+        "REASONING": "Justification",
+        "CLASSIFICATION": "Classification",
+        "REGRESSION": "Régression",
+        "OVERRIDE_WARNING": "Vous pouvez changer cette suggestion si vous préférez un autre type de tâche"
+      },
+      "TASK_TYPE_SELECTION": {
+        "TITLE": "📋 Type de Tâche d'Apprentissage",
+        "DESCRIPTION": "Sélectionnez le type de problème que vous voulez résoudre",
+        "CLASSIFICATION_DESC": "Prédire des catégories ou des classes (ex: spam/non-spam, type de client)",
+        "REGRESSION_DESC": "Prédire des valeurs numériques continues (ex: prix, température, âge)"
+      },
+      "BINNING_OPTIONS": {
+        "TITLE": "⚙️ Configuration du Binning",
+        "DESCRIPTION": "Transformez votre variable numérique en classes pour la classification",
+        "ENABLE_BINNING": "Activer le binning automatique",
+        "BINNING_METHOD": "Méthode de binning",
+        "NUMBER_OF_BINS": "Nombre de classes",
+        "QUANTILES_METHOD": "Quantiles (même nombre d'échantillons par classe)",
+        "EQUAL_WIDTH_METHOD": "Largeur égale (même taille d'intervalle)",
+        "CUSTOM_METHOD": "Seuils personnalisés",
+        "PREVIEW": "Aperçu des classes",
+        "WARNING": "Le binning crée des classes artificielles—préférez la régression si vous pouvez"
+      },
+      "TARGET_LEAKAGE": {
+        "TITLE": "🛡️ Protection contre la Fuite de Cible",
+        "DESCRIPTION": "Nous excluons automatiquement la colonne cible des features pour éviter les fuites de données",
+        "EXCLUDED_FEATURES": "Features exclues",
+        "EXCLUDED_COUNT": "{{count}} colonne(s) exclue(s) pour éviter la fuite de cible"
+      },
+      "WARNINGS": {
+        "NUMERIC_AS_CLASSIFICATION": "Variable numérique utilisée pour classification - considérez la régression",
+        "CATEGORICAL_AS_REGRESSION": "Variable catégorielle utilisée pour régression - considérez la classification",
+        "HIGH_CARDINALITY": "Variable avec beaucoup de valeurs uniques - performances potentiellement affectées",
+        "MISSING_DATA": "Cette colonne contient des valeurs manquantes ({{percentage}}%)"
+      },
+      "RECOMMENDATIONS": {
+        "PERFECT_FOR_CLASSIFICATION": "Parfait pour la classification",
+        "GOOD_FOR_CLASSIFICATION": "Bien adapté pour la classification",
+        "PERFECT_FOR_REGRESSION": "Idéal pour la régression",
+        "GOOD_FOR_REGRESSION": "Adapté pour la régression",
+        "NEEDS_PREPROCESSING": "Nécessite du préprocessing"
+      },
+      "RECAP": {
+        "TITLE": "📋 Récapitulatif de Configuration",
+        "SELECTED_TARGET": "Colonne cible sélectionnée",
+        "TASK_TYPE": "Type de tâche",
+        "CONFIDENCE_LEVEL": "Niveau de confiance",
+        "BINNING_ENABLED": "Binning activé",
+        "EXCLUDED_FEATURES_COUNT": "Features exclues"
+      },
+      "ACTIONS": {
+        "CONTINUE": "Continuer",
+        "BACK": "Retour",
+        "ANALYZE": "Analyser"
+      }
+    }
+  },
+  "EXPERIMENT_RESULTS": {
+    "TITLE": "Résultats d'Expérience",
+    "NEW_EXPERIMENT": "Nouvelle Expérience",
+    "DOWNLOAD_MODEL": "Télécharger le Modèle",
+    "EXPERIMENT_ANALYSIS": "Analyse Détaillée de l'Expérience",
+    "DETAILED_ANALYSIS_DESC": "Explorez les performances, visualisations et recommandations de votre modèle ML",
+    "EXPERIMENT_ID": "ID Expérience",
+    "COMPLETED": "Terminée",
+    "STATUS": "Statut",
+    "OVERALL_PERFORMANCE": "Performance Globale",
+    
+    "PERFORMANCE_METRICS": "Métriques de Performance",
+    "METRICS_EXPLANATION": "Analysez les performances de votre modèle avec des métriques détaillées et des explications pour novices",
+    "UNDERSTAND_METRICS": "Comprendre les Métriques",
+    "INDUSTRY_BENCHMARK": "Référence industrie",
+    "NO_METRICS_TITLE": "Aucune métrique disponible",
+    "NO_METRICS_DESC": "Ce modèle ne contient pas de métriques de performance analysables.",
+    
+    "DATA_INSIGHTS": "Insights et Analyse",
+    "PANDAS_LIKE_ANALYSIS": "Analyse style pandas/jupyter avec recommandations intelligentes",
+    "METRIC": "Métrique",
+    "VALUE": "Valeur",
+    "INTERPRETATION": "Interprétation",
+    
+    "INTERACTIVE_VISUALIZATIONS": "Visualisations Interactives",
+    "EXPLORE_MODEL_BEHAVIOR": "Explorez le comportement et la structure de votre modèle avec des graphiques interactifs",
+    "DECISION_TREE_TITLE": "Arbre de Décision Interactif",
+    "DECISION_TREE_DESC": "Structure complète de votre arbre de décision avec noeuds navigables",
+    "RANDOM_FOREST_TITLE": "Forêt Aléatoire",
+    "RANDOM_FOREST_DESC": "Visualisation d'un arbre représentatif de votre forêt aléatoire",
+    "FEATURE_IMPORTANCE_TITLE": "Importance des Caractéristiques",
+    "FEATURE_IMPORTANCE_DESC": "Influence de chaque variable sur les prédictions du modèle",
+    "PREDICTIONS_DISTRIBUTION_TITLE": "Distribution des Prédictions",
+    "PREDICTIONS_DISTRIBUTION_DESC": "Répartition des prédictions de votre modèle",
+    "METRICS_CHART_TITLE": "Graphique des Métriques",
+    "METRICS_CHART_DESC": "Vue synthétique de toutes vos métriques de performance",
+    "REGRESSION_PLOT_TITLE": "Graphique de Régression",
+    "REGRESSION_PLOT_DESC": "Corrélation entre valeurs prédites et réelles",
+    "FULLSCREEN": "Plein écran",
+    "DOWNLOAD_CHART": "Télécharger le graphique",
+    "TREE_INSIGHTS": "Insights sur la structure de l'arbre",
+    "FOREST_INSIGHTS": "Insights sur la performance de la forêt",
+    "FEATURE_INSIGHTS": "Variables les plus importantes",
+    
+    "EXPORT_SHARE_TITLE": "Export et Partage",
+    "EXPORT_SHARE_DESC": "Partagez vos résultats ou exportez-les dans différents formats",
+    "EXPORT_PDF": "Exporter PDF",
+    "EXPORT_CSV": "Exporter CSV",
+    "EXPORT_NOTEBOOK": "Notebook Jupyter",
+    "SHARE_LINK": "Partager Lien",
+    
+    "LOADING_RESULTS": "Chargement des Résultats",
+    "LOADING_EXPERIMENT": "Récupération de l'expérience",
+    
+    "ADAPTIVE": {
+      "METRICS_SUBTITLE": "Analyse détaillée de votre modèle {algorithm} pour {taskType}",
+      "VISUALIZATIONS_SUBTITLE": "Explorez la structure et les performances de votre modèle {algorithm}",
+      "PRIMARY_KPI": "KPI Principal",
+      "PEDAGOGICAL": {
+        "CLASSIFICATION_TREE": {
+          "TITLE": "Classification par Arbre de Décision",
+          "DESCRIPTION": "Votre modèle utilise une série de questions simples pour classer les données, comme un questionnaire logique."
+        },
+        "CLASSIFICATION_FOREST": {
+          "TITLE": "Classification par Random Forest",
+          "DESCRIPTION": "Votre modèle combine {treeCount} arbres qui \"votent\" ensemble pour une prédiction plus robuste."
+        },
+        "REGRESSION_TREE": {
+          "TITLE": "Régression par Arbre de Décision",
+          "DESCRIPTION": "Votre modèle prédit des valeurs numériques en divisant l'espace des données en zones homogènes."
+        },
+        "REGRESSION_FOREST": {
+          "TITLE": "Régression par Random Forest",
+          "DESCRIPTION": "Votre modèle fait la moyenne des prédictions de {treeCount} arbres pour une estimation plus stable."
+        }
+      },
+      "BASELINE": {
+        "TITLE": "Comparaison avec Modèle de Référence",
+        "SUBTITLE": "Évaluez les performances de votre modèle par rapport à une baseline simple",
+        "MAJORITY_MODEL": "Modèle Majoritaire",
+        "MAJORITY_DESC": "Prédit toujours la classe la plus fréquente - baseline de référence",
+        "MEDIAN_MODEL": "Modèle Médiane", 
+        "MEDIAN_DESC": "Prédit toujours la valeur médiane - baseline de référence",
+        "YOUR_MODEL": "Votre Modèle",
+        "BASELINE": "Baseline",
+        "IMPROVEMENT_LABELS": {
+          "MAJOR_IMPROVEMENT": "Amélioration majeure !",
+          "GOOD_IMPROVEMENT": "Nette amélioration",
+          "MODERATE_IMPROVEMENT": "Amélioration modérée",
+          "SLIGHT_IMPROVEMENT": "Légère amélioration",
+          "ERROR_REDUCED_HALF": "Erreur réduite de moitié !",
+          "ERROR_WELL_REDUCED": "Erreur bien réduite",
+          "ERROR_REDUCED": "Erreur réduite",
+          "SLIGHT_REDUCTION": "Légère réduction",
+          "MORE_ERROR": "Plus d'erreur",
+          "INFERIOR_PERFORMANCE": "Performance inférieure"
+        }
+      },
+      "ASSESSMENT": {
+        "EXCELLENT": "Excellent",
+        "GOOD": "Bon", 
+        "CORRECT": "Correct",
+        "TO_IMPROVE": "À améliorer",
+        "EXCELLENT_MESSAGE": "Performance exceptionnelle ! Votre {algorithm} {action} avec une précision remarquable.",
+        "GOOD_MESSAGE": "Bonne performance ! Votre modèle fonctionne bien avec quelques optimisations possibles.",
+        "CORRECT_MESSAGE": "Performance acceptable mais améliorable. Considérez l'optimisation des hyperparamètres.",
+        "TO_IMPROVE_MESSAGE": "Performance faible. Vérifiez la qualité des données ou essayez {alternative}."
+      },
+      "TIPS": {
+        "CONFUSION_MATRIX": "La matrice de confusion montre où votre modèle se trompe. La diagonale représente les bonnes prédictions. Les confusions fréquentes indiquent des classes difficiles à distinguer.",
+        "ROC_CURVE": "La courbe ROC évalue la capacité de discrimination. Plus elle s'éloigne de la diagonale vers le coin supérieur gauche, meilleur est le modèle.",
+        "REGRESSION_ANALYSIS": "Le scatter plot compare prédictions vs réalité. Les points doivent suivre la diagonale idéale. L'histogramme des résidus doit être centré sur zéro.",
+        "TREE_SIMPLE": "L'arbre montre la logique de décision. Suivez les branches pour comprendre comment une prédiction est faite. Plus l'arbre est profond, plus il risque le sur-ajustement.",
+        "TREE_FOREST": "Cet arbre est un échantillon représentatif de votre forêt de {treeCount} arbres. Random Forest combine leurs décisions pour plus de robustesse."
+      }
+    }
+  },
+  "CREDITS_REFILL": {
+    "TITLE": "Recharge de crédits",
+    "SUBTITLE": "Récupérez vos crédits gratuits pour continuer à utiliser l'IA",
+    "CURRENT_BALANCE": "Solde actuel",
+    "CURRENT_STATUS": "Statut actuel",
+    "CREDITS": "crédits",
+    "LOADING": "Récupération en cours...",
+    "HOW_IT_WORKS": {
+      "TITLE": "Comment ça fonctionne",
+      "FREQUENCY": {
+        "TITLE": "Récupération tous les 7 jours",
+        "DESC": "Vous pouvez récupérer 10 crédits gratuits toutes les 7 jours."
+      },
+      "LIMIT": {
+        "TITLE": "Plafond de 10 crédits",
+        "DESC": "Le nombre maximum de crédits est de 10, même si vous n'avez pas tout utilisé."
+      },
+      "USAGE": {
+        "TITLE": "Utilisation pour l'IA",
+        "DESC": "Chaque crédit vous permet de créer et d'entraîner un modèle d'intelligence artificielle."
+      }
+    },
+    "AVAILABLE": {
+      "TITLE": "Crédits disponibles",
+      "MESSAGE": "Vous pouvez récupérer vos crédits maintenant !",
+      "BUTTON": "Récupérer 10 crédits"
+    },
+    "WAITING": {
+      "TITLE": "Récupération en attente",
+      "MESSAGE": "Vous devez attendre avant de pouvoir récupérer de nouveaux crédits.",
+      "DAYS_REMAINING": "jour(s) restant(s)",
+      "NEXT_CLAIM": "Prochaine récupération possible le"
+    },
+    "LAST_CLAIM": "Dernière récupération",
+    "NEVER_CLAIMED": "Vous n'avez encore jamais demandé de crédits",
+    "NEXT_AVAILABLE": "Prochaine disponibilité",
+    "IN_DAYS": "dans {{days}} jour(s)",
+    "STATUS": "Statut",
+    "AVAILABLE_NOW": "Disponible maintenant",
+    "INFO": {
+      "TITLE": "Informations utiles",
+      "DESCRIPTION": "Les crédits sont essentiels pour utiliser notre plateforme d'intelligence artificielle. Voici quelques conseils pour optimiser leur utilisation.",
+      "TIPS": {
+        "TITLE": "Conseils d'utilisation :",
+        "TIP1": "Planifiez vos projets IA pour optimiser l'usage de vos crédits",
+        "TIP2": "Les modèles plus complexes consomment plus de crédits",
+        "TIP3": "Sauvegardez vos modèles réussis pour éviter de les recréer"
+      }
+    }
+  },
+  "PAGE_TITLES": {
+    "DASHBOARD": "Tableau de bord",
+    "DATASETS": "Jeux de données",
+    "DATASET_DETAIL": "Détail du dataset",
+    "DATASET_METADATA": "Métadonnées du dataset",
+    "PROJECTS": "Projets",
+    "PROJECT_DETAIL": "Détail du projet",
+    "ML_PIPELINE": "Pipeline ML",
+    "ML_PIPELINE_WIZARD": "Assistant Pipeline ML",
+    "ML_PIPELINE_CLEANING": "Nettoyage des données",
+    "ML_PIPELINE_TRAINING": "Entraînement du modèle",
+    "ML_PIPELINE_RESULTS": "Résultats du pipeline",
+    "PROFILE": "Mon profil",
+    "CREDITS_REFILL": "Recharge de crédits",
+    "ADMIN_DASHBOARD": "Administration",
+    "ADMIN_DATASETS": "Gestion des datasets",
+    "ADMIN_USERS": "Gestion des utilisateurs",
+    "ADMIN_ETHICAL_TEMPLATES": "Templates éthiques",
+    "ADMIN_TEMPORARY_GRANT": "Promotion Admin Temporaire",
+    "LOGIN": "Connexion",
+    "REGISTER": "Inscription",
+    "ONBOARDING": "Configuration initiale",
+    "ERROR": "Erreur",
+    "NOT_FOUND": "Page non trouvée",
+    "XAI_EXPLANATIONS": "Explications XAI",
+    "UPLOAD_WIZARD": "Assistant d'upload",
+    "UPLOAD_DATASET": "Ajouter un dataset"
+  },
+  "BREADCRUMB": {
+    "HOME": "Accueil",
+    "DASHBOARD": "Tableau de bord",
+    "DATASETS": "Jeux de données",
+    "UPLOAD_DATASET": "Ajouter un dataset",
+    "UPLOAD_WIZARD": "Assistant d'upload",
+    "DATASET_DETAIL": "Détail",
+    "DATASET_METADATA": "Métadonnées",
+    "PROJECTS": "Projets",
+    "PROJECT_DETAIL": "Détail",
+    "PROJECT_NEW": "Nouveau",
+    "PROJECT_EDIT": "Modifier",
+    "ML_PIPELINE": "Pipeline ML",
+    "PROFILE": "Profil",
+    "ADMIN": "Administration",
+    "ADMIN_DATASETS": "Gestion des datasets",
+    "ADMIN_USERS": "Gestion des utilisateurs",
+    "ADMIN_ETHICAL_TEMPLATES": "Templates éthiques",
+    "ADMIN_TEMPORARY_GRANT": "Promotion Admin Temporaire"
+  },
+  "ANIMATION": {
+    "LOGIN_BACKGROUND": {
+      "NEURAL_NETWORK": "Réseau Neuronal",
+      "PARTICLE_WAVE": "Vague de Particules",
+      "DESCRIPTION_NEURAL": "Animation sophistiquée représentant un réseau de neurones connectés",
+      "DESCRIPTION_WAVE": "Flux de données intelligent en mouvement ondulatoire",
+      "FALLBACK_MESSAGE": "Animation simplifiée pour optimiser les performances",
+      "LOADING": "Chargement de l'animation..."
+    }
+  },
+  "UPLOAD": {
+    "TITLE": "Ajouter un nouveau dataset",
+    "SUBTITLE": "Importez vos données et créez un nouveau dataset dans IBIS-X",
+    "DROP_ZONE": {
+      "TITLE": "Glissez vos fichiers ici",
+      "DESCRIPTION": "ou cliquez pour sélectionner des fichiers depuis votre ordinateur",
+      "SUPPORTED_FORMATS": "Formats supportés : CSV, Excel (.xlsx, .xls), JSON, XML, Parquet",
+      "SIZE_LIMIT": "📏 Limite PoC : 25MB par fichier",
+      "POC_LIMITATION": "Version démonstration - limites réduites pour contrôler les coûts d'infrastructure.",
+      "SIZE_ERROR_TITLE": "Fichier trop volumineux",
+      "SIZE_ERROR_HELP": "💡 Conseils : Réduisez la taille, supprimez des colonnes inutiles, ou consultez notre guide d'optimisation.",
+      "BROWSE": "Parcourir les fichiers",
+      "FILES_SELECTED": "fichier(s) sélectionné(s)",
+      "CLEAR_ALL": "Tout supprimer",
+      "ERROR": "Erreur",
+      "REMOVE_FILE": "Supprimer ce fichier",
+      "ADD_MORE": "Ajouter d'autres fichiers"
+    },
+    "ACTIONS": {
+      "TITLE": "Que souhaitez-vous faire ?",
+      "DESCRIPTION": "Choisissez l'approche qui vous convient le mieux",
+      "ANALYZE": "Analyser d'abord",
+      "WIZARD": "Assistant guidé"
+    },
+    "DRAFT": {
+      "FOUND": "Un brouillon a été trouvé",
+      "LOAD": "Charger le brouillon",
+      "CLEAR": "Supprimer le brouillon"
+    },
+    "ANALYSIS": {
+      "TITLE": "Résultats de l'analyse",
+      "TOTAL_FILES": "Nombre de fichiers",
+      "TOTAL_ROWS": "Nombre total de lignes",
+      "TOTAL_SIZE": "Taille totale",
+      "QUALITY_SCORE": "Score de qualité",
+      "SUGGESTIONS": "Suggestions automatiques",
+      "SUGGESTED_NAME": "Nom suggéré",
+      "SUGGESTED_DOMAINS": "Domaines suggérés",
+      "SUGGESTED_TASKS": "Tâches ML suggérées",
+      "FILES_DETAIL": "Détail des fichiers",
+      "MISSING_DATA": "Données manquantes",
+      "DUPLICATES": "Doublons",
+      "CONTINUE_WIZARD": "Continuer avec l'assistant",
+      "NEW_ANALYSIS": "Nouvelle analyse"
+    }
+  },
+  "UPLOAD_WIZARD": {
+    "TITLE": "Assistant d'upload de dataset",
+    "SUBTITLE": "Créez votre dataset en quelques étapes simples",
+    "STEPS": {
+      "FILES": "Fichiers",
+      "ANALYSIS": "Analyse",
+      "METADATA": "Métadonnées",
+      "CONFIRMATION": "Confirmation"
+    },
+    "FILES": {
+      "TITLE": "Sélectionnez vos fichiers",
+      "DESCRIPTION": "Choisissez les fichiers de données à inclure dans votre dataset",
+      "ANALYZE": "Analyser les fichiers"
+    },
+    "ANALYSIS": {
+      "TITLE": "Analyse des données",
+      "DESCRIPTION": "Vérification de la qualité et extraction des métadonnées",
+      "SUMMARY": "Résumé de l'analyse",
+      "TOTAL_FILES": "Nombre de fichiers",
+      "TOTAL_ROWS": "Nombre total de lignes",
+      "TOTAL_SIZE": "Taille totale",
+      "QUALITY_SCORE": "Score de qualité",
+      "ISSUES_DETECTED": "Problèmes détectés",
+      "MISSING_DATA": "de données manquantes",
+      "DUPLICATES_FOUND": "Doublons détectés",
+      "EMPTY_FILE": "Fichier vide",
+      "ANALYZING": "Analyse en cours...",
+      "PLEASE_WAIT": "Veuillez patienter pendant l'analyse de vos fichiers"
+    },
+    "CONFIRMATION": {
+      "TITLE": "Confirmation et création",
+      "DESCRIPTION": "Vérifiez les informations et créez votre dataset",
+      "SUMMARY": "Récapitulatif",
+      "FILES": "Fichiers",
+      "METADATA": "Métadonnées",
+      "DOMAINS": "Domaines",
+      "TASKS": "Tâches ML",
+      "ACCESS": "Accès"
+    },
+    "ACTIONS": {
+      "PREVIOUS": "Précédent",
+      "CONTINUE_METADATA": "Continuer vers les métadonnées",
+      "CREATE_DATASET": "Créer le dataset",
+      "UPLOADING": "Création en cours..."
+    }
+  },
+  "METADATA_FORM": {
+    "TITLE": "Métadonnées du dataset",
+    "SUBTITLE": "Complétez les informations descriptives de votre dataset",
+    "AUTO_SAVING": "Sauvegarde automatique...",
+    "COMPLETED": "complété",
+    "TABS": {
+      "GENERAL": "Général",
+      "TECHNICAL": "Technique",
+      "QUALITY": "Qualité",
+      "ETHICS": "Éthique",
+      "DOCUMENTATION": "Documentation"
+    },
+    "GENERAL": {
+      "TITLE": "Informations générales",
+      "SUBTITLE": "Nom, description et classification du dataset",
+      "DATASET_NAME": "Nom du dataset",
+      "DATASET_NAME_PLACEHOLDER": "Entrez un nom descriptif pour votre dataset",
+      "DISPLAY_NAME": "Nom d'affichage",
+      "DISPLAY_NAME_PLACEHOLDER": "Entrez le nom qui sera affiché publiquement",
+      "YEAR": "Année",
+      "OBJECTIVE": "Objectif",
+      "OBJECTIVE_PLACEHOLDER": "Décrivez l'objectif de ce dataset",
+      "DOMAINS": "Domaines d'application",
+      "ML_TASKS": "Tâches de machine learning"
+    },
+    "TECHNICAL": {
+      "TITLE": "Caractéristiques techniques",
+      "SUBTITLE": "Informations sur la structure et l'accès aux données",
+      "ACCESS": "Type d'accès",
+      "ACCESS_PUBLIC": "Public",
+      "ACCESS_PRIVATE": "Privé",
+      "ACCESS_RESTRICTED": "Restreint",
+      "AVAILABILITY": "Disponibilité",
+      "AVAILABILITY_ONLINE": "En ligne",
+      "AVAILABILITY_OFFLINE": "Hors ligne",
+      "AVAILABILITY_REQUEST": "Sur demande",
+      "INSTANCES_NUMBER": "Nombre d'instances",
+      "FEATURES_NUMBER": "Nombre de caractéristiques",
+      "FEATURES_DESCRIPTION": "Description des caractéristiques",
+      "FEATURES_DESCRIPTION_PLACEHOLDER": "Décrivez les principales caractéristiques des données",
+      "SOURCES": "Sources des données",
+      "SOURCES_PLACEHOLDER": "Indiquez les sources d'où proviennent ces données",
+      "NUM_CITATIONS": "Nombre de citations",
+      "CITATION_LINK": "Lien de citation",
+      "AUTO_DETECTED": "Détecté automatiquement"
+    },
+    "QUALITY": {
+      "TITLE": "Qualité des données",
+      "SUBTITLE": "Informations sur la complétude et la fiabilité des données",
+      "IS_SPLIT": "Dataset déjà divisé en train/test",
+      "HAS_MISSING_VALUES": "Contient des valeurs manquantes",
+      "MISSING_VALUES_DESCRIPTION": "Description des valeurs manquantes",
+      "GLOBAL_MISSING_PERCENTAGE": "Pourcentage global de valeurs manquantes",
+      "MISSING_VALUES_HANDLING": "Méthode de gestion des valeurs manquantes",
+      "HANDLING_DROP": "Supprimer les lignes",
+      "HANDLING_MEAN": "Remplacer par la moyenne",
+      "HANDLING_MEDIAN": "Remplacer par la médiane",
+      "HANDLING_MODE": "Remplacer par le mode",
+      "HANDLING_INTERPOLATION": "Interpolation",
+      "TEMPORAL_FACTORS": "Contient des facteurs temporels",
+      "DATA_QUALITY_DOCUMENTED": "Qualité des données documentée",
+      "DATA_ERRORS_DESCRIPTION": "Description des erreurs de données",
+      "DATA_ERRORS_PLACEHOLDER": "Décrivez les types d'erreurs ou problèmes connus"
+    },
+    "ETHICS": {
+      "TITLE": "Critères éthiques",
+      "SUBTITLE": "Conformité aux principes éthiques et de protection des données",
+      "INFORMED_CONSENT": "Consentement éclairé obtenu",
+      "TRANSPARENCY": "Transparence sur l'utilisation",
+      "USER_CONTROL": "Contrôle utilisateur respecté",
+      "EQUITY_NON_DISCRIMINATION": "Équité et non-discrimination",
+      "SECURITY_MEASURES": "Mesures de sécurité en place",
+      "ANONYMIZATION_APPLIED": "Anonymisation appliquée",
+      "ACCOUNTABILITY_DEFINED": "Responsabilité définie",
+      "YES": "Oui",
+      "NO": "Non",
+      "UNKNOWN": "Inconnu"
+    },
+    "DOCUMENTATION": {
+      "TITLE": "Documentation",
+      "SUBTITLE": "Disponibilité et qualité de la documentation",
+      "METADATA_PROVIDED": "Métadonnées fournies avec le dataset",
+      "EXTERNAL_DOC_AVAILABLE": "Documentation externe disponible",
+      "DOCUMENTATION_LINK": "Lien vers la documentation",
+      "RECORD_KEEPING_POLICY": "Politique de conservation des enregistrements",
+      "PURPOSE_LIMITATION": "Limitation des finalités respectée"
+    },
+    "SUGGESTIONS": {
+      "TITLE": "Suggestions automatiques",
+      "APPLY_NAME": "Appliquer le nom suggéré",
+      "APPLY_DOMAINS": "Appliquer les domaines suggérés",
+      "APPLY_TASKS": "Appliquer les tâches suggérées"
+    },
+    "TOOLTIPS": {
+      "DATASET_NAME": "Nom unique et descriptif pour identifier votre dataset",
+      "DISPLAY_NAME": "Nom public qui sera affiché aux utilisateurs dans l'interface",
+      "YEAR": "Année de création ou de collecte des données",
+      "OBJECTIVE": "But principal pour lequel ce dataset a été créé",
+      "DOMAINS": "Secteurs d'application où ce dataset peut être utilisé",
+      "ML_TASKS": "Types d'algorithmes de machine learning adaptés à ce dataset",
+      "SPLIT": "Indique si le dataset est déjà divisé en ensembles d'entraînement et de test",
+      "TEMPORAL": "Présence de variables temporelles importantes pour l'analyse",
+      "INFORMED_CONSENT": "Les participants ont-ils donné leur consentement pour l'utilisation de leurs données ?",
+      "TRANSPARENCY": "L'utilisation prévue des données est-elle clairement communiquée ?",
+      "USER_CONTROL": "Les utilisateurs ont-ils un contrôle sur leurs données ?",
+      "EQUITY": "Le dataset évite-t-il les biais discriminatoires ?",
+      "SECURITY": "Des mesures de sécurité appropriées sont-elles en place ?",
+      "ANONYMIZATION": "Les données personnelles ont-elles été anonymisées ?",
+      "ACCOUNTABILITY": "Les responsabilités sont-elles clairement définies ?",
+      "RECORD_KEEPING": "Existe-t-il une politique de conservation des données ?",
+      "PURPOSE_LIMITATION": "L'utilisation est-elle limitée aux finalités déclarées ?"
+    },
+    "ERRORS": {
+      "REQUIRED": "Ce champ est obligatoire"
+    },
+    "ACTIONS": {
+      "CANCEL": "Annuler",
+      "SAVE_DRAFT": "Sauvegarder brouillon",
+      "CREATE_DATASET": "Créer le dataset",
+      "UPLOADING": "Création en cours..."
+    }
+  },
+  "DOMAINS": {
+    "EDUCATION": "Éducation",
+    "HEALTHCARE": "Santé",
+    "FINANCE": "Finance",
+    "TECHNOLOGY": "Technologie",
+    "SCIENCE": "Science",
+    "SOCIAL": "Social",
+    "ENVIRONMENT": "Environnement",
+    "GENERAL": "Général"
+  },
+  "TASKS": {
+    "CLASSIFICATION": "Classification",
+    "REGRESSION": "Régression",
+    "CLUSTERING": "Clustering",
+    "ANOMALY_DETECTION": "Détection d'anomalies",
+    "TIME_SERIES": "Séries temporelles",
+    "NLP": "Traitement du langage naturel",
+    "COMPUTER_VISION": "Vision par ordinateur",
+    "RECOMMENDATION": "Système de recommandation"
+  },
+  "XAI": {
+    "REQUEST": {
+      "TITLE": "Explicabilité du Modèle",
+      "SUBTITLE": "Comprenez pourquoi votre modèle fait ces prédictions grâce à l'intelligence artificielle explicable (XAI)",
+      "INTRO_TEXT": "Obtenez des explications claires et personnalisées sur les décisions de votre modèle d'IA.",
+      "CONFIGURATION": "Configuration",
+      "EXPLANATION_TYPE": "Type d'Explication",
+      "SELECT_TYPE": "Sélectionnez le type d'explication",
+      "INSTANCE_INDEX": "Index de l'instance",
+      "INSTANCE_INDEX_PLACEHOLDER": "Entrez l'index (ex: 0, 1, 2...)",
+      "INSTANCE_INDEX_HINT": "Numéro de la ligne spécifique à analyser",
+      "AUDIENCE_LEVEL": "Niveau d'Audience",
+      "EXPLANATION_METHOD": "Méthode d'Explication",
+      "SELECT_METHOD": "Sélectionnez la méthode",
+      "ADVANCED_OPTIONS": "Options Avancées",
+      "INCLUDE_TEXT_EXPLANATION": "Inclure explications textuelles",
+      "INCLUDE_VISUALIZATIONS": "Inclure visualisations",
+      "LANGUAGE": "Langue",
+      "QUICK_FEATURE_IMPORTANCE": "Importance Variables",
+      "QUICK_GLOBAL": "Vue Globale",
+      "GENERATE_EXPLANATION": "Générer l'Explication",
+      "CANCEL": "Annuler"
+    },
+    "LOADING": {
+      "GENERATING": "Génération en cours...",
+      "ESTIMATED_TIME": "Temps estimé",
+      "PROCESS_INFO": "Analyse en cours avec SHAP/LIME"
+    },
+    "ERROR": {
+      "TITLE": "Erreur",
+      "SUBTITLE": "Une erreur s'est produite",
+      "SUGGESTION_1": "Vérifiez votre connexion internet",
+      "SUGGESTION_2": "Réessayez dans quelques minutes",
+      "SUGGESTION_3": "Contactez le support si le problème persiste",
+      "SUGGESTIONS_TITLE": "Suggestions",
+      "DISMISS": "Fermer",
+      "RETRY": "Réessayer"
+    },
+    "RESULTS": {
+      "TITLE": "Résultats d'Explicabilité",
+      "SUBTITLE": "Comprendre les décisions de votre modèle IA",
+      "STATUS": "Statut",
+      "COMPLETED": "Terminé",
+      "METHOD_USED": "Méthode utilisée",
+      "EXPLANATION_TYPE": "Type d'explication",
+      "GLOBAL": "Globale",
+      "LOCAL": "Locale",
+      "DOWNLOAD_RESULTS": "Télécharger les résultats",
+      "NEW_EXPLANATION": "Nouvelle explication",
+      "SHARE_RESULTS": "Partager les résultats"
+    },
+    "TEXTUAL_EXPLANATIONS": {
+      "NOVICE": {
+        "TITLE": "Pourquoi votre intelligence artificielle fonctionne ainsi",
+        "SUBTITLE": "Explication simple avec des analogies de la vie quotidienne",
+        "LEVEL_BADGE": "Débutant"
+      },
+      "INTERMEDIATE": {
+        "TITLE": "Analyse détaillée des résultats",
+        "SUBTITLE": "Équilibre entre accessibilité et précision technique",
+        "LEVEL_BADGE": "Intermédiaire"
+      },
+      "EXPERT": {
+        "TITLE": "Analyse technique approfondie du modèle",
+        "SUBTITLE": "Métriques précises, insights méthodologiques et recommandations",
+        "LEVEL_BADGE": "Expert"
+      },
+      "METHOD_META": "Méthode:",
+      "GENERATED_IN": "Généré en",
+      "SECONDS": "s",
+      "ADAPTED_LEVEL": "Adapté à votre niveau",
+      "VISUALIZATIONS_TITLE": "Visualisations"
+    },
+    "CHAT": {
+      "TITLE": "Chat IA Explicable",
+      "SUBTITLE": "Posez vos questions sur l'explication",
+      "INITIALIZING": "Initialisation du chat...",
+      "PREPARING_SESSION": "Préparation de la session de chat",
+      "ERROR_TITLE": "Erreur de Chat",
+      "RETRY": "Réessayer",
+      "YOU": "Vous",
+      "AI_ASSISTANT": "Assistant IA",
+      "SYSTEM": "Système",
+      "TYPING": "En train d'écrire...",
+      "SUGGESTED_QUESTIONS": "Questions suggérées",
+      "ASK_QUESTION_PLACEHOLDER": "Posez votre question...",
+      "ASK_QUESTION_HINT": "Décrivez ce que vous aimeriez savoir sur cette explication",
+      "SEND_QUESTION": "Envoyer la question",
+      "NO_QUESTIONS_LEFT": "Plus de questions disponibles",
+      "QUESTIONS_REMAINING": "{{ count }} question(s) restante(s)",
+      "NO_QUESTIONS_LEFT": "Limite de questions atteinte",
+      "INPUT_HELP": "Appuyez sur Entrée pour envoyer",
+      "QUESTION_REQUIRED": "Une question est requise",
+      "QUESTION_TOO_SHORT": "La question doit contenir au moins 10 caractères",
+      "SHOW_SUGGESTIONS": "Afficher les questions suggérées",
+      "HIDE_SUGGESTIONS": "Masquer les questions suggérées",
+      "QUESTIONS_REMAINING_TOOLTIP": "Questions restantes dans cette session",
+      "MODEL_USED_TOOLTIP": "Modèle IA utilisé pour cette réponse",
+      "RESPONSE_TIME_TOOLTIP": "Temps de réponse",
+      "TOKENS_USED_TOOLTIP": "Tokens utilisés pour cette réponse"
+    },
+    "TYPES": {
+      "GLOBAL": "Explication Globale",
+      "GLOBAL_DESC": "Comprendre le comportement général du modèle",
+      "LOCAL": "Explication Locale",
+      "LOCAL_DESC": "Analyser une prédiction spécifique",
+      "FEATURE_IMPORTANCE": "Importance des Variables",
+      "FEATURE_IMPORTANCE_DESC": "Classer l'influence de chaque variable"
+    },
+    "METHODS": {
+      "SHAP": "SHAP",
+      "SHAP_DESC": "Méthode basée sur la théorie des jeux (rapide pour les arbres)",
+      "LIME": "LIME",
+      "LIME_DESC": "Approximation locale interprétable",
+      "AUTO": "Automatique",
+      "AUTO_DESC": "Sélection automatique de la meilleure méthode"
+    },
+    "AUDIENCE": {
+      "NOVICE": "Débutant",
+      "NOVICE_DESC": "Explications simples et accessibles",
+      "INTERMEDIATE": "Intermédiaire",
+      "INTERMEDIATE_DESC": "Niveau technique modéré",
+      "EXPERT": "Expert",
+      "EXPERT_DESC": "Explications techniques détaillées"
+    }
+  },
+  "DATASET_DETAIL": {
+    "MISSING_DATA": {
+      "TITLE": "Score de Complétude des Données",
+      "SUBTITLE": "Analyse des valeurs manquantes dans le dataset",
+      "ANALYZED_COLUMNS": "Colonnes analysées",
+      "EXCLUDED_COLUMNS": "Colonnes exclues",
+      "VIEW_DETAILS": "Voir les détails",
+      "OVERALL_SCORE": "Score global",
+      "AVG_COMPLETENESS": "Complétude moyenne",
+      "DETAILS_TITLE": "Analyse Détaillée des Données Manquantes",
+      "EXCLUDED_EXPLANATION": "Les colonnes suivantes ont été automatiquement exclues de l'analyse car elles correspondent à des identifiants techniques :",
+      "COLUMN_ANALYSIS": "Analyse par Colonne",
+      "EXPORT_REPORT": "Exporter le rapport",
+      "QUALITY_LEVELS": {
+        "PERFECT": "Parfaitement complet",
+        "GOOD": "Globalement propre",
+        "WARNING": "Nettoyage recommandé",
+        "CRITICAL": "Incomplet, attention"
+      },
+      "TABLE": {
+        "COLUMN_NAME": "Nom de la colonne",
+        "DATA_TYPE": "Type de données",
+        "MISSING_PERCENTAGE": "% Manquant",
+        "MISSING_COUNT": "Valeurs manquantes",
+        "SEVERITY": "Gravité",
+        "SUGGESTION": "Suggestion de traitement"
+      },
+      "SEVERITIES": {
+        "LOW": "Faible",
+        "MEDIUM": "Modéré",
+        "HIGH": "Élevé",
+        "CRITICAL": "Critique"
+      },
+      "SUGGESTIONS": {
+        "MINIMAL_CLEANING": "Nettoyage minimal requis",
+        "MINIMAL_CLEANING_TOOLTIP": "Le faible pourcentage de valeurs manquantes permet un nettoyage simple par suppression ou imputation basique",
+        "IMPUTE_MEAN": "Imputation par la moyenne",
+        "IMPUTE_MEAN_TOOLTIP": "Pour les données numériques, remplacer les valeurs manquantes par la moyenne de la colonne",
+        "IMPUTE_MODE": "Imputation par le mode",
+        "IMPUTE_MODE_TOOLTIP": "Pour les données catégorielles, remplacer les valeurs manquantes par la valeur la plus fréquente",
+        "CAREFUL_ANALYSIS": "Analyse approfondie nécessaire",
+        "CAREFUL_ANALYSIS_TOOLTIP": "Le taux élevé de valeurs manquantes nécessite une analyse pour comprendre les causes avant le traitement",
+        "CONSIDER_REMOVAL": "Envisager la suppression",
+        "CONSIDER_REMOVAL_TOOLTIP": "Le très haut taux de valeurs manquantes pourrait justifier la suppression de cette colonne"
+      }
+    },
+    "AI_GUIDE": {
+      "TITLE": "Guide IA Personnalisé",
+      "SUBTITLE": "Notre intelligence artificielle va analyser ce dataset et vous recommander la meilleure approche ML",
+      "ANALYZE_BUTTON": "Analyser avec l'IA",
+      "ANALYZING_TITLE": "Analyse en cours...",
+      "ANALYZING_SUBTITLE": "L'IA étudie les caractéristiques de votre dataset",
+      "STEP_METADATA": "Lecture des métadonnées",
+      "STEP_PATTERNS": "Analyse des patterns",
+      "STEP_RECOMMENDATIONS": "Génération des recommandations",
+      "DATASET_ANALYSIS_TITLE": "Analyse du Dataset",
+      "DATASET_ANALYSIS_SUBTITLE": "Ce que l'IA comprend de vos données",
+      "ML_RECOMMENDATIONS_TITLE": "Recommandations ML",
+      "ML_RECOMMENDATIONS_SUBTITLE": "Approche optimale pour ce dataset",
+      "RECOMMENDED_TASK": "Tâche Recommandée",
+      "RECOMMENDED_ALGORITHM": "Algorithme Recommandé",
+      "KEY_INSIGHTS_TITLE": "Points Clés",
+      "KEY_INSIGHTS_SUBTITLE": "Ce qu'il faut retenir",
+      "CHALLENGES_TITLE": "Points d'Attention",
+      "CHALLENGES_SUBTITLE": "Défis à anticiper",
+      "START_PIPELINE": "Démarrer le Pipeline ML",
+      "NEW_ANALYSIS": "Nouvelle Analyse",
+      "CLASSIFICATION": "Classification",
+      "REGRESSION": "Régression",
+      "DECISION_TREE": "Decision Tree",
+      "RANDOM_FOREST": "Random Forest"
+    }
+  },
+  "XAI_EXPLANATION": {
+    "HERO": {
+      "BADGE": "Intelligence Artificielle Explicable",
+      "TITLE": "Comprenez chaque décision de vos modèles IA",
+      "SUBTITLE": "Découvrez LIME et SHAP, les deux piliers de l'explicabilité moderne. Transformez vos boîtes noires en décisions transparentes et auditables.",
+      "TRY_NOW": "Essayer maintenant",
+      "LEARN_MORE": "En savoir plus",
+      "PREVIEW_TITLE": "Exemple d'Explication XAI",
+      "CONFIDENT": "Confiant",
+      "PREDICTION_RESULT": "APPROUVÉ",
+      "PREDICTION_DETAIL": "Cette demande a été approuvée grâce à un profil favorable",
+      "WHY_TITLE": "Pourquoi cette décision ?"
+    },
+    "METHODS": {
+      "TITLE": "Les Deux Méthodes d'Explicabilité",
+      "SUBTITLE": "LIME et SHAP offrent des approches complémentaires pour comprendre vos modèles. Découvrez leurs forces et leurs cas d'usage.",
+      "COMPARISON": "Comparaison",
+      "HOW_IT_WORKS": "Comment ça fonctionne",
+      "STRENGTHS": "Points forts",
+      "USE_CASES": "Cas d'usage",
+      "LOCAL_EXPLANATION": "Explication Locale",
+      "GLOBAL_LOCAL_EXPLANATION": "Explication Globale & Locale",
+      "SHAP_VALUES": "Valeurs SHAP",
+      "ANALYZED_INSTANCE": "Instance Analysée"
+    },
+    "EXAMPLES": {
+      "INCOME": "Revenus",
+      "CREDIT_SCORE": "Score de crédit",
+      "AGE": "Âge",
+      "YEARS": "ans",
+      "STABLE_JOB": "Emploi stable",
+      "APPROVED": "APPROUVÉ",
+      "BASE_VALUE": "Valeur de base",
+      "SURFACE": "Surface",
+      "LOCATION": "Emplacement",
+      "AGE_BUILDING": "Âge du bâtiment",
+      "PREDICTION": "Prédiction"
+    },
+    "COMPARISON": {
+      "SCOPE": "Portée",
+      "APPROACH": "Approche",
+      "BEST_FOR": "Idéal pour",
+      "LOCAL_ONLY": "Local uniquement",
+      "GLOBAL_AND_LOCAL": "Global et local",
+      "PERTURBATION": "Perturbation de données",
+      "GAME_THEORY": "Théorie des jeux",
+      "INDIVIDUAL_DECISIONS": "Décisions individuelles",
+      "OVERALL_ANALYSIS": "Analyse globale",
+      "WHEN_TO_USE": "Quand utiliser chaque méthode ?"
+    },
+    "SCENARIOS": {
+      "USE_LIME": {
+        "TITLE": "Utilisez LIME quand...",
+        "ITEM1": "Vous devez expliquer une décision spécifique (diagnostic médical, approbation crédit)",
+        "ITEM2": "La décision impacte directement un individu et nécessite justification",
+        "ITEM3": "Vous voulez une explication simple et intuitive pour les non-experts"
+      },
+      "USE_SHAP": {
+        "TITLE": "Utilisez SHAP quand...",
+        "ITEM1": "Vous analysez les performances générales de votre modèle",
+        "ITEM2": "Vous optimisez les caractéristiques les plus importantes",
+        "ITEM3": "Vous effectuez de la recherche ou une analyse scientifique approfondie"
+      }
+    },
+    "DEMO": {
+      "TITLE": "Démonstration Interactive",
+      "SUBTITLE": "Expérimentez avec LIME et SHAP sur un exemple concret de décision d'approbation de prêt.",
+      "PLAY": "Lancer la démo",
+      "PAUSE": "Mettre en pause",
+      "INFO": "Cliquez sur les éléments pour explorer",
+      "PLACEHOLDER": "Démonstration interactive à venir..."
+    },
+    "BENEFITS": {
+      "TITLE": "Pourquoi l'Explicabilité est Essentielle",
+      "SUBTITLE": "L'XAI transforme vos modèles en partenaires de confiance pour la prise de décision."
+    },
+    "VIDEOS": {
+      "TITLE": "Apprenez avec nos Tutoriels Vidéo",
+      "SUBTITLE": "Des explications visuelles et pratiques pour maîtriser LIME et SHAP rapidement.",
+      "ALL": "Tous",
+      "BEGINNER": "Débutant",
+      "INTERMEDIATE": "Intermédiaire",
+      "ADVANCED": "Avancé"
+    },
+    "CTA": {
+      "TITLE": "Prêt à rendre vos modèles explicables ?",
+      "SUBTITLE": "Commencez dès maintenant votre première analyse XAI avec IBIS-X",
+      "START_EXPERIMENT": "Commencer l'expérience",
+      "EXPLORE_PIPELINE": "Explorer le Pipeline"
+    }
+  },
+  "WEBSHAP": {
+    "TITLE": "Explicabilité WebSHAP",
+    "SUBTITLE": "Valeurs SHAP interactives en temps réel",
+    "COMPUTING": "Calcul des valeurs SHAP...",
+    "NO_DATA": "Aucune donnée disponible pour les explications SHAP",
+    "DETAILS_TITLE": "Détails techniques",
+    "BASE_VALUE": "Valeur de base",
+    "PREDICTION": "Prédiction",
+    "NUM_FEATURES": "Nombre de variables",
+    "REFRESH": "Actualiser",
+    "EXPORT": "Exporter SVG",
+    "EXPORT_TOOLTIP": "Télécharger la visualisation au format SVG",
+    "FEATURE_CONTRIBUTION": "Contribution des variables",
+    "POSITIVE_IMPACT": "Impact positif",
+    "NEGATIVE_IMPACT": "Impact négatif",
+    "ALGORITHM": {
+      "TITLE": "Algorithme WebSHAP",
+      "DESCRIPTION": "WebSHAP utilise l'algorithme Kernel SHAP pour calculer l'importance des features directement dans le navigateur",
+      "ADVANTAGES": "Avantages",
+      "REAL_TIME": "Calculs en temps réel",
+      "INTERACTIVE": "Visualisations interactives",
+      "BROWSER_BASED": "Fonctionne entièrement dans le navigateur"
+    },
+    "INTERPRETATION": {
+      "TITLE": "Interprétation des résultats",
+      "DESCRIPTION": "Chaque barre représente la contribution d'une variable à la prédiction finale",
+      "POSITIVE_BARS": "Les barres vertes indiquent une contribution positive",
+      "NEGATIVE_BARS": "Les barres rouges indiquent une contribution négative",
+      "BAR_LENGTH": "La longueur des barres représente l'ampleur de la contribution"
+    }
+  }
+}

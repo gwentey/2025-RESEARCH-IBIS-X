@@ -1,0 +1,15 @@
+{
+    "mcpServers": {
+      "postgres": {
+        "command": "docker",
+        "args": [
+          "run",
+          "-i",
+          "--rm",
+          "mcp/postgres",
+          "postgresql://ibis_x_user:REPLACE_WITH_DB_PASSWORD@host.docker.internal:5432/ibis_x_db"
+        ]
+      }
+    }
+  }
+  

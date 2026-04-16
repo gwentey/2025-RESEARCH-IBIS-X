@@ -1,0 +1,286 @@
+= Guide d'utilisation : Interface de Chat XAI
+:page-description: Comment utiliser l'interface de chat pour poser des questions sur les explications XAI
+:page-keywords: XAI, Chat, GPT-5, Interface, Questions
+:sectanchors:
+
+== Vue d'ensemble
+
+L'interface de chat XAI permet aux utilisateurs de poser des questions naturelles sur leurs explications d'intelligence artificielle explicable. Powered by GPT-5 Nano, cette interface offre une expérience conversationnelle moderne pour comprendre les décisions des modèles ML.
+
+== Accès à l'interface
+
+=== Depuis les résultats d'explication
+
+. Lancez une explication XAI depuis vos résultats ML
+. Attendez que l'analyse soit terminée (statut "Terminé")
+. L'interface de chat apparaît automatiquement sous les résultats
+. Cliquez sur la zone de saisie pour commencer
+
+=== Éléments de l'interface
+
+==== En-tête du chat
+* **Titre** : "Chat IA Explicable"
+* **Compteur de questions** : Affiche le nombre de questions restantes
+* **Indicateur de statut** : Session active/inactive
+
+==== Zone de messages
+* **Messages utilisateur** : Bulles bleues à droite
+* **Messages IA** : Bulles grises à gauche avec métadonnées
+* **Messages système** : Bulles jaunes centrées
+
+==== Zone de saisie
+* **Champ de texte** : Jusqu'à 500 caractères
+* **Bouton d'envoi** : Avec indicateur de chargement
+* **Aide contextuelle** : "Appuyez sur Entrée pour envoyer"
+
+== Utilisation pas à pas
+
+=== 1. Démarrage de session
+
+Lorsque vous accédez aux résultats XAI, la session de chat s'initialise automatiquement :
+
+[source,text]
+----
+👋 Bienvenue dans le Chat XAI !
+
+Je suis là pour vous aider à comprendre les explications 
+de votre modèle. Vous pouvez me poser des questions sur :
+• L'importance des variables et leur signification
+• Comment interpréter les résultats
+• Les limites du modèle et les améliorations
+• Les implications business
+
+Il vous reste 5 questions. Posez-moi n'importe quoi !
+----
+
+=== 2. Questions suggérées
+
+Pour commencer rapidement, utilisez les questions pré-remplies :
+
+* "Quelles sont les variables les plus importantes dans ce modèle ?"
+* "Comment interpréter ces résultats pour un business ?"
+* "Quelles sont les limites de ce modèle ?"
+* "Comment améliorer la performance de ce modèle ?"
+* "Ces résultats sont-ils fiables ?"
+
+=== 3. Poser une question personnalisée
+
+. Cliquez dans la zone de saisie
+. Tapez votre question (minimum 10 caractères)
+. Appuyez sur *Entrée* ou cliquez sur le bouton d'envoi
+. Attendez la réponse de l'IA (2-10 secondes)
+
+==== Exemples de questions efficaces
+
+.Questions sur l'importance des features
+[source,text]
+----
+"Pourquoi la variable 'age' est-elle si importante ?"
+"Que signifie une importance de 0.34 pour 'income' ?"
+"Comment interpréter l'impact négatif de 'duration' ?"
+----
+
+.Questions sur l'interprétation business
+[source,text]
+----
+"Comment expliquer ces résultats à mon équipe marketing ?"
+"Quelles actions business recommandez-vous ?"
+"Sur quels segments client se concentrer ?"
+----
+
+.Questions sur la fiabilité
+[source,text]
+----
+"Ce modèle est-il assez précis pour la production ?"
+"Quels sont les risques de ces prédictions ?"
+"Comment détecter les biais potentiels ?"
+----
+
+== Types de réponses IA
+
+=== Réponses techniques
+Pour les utilisateurs experts, l'IA fournit :
+* Détails des valeurs SHAP
+* Métriques de performance
+* Suggestions d'optimisation algorithmic
+
+=== Réponses business
+Pour les décideurs, l'IA explique :
+* Implications stratégiques
+* Recommandations d'actions
+* ROI et impacts business
+
+=== Réponses pédagogiques  
+Pour les débutants, l'IA vulgarise :
+* Concepts ML simplifiés
+* Analogies compréhensibles
+* Étapes d'interprétation
+
+== Fonctionnalités avancées
+
+=== Métadonnées des réponses
+
+Chaque réponse IA affiche :
+
+* **Modèle utilisé** : `gpt-5-nano`
+* **Temps de réponse** : `2.3s`
+* **Tokens utilisés** : `145 tokens`
+
+=== Gestion des limites
+
+==== Limite de questions
+* **Maximum** : 5 questions par session d'explication
+* **Compteur** : Visible en permanence dans l'en-tête
+* **Notification** : Alert automatique à la limite
+
+==== Renouvellement de session
+Pour poser plus de questions :
+. Créez une nouvelle demande d'explication  
+. Ou contactez votre administrateur pour augmenter la limite
+
+=== Messages d'état
+
+==== Pendant la frappe de l'IA
+[source,text]
+----
+🤖 Assistant IA
+En train d'écrire...
+● ● ●
+----
+
+==== En cas d'erreur
+[source,text]
+----
+❌ Erreur: La question n'a pas pu être traitée.
+Veuillez réessayer ou reformuler votre question.
+----
+
+== Bonnes pratiques
+
+=== Formulation des questions
+
+.✅ Questions efficaces
+* **Spécifiques** : "Pourquoi la variable X influence-t-elle autant ?"
+* **Contextuelles** : "Pour ce type de clients, que signifie ce score ?"
+* **Actionnables** : "Comment améliorer la précision sur le segment Y ?"
+
+.❌ Questions à éviter
+* **Trop génériques** : "Comment ça marche ?"
+* **Hors contexte** : "Quel est le meilleur algorithme ?"
+* **Trop complexes** : Questions multiples en une seule fois
+
+=== Optimisation des échanges
+
+. **Une question = un concept** : Divisez les questions complexes
+. **Utilisez le contexte** : Référez-vous aux résultats affichés
+. **Progressez logiquement** : Partez du général vers le spécifique
+. **Reformulez si nécessaire** : L'IA peut mieux comprendre une autre formulation
+
+== Résolution de problèmes
+
+=== Problèmes courants
+
+.Chat ne s'initialise pas
+* Vérifiez votre connexion internet
+* Actualisez la page des résultats
+* Contactez le support si le problème persiste
+
+.Réponses de faible qualité
+* Reformulez votre question plus précisément
+* Fournissez plus de contexte
+* Utilisez des termes métier plutôt que techniques
+
+.Limite de questions atteinte
+* Créez une nouvelle explication pour une nouvelle session
+* Consultez la documentation pour des réponses standards
+
+=== Support technique
+
+En cas de problème persistant :
+
+. **Documentation** : Consultez les autres guides XAI
+. **FAQ** : Vérifiez les questions fréquentes
+. **Support** : Contactez l'équipe technique avec :
+  * ID de l'explication
+  * Capture d'écran de l'erreur
+  * Description du problème
+
+== Conseils pour débutants
+
+=== Premier chat
+. Commencez par une question suggérée
+. Lisez attentivement la réponse complète
+. Posez des questions de suivi basées sur la réponse
+. N'hésitez pas à demander des clarifications
+
+=== Progression d'apprentissage
+. **Session 1** : Questions générales sur le modèle
+. **Session 2** : Questions spécifiques sur les features importantes  
+. **Session 3** : Questions business et implications pratiques
+. **Sessions suivantes** : Optimisation et amélioration
+
+== Exemples de conversations complètes
+
+=== Conversation type : Analyse de crédit
+
+.Question 1 (Utilisateur)
+[source,text]
+----
+Quelles sont les 3 variables les plus importantes pour 
+décider d'accorder un crédit ?
+----
+
+.Réponse 1 (IA)
+[source,text]
+----
+D'après l'analyse SHAP de votre modèle, les 3 variables 
+les plus importantes sont :
+
+1. **Revenus annuels** (importance: 0.42)
+   - Impact direct sur la capacité de remboursement
+   - Plus les revenus sont élevés, plus la probabilité 
+     d'accord augmente
+
+2. **Historique de crédit** (importance: 0.28)
+   - Indicateur de fiabilité passée
+   - Un bon historique réduit significativement le risque
+
+3. **Ratio d'endettement** (importance: 0.19)
+   - Pourcentage des revenus déjà engagés
+   - Au-delà de 30%, le risque augmente exponentiellement
+
+Ces variables représentent 89% de la décision du modèle.
+----
+
+.Question 2 (Utilisateur)  
+[source,text]
+----
+Comment expliquer l'impact du ratio d'endettement à 
+mon équipe commerciale ?
+----
+
+.Réponse 2 (IA)
+[source,text]
+----
+Voici comment présenter le ratio d'endettement à votre 
+équipe commerciale :
+
+**Analogie simple** : C'est comme un budget personnel
+- Si quelqu'un gagne 3000€ et paie déjà 1500€ de crédits,
+  il lui reste seulement 1500€ pour vivre
+- Lui prêter plus serait risqué
+
+**Seuils pratiques** :
+- Ratio < 25% : Client sûr (feu vert)
+- Ratio 25-35% : Attention requise (feu orange)  
+- Ratio > 35% : Risque élevé (feu rouge)
+
+**Impact business** :
+- Clients à faible ratio : taux préférentiels possibles
+- Clients à ratio élevé : conditions plus strictes ou refus
+
+Cette approche aide l'équipe à qualifier rapidement 
+les prospects.
+----
+
+Cette interface de chat transforme l'explicabilité IA en dialogue naturel, rendant l'IA accessible à tous les niveaux d'expertise.

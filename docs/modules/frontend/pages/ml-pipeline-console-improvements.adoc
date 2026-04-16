@@ -1,0 +1,164 @@
+= Améliorations de la Console d'Entraînement ML
+:description: Améliorations esthétiques de la console d'entraînement pour afficher les vraies données configurées
+:keywords: ML, Pipeline, Console, Entraînement, Interface utilisateur
+
+== Vue d'ensemble
+
+Cette documentation décrit les améliorations apportées à la console d'entraînement pour rendre l'expérience utilisateur plus authentique et précise en affichant les vraies données de configuration.
+
+== Problèmes identifiés
+
+=== Messages en dur
+* La console affichait toujours "Division train/test (80%/20%)" même quand l'utilisateur configurait 90/10 ou d'autres ratios
+* Les logs de progression n'étaient pas synchronisés avec les vraies étapes d'entraînement
+* Les informations affichées ne correspondaient pas à la configuration réelle de l'utilisateur
+
+=== Indexation des logs
+* Les logs n'étaient pas parfaitement alignés avec les pourcentages de progression
+* Parfois "entraînement terminé" s'affichait à 10% de progression
+* L'illusion n'était pas crédible car trop décalée de la réalité
+
+== Solutions implémentées
+
+=== 1. Logs dynamiques basés sur la configuration
+
+==== Avant
+[source,typescript]
+----
+const logMessages = [
+  { level: 'info', message: 'Division train/test (80%/20%)...' }, // Toujours 80/20
+  { level: 'info', message: 'Normalisation des features numériques...' }, // Même si désactivé
+];
+----
+
+==== Après
+[source,typescript]
+----
+private generateDynamicTrainingLogs(): void {
+  const testSize = this.dataQualityForm.value.testSize || 20;
+  const trainSize = 100 - testSize;
+  const algorithm = this.algorithmForm.value.algorithm || 'random_forest';
+  const scalingEnabled = this.dataQualityForm.value.featureScaling || false;
+  
+  const logMessages = [
+    { level: 'info', message: `Division train/test (${trainSize}%/${testSize}%)...` },
+  ];
+  
+  // Logs conditionnels selon la configuration
+  if (scalingEnabled) {
+    logMessages.push({ level: 'info', message: `Normalisation des features (${scalingMethod})...` });
+  }
+}
+----
+
+=== 2. Synchronisation avec la progression réelle
+
+==== Nouvelle méthode de déclenchement
+[source,typescript]
+----
+private triggerLogsByProgress(progress: number): void {
+  const totalLogs = this.pendingLogMessages.length;
+  const expectedLogIndex = Math.floor((progress / 100) * totalLogs);
+  
+  // Ajouter tous les logs jusqu'à l'index attendu
+  while (this.currentLogIndex <= expectedLogIndex && this.currentLogIndex < totalLogs) {
+    const logMessage = this.pendingLogMessages[this.currentLogIndex];
+    this.addTrainingLog(logMessage.level, logMessage.message);
+    this.currentLogIndex++;
+  }
+}
+----
+
+=== 3. Affichage de la configuration réelle
+
+==== Section de résumé de configuration
+Une nouvelle section affiche les vraies valeurs configurées :
+
+[source,html]
+----
+<div class="config-summary-section">
+  <div class="config-summary-header">
+    <div class="config-title">
+      <mat-icon>settings</mat-icon>
+      <span>Configuration actuelle</span>
+    </div>
+  </div>
+  
+  <div class="config-grid">
+    <div class="config-item">
+      <span class="config-label">Division Train/Test :</span>
+      <span class="config-value">{{ getConfigurationSummary().trainTestSplit }}</span>
+    </div>
+    <!-- ... autres éléments de configuration -->
+  </div>
+</div>
+----
+
+=== 4. Calculs précis des tailles
+
+==== Nouvelles méthodes
+[source,typescript]
+----
+getTrainingSize(): number {
+  const totalSize = this.dataset?.instances_number || 0;
+  const testSize = this.dataQualityForm.value.testSize || 20;
+  const trainRatio = (100 - testSize) / 100;
+  return Math.floor(totalSize * trainRatio);
+}
+
+getTrainTestSplit(): {trainPercent: number, testPercent: number, trainSize: number, testSize: number} {
+  const testSize = this.dataQualityForm.value.testSize || 20;
+  const trainPercent = 100 - testSize;
+  return {
+    trainPercent,
+    testPercent: testSize,
+    trainSize: this.getTrainingSize(),
+    testSize: this.getTestSize()
+  };
+}
+----
+
+== Interface utilisateur
+
+=== Affichage de la configuration
+* Section élégante avec gradient coloré
+* Grid responsive pour l'affichage des paramètres
+* Informations en temps réel de la configuration active
+* Styles cohérents avec le design system existant
+
+=== Console d'entraînement
+* Logs parfaitement synchronisés avec la progression
+* Messages personnalisés selon la configuration
+* Pas de décalage entre l'affichage et la réalité
+
+== Impact utilisateur
+
+=== Expérience améliorée
+* **Crédibilité** : Les utilisateurs voient que le système respecte leur configuration
+* **Transparence** : Affichage clair de ce qui est réellement en cours d'exécution
+* **Confiance** : L'interface correspond exactement à ce qui se passe en arrière-plan
+
+=== Cas d'usage supportés
+* Configuration 90/10, 70/30, ou tout autre ratio train/test
+* Normalisation activée ou désactivée selon le choix utilisateur
+* Différents types d'encodage (One-Hot, Label, etc.)
+* Détection d'outliers optionnelle
+* Types de tâches (classification vs régression)
+
+== Maintenance et évolutivité
+
+=== Structure modulaire
+* Méthodes séparées pour chaque aspect de la configuration
+* Logs générés dynamiquement selon les paramètres
+* Système extensible pour ajouter de nouveaux paramètres
+
+=== Tests recommandés
+. Test avec configuration 90/10
+. Test avec normalisation désactivée
+. Test avec différents algorithmes
+. Test de synchronisation des logs avec progression
+. Test responsive de l'affichage de configuration
+
+== Conclusion
+
+Ces améliorations transforment la console d'entraînement d'un affichage statique et générique en une interface dynamique et personnalisée qui reflète fidèlement la configuration de l'utilisateur. L'expérience utilisateur est maintenant authentique et crédible, renforçant la confiance dans le système.

@@ -1,0 +1,126 @@
+= Optimisation des Liens d'Arbre - Visualisation Interactive
+:page-tags: optimization, links, zoom, tree-visualization
+:page-description: Résolution des problèmes de liens dans la visualisation d'arbre
+
+== Problèmes Résolus
+
+=== 1. Taille des Liens qui Change avec le Zoom
+
+**Problème** : Les liens grossissaient proportionnellement au zoom, devenant énormes lors du zoom avant.
+
+**Cause** : Le SVG était mis à l'échelle avec le conteneur, incluant le `stroke-width`.
+
+**Solution** :
+[source,typescript]
+----
+// Calculer l'épaisseur ajustée en fonction du zoom
+const currentZoom = this.whiteboardState?.zoom || 1;
+const baseStrokeWidth = 3;
+const adjustedStrokeWidth = baseStrokeWidth / currentZoom;
+
+// Appliquer l'épaisseur ajustée
+line.setAttribute('stroke-width', adjustedStrokeWidth.toString());
+----
+
+**Résultat** : Les liens conservent maintenant une épaisseur visuelle constante quel que soit le niveau de zoom.
+
+=== 2. Trait Isolé au Milieu du Graphe
+
+**Problème** : Un trait apparaissait au milieu sans connexion avec aucun nœud.
+
+**Causes Possibles** :
+1. Ligne de test oubliée dans le code
+2. Connexion avec des indices invalides
+3. Ligne orpheline sans attributs parent/child
+
+**Solutions Appliquées** :
+
+1. **Suppression des lignes de test** :
+   - Nettoyage complet du code de debug
+   - Suppression de toutes les lignes de test
+
+2. **Validation des indices** :
+   [source,typescript]
+   ----
+   if (parentIndex < 0 || parentIndex >= nodes.length) {
+     console.error(`❌ Index parent invalide: ${parentIndex}`);
+     return;
+   }
+   ----
+
+3. **Détection des lignes orphelines** :
+   [source,typescript]
+   ----
+   if (!parent || !child) {
+     console.error(`❌ Ligne sans parent/child !`);
+     l.remove();
+     return;
+   }
+   ----
+
+4. **Nettoyage complet du SVG** :
+   [source,typescript]
+   ----
+   // Vider TOUS les éléments du SVG
+   while (svg.firstChild) {
+     svg.removeChild(svg.firstChild);
+   }
+   ----
+
+== Optimisations Additionnelles
+
+=== Mise à Jour des Liens lors du Zoom
+
+Les liens sont maintenant recalculés à chaque changement de zoom pour maintenir l'épaisseur correcte :
+
+[source,typescript]
+----
+private updateTreeTransform(state: any): void {
+  // ... transformation du wrapper ...
+  
+  // Mettre à jour les liens pour ajuster leur épaisseur
+  this.updateTreeLinks();
+}
+----
+
+=== Attributs de Données
+
+Chaque lien contient maintenant des attributs pour faciliter le debug :
+
+[source,typescript]
+----
+line.setAttribute('data-parent', parentIndex.toString());
+line.setAttribute('data-child', childIndex.toString());
+----
+
+=== Validation des Coordonnées
+
+Vérifications multiples pour éviter les lignes invalides :
+
+1. Coordonnées non-NaN
+2. Longueur > 1px
+3. Indices valides
+4. Nœuds existants
+
+== Performance
+
+- **Avant** : Liens recalculés uniquement lors du drag
+- **Après** : Liens recalculés lors du zoom/pan/drag
+- **Impact** : Négligeable grâce à l'optimisation du DOM
+
+== Debug
+
+Pour identifier un trait isolé :
+
+1. Ouvrir la console du navigateur
+2. Chercher les logs `❌ Ligne sans parent/child`
+3. Vérifier les coordonnées affichées
+4. Inspecter l'élément dans le DOM
+
+== Conclusion
+
+Les liens sont maintenant :
+- ✅ Taille constante quel que soit le zoom
+- ✅ Sans éléments parasites
+- ✅ Avec validation complète
+- ✅ Performance optimisée

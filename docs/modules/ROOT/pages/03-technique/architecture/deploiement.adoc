@@ -1,0 +1,129 @@
+= Topologie de déploiement
+:description: Kubernetes — namespace ibis-x, Deployments, Services, Ingress
+
+Tous les composants sont déployés dans le namespace Kubernetes **`ibis-x`**. Gestion via https://kustomize.io[Kustomize] : `k8s/base/` + overlays `k8s/overlays/minikube/` (local) ou `k8s/overlays/azure/` (prod).
+
+== Topologie logique
+
+[mermaid]
+----
+flowchart TB
+    internet([🌐 Utilisateur web])
+    subgraph cluster [Cluster Kubernetes — namespace ibis-x]
+        ingress[Ingress Controller<br/>nginx / AGIC]
+
+        subgraph app [Couche applicative]
+            fe[frontend-deployment<br/>nginx · port 80]
+            gw[api-gateway-deployment<br/>FastAPI · port 8088]
+            sel[service-selection-deployment<br/>port 8081]
+            ml[ml-pipeline-deployment<br/>port 8082]
+            xai[xai-engine-deployment<br/>port 8083]
+        end
+
+        subgraph workers [Workers]
+            mlw[ml-pipeline-worker-deployment<br/>Celery ml_queue + ai_queue]
+            xaiw[xai-engine-worker-deployment<br/>Celery xai_queue]
+        end
+
+        subgraph data [Couche données]
+            pg[(postgresql-statefulset<br/>PVC 10Gi)]
+            redis[(redis-statefulset)]
+            minio[(minio-statefulset<br/>PVC 50Gi — local uniquement)]
+        end
+
+        subgraph jobs [Jobs Alembic]
+            migGw[api-gateway-migration-job]
+            migSel[service-selection-migration-job]
+            migMl[ml-pipeline-migration-job]
+            migXai[xai-engine-migration-job]
+        end
+    end
+
+    blobAzure[(Azure Blob Storage<br/>prod uniquement)]
+
+    internet --> ingress
+    ingress -->|/ → frontend| fe
+    ingress -->|/api → gateway| gw
+    gw -.reverse proxy.-> sel
+    gw -.reverse proxy.-> ml
+    gw -.reverse proxy.-> xai
+    ml --> redis
+    xai --> redis
+    redis --> mlw
+    redis --> xaiw
+    sel & ml & xai & mlw & xaiw --> pg
+    sel & ml & xai & mlw & xaiw -.local.-> minio
+    sel & ml & xai & mlw & xaiw -.prod.-> blobAzure
+    migGw & migSel & migMl & migXai -->|initContainer before deploy| pg
+----
+
+== Skaffold — 6 artefacts
+
+Déclarés dans `skaffold.yaml`, construits via Docker multi-stage :
+
+. `ibis-x-frontend` (nginx + Angular build)
+. `ibis-x-api-gateway`
+. `ibis-x-service-selection`
+. `ibis-x-ml-pipeline` (même image pour service web + worker Celery)
+. `ibis-x-xai-engine` (service web)
+. `ibis-x-xai-engine-worker` (image séparée via `Dockerfile.worker`)
+
+== Configuration
+
+* *ConfigMaps* : URLs internes, flags, paramètres non sensibles, injectés via `envFrom`.
+* *Secrets K8s* : `jwt-secrets`, `oauth-secrets`, `kaggle-secrets`, `openai-secret`, credentials BDD/MinIO.
+* *En local* : `update-local-secrets.py` synchronise `.env` → `k8s/overlays/minikube/secrets.yaml`.
+* *En prod* : Terraform provisionne AKS + secrets via Azure Key Vault.
+
+== Ports (externes vs internes)
+
+[cols="2,1,1,2"]
+|===
+| Composant | Port conteneur | Port-forward local | Accès prod
+
+| frontend (nginx)
+| 80
+| 8080
+| https://<domain>/
+
+| api-gateway
+| 8088
+| 9000
+| https://<domain>/api/
+
+| service-selection
+| 8081
+| —
+| interne cluster
+
+| ml-pipeline-service
+| 8082
+| —
+| interne cluster
+
+| xai-engine-service
+| 8083
+| —
+| interne cluster
+
+| PostgreSQL
+| 5432
+| —
+| interne cluster
+
+| Redis
+| 6379
+| —
+| interne cluster
+
+| MinIO API / console
+| 9000 / 9001
+| —
+| local uniquement
+|===
+
+== Lectures complémentaires
+
+* xref:04-operationnel/deploiement/azure-terraform.adoc[Déploiement Azure + Terraform]
+* xref:04-operationnel/installation/local-minikube.adoc[Démarrage local Minikube]
+* xref:03-technique/services/api-gateway.adoc[Services — détails par service]

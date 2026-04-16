@@ -1,0 +1,224 @@
+= Guide IA pour Datasets : Assistant Intelligent ML
+:navtitle: Guide IA Datasets
+:description: Documentation du nouveau composant Guide IA qui remplace l'onglet Analytics pour offrir des recommandations ML personnalisées
+
+== Vue d'ensemble
+
+Le **Guide IA** est un nouveau composant intelligent qui remplace l'ancien onglet "Analytics" dans la page de détail des datasets. Il utilise l'intelligence artificielle pour analyser automatiquement un dataset et fournir des recommandations personnalisées sur la meilleure approche ML à adopter.
+
+== Fonctionnalités Principales
+
+=== Analyse Automatique du Dataset
+L'IA analyse automatiquement :
+
+* **Métadonnées** : Nom, objectif, domaine, tâches ML
+* **Structure** : Nombre d'instances, features, fichiers
+* **Qualité** : Pourcentage de données manquantes, anonymisation
+* **Contexte** : Année, disponibilité, domaine d'application
+
+=== Recommandations ML Intelligentes
+
+==== Tâche Recommandée
+L'IA détermine automatiquement entre :
+
+* **Classification** : Pour prédire des catégories ou classes distinctes
+* **Régression** : Pour prédire des valeurs numériques continues
+
+==== Algorithme Recommandé
+Choix intelligent entre :
+
+* **Decision Tree** : Pour datasets modérés, résultats interprétables
+* **Random Forest** : Pour datasets volumineux, meilleure robustesse
+
+=== Interface Utilisateur Moderne
+
+==== Hero Section
+* Icône gradient moderne avec effet d'ombre
+* Call-to-action claire "Analyser avec l'IA"
+* Description explicative du processus
+
+==== Processus d'Analyse Animé
+Étapes visuelles avec indicateurs de progression :
+
+1. **Lecture des métadonnées** 📖
+2. **Analyse des patterns** 📊  
+3. **Génération des recommandations** 💡
+
+==== Résultats Structurés
+* **Analyse du Dataset** : Résumé de ce que l'IA comprend
+* **Recommandations ML** : Tâche et algorithme avec justifications
+* **Points Clés** : Insights essentiels à retenir
+* **Points d'Attention** : Défis potentiels à anticiper
+
+== Architecture Technique
+
+=== Composants
+
+[source,typescript]
+----
+DatasetAIGuideComponent
+├── Template inline avec styles intégrés
+├── Interface moderne style Stripe/Linear
+├── Animations de progression fluides
+└── Actions CTA pour démarrer le pipeline
+----
+
+=== Service Associé
+
+[source,typescript]
+----
+DatasetAIService
+├── analyzeDataset() - Analyse complète
+├── getAnalysis() - Récupération d'analyse existante
+└── generateMockAnalysis() - Version de développement
+----
+
+=== Modèles de Données
+
+[source,typescript]
+----
+interface DatasetAIRequest {
+  dataset_id: string;
+  dataset_metadata: DatasetMetadata;
+  analysis_type: 'dataset_analysis' | 'ml_recommendations';
+}
+
+interface DatasetAIResponse {
+  request_id: string;
+  analysis: AIAnalysis;
+  generated_at: string;
+}
+----
+
+== Logique d'Analyse Intelligente
+
+=== Détermination de la Tâche ML
+
+L'algorithme suit cette logique :
+
+[source,typescript]
+----
+if (dataset.task.includes('classification')) {
+  return 'classification';
+} else if (dataset.task.includes('regression')) {
+  return 'regression';  
+} else if (isEducationDomain) {
+  return 'classification'; // Domaine éducatif = souvent classification
+} else {
+  return 'classification'; // Par défaut
+}
+----
+
+=== Sélection de l'Algorithme
+
+[source,typescript]
+----
+if (instances > 10000 && features > 20) {
+  return 'random_forest'; // Volume important
+} else {
+  return 'decision_tree'; // Dataset modéré
+}
+----
+
+== Exemples de Recommandations
+
+=== Dataset Éducation (Classification)
+```
+📊 Analyse : Dataset éducation avec 150 instances, domaine spécialisé
+🎯 Tâche : Classification (prédiction de réussite/échec)
+⚙️ Algorithme : Decision Tree (résultats interprétables)
+💡 Avantage : Logique de décision claire pour comprendre les facteurs de réussite
+```
+
+=== Large Dataset (Régression)
+```
+📊 Analyse : Dataset volumineux avec 50K instances, 100 features  
+🎯 Tâche : Régression (prédiction de valeurs continues)
+⚙️ Algorithme : Random Forest (robustesse sur gros volume)
+💡 Avantage : Meilleure généralisation et réduction du sur-apprentissage
+```
+
+== Internationalisation
+
+=== Clés de Traduction Ajoutées
+
+[source,json]
+----
+"DATASET_DETAIL": {
+  "AI_GUIDE": {
+    "TITLE": "Guide IA Personnalisé",
+    "SUBTITLE": "Notre IA analyse et recommande...",
+    "ANALYZE_BUTTON": "Analyser avec l'IA",
+    "RECOMMENDED_TASK": "Tâche Recommandée",
+    "RECOMMENDED_ALGORITHM": "Algorithme Recommandé",
+    "START_PIPELINE": "Démarrer le Pipeline ML"
+  }
+}
+----
+
+=== Support Multilingue
+* ✅ **Français** : Interface complète traduite
+* ✅ **Anglais** : Traductions équivalentes
+* ✅ **Chips** : "Classification/Regression" traduits dynamiquement
+
+== Design System
+
+=== Couleurs Sémantiques
+* **Classification** : Vert (`#388e3c`) - Catégorisation
+* **Régression** : Bleu (`#1976d2`) - Valeurs continues
+* **Decision Tree** : Orange (`#f57c00`) - Simplicité
+* **Random Forest** : Vert foncé (`#388e3c`) - Robustesse
+
+=== Animations Subtiles
+* **Hero hover** : Translation et ombrage
+* **Étapes** : Activation progressive avec couleurs
+* **Cards** : Effet de profondeur au survol
+
+== Avantages par rapport à Analytics
+
+=== Avant (Analytics)
+* ❌ Tables statiques de corrélations
+* ❌ Patterns complexes difficiles à comprendre  
+* ❌ Aucune recommandation actionnable
+* ❌ Interface technique peu accessible
+
+=== Après (Guide IA)
+* ✅ **Analyse intelligente** avec recommandations
+* ✅ **Interface conversationnelle** moderne
+* ✅ **Conseils actionnables** pour démarrer le ML
+* ✅ **Expérience guidée** pour utilisateurs non-experts
+
+== Évolutions Futures
+
+=== Court Terme
+* Intégration vraie API OpenAI (actuellement mock)
+* Chat interactif pour questions supplémentaires
+* Export des recommandations en PDF
+
+=== Moyen Terme
+* Analyse de la qualité des features individuelles
+* Suggestions d'optimisation des hyperparamètres
+* Prédictions de performance attendue
+
+=== Long Terme
+* Apprentissage des préférences utilisateur
+* Recommandations basées sur l'historique
+* Intégration avec pipeline AutoML
+
+== Tests et Validation
+
+=== Scénarios de Test
+- [ ] Analysis avec dataset éducation
+- [ ] Recommendations pour gros datasets
+- [ ] Interface responsive mobile/desktop
+- [ ] Traductions FR/EN complètes
+- [ ] Gestion d'erreurs et états de chargement
+
+=== Métriques de Succès
+* **Adoption** : % d'utilisateurs utilisant le Guide IA
+* **Conversion** : % lançant le pipeline après recommandation  
+* **Satisfaction** : Feedback sur pertinence des conseils
+
+== Conclusion
+
+Le Guide IA transforme une section technique statique en un assistant intelligent qui guide réellement les utilisateurs vers les meilleures décisions ML. Cette évolution s'inscrit parfaitement dans la mission d'IBIS-X : rendre l'IA accessible aux non-experts.

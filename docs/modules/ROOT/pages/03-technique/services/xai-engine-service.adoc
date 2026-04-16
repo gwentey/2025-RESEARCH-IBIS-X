@@ -1,0 +1,117 @@
+= Service — xai-engine-service
+:description: Application de techniques XAI (SHAP, LIME, LLM) sur modèles entraînés
+:toc: left
+
+== Rôle
+
+Générer des **explications** d'un modèle entraîné :
+
+* Attribution d'importance des features via *SHAP*.
+* Explication locale d'une prédiction via *LIME*.
+* Narratives contextuelles via *LLM* (OpenAI).
+* Conversation limitée (chat) autour d'une explication — max 5 questions par session.
+
+== Architecture — worker dédié
+
+Particularité : le worker Celery utilise une **image séparée** (`Dockerfile.worker`) pour embarquer les dépendances lourdes (SHAP, LIME, scikit-learn) sans alourdir l'API.
+
+[cols="1,2"]
+|===
+| Composant | Image
+
+| Service web (`xai-engine-deployment`) | `ibis-x-xai-engine` (Dockerfile principal)
+| Worker Celery (`xai-engine-worker-deployment`) | *`ibis-x-xai-engine-worker`* (Dockerfile.worker)
+|===
+
+Artefacts Skaffold : 2 entrées distinctes dans `skaffold.yaml`.
+
+== Queue Celery — `xai_queue`
+
+**Toutes** les tâches XAI sont routées sur **l'unique queue `xai_queue`**. Il n'existe *pas* de `llm_queue`.
+
+Commande réelle du worker (cf. `k8s/base/xai-engine/celery-worker-deployment.yaml`) :
+
+[source,bash]
+----
+celery -A app.core.celery_app worker \
+    --loglevel=info \
+    --queues=xai_queue \
+    --concurrency=2 \
+    --hostname=xai-worker@%h
+----
+
+Tâches disponibles (routées sur `xai_queue`) :
+
+[cols="1,3"]
+|===
+| Tâche | Description
+
+| `generate_explanation_task` | Dispatcher principal — oriente vers SHAP, LIME ou LLM selon `method`.
+| `process_shap_explanation` | Calcul SHAP (TreeExplainer / KernelExplainer selon modèle).
+| `process_lime_explanation` | Calcul LIME sur une instance.
+| `generate_llm_explanation` | Explication narrative OpenAI à partir d'un contexte SHAP/LIME.
+| `process_chat_question` | Question utilisateur (compte dans la limite 5/session).
+| `generate_explanation_with_precalculated_shap` | Optimisation : réutilise des valeurs SHAP déjà calculées pour produire une explication narrative sans recalcul.
+|===
+
+== Modèle de données
+
+Tables principales :
+
+* *`explanation_requests`* : un enregistrement par demande (méthode, statut, résultats JSONB).
+* *`chat_messages`* : messages d'une session de chat, rattachés à une `explanation_request`.
+
+La limite de 5 questions est appliquée au niveau applicatif dans `process_chat_question` (contrôle `SELECT COUNT(*) FROM chat_messages WHERE explanation_request_id = ... AND role = 'user'`).
+
+== Endpoints principaux
+
+[cols="1,1,3"]
+|===
+| Méthode | Route | Rôle
+
+| POST | `/explanations` | Créer une demande d'explication (déclenche `generate_explanation_task`)
+| GET | `/explanations/{id}` | Statut + résultats (polling)
+| POST | `/explanations/{id}/chat` | Poser une question (queue `xai_queue`, tâche `process_chat_question`)
+| GET | `/explanations/{id}/chat` | Historique de conversation
+| GET | `/experiments/{id}/explanations` | Toutes les explications d'une expérience
+|===
+
+== Bibliothèques XAI (versions verrouillées)
+
+[cols="1,1,2"]
+|===
+| Lib | Version | Usage
+
+| `shap`
+| 0.43.0
+| SHAP values (TreeExplainer, KernelExplainer)
+
+| `lime`
+| 0.2.0.1
+| Explications locales
+
+| `scikit-learn`
+| 1.3.2
+| Chargement des modèles entraînés
+
+| `openai`
+| 1.51.2
+| Narratives LLM (chat + génération)
+|===
+
+== Optimisation SHAP pré-calculé
+
+Pour économiser du temps de calcul lors de questions narratives successives, `xai-engine-service` peut **réutiliser** des valeurs SHAP déjà calculées via la tâche `generate_explanation_with_precalculated_shap`. La logique de détection et de chargement est dans `app/services/` (pas dans la tâche elle-même).
+
+Historique : voir `docs/ARCHIVE/backend_xai_use_precalculated_shap.md` (note d'implémentation originale archivée).
+
+== Dépendances
+
+* PostgreSQL (`ibis_x_db`) — `alembic_version_xai`.
+* Redis — broker Celery.
+* MinIO / Azure Blob — lecture de `artifact_uri` (modèle entraîné).
+* OpenAI API — `OPENAI_API_KEY` requis.
+
+== Frontend — exécution SHAP côté client (WebSHAP)
+
+Pour les datasets légers, le frontend peut exécuter SHAP directement dans le navigateur via https://github.com/poloclub/webshap[WebSHAP]. Utilisé pour les explications instantanées (< 1s) sur petites instances. Les explications backend restent nécessaires pour les cas complexes.

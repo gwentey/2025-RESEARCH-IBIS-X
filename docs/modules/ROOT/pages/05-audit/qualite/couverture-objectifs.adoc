@@ -1,0 +1,64 @@
+= Objectifs de couverture de code
+:description: Cibles par service et seuils CI
+
+== Cibles PoC
+
+[cols="2,1,1,3"]
+|===
+| Composant | Cible PoC | Seuil CI | Notes
+
+| api-gateway | 70 % | 60 % | Sécurité critique — priorité haute
+| service-selection | 60 % | 50 % | Large surface API
+| ml-pipeline-service | 60 % | 50 % | Logique preprocessing critique
+| xai-engine-service | 55 % | 45 % | SHAP/LIME souvent difficiles à couvrir finement
+| frontend (unit) | 50 % | 40 % | Services + guards + pipes prioritaires
+|===
+
+== Calcul
+
+Backend (Python) :
+
+[source,bash]
+----
+cd {service}
+pytest --cov=app --cov-report=term-missing --cov-report=html
+# Rapport HTML : htmlcov/index.html
+----
+
+Frontend (Angular) :
+
+[source,bash]
+----
+cd frontend
+ng test --code-coverage --watch=false --browsers=ChromeHeadless
+# Rapport : coverage/index.html
+----
+
+== Règles
+
+* Le **seuil CI** fait échouer le workflow GitHub Actions s'il n'est pas atteint.
+* La **cible** est un objectif pédagogique pour le rendu de PoC.
+* Exclusions documentées (ex. `app/main.py` trivial) : via `.coveragerc` / `coverage` ignores.
+
+== Évolution post-PoC
+
+[cols="2,1,1"]
+|===
+| Composant | Cible v1.0 | Seuil CI v1.0
+| api-gateway | 85 % | 80 %
+| service-selection | 75 % | 70 %
+| ml-pipeline-service | 75 % | 70 %
+| xai-engine-service | 70 % | 65 %
+| frontend | 70 % | 65 %
+|===
+
+== Métriques qualitatives complémentaires
+
+* Ratio tests d'intégration / tests unitaires : cible 1:4 (approximatif).
+* Temps d'exécution de la suite : < 5 min backend / < 3 min frontend unit.
+* Flakiness : 0 test intermittent en CI (règle absolue).
+
+== Références
+
+* xref:05-audit/qualite/strategie-tests.adoc[Stratégie]
+* xref:05-audit/qualite/plan-tests.adoc[Matrice des cas]

@@ -1,0 +1,289 @@
+= Page d'Explication XAI
+:description: Guide utilisateur complet de la page d'explication de l'Intelligence Artificielle Explicable (XAI)
+:keywords: XAI, LIME, SHAP, explicabilité, intelligence artificielle
+:page-layout: page
+
+== Vue d'ensemble
+
+La page d'Explication XAI d'IBIS-X offre une introduction complète à l'Intelligence Artificielle Explicable. Cette page éducative présente les concepts clés, les méthodes principales (LIME et SHAP), et leurs applications pratiques.
+
+== Accès à la Page
+
+=== Navigation
+
+Pour accéder à la page d'explication XAI :
+
+1. Connectez-vous à IBIS-X
+2. Dans le menu de navigation principal, cliquez sur **"Explications XAI"**
+3. Vous serez dirigé vers la page complète d'explication
+
+=== URL Directe
+
+La page est accessible directement via l'URL : `/xai-explanation`
+
+== Sections de la Page
+
+=== Section Héros (Hero)
+
+La section d'introduction présente :
+
+* **Badge animé** : "Intelligence Artificielle Explicable"
+* **Titre principal** : Message accrocheur sur l'importance de l'explicabilité
+* **Sous-titre descriptif** : Introduction à LIME et SHAP
+* **Boutons d'action** :
+  - *Essayer maintenant* : Redirige vers les expériences ML
+  - *En savoir plus* : Ouvre la documentation complète
+
+* **Aperçu visuel** : Exemple concret d'explication XAI avec :
+  - Prédiction simulée (Approbation de prêt)
+  - Barre de confiance (94%)
+  - Mini-graphique d'importance des caractéristiques
+
+=== Méthodes XAI : LIME vs SHAP
+
+==== Interface à Onglets
+
+Trois onglets interactifs permettent d'explorer :
+
+1. **LIME** (🔍) : Explications locales
+2. **SHAP** (⚖️) : Explications basées sur la théorie des jeux
+3. **Comparaison** (🔄) : Analyse comparative
+
+==== Contenu LIME
+
+* **Nom complet** : Local Interpretable Model-agnostic Explanations
+* **Description** : Technique d'explication locale pour décisions individuelles
+* **Fonctionnement** : Perturbation des données autour d'une instance
+* **Points forts** :
+  - Explications locales précises
+  - Compatible avec tout algorithme
+  - Interprétation humaine naturelle
+  - Détection de biais locaux
+
+* **Cas d'usage** :
+  - Décisions médicales critiques
+  - Approbation de crédit
+  - Détection de fraude
+  - Classification d'images
+
+* **Exemple visuel** : Analyse d'approbation de prêt avec barres d'importance
+
+==== Contenu SHAP
+
+* **Nom complet** : SHapley Additive exPlanations
+* **Description** : Méthode basée sur la théorie des jeux de Shapley
+* **Fonctionnement** : Calcul de contributions équitables des caractéristiques
+* **Points forts** :
+  - Contributions mathématiquement justifiées
+  - Explications globales et locales
+  - Propriétés théoriques garanties
+  - Visualisations avancées
+
+* **Cas d'usage** :
+  - Analyse de performance produit
+  - Optimisation marketing
+  - Recherche scientifique
+  - Modèles de pricing
+
+* **Exemple visuel** : Graphique en cascade (waterfall) pour prix immobilier
+
+==== Comparaison LIME vs SHAP
+
+Tableau comparatif présentant :
+
+* **Portée** : Local vs Global/Local
+* **Approche** : Perturbation vs Théorie des jeux
+* **Utilisation optimale** : Décisions individuelles vs Analyse globale
+
+===== Guide d'Utilisation
+
+Scénarios recommandés pour chaque méthode :
+
+**Utilisez LIME quand :**
+- Explication d'une décision spécifique requise
+- Impact direct sur un individu
+- Besoin d'explication simple pour non-experts
+
+**Utilisez SHAP quand :**
+- Analyse de performance globale du modèle
+- Optimisation des caractéristiques importantes
+- Recherche ou analyse scientifique
+
+=== Démonstration Interactive
+
+Section dédiée à l'expérimentation :
+
+* **Titre** : "Démonstration Interactive"
+* **Contrôles** :
+  - Bouton Play/Pause pour la démonstration
+  - Informations contextuelles
+* **Zone de visualisation** : Espace réservé pour futures interactions
+* **Note** : Actuellement en mode placeholder avec message informatif
+
+=== Bénéfices de l'Explicabilité
+
+Grille de 6 cartes présentant les avantages clés :
+
+1. **Transparence Totale** (🔍)
+   - Compréhension complète des décisions modèle
+
+2. **Confiance Renforcée** (🤝)
+   - Validation de la logique des prédictions
+
+3. **Conformité Réglementaire** (📋)
+   - Respect des exigences légales (RGPD, secteurs réglementés)
+
+4. **Débogage Intelligent** (🔧)
+   - Détection des biais et erreurs de données
+
+5. **Amélioration Continue** (📈)
+   - Optimisation basée sur l'importance des caractéristiques
+
+6. **Communication Facilitée** (💬)
+   - Présentation claire aux parties prenantes
+
+=== Tutoriels Vidéo
+
+==== Filtres par Niveau
+
+Boutons de filtrage par difficulté :
+- **Tous** : Affichage complet
+- **Débutant** : Concepts de base
+- **Intermédiaire** : Applications pratiques
+- **Avancé** : Théorie et optimisations
+
+==== Catalogue Vidéo
+
+4 tutoriels proposés :
+
+1. **Introduction à l'IA Explicable** (4:32)
+   - Niveau : Débutant
+   - Sujets : XAI, Introduction, Importance
+
+2. **LIME en Profondeur** (6:15)
+   - Niveau : Intermédiaire
+   - Sujets : LIME, Explications locales, Cas pratiques
+
+3. **SHAP : Guide Complet** (8:45)
+   - Niveau : Avancé
+   - Sujets : SHAP, Théorie des jeux, Visualisations
+
+4. **Exemples Pratiques XAI** (5:28)
+   - Niveau : Intermédiaire
+   - Sujets : Cas d'usage, Exemples réels, Bonnes pratiques
+
+=== Section d'Appel à l'Action (CTA)
+
+Section finale avec fond sombre et design premium :
+
+* **Titre principal** : "Prêt à rendre vos modèles explicables ?"
+* **Sous-titre** : Invitation à commencer avec IBIS-X
+* **Actions proposées** :
+  - *Commencer l'expérience* : Bouton principal vert
+  - *Explorer le Pipeline* : Bouton secondaire
+
+== Fonctionnalités Techniques
+
+=== Responsive Design
+
+La page s'adapte automatiquement aux différentes tailles d'écran :
+
+* **Desktop** : Layout en grille à deux colonnes pour les sections principales
+* **Tablet** : Adaptation des grilles et ajustement des espaces
+* **Mobile** : Layout en colonne unique avec optimisation tactile
+
+=== Accessibilité
+
+* **Navigation clavier** : Support complet des touches Tab/Entrée
+* **Animations réduites** : Respect des préférences utilisateur `prefers-reduced-motion`
+* **Contraste** : Couleurs conformes aux standards WCAG
+* **Focus visuel** : Indicateurs clairs pour la navigation clavier
+
+=== Internationalisation
+
+Support complet français/anglais avec traductions pour :
+
+* Tous les textes d'interface
+* Contenus éducatifs
+* Messages d'aide et tooltips
+* Termes techniques avec équivalents
+
+=== Performance
+
+Optimisations implémentées :
+
+* **Composant autonome** : Chargement à la demande (lazy loading)
+* **Images optimisées** : Formats et tailles adaptées
+* **CSS modulaire** : Styles scopés au composant
+* **Animations performantes** : Transitions CSS optimisées
+
+== Intégration avec IBIS-X
+
+=== Navigation
+
+* **Menu principal** : Lien "Explications XAI" dans la sidebar
+* **Breadcrumb** : Navigation contextuelle
+* **Boutons d'action** : Redirections vers autres modules
+
+=== Liens vers Autres Modules
+
+* **Pipeline ML** : Accès direct au wizard d'entraînement
+* **Expériences** : Consultation des résultats XAI existants
+* **Profil** : Gestion des crédits pour analyses XAI
+
+=== État d'Authentification
+
+* **Utilisateurs connectés** : Accès complet à la page
+* **Redirections intelligentes** : Vers les expériences et fonctionnalités personnalisées
+
+== Notes de Développement
+
+=== Structure de Fichiers
+
+[source]
+----
+/pages/xai-explanation/
+├── xai-explanation.component.ts      // Logique du composant
+├── xai-explanation.component.html    // Template HTML
+└── xai-explanation.component.scss    // Styles CSS
+----
+
+=== Dépendances Angular
+
+Le composant utilise :
+
+* Angular Material (boutons, cartes, chips, tabs)
+* TranslateModule pour l'internationalisation
+* Router pour la navigation
+* Modules Common et de base Angular
+
+=== Évolutions Futures
+
+Améliorations prévues :
+
+* **Démonstration interactive réelle** : Remplacement du placeholder
+* **Vidéos intégrées** : Player vidéo avec contrôles avancés
+* **Exemples personnalisés** : Basés sur les données utilisateur
+* **Quiz interactif** : Validation des connaissances acquises
+
+== Maintenance
+
+=== Mise à Jour du Contenu
+
+Pour modifier le contenu éducatif :
+
+1. Éditer le fichier TypeScript pour les données
+2. Mettre à jour les traductions dans `/assets/i18n/`
+3. Ajuster les styles si nécessaire
+
+=== Ajout de Nouvelles Sections
+
+Processus recommandé :
+
+1. Définir la structure de données dans le composant
+2. Créer le template HTML correspondant
+3. Ajouter les styles SCSS avec classes appropriées
+4. Tester la responsive et l'accessibilité
+5. Mettre à jour cette documentation
+
+Cette page constitue un point d'entrée éducatif essentiel pour les utilisateurs d'IBIS-X souhaitant comprendre et utiliser l'explicabilité dans leurs projets de machine learning.

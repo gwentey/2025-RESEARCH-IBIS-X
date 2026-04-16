@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xai-engine
+  namespace: ibis-x
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xai-engine
+  template:
+    metadata:
+      labels:
+        app: xai-engine
+    spec:
+      initContainers:
+      # 🚀 NOUVEAU: Init container pour attendre PostgreSQL
+      - name: wait-for-postgres
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+          - |
+            echo "⏳ Attente de PostgreSQL..."
+            until nc -z postgresql-service.ibis-x.svc.cluster.local 5432; do
+              echo "PostgreSQL pas encore prêt..."
+              sleep 2
+            done
+            echo "✅ PostgreSQL est prêt!"
+      
+      # 🚀 NOUVEAU: Init container pour exécuter les migrations XAI personnalisées
+      - name: run-migrations
+        image: ibis-x-xai-engine:latest
+        imagePullPolicy: IfNotPresent
+        command: ["python", "migrate_xai.py"]
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: xai-engine-secrets
+              key: database-url
+        - name: PYTHONPATH
+          value: "/app"
+        workingDir: /app
+      
+      containers:
+      - name: xai-engine
+        image: ibis-x-xai-engine:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8083
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: xai-engine-secrets
+              key: database-url
+        - name: CELERY_BROKER_URL
+          value: "redis://redis:6379/0"
+        - name: CELERY_RESULT_BACKEND
+          value: "redis://redis:6379/0"
+        - name: STORAGE_TYPE
+          value: "minio"
+        - name: MINIO_ENDPOINT
+          value: "http://minio-service:80"
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: xai-engine-secrets
+              key: minio-access-key
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: xai-engine-secrets
+              key: minio-secret-key
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: xai-engine-secrets
+              key: openai-api-key
+        - name: API_GATEWAY_URL
+          value: "http://api-gateway-service.ibis-x.svc.cluster.local"
+        - name: ML_PIPELINE_URL
+          value: "http://ml-pipeline:8082"
+        - name: SERVICE_SELECTION_URL
+          value: "http://service-selection-service:80"
+        - name: PYTHONPATH
+          value: "/app"
+        - name: MPLCONFIGDIR
+          value: "/tmp/matplotlib"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "300m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8083
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8083
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 10
+          failureThreshold: 5

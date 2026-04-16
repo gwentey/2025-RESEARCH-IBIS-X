@@ -1,0 +1,60 @@
+= Principes éthiques IA appliqués dans IBIS-X
+:description: Cadre éthique pour l'utilisation des modèles et explications
+
+IBIS-X étant *par nature* une plateforme d'IA explicable, l'éthique est centrale. Les principes ci-dessous guident les décisions produit et techniques.
+
+== Principes directeurs
+
+=== 1. Explicabilité systématique
+
+* **Aucun modèle entraîné n'est exploitable sans possibilité d'explication.** SHAP et LIME sont les techniques de premier choix ; les narratives LLM viennent en complément, jamais en substitution.
+* Les utilisateurs sont *incités* à générer une explication avant d'interpréter les métriques d'un modèle.
+
+=== 2. Transparence sur les limites
+
+* Les interfaces affichent explicitement les limites des explications (ex. LIME = approximation locale, SHAP = cohérence théorique mais coût calculatoire).
+* Les narratives LLM sont marquées comme telles (étiquette "Explication générée par IA").
+
+=== 3. Non-décision automatisée
+
+* IBIS-X n'utilise pas ses propres modèles entraînés pour prendre des décisions affectant les utilisateurs de la plateforme.
+* Les modèles sont des *sujets d'étude* de l'utilisateur, pas des composants décisionnels de la plateforme.
+
+=== 4. Biais — signalement, pas neutralisation automatique
+
+* Les datasets sont évalués sur critères éthiques à l'upload et via l'analyse qualité IA.
+* Les biais détectés sont **signalés à l'utilisateur**, qui reste responsable de leur prise en compte (pas de re-équilibrage automatique silencieux).
+
+=== 5. Consentement explicite pour les dépendances IA tierces
+
+* L'utilisateur sait que certaines fonctionnalités (analyse qualité, chat XAI) envoient des données à OpenAI.
+* Les données envoyées sont minimisées (métadonnées + contexte SHAP, jamais les échantillons bruts — voir xref:05-audit/rgpd/cartographie-donnees.adoc[Cartographie]).
+
+=== 6. Reproductibilité
+
+* Les paramètres d'entraînement, le preprocessing, l'algorithme et ses hyperparamètres sont persistés (`experiments.preprocessing_config`, `hyperparameters`).
+* Les artefacts sont conservés (`artifact_uri`).
+* Un résultat d'expérience est reproductible tant que le dataset source existe.
+
+=== 7. Protection contre le détournement
+
+* Le chat XAI est limité à 5 questions par session pour :
+** maîtriser les coûts OpenAI ;
+** décourager un usage conversationnel générique de l'IA (qui n'est pas la fonction de la plateforme).
+
+== Ce qu'IBIS-X refuse explicitement
+
+. Utiliser les datasets uploadés à des fins autres que les expérimentations de leur uploadeur (pas de revente, pas de training d'un modèle global propriétaire).
+. Renvoyer des prédictions automatisées prétendues "neutres" sans le contexte d'explication XAI.
+. Masquer les biais détectés pour préserver un "score" flatteur d'un dataset.
+
+== Référentiels
+
+* Guide éthique de la https://digital-strategy.ec.europa.eu/en/library/ethics-guidelines-trustworthy-ai[Commission européenne pour une IA digne de confiance].
+* IEEE https://standards.ieee.org/initiatives/artificial-intelligence-systems/[Ethically Aligned Design].
+* Cadre pédagogique Master 2 MIAGE.
+
+== Documents liés
+
+* xref:05-audit/ethique-ia/evaluation-datasets.adoc[Évaluation éthique des datasets]
+* xref:05-audit/rgpd/cartographie-donnees.adoc[Cartographie des données]

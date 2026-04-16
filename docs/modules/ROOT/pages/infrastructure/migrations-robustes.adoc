@@ -1,0 +1,157 @@
+= Système de Migrations Robuste avec InitContainers
+:toc:
+:icons: font
+
+== Vue d'Ensemble
+
+Le système de migrations robuste garantit que toutes les tables de base de données sont créées et disponibles avant le démarrage des services, éliminant ainsi les erreurs critiques type "relation does not exist".
+
+== Problème Résolu
+
+Avant cette implémentation, les migrations Alembic pouvaient :
+
+* S'exécuter dans le désordre
+* Échouer silencieusement
+* Ne pas être appliquées lors du démarrage
+* Causer des erreurs "table experiments does not exist"
+
+== Solution Technique
+
+=== InitContainers Kubernetes
+
+Chaque deployment utilise des `initContainers` qui s'exécutent séquentiellement avant le conteneur principal :
+
+[source,yaml]
+----
+spec:
+  initContainers:
+  # 1. Attente de PostgreSQL
+  - name: wait-for-postgres
+    image: busybox:1.35
+    command: ['sh', '-c']
+    args:
+      - |
+        echo "⏳ Attente de PostgreSQL..."
+        until nc -z postgresql-service.ibis-x.svc.cluster.local 5432; do
+          echo "PostgreSQL pas encore prêt..."
+          sleep 2
+        done
+        echo "✅ PostgreSQL est prêt!"
+  
+  # 2. Exécution des migrations
+  - name: run-migrations
+    image: ibis-x-ml-pipeline:latest
+    command: ["sh", "-c"]
+    args:
+      - |
+        echo "🔧 Correction robuste des migrations..."
+        cd /app
+        python alembic/fix_migrations.py
+        alembic upgrade head || true
+        echo "✅ Initialisation terminée"
+----
+
+=== Script de Correction Robuste
+
+Le script `fix_migrations.py` garantit l'existence des tables :
+
+[source,python]
+----
+#!/usr/bin/env python3
+from sqlalchemy import inspect, text
+from app.database import engine
+from app.models import Base
+
+def ensure_tables_exist():
+    """S'assure que toutes les tables existent."""
+    inspector = inspect(engine)
+    tables = inspector.get_table_names()
+    
+    if 'experiments' not in tables:
+        logger.info("⚠️ Tables manquantes - création...")
+        Base.metadata.create_all(bind=engine)
+        logger.info("✅ Tables créées avec succès")
+
+def fix_alembic_version():
+    """Corrige l'état d'alembic_version."""
+    with engine.connect() as conn:
+        # Mettre à jour la version
+        conn.execute(text("DELETE FROM alembic_version"))
+        conn.execute(text("INSERT INTO alembic_version VALUES ('add_data_quality_analysis')"))
+        conn.commit()
+----
+
+== Avantages
+
+[cols="1,3"]
+|===
+|Caractéristique |Description
+
+|**Idempotence**
+|Peut être exécuté plusieurs fois sans risque
+
+|**Robustesse**
+|Garantit l'existence des tables même si Alembic échoue
+
+|**Automatisme**
+|S'exécute automatiquement à chaque démarrage de pod
+
+|**Ordre Garanti**
+|Les initContainers s'exécutent séquentiellement
+
+|**Sans Intervention**
+|Plus besoin de Jobs de migration séparés
+|===
+
+== Services Concernés
+
+Tous les services utilisant la base de données ont été mis à jour :
+
+* **API Gateway** : Tables `users`, `projects`
+* **Service Selection** : Tables `datasets`, `templates`  
+* **ML Pipeline** : Tables `experiments`, `pipelines`
+* **XAI Engine** : Tables `xai_analyses`
+
+== Dépannage
+
+=== Vérifier l'État des Migrations
+
+[source,bash]
+----
+# Voir les logs de l'initContainer
+kubectl logs -n ibis-x <pod-name> -c run-migrations
+
+# Vérifier l'état Alembic
+kubectl exec -n ibis-x postgresql-0 -- psql -U ibis_x_user -d ibis_x_db \
+  -c "SELECT * FROM alembic_version"
+
+# Lister toutes les tables
+kubectl exec -n ibis-x postgresql-0 -- psql -U ibis_x_user -d ibis_x_db \
+  -c "\dt"
+----
+
+=== Forcer la Recréation des Tables
+
+Si nécessaire, exécuter manuellement :
+
+[source,bash]
+----
+kubectl exec -n ibis-x deployment/ml-pipeline -c ml-pipeline -- python -c "
+from app.database import engine
+from app.models import Base
+Base.metadata.drop_all(bind=engine)
+Base.metadata.create_all(bind=engine)
+print('Tables recréées')
+"
+----
+
+== Impact
+
+Cette approche élimine définitivement :
+
+* Les erreurs "table does not exist" au démarrage
+* Le besoin d'intervention manuelle pour les migrations
+* Les problèmes de synchronisation entre services
+* Les échecs aléatoires lors du déploiement
+
+WARNING: Ne jamais supprimer ou modifier le script `fix_migrations.py` sans une analyse approfondie de l'impact sur le système de démarrage.

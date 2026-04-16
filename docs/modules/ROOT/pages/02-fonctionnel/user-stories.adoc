@@ -1,0 +1,52 @@
+= User stories
+:description: Exigences exprimées sous forme de user stories
+
+Format : *« En tant que __acteur__, je veux __action__ afin de __bénéfice__. »*
+
+== Inscription & compte
+
+* US-01 — En tant que nouveau visiteur, je veux créer un compte avec email+password pour accéder à la plateforme.
+* US-02 — En tant que nouveau visiteur, je veux me connecter via Google OAuth pour éviter un nouveau mot de passe.
+* US-03 — En tant qu'utilisateur, je veux modifier mon profil pour corriger une information.
+* US-04 — En tant qu'utilisateur, je veux supprimer mon compte et toutes mes données pour exercer mon droit à l'oubli (RGPD art. 17).
+
+== Sélection de datasets
+
+* US-10 — En tant qu'utilisateur, je veux parcourir un catalogue de datasets publics pour trouver celui qui correspond à mon étude.
+* US-11 — En tant qu'utilisateur, je veux filtrer les datasets par critères techniques, éthiques et métier pour affiner ma sélection.
+* US-12 — En tant que contributeur, je veux uploader un dataset avec son manifest pour le partager.
+* US-13 — En tant qu'utilisateur, je veux visualiser les détails d'un dataset (colonnes, statistiques, scores, preview) avant de l'utiliser.
+* US-14 — En tant qu'utilisateur, je veux déclencher une analyse qualité IA pour obtenir des suggestions de preprocessing.
+
+== Pipeline ML
+
+* US-20 — En tant qu'utilisateur non-expert, je veux être guidé par un wizard 5 étapes pour lancer mon premier training.
+* US-21 — En tant qu'utilisateur, je veux configurer mon preprocessing (imputation, encodage, scaling) pour adapter à mon dataset.
+* US-22 — En tant qu'utilisateur, je veux choisir un algorithme parmi une sélection sklearn pour comparer les résultats.
+* US-23 — En tant qu'utilisateur, je veux voir la progression de mon training en temps réel pour savoir s'il avance.
+* US-24 — En tant qu'utilisateur, je veux consulter les métriques complètes (accuracy, precision, recall, F1, confusion, ROC) pour évaluer mon modèle.
+* US-25 — En tant qu'utilisateur, je veux télécharger mon modèle entraîné (.joblib) pour l'utiliser hors plateforme.
+
+== Explications XAI
+
+* US-30 — En tant qu'utilisateur, je veux générer une explication SHAP globale pour comprendre quelles features comptent.
+* US-31 — En tant qu'utilisateur, je veux une explication locale (SHAP ou LIME) pour une instance spécifique.
+* US-32 — En tant qu'utilisateur non-technique, je veux une narrative LLM pour lire l'explication en langage naturel.
+* US-33 — En tant qu'utilisateur, je veux poser jusqu'à 5 questions dans un chat contextuel pour approfondir.
+* US-34 — En tant qu'utilisateur, je veux une explication SHAP rapide côté client (WebSHAP) pour les petites instances.
+
+== Collaboration
+
+* US-40 — En tant que propriétaire d'un projet, je veux ajouter des collaborateurs en lecture pour partager mon travail.
+
+== Admin
+
+* US-50 — En tant qu'administrateur, je veux accéder à une vue consolidée des utilisateurs pour modération.
+* US-51 — En tant qu'administrateur, je veux importer des datasets Kaggle en batch pour enrichir le catalogue.
+* US-52 — En tant qu'administrateur, je veux gérer les templates d'évaluation éthique.
+
+== Traçabilité
+
+Pour chaque US : matrice d'implémentation dans xref:05-audit/tracabilite/exigences-implementation.adoc[Traçabilité exigences ↔ code].
+
+Critères d'acceptation : xref:02-fonctionnel/criteres-acceptation.adoc[Critères d'acceptation].

@@ -1,0 +1,84 @@
+= Processus de Pull Request
+:description: De la PR à la merge
+
+== Avant d'ouvrir la PR
+
+* [ ] Branche à jour avec `main` (rebase si nécessaire).
+* [ ] Tests locaux passent (`pytest`, `ng test`).
+* [ ] `make dev` local fonctionne avec la branche.
+* [ ] `CHANGELOG.md` mis à jour sous `[Unreleased]`.
+* [ ] Documentation Antora mise à jour (règle Doc = Code).
+
+== Ouvrir la PR
+
+Titre : format Conventional Commits — `type(scope): description`.
+
+Description (template) :
+
+[source,markdown]
+----
+## Pourquoi
+
+(Le *pourquoi*, pas le *quoi*. Ce qui motive le changement.)
+
+## Ce qui change
+
+- [ ] Liste concise des modifications principales.
+
+## Comment tester
+
+1. `make dev`
+2. Ouvrir http://localhost:8080
+3. ...
+
+## Checklist
+
+- [ ] Tests ajoutés ou mis à jour
+- [ ] Documentation Antora à jour
+- [ ] `CHANGELOG.md` complété
+- [ ] Migrations Alembic (si applicable)
+- [ ] i18n FR/EN (si chaîne UI)
+- [ ] Pas de secret en Git
+- [ ] Conventions respectées (voir `conventions-code.adoc`)
+----
+
+== Revue
+
+* **1 approbation minimum** avant merge.
+* Le reviewer vérifie :
+** Adéquation au problème ("est-ce que c'est la bonne solution ?").
+** Qualité technique (architecture, lisibilité, tests).
+** Conventions (i18n, pas de hardcoding, Pydantic, etc.).
+** Doc à jour.
+** CHANGELOG propre.
+
+== Réponse aux commentaires
+
+* Corriger ou argumenter. Ne pas cacher un désaccord.
+* Pour une correction : commit supplémentaire (pas d'amend/force-push pendant la revue) — l'historique facilite la re-revue.
+
+== Merge
+
+* Stratégie par défaut : **Squash & merge** (GitHub). Un commit propre sur `main` par PR.
+* Titre du commit squash : même format Conventional Commits que la PR.
+* Description : reprise du *pourquoi* de la PR.
+
+== Après merge
+
+* [ ] Supprimer la branche.
+* [ ] Vérifier que le déploiement automatique (si configuré) se passe bien.
+* [ ] Si PR liée à une issue → fermer l'issue avec un message de synthèse.
+
+== Cas particuliers
+
+=== Hotfix en prod
+
+. Branche `fix/<slug>` basée sur `main` (pas sur une branche en cours).
+. PR rapide, 1 seule approbation accélérée.
+. Merge + déploiement + vérification santé (voir xref:04-operationnel/runbooks/incident-response.adoc[Incident response]).
+
+=== PR de refactor large
+
+* Annoncer en amont (issue ou discussion GitHub).
+* Découper en PR séquentielles si possible.
+* Inclure une section "Pas de régression" explicite.

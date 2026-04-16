@@ -1,0 +1,360 @@
+= Architecture Technique du Projet IBIS-X
+
+Ce document détaille l'architecture logicielle de la plateforme IBIS-X. Pour les instructions d'installation et de déploiement, veuillez consulter le guide xref:getting-started.adoc[Installation & Démarrage Rapide].
+
+== 1. Vision d'Ensemble et Objectifs
+
+Le projet IBIS-X vise à créer un **outil scientifique (PoC)** répondant à trois défis :
+
+1.  Aide à la **sélection de datasets** (critères techniques, éthiques, métier).
+2.  Guidage interactif pour les **pipelines de Machine Learning**.
+3.  Recommandation et application de techniques d'**IA Explicable (XAI)**.
+
+Pour atteindre ces objectifs avec **modularité**, **scalabilité** et **maintenabilité**, IBIS-X repose sur une architecture en **microservices conteneurisés** orchestrés par **Kubernetes**.
+
+*   **Microservices :** Chaque grande fonctionnalité (sélection de données, entraînement ML, explicabilité XAI, interface utilisateur) est gérée par un service indépendant. Cela permet de développer, déployer et mettre à l'échelle chaque partie séparément.
+*   **Conteneurisation (Docker) :** Chaque microservice est packagé dans une image Docker avec toutes ses dépendances. Cela garantit la cohérence entre les environnements (développement, test, production).
+*   **Orchestration (Kubernetes) :** Kubernetes gère le déploiement, la mise à l'échelle, la mise en réseau et la communication entre les conteneurs/microservices. Pour le développement local, nous utilisons **Minikube** qui simule un cluster Kubernetes.
+
+== 2. Diagramme d'Architecture
+
+_(Essentiel : Un diagramme est nécessaire ici pour visualiser les interactions !)_
+
+[IMPORTANT]
+====
+Un diagramme d'architecture illustrant les composants décrits ci-dessous et leurs interactions principales doit être inséré ici.
+
+Le moyen le plus simple est de créer le diagramme avec un outil externe (comme https://draw.io[draw.io^], Lucidchart, Miro...) et de l'enregistrer sous forme d'image (par exemple, `architecture-diagram.png`) dans le dossier `docs/modules/ROOT/assets/images/`. Ensuite, incluez-le avec la ligne suivante :
+
+[source,asciidoc]
+----
+image::architecture-diagram.png[Diagramme d'architecture IBIS-X, L=auto]
+----
+
+(Assurez-vous que le chemin d'accès à l'image est correct par rapport à l'emplacement de ce fichier `architecture.adoc`.)
+====
+
+== 3. Description Détaillée des Composants
+
+=== 3.1 Frontend (`frontend/`)
+*   **Rôle :** Interface utilisateur web interactive pour la plateforme IBIS-X.
+*   **Responsabilités :** Permettre à l'utilisateur de naviguer dans les fonctionnalités (sélection datasets, configuration pipeline ML, visualisation XAI), afficher les informations et résultats.
+*   **Technologies :** Angular, Tailwind CSS.
+*   **Interactions :** Communique exclusivement avec l'API Gateway via des requêtes HTTP REST/JSON.
+*   **Justification :** Angular offre un framework robuste pour les applications Single Page complexes. Tailwind facilite la création rapide d'interfaces modernes.
+
+=== 3.2 API Gateway (`api-gateway/`)
+*   **Rôle :** Point d'entrée unique pour toutes les requêtes provenant du Frontend (ou d'autres clients externes).
+*   **Responsabilités :**
+    *   Authentification et autorisation des requêtes (via JWT).
+    *   Routage des requêtes vers le microservice interne approprié (Sélection, ML, XAI).
+    *   Agrégation potentielle de réponses provenant de plusieurs services.
+    *   Gestion centralisée du CORS (Cross-Origin Resource Sharing).
+*   **Technologies :** FastAPI (Python).
+*   **Interactions :** Reçoit les requêtes du Frontend, les transmet aux services backend (Sélection, ML, XAI) via REST.
+*   **Justification :** FastAPI est performant, facile à utiliser, intègre la validation de données (Pydantic) et génère automatiquement la documentation OpenAPI (Swagger UI), idéal pour une gateway.
+
+=== 3.3 Service Sélection (`service-selection/`)
+*   **Rôle :** Gérer le catalogue de datasets et fournir des fonctionnalités de sélection.
+*   **Responsabilités :**
+    *   Stocker et récupérer les métadonnées des datasets (nom, description, type, caractéristiques...).
+    *   Implémenter la logique de recherche et de filtrage des datasets selon les critères utilisateur.
+    *   Calculer les scores de pertinence des datasets.
+*   **Technologies :** FastAPI (Python), SQLAlchemy (potentiellement, pour l'ORM), PostgreSQL (pour le stockage).
+*   **Interactions :** Reçoit des requêtes de l'API Gateway, interagit avec la base de données PostgreSQL.
+*   **Justification :** FastAPI pour la rapidité de développement API. PostgreSQL est une base de données relationnelle robuste et éprouvée.
+
+=== 3.4 Service ML (`service-ml/`)
+*   **Rôle :** Gérer les aspects liés à l'entraînement et à l'évaluation des modèles de Machine Learning.
+*   **Responsabilités (Prévues) :**
+    *   Prétraitement des données (nettoyage, normalisation...).
+    *   Entraînement de modèles (classification, régression...) basés sur les choix utilisateur.
+    *   Évaluation des performances des modèles.
+    *   Gestion des tâches longues (entraînement) de manière asynchrone.
+*   **Technologies :** FastAPI (Python), Scikit-learn, Pandas, Celery (pour les tâches asynchrones), Redis (comme broker pour Celery).
+*   **Interactions :** Reçoit des requêtes de l'API Gateway, lit potentiellement des données (via le Service Sélection ou directement ?), utilise Celery/Redis pour les tâches longues, peut interagir avec le Service XAI.
+*   **Justification :** Scikit-learn est la bibliothèque standard pour le ML en Python. Celery/Redis gèrent efficacement les traitements longs sans bloquer l'API.
+
+=== 3.5 Service XAI (`service-xai/`)
+*   **Rôle :** Fournir des fonctionnalités d'explicabilité pour les modèles ML.
+*   **Responsabilités (Prévues) :**
+    *   Recommander des méthodes XAI adaptées (LIME, SHAP...) en fonction du modèle, des données, du contexte.
+    *   Générer les explications (calculs potentiellement longs).
+    *   Formater les résultats des explications pour la visualisation.
+    *   Gérer les tâches de génération d'explication de manière asynchrone.
+*   **Technologies :** FastAPI (Python), SHAP, LIME, autres bibliothèques XAI, Celery, Redis.
+*   **Interactions :** Reçoit des requêtes de l'API Gateway, interagit probablement avec le Service ML (pour obtenir le modèle, les données), utilise Celery/Redis.
+*   **Justification :** Bibliothèques XAI dédiées (SHAP, LIME). Celery/Redis pour les calculs longs.
+
+=== 3.6 Base de Données (`k8s/base/postgres/`)
+*   **Rôle :** Stockage persistant des données relationnelles.
+*   **Responsabilités :** Principalement utilisée par le Service Sélection pour stocker les métadonnées des datasets. Pourrait être utilisée par d'autres services si nécessaire.
+*   **Technologies :** PostgreSQL.
+*   **Interactions :** Accessible par les microservices (principalement Service Sélection) via le réseau interne de Kubernetes.
+*   **Justification :** Système de gestion de base de données relationnelle open-source, fiable, performant et riche en fonctionnalités.
+
+=== 3.7 Orchestration & Infrastructure (`k8s/`)
+*   **Rôle :** Définir, construire et gérer l'exécution de l'ensemble des services.
+*   **Responsabilités :**
+    *   Définir comment construire les images conteneurs (via les `Dockerfile` dans chaque service).
+    *   Définir comment déployer et configurer chaque service dans Kubernetes (via les manifestes YAML dans `k8s/base/` et `k8s/overlays/`).
+    *   Gérer la mise en réseau, le stockage persistant (via Kubernetes).
+*   **Technologies :** Docker, Kubernetes, Minikube (pour le local), Skaffold (pour l'automatisation du déploiement).
+*   **Justification :** Standards de l'industrie pour la conteneurisation et l'orchestration, favorisant la reproductibilité et la scalabilité.
+
+== 4. Flux de Données et Communication
+
+*   **Communication Inter-Services :** La communication entre le Frontend et l'API Gateway, ainsi qu'entre l'API Gateway et les microservices backend, se fait principalement via des **API REST synchrones** (requête/réponse HTTP/JSON).
+*   **Tâches Asynchrones :** Pour les opérations longues (entraînement de modèles ML, génération d'explications XAI), les services ML et XAI utilisent **Celery** avec **Redis** comme broker de messages. L'API reçoit la requête, la place dans une file d'attente Redis, et un worker Celery (processus séparé) la prend en charge. Cela évite de bloquer les requêtes API.
+*   **Sécurité :** L'**API Gateway** est responsable de la validation des jetons **JWT** pour sécuriser l'accès aux API.
+
+== 5. Structure du Code Source
+
+Voici la structure actualisée du code source, reflétant la centralisation des configurations Kubernetes dans le dossier `k8s/` à la racine :
+
+```text
+/
+├── frontend/                 # Code source de l'interface Angular
+│   ├── src/
+│   ├── angular.json
+│   └── Dockerfile            # Pour construire l'image du frontend
+├── api-gateway/              # Code source de l'API Gateway
+│   ├── app/
+│   ├── requirements.txt
+│   └── Dockerfile
+├── service-selection/        # Code source du Service Sélection
+│   ├── app/
+│   ├── requirements.txt
+│   └── Dockerfile
+├── service-ml/               # Code source du Service ML (prévu)
+│   ├── app/
+│   ├── worker/               # Code pour les workers Celery
+│   ├── requirements.txt
+│   └── Dockerfile
+├── service-xai/              # Code source du Service XAI (prévu)
+│   ├── ...
+├── k8s/                      # Configurations Kubernetes centralisées
+│   ├── base/                 # Configurations de base communes
+│   │   ├── api-gateway/      # Configurations K8s pour l'API Gateway
+│   │   │   ├── deployment.yaml
+│   │   │   ├── gateway-secrets.yaml
+│   │   │   └── service.yaml
+│   │   ├── frontend/         # Configurations K8s pour le Frontend
+│   │   │   ├── deployment.yaml
+│   │   │   └── service.yaml
+│   │   ├── postgres/         # Configurations K8s pour PostgreSQL
+│   │   │   ├── postgresql-deployment.yaml
+│   │   │   ├── postgresql-service.yaml
+│   │   │   └── postgresql-pvc.yaml      # Si nécessaire
+│   │   ├── service-selection/ # Configurations K8s pour le Service Sélection
+│   │   │   ├── deployment.yaml
+│   │   │   ├── db-secrets.yaml
+│   │   │   └── service.yaml
+│   │   └── kustomization.yaml # Fichier déclarant toutes les ressources de base
+│   ├── overlays/             # Surcouches de configuration pour différents environnements
+│   │   └── azure/            # Configuration spécifique au déploiement sur Azure
+│   │       └── kustomization.yaml # Utilise kustomize pour appliquer des modifications sur la base
+├── docs/                     # Documentation Antora (ce que vous lisez)
+│   └── modules/ROOT/
+│       ├── pages/
+│       └── nav.adoc
+├── antora.yml                # Configuration du composant Antora
+├── antora-playbook.yml       # Playbook pour générer la documentation
+└── skaffold.yaml             # Configuration Skaffold pour automatiser build et déploiement
+```
+
+Cette nouvelle structure reflète l'organisation actualisée où tous les fichiers de configuration Kubernetes sont centralisés dans le dossier `k8s/` à la racine du projet, divisé en `base/` (configurations communes) et `overlays/` (configurations spécifiques à chaque environnement) selon les principes de Kustomize. Les microservices conservent uniquement leur code source et leurs Dockerfiles.
+
+= Architecture du Reverse Proxy
+:icons: font
+:sectnums:
+:toc:
+
+Ce document explique comment l'API Gateway IBIS-X fait du reverse proxy vers les services backend et comment cette configuration fonctionne automatiquement en développement et en production.
+
+== Vue d'ensemble
+
+L'API Gateway (port 9000) sert de point d'entrée unique pour toutes les requêtes API. Il fait du reverse proxy vers les différents services backend, permettant au frontend d'avoir une seule URL d'API tout en conservant les avantages de l'architecture microservices.
+
+== Configuration Automatique
+
+=== Valeurs par Défaut
+
+Les URLs des services backend sont configurées automatiquement pour fonctionner avec Kubernetes (Minikube en développement, AKS en production) :
+
+[source,python]
+----
+# api-gateway/app/core/config.py
+SERVICE_SELECTION_URL: str = os.getenv("SERVICE_SELECTION_URL", "http://service-selection-service.IBIS-X.svc.cluster.local")
+ML_PIPELINE_URL: str = os.getenv("ML_PIPELINE_URL", "http://ml-pipeline-service.IBIS-X.svc.cluster.local")
+XAI_ENGINE_URL: str = os.getenv("XAI_ENGINE_URL", "http://xai-engine-service.IBIS-X.svc.cluster.local")
+----
+
+Ces URLs utilisent le DNS interne de Kubernetes et fonctionnent automatiquement sans configuration supplémentaire.
+
+=== Routage des Requêtes
+
+L'API Gateway intercepte et redirige les requêtes selon le pattern suivant :
+
+[cols="2,3,3", options="header"]
+|===
+| Pattern | Service de Destination | Exemple
+| `/datasets/*` | SERVICE_SELECTION_URL | `/datasets` → `http://service-selection-service.IBIS-X.svc.cluster.local/datasets`
+| `/ml-pipeline/*` | ML_PIPELINE_URL | `/ml-pipeline/jobs` → `http://ml-pipeline-service.IBIS-X.svc.cluster.local/jobs`
+| `/xai/*` | XAI_ENGINE_URL | `/xai/explain` → `http://xai-engine-service.IBIS-X.svc.cluster.local/explain`
+|===
+
+== Implémentation Technique
+
+=== Fonction Proxy Générique
+
+L'API Gateway utilise une fonction `proxy_request` générique qui :
+
+1. Construit l'URL de destination
+2. Transmet les paramètres de query
+3. Transmet le body pour les requêtes POST/PUT/PATCH
+4. Gère les erreurs de communication
+5. Retourne la réponse du service backend
+
+[source,python]
+----
+async def proxy_request(
+    request: Request,
+    service_url: str,
+    path: str,
+    current_user: UserModel
+):
+    # Construire l'URL complète
+    target_url = f"{service_url.rstrip('/')}/{path.lstrip('/')}"
+    
+    # Faire la requête avec httpx
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.request(
+            method=request.method,
+            url=target_url,
+            params=dict(request.query_params),
+            headers={"Content-Type": "application/json"},
+            content=await request.body() if request.method in ["POST", "PUT", "PATCH"] else None
+        )
+        
+        return JSONResponse(
+            status_code=response.status_code,
+            content=response.json() if response.content else None
+        )
+----
+
+=== Routes Proxy
+
+Chaque service backend a ses routes proxy dédiées :
+
+[source,python]
+----
+@app.api_route("/datasets", methods=["GET", "POST"], tags=["datasets"])
+async def datasets_proxy(request: Request, current_user: UserModel = Depends(current_active_user)):
+    return await proxy_request(request, settings.SERVICE_SELECTION_URL, "datasets", current_user)
+
+@app.get("/datasets/domains", tags=["datasets"])
+async def datasets_domains_proxy(request: Request, current_user: UserModel = Depends(current_active_user)):
+    return await proxy_request(request, settings.SERVICE_SELECTION_URL, "datasets/domains", current_user)
+----
+
+== Environnements
+
+=== Développement Local (Minikube)
+
+Les services communiquent via le DNS interne de Kubernetes :
+- `service-selection-service.IBIS-X.svc.cluster.local`
+- `ml-pipeline-service.IBIS-X.svc.cluster.local`
+- `xai-engine-service.IBIS-X.svc.cluster.local`
+
+Aucune configuration supplémentaire n'est nécessaire.
+
+=== Développement Local (Services en Local)
+
+Si vous voulez faire tourner les services directement sur votre machine, créez un fichier `.env` :
+
+[source,properties]
+----
+SERVICE_SELECTION_URL=http://localhost:8001
+ML_PIPELINE_URL=http://localhost:8002
+XAI_ENGINE_URL=http://localhost:8003
+----
+
+=== Production (Azure)
+
+Les services communiquent via le DNS interne d'AKS avec les mêmes URLs que Minikube. Les variables d'environnement peuvent être surchargées via des secrets Kubernetes si nécessaire.
+
+== Gestion des Erreurs
+
+=== Erreurs de Communication
+
+Si un service backend n'est pas disponible, l'API Gateway retourne :
+
+[source,json]
+----
+{
+    "detail": "Service temporairement indisponible"
+}
+----
+
+Avec un code de statut HTTP 503 (Service Unavailable).
+
+=== Erreurs de Service
+
+Si un service backend retourne une erreur, l'API Gateway propage le code de statut et la réponse exacte du service.
+
+== Sécurité
+
+=== Authentification
+
+Toutes les routes proxy requièrent une authentification :
+
+[source,python]
+----
+current_user: UserModel = Depends(current_active_user)
+----
+
+L'utilisateur authentifié est passé à la fonction proxy mais n'est pas actuellement transmis au service backend (évolution future).
+
+=== Headers
+
+L'API Gateway transmet les headers suivants aux services backend :
+
+- `Content-Type: application/json`
+- `User-Agent: API-Gateway-Proxy/1.0`
+
+== Monitoring et Observabilité
+
+=== Logs
+
+L'API Gateway log toutes les requêtes proxy avec :
+- URL de destination
+- Méthode HTTP
+- Code de statut de réponse
+- Erreurs de communication
+
+=== Métriques
+
+Les métriques suivantes sont disponibles :
+- Nombre de requêtes par service
+- Temps de réponse moyen
+- Taux d'erreur par service
+
+== Évolution et Extensibilité
+
+=== Ajout de Nouveaux Services
+
+Pour ajouter un nouveau service backend :
+
+1. Ajouter la variable d'environnement dans `config.py`
+2. Créer les routes proxy dans `main.py`
+3. Mettre à jour la documentation
+4. Déployer les services Kubernetes
+
+=== Load Balancing
+
+Kubernetes gère automatiquement le load balancing entre les réplicas de chaque service. L'API Gateway n'a pas besoin de configuration supplémentaire.
+
+=== Circuit Breaker
+
+Une évolution future pourrait inclure un circuit breaker pour gérer les pannes temporaires des services backend. 

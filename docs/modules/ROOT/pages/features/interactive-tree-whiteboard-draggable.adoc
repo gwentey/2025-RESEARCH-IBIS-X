@@ -1,0 +1,200 @@
+= Tableau Blanc Interactif Avancé - Nœuds Draggables
+:description: Guide d'utilisation du tableau blanc interactif avec nœuds individuellement déplaçables
+:keywords: arbre de décision, tableau blanc, drag and drop, réorganisation, visualisation interactive
+
+== Vue d'ensemble
+
+Le *Tableau Blanc Interactif Avancé* transforme complètement la façon d'explorer et de manipuler les arbres de décision. Contrairement à une visualisation SVG statique, chaque nœud de l'arbre est maintenant **individuellement déplaçable**, permettant une exploration et une réorganisation complètes.
+
+== Fonctionnalités révolutionnaires
+
+=== 🎯 Nœuds Draggables Individuellement
+
+Chaque nœud de l'arbre est maintenant un élément interactif que vous pouvez :
+
+* **Déplacer librement** : Cliquez et glissez n'importe quel nœud
+* **Réorganiser la structure** : Créez votre propre disposition
+* **Explorer des connexions** : Les liens se mettent à jour en temps réel
+* **Identifier visuellement** : 
+  - Nœuds bleus = Tests de conditions
+  - Nœuds verts = Feuilles (résultats)
+
+=== 🔗 Liens Dynamiques
+
+Les connexions entre nœuds sont maintenant :
+
+* **Courbes de Bézier élégantes** : Plus esthétiques que des lignes droites
+* **Mise à jour en temps réel** : Se redessinent automatiquement lors du déplacement
+* **Interactives** : Survolez pour mettre en évidence
+* **Couleurs adaptatives** : Changent selon le thème clair/sombre
+
+=== 🎨 Nouveaux Contrôles
+
+==== Bouton "Réorganiser l'arbre" 🌲
+
+Un nouveau bouton révolutionnaire qui :
+
+* **Restaure la disposition originale** avec une animation fluide
+* **Parfait après exploration** : Un clic pour tout remettre en ordre
+* **Animation élégante** : Les nœuds glissent vers leur position d'origine
+* **Raccourci** : Disponible dans la barre d'outils principale
+
+== Guide d'utilisation avancé
+
+=== Manipulation des nœuds
+
+. **Sélectionner un nœud**
++
+[source,text]
+----
+• Cliquez sur n'importe quel nœud
+• Il s'agrandit légèrement (scale 1.1)
+• Son ombre s'intensifie pour indiquer la sélection
+----
+
+. **Déplacer un nœud**
++
+[source,text]
+----
+• Maintenez le clic et glissez
+• Le nœud suit votre curseur
+• Les liens se mettent à jour automatiquement
+• Relâchez pour déposer à la nouvelle position
+----
+
+. **Explorer les relations**
++
+[source,text]
+----
+• Déplacez un nœud parent
+• Observez comment ses enfants restent connectés
+• Réorganisez pour mieux voir certaines branches
+----
+
+=== Workflows recommandés
+
+==== Analyse de branches spécifiques
+
+. Ouvrez l'arbre en mode tableau blanc
+. Déplacez les branches non pertinentes sur les côtés
+. Regroupez les nœuds d'intérêt au centre
+. Zoomez sur la zone réorganisée
+. Exportez la vue personnalisée
+
+==== Présentation pédagogique
+
+. Commencez avec l'arbre organisé
+. Déplacez progressivement les nœuds pour expliquer
+. Isolez des sous-arbres pour focus
+. Utilisez "Réorganiser" pour reset entre sections
+
+==== Comparaison de chemins
+
+. Séparez visuellement les différents chemins
+. Alignez les nœuds de décision similaires
+. Comparez les conditions côte à côte
+. Exportez la vue comparative
+
+== Caractéristiques techniques avancées
+
+=== Architecture de l'implémentation
+
+[source,javascript]
+----
+// Structure des nœuds interactifs
+class InteractiveNode {
+  - Position absolue (x, y)
+  - Dimensions dynamiques
+  - État draggable
+  - Connexions parent-enfant maintenues
+  - Styles adaptatifs (thème clair/sombre)
+}
+
+// Gestion des liens
+class DynamicLinks {
+  - SVG séparé pour performance
+  - Courbes de Bézier quadratiques
+  - Recalcul en temps réel
+  - Hover effects
+}
+----
+
+=== Performance optimisée
+
+* **Rendu séparé** : Nœuds (HTML) et liens (SVG) dans couches différentes
+* **Event delegation** : Gestionnaires d'événements optimisés
+* **Throttling** : Mise à jour des liens limitée pendant le drag
+* **GPU acceleration** : Transformations CSS3 pour fluidité
+
+=== Persistance des positions
+
+[NOTE]
+====
+Fonctionnalité à venir : Les positions personnalisées des nœuds pourront être sauvegardées dans le localStorage pour retrouver votre organisation lors de la prochaine visite.
+====
+
+== Cas d'usage avancés
+
+=== Recherche et développement
+
+* **Hypothèses visuelles** : Réorganisez pour tester des structures alternatives
+* **Documentation** : Créez des vues personnalisées pour publications
+* **Collaboration** : Partagez des dispositions spécifiques
+
+=== Éducation
+
+* **Progression pédagogique** : Révélez l'arbre progressivement
+* **Focus sur concepts** : Isolez des parties pour explication
+* **Exercices interactifs** : Demandez aux étudiants de réorganiser
+
+=== Débogage de modèles
+
+* **Identification d'anomalies** : Déplacez pour mieux voir les patterns
+* **Comparaison de versions** : Organisez côte à côte
+* **Analyse de biais** : Regroupez par caractéristiques
+
+== Conseils d'expert
+
+=== Organisation efficace
+
+1. **Méthode du "mind map"** : Placez le nœud racine au centre
+2. **Groupement thématique** : Rassemblez les nœuds similaires
+3. **Hiérarchie visuelle** : Alignez verticalement par niveau
+4. **Espacement régulier** : Utilisez la grille imaginaire
+
+=== Raccourcis productivité
+
+* **Double-clic** (à venir) : Focus sur un nœud et ses descendants
+* **Shift + Drag** (à venir) : Déplacement en ligne droite
+* **Ctrl + A** (à venir) : Sélectionner tous les nœuds
+* **Ctrl + Z** (à venir) : Annuler le dernier déplacement
+
+== Limitations actuelles et roadmap
+
+=== Limitations
+
+* Pas encore de sélection multiple
+* Pas d'annulation (undo/redo)
+* Positions non persistées entre sessions
+* Pas de contraintes de déplacement
+
+=== Roadmap v2.0
+
+- [ ] Sélection multiple avec lasso
+- [ ] Historique d'actions (undo/redo)
+- [ ] Sauvegarde des dispositions
+- [ ] Animations de transition avancées
+- [ ] Groupement de nœuds
+- [ ] Export avec positions personnalisées
+
+== Conclusion
+
+Le Tableau Blanc Interactif avec nœuds draggables représente une évolution majeure dans la visualisation d'arbres de décision. Il transforme une vue statique en un espace de travail dynamique où les chercheurs peuvent véritablement "jouer" avec leurs modèles pour mieux les comprendre et les communiquer.
+
+Cette fonctionnalité est particulièrement précieuse pour :
+* Les présentations scientifiques nécessitant des vues personnalisées
+* L'exploration de modèles complexes avec nombreuses branches
+* L'enseignement interactif du machine learning
+* Le débogage visuel de structures d'arbres
+
+Explorez, réorganisez, comprenez - votre arbre n'a jamais été aussi flexible !

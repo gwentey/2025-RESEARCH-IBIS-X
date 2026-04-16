@@ -1,0 +1,85 @@
+= Stack technique raisonnée
+:description: Choix + justifications
+
+Source de vérité : link:../../../../memory-bank/conventions.md[`memory-bank/conventions.md`]. Cette page en donne la vue synthétique avec justifications (ADRs liés).
+
+== Backend
+
+[cols="1,2,3"]
+|===
+| Couche | Choix | Justification / ADR
+| Langage | Python 3.11 | Écosystème ML (scikit-learn, SHAP, LIME), typage moderne
+| Framework web | FastAPI ≥ 0.100 | Async natif, Pydantic, OpenAPI auto, perf
+| Validation | Pydantic v2 + `BaseSettings` | Validation + typage + config sans hardcoding
+| ORM | SQLAlchemy 2.x | Standard Python
+| Migrations | Alembic | Versionnées, indépendantes par service (xref:05-audit/adr/0003-postgres-partage-version-tables.adoc[ADR 0003])
+| Auth | fastapi-users | JWT + OAuth clé en main
+| Tâches async | Celery + Redis | xref:05-audit/adr/0002-celery-vs-alternatives.adoc[ADR 0002]
+|===
+
+== Frontend
+
+[cols="1,2,3"]
+|===
+| Couche | Choix | Justification
+| Framework | Angular 19 standalone | Écosystème mature, attendu en Master 2
+| UI | Angular Material 19 | xref:05-audit/adr/0004-angular-material-sans-tailwind.adoc[ADR 0004] — pas de Tailwind
+| i18n | @ngx-translate 14 | Standard, simple
+| Charts | ECharts 5.6 | Riche pour visualisations ML
+| XAI client | WebSHAP | SHAP rapide en navigateur
+| Icons | Material + Tabler | Complémentaires
+|===
+
+== Données
+
+[cols="1,2,3"]
+|===
+| Type | Choix | Justification
+| RDBMS | PostgreSQL 15 | ACID, JSONB pour flexibilité, mature
+| Cache / Broker | Redis 7 | Broker Celery, cache applicatif éphémère
+| Stockage objets | MinIO (local) / Azure Blob (prod) | Abstraction via variable `STORAGE_BACKEND`
+|===
+
+== Infrastructure
+
+[cols="1,2,3"]
+|===
+| Aspect | Choix | Justification
+| Orchestration | Kubernetes | xref:05-audit/adr/0005-kubernetes-minikube-azure.adoc[ADR 0005]
+| Local | Minikube + Skaffold | Builds incrémentaux
+| Prod | AKS Azure | Parité avec local via Kustomize
+| Config | Kustomize base + overlays | DRY, séparation env
+| IaC | Terraform | Reproductibilité prod
+| CI/CD | GitHub Actions | Intégré au dépôt
+|===
+
+== XAI
+
+[cols="1,1,2"]
+|===
+| Lib | Version | Usage
+| SHAP | 0.43.0 | Valeurs de Shapley
+| LIME | 0.2.0.1 | Approximation locale
+| scikit-learn | 1.3.2 | Chargement modèles
+| OpenAI | 1.51.2 | Narratives + chat
+|===
+
+Choix détaillé : xref:05-audit/adr/0006-shap-lime-pour-xai.adoc[ADR 0006].
+
+== Ce qui **n'est pas** utilisé (et pourquoi)
+
+* **Tailwind CSS** — contredit le choix Angular Material (ADR 0004).
+* **Bootstrap** — idem, Material est la base.
+* **Docker Compose seul** — incompatible avec l'objectif pédagogique Kubernetes.
+* **MongoDB** — relation inter-entités favorise RDBMS.
+* **Kafka** — surdimensionné pour le PoC.
+* **Dramatiq / RQ** — Celery plus standard (ADR 0002).
+* **PyTorch / TensorFlow** — hors scope PoC (sklearn suffit).
+
+== Maintenance
+
+Toute modification majeure de la stack (ajout/suppression d'une lib, changement de version majeure) :
+
+. Nouvel ADR documentant la décision.
+. Mise à jour `memory-bank/conventions.md`.
+. Mise à jour `CHANGELOG.md`.

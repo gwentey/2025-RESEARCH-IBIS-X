@@ -1,0 +1,88 @@
+= Module fonctionnel — Sélection de datasets
+:description: Catalogue, filtres, upload, vue détaillée
+:toc: left
+
+Ce module couvre toute la vie d'un dataset dans IBIS-X : découverte, filtrage, upload, consultation détaillée.
+
+== Catalogue
+
+L'utilisateur accède à un catalogue paginé et filtrable listant :
+
+* les datasets publics (importés depuis Kaggle) ;
+* les datasets uploadés par les utilisateurs autorisés.
+
+Deux vues interchangeables : **grille** (cartes avec scores visibles) et **liste** (tableau avec tri par colonne).
+
+== Filtres de sélection
+
+Trois dimensions de critères, combinables :
+
+=== Techniques
+
+* Nombre de lignes / colonnes (sliders dual-range).
+* Type de tâche (classification, régression).
+* Présence ou absence de valeurs manquantes.
+* Types de colonnes (numériques, catégorielles, temporelles).
+* Format source (CSV, Parquet, JSON).
+
+=== Éthiques
+
+* Score éthique global (/10).
+* Présence de données personnelles (PII).
+* Biais connus documentés.
+* Licence compatible (CC0, MIT, etc.).
+
+=== Métier
+
+* Domaine (santé, éducation, finance, industrie…).
+* Langue des valeurs textuelles (fr, en).
+* Période temporelle (si dataset temporel).
+
+Les filtres appliquent un scoring pondéré configurable.
+
+== Vue détaillée d'un dataset
+
+Informations présentées :
+
+* *Identité* : nom, description, source (Kaggle URL si applicable), uploadeur, date.
+* *Métadonnées enrichies* (si analyse IA exécutée) : domaine inféré, biais détectés, licences.
+* *Structure multi-fichiers* : chaque fichier (`dataset_files`) avec ses colonnes (`file_columns`), types, statistiques (min/max/mean/nulls).
+* *Scores* : technique, éthique, métier.
+* *Analyse de qualité* : cache `DataQualityAnalysis` issu d'OpenAI (colonnes problématiques, stratégies suggérées, score de qualité global).
+* *Preview* : échantillon de lignes avec pagination.
+
+== Upload d'un dataset
+
+Wizard multi-étapes :
+
+. *Upload fichier* : drag-and-drop, support CSV / Parquet / JSON (mono ou multi-fichier).
+. *Manifest* : renseignement des métadonnées (domaine, licence, éthique) — templates fournis.
+. *Détection automatique* des colonnes, types, statistiques.
+. *Évaluation éthique* : questionnaire guidé (scores RGPD/biais).
+. *Validation* : aperçu final, puis persistance (`storage_path` + `datasets` + `dataset_files` + `file_columns`).
+
+Accès universel à l'upload : tout utilisateur authentifié peut uploader un dataset pour son usage personnel.
+
+== Analyse qualité IA (optionnelle)
+
+Sur demande, le dataset est envoyé à l'analyse `analyze_dataset_with_ai` (queue `ai_queue`) qui :
+
+. Extrait un échantillon représentatif + schéma.
+. Envoie à OpenAI avec un prompt structuré.
+. Reçoit un JSON : qualité par colonne, stratégies de preprocessing suggérées, biais potentiels, score global.
+. Cache le résultat dans `data_quality_analyses` (invalidation par `dataset_version`).
+
+Le cache évite les coûts OpenAI récurrents tout en permettant l'invalidation lors d'une mise à jour du dataset.
+
+== Gestion RGPD côté dataset
+
+* Les datasets peuvent être marqués comme contenant des **données personnelles** (flag éthique).
+* L'uploadeur reste responsable de la licence et du consentement des personnes concernées.
+* Un utilisateur peut demander la suppression de ses datasets (voir xref:02-fonctionnel/modules/compte-utilisateur.adoc[Compte utilisateur]).
+
+Voir xref:05-audit/rgpd/cartographie-donnees.adoc[Cartographie des données] pour la vue d'audit.
+
+== Référence technique
+
+Code : `service-selection/app/` (models.py, crud.py, services.py). +
+Page technique : xref:03-technique/services/service-selection.adoc[service-selection].

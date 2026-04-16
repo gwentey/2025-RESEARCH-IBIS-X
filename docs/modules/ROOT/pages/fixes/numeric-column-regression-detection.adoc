@@ -1,0 +1,150 @@
+= Correction de la Détection Automatique Régression/Classification
+:toc:
+:toclevels: 3
+:icons: font
+:experimental:
+
+== Vue d'ensemble
+
+Ce document décrit la solution apportée au problème où l'IA recommandait incorrectement la classification pour des colonnes numériques continues qui devraient être traitées en régression.
+
+=== Problème identifié
+
+Lors de l'utilisation d'une colonne numérique comme `Addiction_Level` avec des valeurs décimales (10.0, 9.2, 8.6...), l'assistant IA recommandait la classification au lieu de la régression, ce qui est fondamentalement incorrect.
+
+== Analyse de la cause
+
+=== Manque de règles claires pour l'IA
+
+Le système prompt de l'IA ne contenait pas de règles explicites pour différencier :
+
+* **Colonnes numériques continues** → Régression
+* **Colonnes catégorielles/discrètes** → Classification
+
+=== Absence de détection automatique
+
+Le code ne vérifiait pas automatiquement le type de données de la colonne cible avant de faire des recommandations.
+
+== Solutions implémentées
+
+=== 1. Amélioration du système prompt de l'IA
+
+.Nouvelles règles critiques ajoutées
+[source,text]
+----
+🔧 RÈGLES CRITIQUES POUR DÉTERMINER LE TYPE DE TÂCHE:
+
+1. **COLONNES NUMÉRIQUES CONTINUES** = **TOUJOURS RÉGRESSION**
+   - Si le type est: numerical, numeric, float, double, decimal
+   - Si les valeurs contiennent des décimales (ex: 10.5, 8.6, 9.2)
+   - MÊME SI c'est appelé "level" ou "class", si c'est numérique continu = RÉGRESSION
+
+2. **COLONNES CATÉGORIELLES ou ENTIERS DISCRETS** = **CLASSIFICATION**
+   - Si le type est: categorical, string, text, boolean
+   - Si ce sont des entiers représentant des catégories
+----
+
+=== 2. Détection automatique dans le code
+
+.Analyse du type de colonne avant l'appel IA
+[source,python]
+----
+# Détection automatique des colonnes numériques continues
+is_numeric_continuous = False
+if target_type.lower() in ['numerical', 'numeric', 'float', 'float64', 'float32', 'double', 'decimal']:
+    is_numeric_continuous = True
+    logger.info(f"🔍 DÉTECTION AUTOMATIQUE: Colonne '{target_column}' est NUMÉRIQUE CONTINUE → RÉGRESSION obligatoire")
+----
+
+=== 3. Prompt conditionnel selon le type détecté
+
+Le prompt envoyé à l'IA est maintenant adapté selon la détection :
+
+* Si numérique continue : Force la recommandation de régression
+* Sinon : Laisse l'IA analyser selon le contexte
+
+=== 4. Amélioration de la logique de fallback
+
+En cas d'échec de l'appel IA, la logique de fallback vérifie aussi le type de colonne en priorité.
+
+== Exemples de détection
+
+[options="header",cols="2,1,1,2"]
+|===
+| Colonne | Type | Recommandation | Raison
+
+| Addiction_Level
+| numerical
+| Régression
+| Valeurs décimales continues (10.0, 9.2, 8.6)
+
+| Species
+| categorical
+| Classification
+| Catégories textuelles (setosa, versicolor)
+
+| Price
+| float
+| Régression
+| Valeurs monétaires continues
+
+| Status
+| string
+| Classification
+| États discrets (active, inactive)
+|===
+
+== Impact utilisateur
+
+=== Avant
+
+* Recommandation incorrecte de classification pour colonnes numériques
+* Confusion et résultats inappropriés
+* Nécessité de corriger manuellement
+
+=== Après
+
+* Détection automatique correcte du type de tâche
+* Recommandations cohérentes avec le type de données
+* Explications claires sur pourquoi régression est appropriée
+
+== Guide pour les développeurs
+
+=== Ajout de nouveaux types numériques
+
+Pour ajouter la détection d'un nouveau type numérique, modifier la liste dans `llm_service.py` :
+
+[source,python]
+----
+if target_type.lower() in ['numerical', 'numeric', 'float', 'float64', 'float32', 'double', 'decimal', 'nouveau_type']:
+----
+
+=== Tests recommandés
+
+. Tester avec une colonne float (ex: Price)
+. Tester avec une colonne integer continue (ex: Age)
+. Tester avec une colonne catégorielle (ex: Category)
+. Vérifier que l'IA explique correctement pourquoi c'est de la régression
+
+== Détails techniques
+
+=== Fichiers modifiés
+
+. `ml-pipeline-service/app/ai/llm_service.py`
+   - `_get_system_prompt()` : Ajout des règles de détection
+   - `_build_analysis_prompt()` : Logique de détection automatique
+   - `_get_fallback_analysis()` : Détection dans le fallback
+
+=== Messages de log
+
+Les logs indiquent maintenant clairement la détection :
+
+----
+🔍 DÉTECTION AUTOMATIQUE: Colonne 'Addiction_Level' est NUMÉRIQUE CONTINUE (numerical) → RÉGRESSION obligatoire
+----
+
+== Prochaines étapes
+
+. Ajouter une validation côté frontend pour empêcher la sélection manuelle incorrecte
+. Implémenter la détection des entiers qui sont en réalité des catégories (ex: 0/1 pour Non/Oui)
+. Améliorer la détection des colonnes ordinales (catégories ordonnées)

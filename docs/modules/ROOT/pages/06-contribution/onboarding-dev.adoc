@@ -1,0 +1,53 @@
+= Onboarding développeur
+:description: Du premier clone à la première PR mergée
+
+Parcours recommandé pour un nouveau contributeur IBIS-X.
+
+== Jour 1 — Environnement local
+
+. Lire link:../../../../README.md[README.md] + link:../../../../CLAUDE.md[CLAUDE.md].
+. Cloner le dépôt.
+. Copier `.env.example` → `.env` et remplir les 8 variables obligatoires.
+. *Windows uniquement* : lire link:../../../../memory-bank/windows-gotchas.md[windows-gotchas.md] puis :
++
+[source,bash]
+----
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+export PYTHONIOENCODING=utf-8 PYTHONUTF8=1
+----
+. Lancer `make dev`. Compter 10-20 min au premier run.
+. Accéder : http://localhost:8080 (frontend), http://localhost:9000/docs (API).
+. Créer un compte test et faire un parcours complet (upload dataset Iris → training → XAI).
+
+== Jour 2 — Comprendre l'architecture
+
+. xref:03-technique/architecture/vue-ensemble.adoc[Vue d'ensemble C4].
+. xref:03-technique/architecture/microservices.adoc[Responsabilités des 4 services].
+. xref:03-technique/architecture/flux-communication.adoc[Flux de communication].
+. xref:03-technique/architecture/modele-donnees.adoc[Modèle de données].
+. Parcourir le code d'un service (ex. `service-selection/app/`) : `models.py` → `crud.py` → `services.py` → `main.py` (routes).
+
+== Jour 3 — Premier bug fix
+
+. Choisir une issue `good-first-issue`.
+. Créer une branche `fix/<slug>`.
+. Écrire le test qui reproduit le bug.
+. Corriger.
+. Lancer la suite de tests locale.
+. Commit selon conventions (voir xref:06-contribution/git-workflow.adoc[Git workflow]).
+. Pousser + créer PR (voir xref:06-contribution/processus-pr.adoc[Processus PR]).
+
+== Repères mentaux
+
+* *Une feature = une PR* (refactor séparé).
+* *Pas de secret en Git.*
+* *i18n FR+EN obligatoire* pour toute chaîne affichée.
+* *Doc = code* : la PR met à jour la page Antora du pilier concerné.
+* *3 queues Celery* seulement : `ml_queue`, `ai_queue`, `xai_queue`. Jamais `llm_queue`.
+
+== Ressources
+
+* link:../../../../CONTRIBUTING.md[CONTRIBUTING.md] — conventions commit, git flow, checklist PR.
+* link:../../../../CLAUDE.md[CLAUDE.md] — contrat IA synthétique.
+* link:../../../../memory-bank/conventions.md[`memory-bank/conventions.md`] — stack & règles complètes.
+* link:../../../../memory-bank/glossary.md[`memory-bank/glossary.md`] — vocabulaire.

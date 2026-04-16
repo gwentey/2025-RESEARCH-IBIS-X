@@ -1,0 +1,796 @@
+<!-- ✨ Page Résultats ML Pipeline - Design Linear/Stripe Moderne -->
+<div class="experiment-results-page" *ngIf="results; else loadingTemplate">
+
+
+  <!-- ✨ Header Ultra-Compact -->
+  <div class="compact-header">
+    <div class="header-wrapper">
+      <button class="back-btn" (click)="goBack()">
+        <mat-icon>arrow_back_ios</mat-icon>
+        Pipeline ML
+      </button>
+      
+      <div class="header-center">
+        <h1>Résultats d'Expérience</h1>
+        <div class="context-pills">
+          <span class="pill algorithm">
+            <mat-icon>{{getAlgorithmIcon()}}</mat-icon>
+            {{getAlgorithmDisplayName()}}
+          </span>
+          <span class="pill task">
+            <mat-icon>{{getTaskTypeIcon()}}</mat-icon>
+            {{getTaskTypeLabel()}}
+          </span>
+          <span class="pill score" [class]="getOverallPerformanceClass()">
+            <mat-icon>{{getPerformanceLevelIcon()}}</mat-icon>
+            {{getOverallScore()}}% • {{getOverallPerformanceLabel()}}
+          </span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button mat-stroked-button (click)="runNewExperiment()">
+          <mat-icon>refresh</mat-icon>
+          Nouvelle Expérience
+        </button>
+        <button mat-flat-button color="primary" (click)="exportResults()">
+          <mat-icon>file_download</mat-icon>
+          Exporter
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📊 Contenu principal avec onglets -->
+  <div class="main-content">
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedTabChange)="onTabChange($event.index)" animationDuration="300ms">
+      
+      <!-- Onglet Résultats Généraux -->
+      <mat-tab label="Résultats Généraux">
+        <ng-template matTabContent>
+          <div class="tab-content results-tab">
+
+  <!-- 🎯 Performance Showcase Compact -->
+  <section class="performance-compact">
+    <div class="performance-wrapper">
+      
+      <!-- Score Principal -->
+      <div class="main-score">
+        <div class="score-visual" 
+             *ngIf="getScoreCalculationExplanation() as scoreExplanation"
+             [matTooltip]="scoreExplanation.title + ' - ' + scoreExplanation.method + '. ' + scoreExplanation.detail"
+             matTooltipPosition="below"
+             matTooltipClass="score-tooltip">
+          <div class="score-ring">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="45" fill="none" stroke="#f4f6f8" stroke-width="6"/>
+              <circle cx="50" cy="50" r="45" fill="none" 
+                      stroke="url(#compactGradient)" 
+                      stroke-width="6" 
+                      stroke-linecap="round"
+                      [attr.stroke-dasharray]="282.74"
+                      [attr.stroke-dashoffset]="282.74 - (282.74 * getOverallScore() / 100)"
+                      transform="rotate(-90 50 50)"/>
+              <defs>
+                <linearGradient id="compactGradient">
+                  <stop offset="0%" style="stop-color:#5b57f7"/>
+                  <stop offset="100%" style="stop-color:#00a96e"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="score-text">
+              <span class="score-num">{{getOverallScore()}}</span>
+              <span class="score-unit">%</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 🚫 MÉTRIQUE PRINCIPALE SUPPRIMÉE pour éviter duplication avec les cards KPI -->
+      </div>
+
+      <!-- Titre Principal des Métriques -->
+      <div class="metrics-title">
+        <h2>Métriques de Performance</h2>
+        <p>Analyse détaillée de votre modèle {{getAlgorithmDisplayName()}} pour {{getTaskTypeLabel().toLowerCase()}}</p>
+      </div>
+
+      <!-- Statistiques Essentielles -->
+      <div class="essential-stats">
+        <div class="stat-row">
+          <div class="stat-item">
+            <mat-icon>dataset</mat-icon>
+            <span>{{getDatasetSize()}} échantillons</span>
+          </div>
+          <div class="stat-item">
+            <mat-icon>view_column</mat-icon>
+            <span>{{getFeatureCount()}} variables</span>
+          </div>
+          <div class="stat-item" *ngIf="getAlgorithm() === 'random_forest'">
+            <mat-icon>park</mat-icon>
+            <span>{{getTreeCount()}} arbres</span>
+          </div>
+          <div class="stat-item">
+            <mat-icon>timer</mat-icon>
+            <span>{{getTrainingDuration()}}</span>
+          </div>
+        </div>
+        
+        <!-- Message Performance -->
+        <div class="performance-summary">
+          <p>{{getScoreExplanation()}}</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 📊 Section Métriques -->
+  <section class="metrics-section">
+    <div class="section-container">
+
+      <!-- Explication Pédagogique -->
+      <div class="explanation-card" *ngIf="getPedagogicalExplanation() as explanation">
+        <div class="explanation-icon">
+          <mat-icon>school</mat-icon>
+        </div>
+        <div class="explanation-content">
+          <h3>{{explanation.title}}</h3>
+          <p>{{explanation.description}}</p>
+          
+          <div class="key-insights">
+            <div class="insight-item" *ngFor="let point of explanation.keyPoints">
+              <div class="insight-dot"></div>
+              <span>{{point}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grille des Métriques -->
+      <div class="metrics-grid">
+        <div class="metric-card" 
+             *ngFor="let metric of getPrimaryMetrics(); trackBy: trackMetric"
+             [class.primary-metric]="metric.isPrimary"
+             [class.random-forest-exclusive]="isRandomForestExclusiveMetric(metric.key)"
+             [class.enhanced-metric]="isEnhancedRandomForestMetric(metric.key)">
+          
+          <div class="metric-header">
+            <div class="metric-icon">
+              <mat-icon>{{getMetricIcon(metric.key)}}</mat-icon>
+            </div>
+            <!-- 🚫 BADGES SUPPRIMÉS pour économiser l'espace -->
+            <div class="performance-indicator" [class]="getPerformanceClass(metric.value, metric.key)">
+              <div class="indicator-dot"></div>
+              {{getPerformanceLabel(metric.value, metric.key)}}
+            </div>
+          </div>
+
+          <div class="metric-content">
+            <div class="metric-value" [class]="getPerformanceClass(metric.value, metric.key)">
+              {{formatMetricValue(metric.key, metric.value)}}
+            </div>
+            <div class="metric-name">{{getMetricDisplayName(metric.key)}}</div>
+            <div class="metric-description">{{getMetricDescription(metric.key)}}</div>
+          </div>
+
+          <!-- Barre de progression pour les métriques -->
+          <div class="metric-progress" *ngIf="!['mae', 'mse', 'rmse'].includes(metric.key)">
+            <div class="progress-bar">
+              <div class="progress-fill" 
+                   [style.width]="(metric.value * 100) + '%'"
+                   [class]="getPerformanceClass(metric.value, metric.key)">
+              </div>
+            </div>
+            <span class="progress-label">{{(metric.value * 100).toFixed(1)}}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 📈 Section Visualisations -->
+  <section class="visualizations-section">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>Visualisations du Modèle</h2>
+        <p>Explorez la structure et les performances de votre modèle {{getAlgorithmDisplayName()}}</p>
+      </div>
+
+      <!-- Conseils d'Interprétation -->
+      <div class="interpretation-guide" *ngIf="getVisualizationTips() as tips">
+        <h3>
+          <mat-icon>lightbulb</mat-icon>
+          Guide d'Interprétation
+        </h3>
+        <div class="tips-grid">
+          <div class="tip-card" *ngIf="tips.confusion">
+            <div class="tip-icon">📊</div>
+            <div class="tip-content">
+              <h4>Matrice de Confusion</h4>
+              <p>{{tips.confusion}}</p>
+            </div>
+          </div>
+          <div class="tip-card" *ngIf="tips.roc">
+            <div class="tip-icon">📈</div>
+            <div class="tip-content">
+              <h4>Courbe ROC</h4>
+              <p>{{tips.roc}}</p>
+            </div>
+          </div>
+          <!-- NOUVEAU: Conseil spécifique courbe PR -->
+          <div class="tip-card" *ngIf="tips.pr">
+            <div class="tip-icon">⚖️</div>
+            <div class="tip-content">
+              <h4>Courbe Precision-Recall</h4>
+              <p>{{tips.pr}}</p>
+            </div>
+          </div>
+          <div class="tip-card" *ngIf="tips.regression">
+            <div class="tip-icon">🎯</div>
+            <div class="tip-content">
+              <h4>Analyse Régression</h4>
+              <p>{{tips.regression}}</p>
+            </div>
+          </div>
+          <div class="tip-card" *ngIf="tips.tree">
+            <div class="tip-icon">🌳</div>
+            <div class="tip-content">
+              <h4>Arbre de Décision</h4>
+              <p>{{tips.tree}}</p>
+            </div>
+          </div>
+          <!-- NOUVEAU: Conseil explications locales pour arbres -->
+          <div class="tip-card" *ngIf="tips.local">
+            <div class="tip-icon">🔍</div>
+            <div class="tip-content">
+              <h4>Explications Locales</h4>
+              <p>{{tips.local}}</p>
+            </div>
+          </div>
+          
+          <!-- 💡 NOUVEAU: Conseil sur la différence SHAP vs Feature Importance -->
+          <div class="tip-card">
+            <div class="tip-icon">🎯</div>
+            <div class="tip-content">
+              <h4>SHAP vs Importance Globale</h4>
+              <p>Les <strong>valeurs SHAP locales</strong> (WebSHAP) expliquent une prédiction spécifique, tandis que l'<strong>importance globale</strong> montre l'influence moyenne des variables sur tout le dataset. Elles peuvent différer !</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Grille de Visualisations -->
+      <div class="visualizations-grid">
+        <div class="visualization-card" 
+             *ngFor="let viz of getRecommendedVisualizations()"
+             [class.available]="viz.available"
+             [class.unavailable]="!viz.available"
+             [class.error]="viz.error"
+             [class.tree-card]="viz.type === 'tree_structure'"
+             [class.tree-fullscreen]="viz.type === 'tree_structure' && isTreeFullscreen">
+          
+          <div class="viz-header">
+            <div class="viz-title">
+              <h3>{{viz.title}}</h3>
+              <div class="viz-actions">
+                <!-- 🔧 SOLUTION: Bouton DÉPLACÉ EN DEHORS de la zone d'arbre -->
+                <div class="viz-status" [class]="viz.available ? 'success' : 'warning'">
+                  <mat-icon>{{viz.available ? 'check_circle' : 'warning'}}</mat-icon>
+                  <span>{{viz.available ? 'Disponible' : 'Indisponible'}}</span>
+                </div>
+              </div>
+            </div>
+            <p class="viz-description">{{viz.description}}</p>
+          </div>
+
+
+          <!-- Contenu Visualisation -->
+          <div class="viz-content">
+            <!-- Arbre de décision -->
+            <div *ngIf="viz.type === 'tree_structure' && viz.available" class="tree-visualization tree-full-width">
+              
+              <!-- 🆕 NOUVEAU: Badge Random Forest compact au-dessus -->
+              <div *ngIf="getAlgorithm() === 'random_forest'" class="rf-tree-header">
+                <div class="rf-badge">
+                  <mat-icon>park</mat-icon>
+                  <span>Échantillon 1/{{getTreeCount()}}</span>
+                </div>
+                <div class="rf-explanation">
+                  <span class="main-text">Cet arbre représente <strong>1 sur {{getTreeCount()}} arbres</strong> de votre Random Forest</span>
+                  <span class="sub-text">La prédiction finale combine le vote de tous les arbres</span>
+                </div>
+              </div>
+
+              <!-- 🎯 TREE EN DESSOUS avec PLEINE largeur garantie -->
+              <div class="tree-wrapper-full">
+                <app-real-tree-visualization
+                  [treeData]="getTreeData()"
+                  [algorithm]="getAlgorithm()"
+                  [taskType]="getTaskType()"
+                  class="tree-component-full">
+                </app-real-tree-visualization>
+              </div>
+            </div>
+            
+            <!-- Image Visualizations -->
+            <div *ngIf="viz.available && viz.type !== 'tree_structure'" class="image-visualization">
+              <!-- 💡 Explication spéciale pour l'importance des variables globale -->
+              <div *ngIf="viz.type === 'feature_importance'" class="feature-importance-explanation" style="background: linear-gradient(135deg, #fff3e0 0%, #f3e5f5 100%); border: 1px solid #ffcc80; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                  <mat-icon style="color: #ff9800; font-size: 20px;">bar_chart</mat-icon>
+                  <h4 style="margin: 0; color: #e65100; font-size: 14px;">Importance Globale des Variables</h4>
+                  <span style="background: #ff9800; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: 500;">Tout le dataset</span>
+                </div>
+                <p style="margin: 0; color: #ef6c00; font-size: 12px; line-height: 1.4;">
+                  Ce graphique montre l'importance <strong>moyenne</strong> des variables sur l'ensemble des données d'entraînement. 
+                  Elle diffère des valeurs SHAP locales qui expliquent une prédiction spécifique.
+                </p>
+              </div>
+              
+              <div class="image-container">
+                <img 
+                  [src]="getVisualizationImage(viz.type)" 
+                  [alt]="viz.title"
+                  class="viz-image"
+                  (error)="onImageError($event)"
+                  loading="lazy" />
+              </div>
+              
+              <!-- NOUVEAU: Information contextuelle pour visualisations binaires -->
+              <div *ngIf="getTaskType() === 'classification' && getClassificationType() === 'binary'" class="viz-context">
+                <div class="context-tag" *ngIf="viz.type === 'roc_curve'">
+                  <mat-icon>info</mat-icon>
+                  <span>Classification Binaire</span>
+                </div>
+                <div class="context-tag" *ngIf="viz.type === 'pr_curve'">
+                  <mat-icon>balance</mat-icon>
+                  <span>Idéal pour classes déséquilibrées</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Message spécial si aucune visualisation -->
+            <div *ngIf="viz.type === 'no_visualizations'" class="no-viz-message">
+              <div class="no-viz-icon">
+                <mat-icon>analytics</mat-icon>
+              </div>
+              <div class="no-viz-content">
+                <h4>{{viz.title}}</h4>
+                <p>{{viz.description}}</p>
+                <div class="no-viz-suggestion">
+                  <mat-icon>info</mat-icon>
+                  <span>L'arbre de décision reste disponible pour analyser la logique du modèle.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 🚨 DIAGNOSTIC: Visualisations manquantes critiques -->
+            <div *ngIf="!viz.available && (viz.type === 'confusion_matrix' || viz.type === 'roc_curve')" class="viz-critical-missing">
+              <div class="critical-icon">
+                <mat-icon>warning</mat-icon>
+              </div>
+              <div class="critical-text">
+                <h4>🚨 {{viz.title}} - CRITIQUE MANQUANTE</h4>
+                <p>{{viz.description}}</p>
+                
+                <div class="critical-alert">
+                  <mat-icon>build_circle</mat-icon>
+                  <span>Cette visualisation DOIT être générée automatiquement pour {{getAlgorithm()}} + {{getTaskType()}}</span>
+                </div>
+                
+                <div class="diagnostic-info">
+                  <strong>Debug :</strong> Vérifiez les logs backend pour la génération des visualisations.
+                  <br><strong>URL attendue :</strong> <code>{{getVisualizationImage(viz.type)}}</code>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Placeholder standard pour autres visualisations -->
+            <div *ngIf="!viz.available && viz.type !== 'no_visualizations' && viz.type !== 'confusion_matrix' && viz.type !== 'roc_curve'" class="viz-placeholder">
+              <div class="placeholder-icon">
+                <mat-icon>image_not_supported</mat-icon>
+              </div>
+              <div class="placeholder-text">
+                <h4>{{viz.title}}</h4>
+                <p>{{viz.description}}</p>
+                
+                <p class="placeholder-reason">
+                  Visualisation optionnelle selon le contexte des données.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 💡 Section Recommandations -->
+  <section class="recommendations-section">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>Recommandations Intelligentes</h2>
+        <p>Optimisez votre modèle avec nos suggestions personnalisées</p>
+      </div>
+
+      <div class="recommendations-grid">
+        <div class="recommendation-card" *ngFor="let rec of getTopRecommendations(); trackBy: trackByRecommendation">
+          <div class="rec-header">
+            <div class="rec-icon" [class]="rec.priority">
+              <mat-icon>{{rec.icon}}</mat-icon>
+            </div>
+            <div class="rec-priority" [class]="rec.priority">
+              {{rec.priorityLabel}}
+            </div>
+          </div>
+          <div class="rec-content">
+            <h4>{{rec.title}}</h4>
+            <p>{{rec.description}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🎯 Footer Actions -->
+  <footer class="actions-footer">
+    <div class="section-container">
+      <div class="actions-grid">
+        <button mat-flat-button color="primary" class="action-btn primary" (click)="downloadModel()">
+          <mat-icon>download</mat-icon>
+          <span>Télécharger le Modèle</span>
+        </button>
+        <button mat-stroked-button class="action-btn secondary" (click)="exportResults()">
+          <mat-icon>picture_as_pdf</mat-icon>
+          <span>Exporter en PDF</span>
+        </button>
+        <button mat-stroked-button class="action-btn secondary" (click)="runNewExperiment()">
+          <mat-icon>add</mat-icon>
+          <span>Nouvelle Expérience</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+          </div>
+        </ng-template>
+      </mat-tab>
+
+      <!-- Onglet Explicabilité -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span class="tab-label-with-badge">
+            Explicabilité
+            <span class="xai-badge">XAI</span>
+          </span>
+        </ng-template>
+        <ng-template matTabContent>
+          <div class="tab-content explicability-tab">
+
+  <!-- 🧠 Section XAI -->
+  <section class="xai-section">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>
+          <mat-icon>psychology</mat-icon>
+          Explicabilité du Modèle (XAI)
+        </h2>
+        <p>Découvrez <strong>pourquoi</strong> votre modèle {{getAlgorithmDisplayName()}} fait ces prédictions</p>
+      </div>
+
+      <!-- 🔥 NOUVEAU: WebSHAP Interactive -->
+      <div class="webshap-section" *ngIf="canRequestXAIExplanation() && results">
+        <!-- 💡 Explication pédagogique WebSHAP Global -->
+        <div class="xai-explanation-card" style="background: linear-gradient(135deg, #e8f5e8 0%, #f3e5f5 100%); border: 1px solid #4caf50; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <mat-icon style="color: #2e7d32; font-size: 24px;">public</mat-icon>
+            <h3 style="margin: 0; color: #1b5e20; font-size: 18px;">Explications SHAP Globales</h3>
+            <span style="background: #4caf50; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;">Tout le dataset</span>
+          </div>
+          <p style="margin: 0; color: #2e7d32; font-size: 14px; line-height: 1.5;">
+            <strong>WebSHAP Global analyse l'ensemble du modèle</strong> pour identifier l'importance moyenne des variables. 
+            Cette vue d'ensemble complète l'importance traditionnelle des features avec les valeurs SHAP.
+          </p>
+        </div>
+        
+        <app-webshap-explainer 
+          [experimentId]="experimentId"
+          [modelType]="getAlgorithm() === 'decision_tree' ? 'decision_tree' : 'random_forest'"
+          [taskType]="getTaskType()"
+          explanationMode="global">
+        </app-webshap-explainer>
+      </div>
+
+      <!-- 🧪 DEBUG TEMPORAIRE - À SUPPRIMER EN PRODUCTION -->
+      <details class="debug-section" style="background: #f8f9fa; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #dee2e6;">
+        <summary style="cursor: pointer; font-weight: 500;">🧪 Debug XAI (développement)</summary>
+        <div style="margin-top: 8px;">
+          <button mat-stroked-button (click)="debugXAIContext()" style="margin-right: 8px; font-size: 12px;">
+            <mat-icon style="font-size: 16px;">bug_report</mat-icon>
+            Debug Context
+          </button>
+          <div style="margin-top: 6px; font-size: 11px; color: #6c757d;">
+            User: {{cachedUser?.email || 'Loading...'}} | Niveau IA: {{cachedUser?.ai_familiarity || 'N/A'}}
+          </div>
+        </div>
+      </details>
+
+
+      <!-- 📊 Section Résumé Contextuel Intelligent -->
+      <section class="xai-context-summary" *ngIf="experiment && results">
+        <div class="context-header">
+          <h2>
+            <mat-icon>insights</mat-icon>
+            Analyse Explicable - {{getAlgorithmDisplayName()}} sur {{getDatasetNameContextual()}}
+          </h2>
+          <p class="context-subtitle">
+            Comprenez pourquoi votre modèle fait ces prédictions et comment l'améliorer
+          </p>
+        </div>
+        
+        <div class="context-pills">
+          <span class="pill performance" [class]="getOverallPerformanceClass()">
+            <mat-icon>{{getPerformanceLevelIcon()}}</mat-icon>
+            {{getOverallScore()}}% Performance
+          </span>
+          <span class="pill task">
+            <mat-icon>{{getTaskTypeIcon()}}</mat-icon>
+            {{getTaskTypeLabel()}}
+          </span>
+          <span class="pill classes" *ngIf="getClassificationType() !== 'unknown'">
+            <mat-icon>category</mat-icon>
+            {{getClassificationType() | titlecase}} ({{getNumberOfClassesContextual()}} classes)
+          </span>
+          <span class="pill dataset">
+            <mat-icon>storage</mat-icon>
+            {{getDatasetSize()}} échantillons
+          </span>
+          <span class="pill user-level">
+            <mat-icon>{{getUserLevelIcon()}}</mat-icon>
+            Niveau {{getUserLevelLabel()}}
+          </span>
+        </div>
+        
+        <!-- Insights Rapides adaptés au profil utilisateur -->
+        <div class="quick-insights">
+          <!-- Insight Performance (toujours affiché) -->
+          <div class="insight-card">
+            <div class="insight-icon" [class]="getOverallPerformanceClass()">
+              <mat-icon>{{getPerformanceLevelIcon()}}</mat-icon>
+            </div>
+            <div class="insight-content">
+              <h4>Performance {{getOverallPerformanceLabel()}}</h4>
+              <p>Votre {{getAlgorithmDisplayName()}} atteint {{getOverallScore()}}% sur {{getDatasetNameContextual()}}</p>
+            </div>
+          </div>
+          
+          <!-- Insight Algorithme (toujours affiché) -->
+          <div class="insight-card">
+            <div class="insight-icon primary">
+              <mat-icon>{{getAlgorithmIcon()}}</mat-icon>
+            </div>
+            <div class="insight-content">
+              <h4>{{getAlgorithmDisplayName()}}</h4>
+              <p>{{getTaskDescription()}}</p>
+            </div>
+          </div>
+          
+          <!-- Insight Niveau Utilisateur (toujours affiché) -->
+          <div class="insight-card">
+            <div class="insight-icon info">
+              <mat-icon>{{getUserLevelIcon()}}</mat-icon>
+            </div>
+            <div class="insight-content">
+              <h4>Niveau {{getUserLevelLabel()}}</h4>
+              <p>Explications adaptées à votre niveau de familiarité avec l'IA</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Prévisualisation des données contextuelles -->
+        <div class="context-preview">
+          <h3>
+            <mat-icon>preview</mat-icon>
+            Aperçu du Contexte ML
+          </h3>
+          <div class="preview-grid">
+            <!-- Algorithme et Tâche -->
+            <div class="preview-item">
+              <div class="preview-label">Algorithme</div>
+              <div class="preview-value">
+                <span class="class-chip">{{getAlgorithmDisplayName()}}</span>
+              </div>
+            </div>
+            
+            <!-- Type de tâche -->
+            <div class="preview-item">
+              <div class="preview-label">Type de tâche</div>
+              <div class="preview-value">
+                <span class="feature-chip">{{getTaskTypeLabel()}}</span>
+              </div>
+            </div>
+            
+            <!-- Performance -->
+            <div class="preview-item">
+              <div class="preview-label">Performance</div>
+              <div class="preview-value">
+                <span class="error-chip">{{getOverallScore()}}% Accuracy</span>
+              </div>
+            </div>
+            
+            <!-- Variables (si disponibles) -->
+            <div class="preview-item" *ngIf="results?.feature_importance">
+              <div class="preview-label">Variables principales</div>
+              <div class="preview-value">
+                <span *ngFor="let feature of getTopFeaturesPreview()" class="feature-chip">
+                  {{feature.name}}
+                </span>
+              </div>
+            </div>
+            
+            <!-- Dataset info -->
+            <div class="preview-item" *ngIf="getDatasetSize() > 0">
+              <div class="preview-label">Données</div>
+              <div class="preview-value">
+                <span class="class-chip">{{getDatasetSize()}} échantillons</span>
+                <span class="feature-chip" *ngIf="getFeatureCount() > 0">{{getFeatureCount()}} variables</span>
+              </div>
+            </div>
+            
+            <!-- Niveau utilisateur -->
+            <div class="preview-item">
+              <div class="preview-label">Votre niveau</div>
+              <div class="preview-value">
+                <span class="error-chip">
+                  <mat-icon style="font-size: 14px; margin-right: 4px;">{{getUserLevelIcon()}}</mat-icon>
+                  {{getUserLevelLabel()}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 💡 Suggestions de Questions Contextuelles -->
+      <ng-container *ngIf="experiment && results">
+        <div class="contextual-suggestions" *ngIf="getSimplifiedSuggestions() as suggestions; else noSuggestions">
+          <h3>
+            <mat-icon>lightbulb</mat-icon>
+            Questions Suggérées pour Votre Modèle
+          </h3>
+          <p class="suggestions-subtitle">
+            Basées sur vos résultats spécifiques {{getAlgorithmDisplayName()}} sur {{getDatasetNameContextual()}} 
+            <span class="user-level-badge">(Adaptées à votre niveau {{getUserLevelLabel()}})</span>
+          </p>
+          
+          <div class="suggestions-grid">
+            <button 
+              *ngFor="let suggestion of suggestions" 
+              class="suggestion-card"
+              [class.audience-adapted]="suggestion.audience_adapted"
+              (click)="selectSuggestionAndStart(suggestion)"
+              [class.selected]="selectedSuggestion?.question === suggestion.question">
+            
+            <div class="suggestion-icon">
+              <mat-icon>{{getSuggestionIcon(suggestion.context)}}</mat-icon>
+            </div>
+            
+            <div class="suggestion-content">
+              <p class="suggestion-question">{{suggestion.question}}</p>
+              <span class="suggestion-context">{{getSuggestionContextLabel(suggestion.context)}}</span>
+              <span class="suggestion-level" *ngIf="suggestion.audience_adapted">
+                <mat-icon>person</mat-icon>
+                Adapté à votre niveau
+              </span>
+            </div>
+            
+            <mat-icon class="suggestion-arrow">arrow_forward</mat-icon>
+          </button>
+        </div>
+        
+        <div class="suggestions-footer">
+          <p class="suggestions-note">
+            <mat-icon>info</mat-icon>
+            Ces questions sont générées automatiquement selon vos résultats de {{getOverallScore()}}% d'accuracy
+          </p>
+        </div>
+        </div>
+        
+        <ng-template #noSuggestions>
+          <div class="fallback-suggestions" style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin: 16px 0;">
+            <h3>💡 Questions Prêtes pour Votre Modèle</h3>
+            <div class="fallback-grid" style="display: grid; gap: 12px; margin-top: 16px;">
+              <button class="suggestion-card" style="background: white; border: 2px solid #e9ecef; border-radius: 8px; padding: 12px; cursor: pointer; text-align: left;" 
+                      (click)="selectSuggestionAndStart({question: 'Comment interpréter mes résultats de ' + getAlgorithmDisplayName() + ' ?', context: 'interpretation', audience_adapted: true})">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <mat-icon style="color: #6c5ce7;">analytics</mat-icon>
+                  <span>Comment interpréter mes résultats de {{getAlgorithmDisplayName()}} ?</span>
+                </div>
+              </button>
+              
+              <button class="suggestion-card" style="background: white; border: 2px solid #e9ecef; border-radius: 8px; padding: 12px; cursor: pointer; text-align: left;"
+                      (click)="selectSuggestionAndStart({question: 'Quels sont les points forts de mon modèle ?', context: 'strengths', audience_adapted: true})">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <mat-icon style="color: #00a96e;">emoji_events</mat-icon>
+                  <span>Quels sont les points forts de mon modèle ?</span>
+                </div>
+              </button>
+              
+              <button class="suggestion-card" style="background: white; border: 2px solid #e9ecef; border-radius: 8px; padding: 12px; cursor: pointer; text-align: left;"
+                      (click)="selectSuggestionAndStart({question: 'Comment améliorer les performances ?', context: 'improvement', audience_adapted: true})">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <mat-icon style="color: #ff9500;">tips_and_updates</mat-icon>
+                  <span>Comment améliorer les performances ?</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <!-- XAI Request Section -->
+      <div class="xai-request-card" *ngIf="canRequestXAIExplanation() && !activeXAIRequestId && results && isContextReady">
+        <app-xai-explanation-request
+          [experimentId]="experimentId"
+          [datasetId]="experiment?.dataset_id || ''"
+          [modelAlgorithm]="getAlgorithm()"
+          [taskType]="getTaskType()"
+          [contextData]="fullMLContext"
+          [suggestions]="getContextualSuggestions()"
+          (explanationCreated)="onExplanationCreated($event)"
+          (explanationCompleted)="onExplanationCompleted($event)"
+          (explanationError)="onExplanationError($event)">
+        </app-xai-explanation-request>
+      </div>
+      
+      <!-- Loading Context Message -->
+      <div class="xai-loading-context" *ngIf="canRequestXAIExplanation() && !activeXAIRequestId && results && !isContextReady">
+        <div style="text-align: center; padding: 20px; color: #666;">
+          <mat-spinner diameter="30" style="margin: 0 auto;"></mat-spinner>
+          <p style="margin-top: 10px;">Préparation du contexte ML...</p>
+        </div>
+      </div>
+
+      <!-- XAI Results -->
+      <div class="xai-results" *ngIf="activeXAIRequestId">
+        <app-xai-explanation-results
+          [requestId]="activeXAIRequestId"
+          [showChatButton]="true"
+          [contextData]="fullMLContext">
+        </app-xai-explanation-results>
+        
+        <div class="xai-chat" *ngIf="showXAIChat">
+          <app-xai-chat-interface
+            [explanationId]="activeXAIRequestId"
+            [language]="'fr'"
+            [maxQuestions]="5"
+            [compactMode]="false"
+            [contextData]="fullMLContext">
+          </app-xai-chat-interface>
+        </div>
+      </div>
+    </div>
+  </section>
+
+          </div>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+
+</div>
+
+<!-- 🔄 LOADING TEMPLATE -->
+<ng-template #loadingTemplate>
+  <div class="loading-container">
+    <div class="loading-content">
+      <mat-spinner diameter="48"></mat-spinner>
+      <h3>Chargement des résultats...</h3>
+      <p>Analyse de l'expériment {{experimentId | slice:0:8}}...</p>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: ibis-x
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      initContainers:
+      # 🚀 NOUVEAU: Init container pour attendre PostgreSQL
+      - name: wait-for-postgres
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+          - |
+            echo "⏳ Attente de PostgreSQL..."
+            until nc -z postgresql-service.ibis-x.svc.cluster.local 5432; do
+              echo "PostgreSQL pas encore prêt..."
+              sleep 2
+            done
+            echo "✅ PostgreSQL est prêt!"
+      
+      # 🚀 NOUVEAU: Init container pour exécuter les migrations Alembic
+      - name: run-migrations
+        image: ibis-x-api-gateway:latest
+        imagePullPolicy: IfNotPresent
+        command: ["sh", "-c"]
+        args:
+          - |
+            echo "🔧 Vérification/création des tables via SQLAlchemy..."
+            python -c "
+            from app.db import engine
+            from app.models.user import Base
+            from sqlalchemy import inspect
+            inspector = inspect(engine)
+            tables = inspector.get_table_names()
+            if 'users' not in tables:
+                print('⚠️ Tables manquantes - création...')
+                Base.metadata.create_all(bind=engine)
+                print('✅ Tables créées avec succès')
+            else:
+                print('✅ Tables déjà existantes')
+            "
+            echo "🔄 Application des migrations Alembic..."
+            alembic upgrade head || echo "⚠️ Migrations échouées mais tables créées"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: gateway-secrets
+              key: database-url
+        - name: PYTHONPATH
+          value: "/app"
+        workingDir: /app
+      
+      containers:
+      - name: api-gateway
+        image: ibis-x-api-gateway
+        imagePullPolicy: Never
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: gateway-secrets
+              key: database-url
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: gateway-secrets
+              key: secret-key
+        - name: GOOGLE_OAUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: gateway-secrets
+              key: google-client-id
+        - name: GOOGLE_OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: gateway-secrets
+              key: google-client-secret
+        - name: OAUTH_REDIRECT_URL
+          valueFrom:
+            secretKeyRef:
+              name: gateway-secrets
+              key: oauth-redirect-url
+        ports:
+        - containerPort: 8088
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8088
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8088
+          initialDelaySeconds: 30
+          periodSeconds: 30

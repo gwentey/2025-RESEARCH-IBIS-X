@@ -1,0 +1,357 @@
+= Authentification Frontend
+:icons: font
+:source-highlighter: highlight.js
+:toc: left
+:toclevels: 3
+
+Cette documentation décrit l'implémentation technique de l'authentification côté frontend dans l'application Angular.
+
+== Aperçu
+
+Le système d'authentification frontend est basé sur un mécanisme de token JWT et utilise plusieurs composants:
+
+* Service d'authentification (`AuthService`)
+* Guards de routes pour protéger l'accès
+* Intercepteurs HTTP pour ajouter automatiquement le token aux requêtes
+* Composants de login et register
+
+== Guards d'Authentification
+
+Deux guards sont implémentés pour gérer les accès aux différentes routes:
+
+=== AuthGuard (`auth.guard.ts`)
+
+Ce guard protège les routes nécessitant une authentification. Il vérifie si l'utilisateur est connecté et, si ce n'est pas le cas, le redirige vers la page de login.
+
+[source,typescript]
+----
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAuthenticated()) {
+    return true; // Autorise l'accès à la route
+  }
+
+  // Non authentifié : rediriger vers la page de login
+  router.navigate(['/authentication/login'], { queryParams: { returnUrl: state.url } });
+  return false; // Bloque l'accès à la route actuelle
+};
+----
+
+=== NonAuthGuard (`non-auth.guard.ts`)
+
+Ce guard empêche les utilisateurs déjà connectés d'accéder aux pages d'authentification (login et register). Si un utilisateur connecté tente d'accéder à ces pages, il est automatiquement redirigé vers la page d'accueil.
+
+[source,typescript]
+----
+export const nonAuthGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (!authService.isAuthenticated()) {
+    return true; // Autorise l'accès à la route car l'utilisateur n'est pas connecté
+  }
+
+  // Déjà authentifié : rediriger vers la page d'accueil
+  router.navigate(['/starter']);
+  return false; // Bloque l'accès à la route actuelle
+};
+----
+
+== Configuration des Routes
+
+La configuration des routes pour les composants d'authentification utilise le `nonAuthGuard` pour protéger les routes de login et register:
+
+[source,typescript]
+----
+export const AuthenticationRoutes: Routes = [
+  {
+    path: '',
+    children: [
+      {
+        path: 'error',
+        component: AppErrorComponent,
+      },
+      {
+        path: 'login',
+        component: AppSideLoginComponent,
+        canActivate: [nonAuthGuard], // Empêche les utilisateurs connectés d'accéder à cette route
+      },
+      {
+        path: 'register',
+        component: AppSideRegisterComponent,
+        canActivate: [nonAuthGuard], // Empêche les utilisateurs connectés d'accéder à cette route
+      },
+      {
+        path: 'callback',
+        component: OAuthCallbackComponent,
+      },
+    ],
+  },
+];
+----
+
+== Service d'Authentification
+
+Le `AuthService` gère toutes les opérations liées à l'authentification, y compris:
+
+* Connexion par identifiants (email/mot de passe)
+* Inscription de nouveaux utilisateurs
+* Connexion via OAuth (Google)
+* Gestion du token JWT (stockage, récupération)
+* Vérification de l'état d'authentification
+* Récupération des informations de l'utilisateur connecté
+
+La méthode `isAuthenticated()` est utilisée par les guards pour déterminer si l'utilisateur est connecté:
+
+[source,typescript]
+----
+isAuthenticated(): boolean {
+  return this.getToken() !== null;
+  // TODO: Ajouter une vérification de validité/expiration du token
+}
+----
+
+La méthode `getCurrentUser()` permet de récupérer les informations de l'utilisateur connecté:
+
+[source,typescript]
+----
+getCurrentUser(): Observable<UserRead> {
+  // Note: Assurez-vous qu'un intercepteur ajoute le token 'Authorization: Bearer <token>'
+  return this.http.get<UserRead>(`${environment.apiUrl}/users/me`).pipe(
+    catchError(this.handleError)
+  );
+}
+----
+
+=== Déconnexion
+
+La méthode `logout()` du service d'authentification supprime le token JWT du localStorage et redirige l'utilisateur vers la page de login après un court délai:
+
+[source,typescript]
+----
+logout(): void {
+  localStorage.removeItem(this.tokenKey);
+  // Ajout d'un court délai pour s'assurer que le token est bien supprimé 
+  // avant la redirection et éviter des conflits avec le nonAuthGuard
+  setTimeout(() => {
+    this.router.navigate(['/authentication/login']);
+  }, 50);
+}
+----
+
+Cette méthode est appelée par les boutons de déconnexion dans les composants header (horizontal et vertical). Les boutons de déconnexion doivent utiliser uniquement l'événement `(click)` pour appeler la méthode `logout()`, sans utiliser `[routerLink]` pour éviter des conflits de navigation:
+
+[source,html]
+----
+<button
+  mat-flat-button
+  color="primary"
+  class="w-100"
+  (click)="logout()"
+>
+  Logout
+</button>
+----
+
+== Affichage des Informations Utilisateur
+
+Les composants header (horizontal et vertical) affichent les informations de l'utilisateur connecté, récupérées via le service d'authentification:
+
+[source,typescript]
+----
+loadUserInfo(): void {
+  if (this.authService.isAuthenticated()) {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        // Déterminer le nom à afficher par ordre de priorité
+        if (user.pseudo) {
+          // 1. Utiliser le pseudo s'il existe
+          this.userDisplayName = user.pseudo;
+        } else if (user.given_name && user.family_name) {
+          // 2. Sinon utiliser le nom complet s'il existe
+          this.userDisplayName = `${user.given_name} ${user.family_name}`;
+        } else if (user.given_name) {
+          // 3. Sinon juste le prénom s'il existe
+          this.userDisplayName = user.given_name;
+        } else {
+          // 4. Sinon fallback sur l'email
+          this.userDisplayName = user.email.split('@')[0];
+        }
+        
+        // Autres traitements...
+      }
+    });
+  }
+}
+----
+
+Cette logique permet d'assurer un affichage cohérent, qu'il s'agisse d'un utilisateur enregistré via formulaire classique (avec pseudo) ou via authentification OAuth (avec given_name/family_name de Google).
+
+== Flux d'Authentification
+
+. L'utilisateur accède à l'application
+. Si une route protégée est demandée et que l'utilisateur n'est pas connecté, `authGuard` le redirige vers la page de login
+. Si l'utilisateur est déjà connecté et tente d'accéder aux pages de login ou register, `nonAuthGuard` le redirige vers la page d'accueil
+. Après connexion réussie, le token JWT est stocké dans le localStorage et l'utilisateur est redirigé vers la page d'accueil
+. Les informations de l'utilisateur sont récupérées et affichées dans les composants header
+
+== Bonnes Pratiques
+
+* Toujours utiliser les guards appropriés pour protéger les routes
+* Ne jamais stocker d'informations sensibles autres que le token JWT dans le localStorage
+* Implémenter une vérification d'expiration du token pour améliorer la sécurité
+* Considérer l'implémentation d'un refresh token pour une meilleure expérience utilisateur
+* Pour les boutons de déconnexion, n'utilisez jamais simultanément `[routerLink]` et `(click)="logout()"`; la méthode `logout()` se charge déjà de la redirection
+* Prévoir des fallbacks pour l'affichage des informations utilisateur quand certaines données sont manquantes 
+
+== Authentification OAuth2 (Google)
+
+L'application prend en charge l'authentification via Google OAuth2. Ce processus comporte plusieurs étapes:
+
+=== Flux d'authentification OAuth2
+
+1. L'utilisateur clique sur le bouton "Se connecter avec Google" dans le formulaire de connexion
+2. Le frontend demande une URL d'autorisation au backend (`/auth/google/authorize`)
+3. L'utilisateur est redirigé vers Google pour s'authentifier
+4. Google redirige l'utilisateur vers le callback backend (`/auth/google/callback`)
+5. Le backend redirige vers le frontend avec un code et un state
+6. Le frontend envoie ce code et state au backend (`/auth/google/exchange-token`)
+7. Le backend échange ce code contre un token d'accès Google
+8. Le backend récupère les informations utilisateur depuis Google
+9. Le backend crée/récupère l'utilisateur dans la base de données
+10. Le backend génère un token JWT et le renvoie au frontend
+11. Le frontend stocke le token JWT dans le localStorage
+
+=== Particularités de l'authentification OAuth2
+
+L'authentification OAuth2 présente quelques particularités à prendre en compte:
+
+* Les utilisateurs OAuth n'ont pas de mot de passe dans la base de données
+* Les informations utilisateur (nom, prénom, photo) sont récupérées depuis Google
+* Le token JWT doit être généré avec l'ID correct de l'utilisateur
+* Les utilisateurs doivent être marqués comme "vérifiés" pour accéder à toutes les fonctionnalités
+
+=== Gestion des erreurs OAuth2
+
+Pour les utilisateurs OAuth, des erreurs spécifiques peuvent survenir:
+
+* Token d'accès Google expiré
+* Problème dans la génération du token JWT 
+* Écart entre l'ID utilisateur dans le token et celui en base de données
+
+Pour gérer ces cas, l'intercepteur HTTP inclut une logique spéciale:
+
+```typescript
+if (error.status === 401 || error.status === 403) {
+  // Si l'erreur est sur /users/me, cela peut indiquer un problème avec le token OAuth
+  if (req.url.includes('/users/me')) {
+    // Déconnecter l'utilisateur et rediriger vers la page de connexion
+    authService.logout();
+    router.navigate(['/authentication/login'], { 
+      queryParams: { 
+        auth_error: 'token_expired',
+        msg: 'Votre session a expiré, veuillez vous reconnecter.'
+      } 
+    });
+  }
+}
+```
+
+Cette approche permet de déconnecter automatiquement l'utilisateur en cas de problème avec son token OAuth, assurant une expérience utilisateur plus fluide. 
+
+== Gestion des Images de Profil Google
+
+Les URL d'images de profil Google (`https://lh3.googleusercontent.com/...`) présentent certains défis techniques dans une application Angular:
+
+=== Problèmes courants avec les images Google
+
+* *Problèmes CORS*: Google peut bloquer les requêtes cross-origin pour les images de profil
+* *Mise en cache agressive*: Les navigateurs peuvent mettre en cache les images, causant des problèmes lors des changements
+* *Taille d'image non optimisée*: Les images peuvent être trop grandes ou trop petites pour l'affichage prévu
+
+=== Solution implémentée
+
+Pour résoudre ces problèmes, nous avons mis en place la stratégie suivante:
+
+1. *Sanitisation des URLs*: Une méthode `sanitizeGoogleImageUrl` traite les URLs Google pour les optimiser
+
+[source,typescript]
+----
+sanitizeGoogleImageUrl(url: string): string {
+  // Vérifier si c'est une URL Google Photos
+  if (url && url.includes('googleusercontent.com')) {
+    // Ajouter un paramètre pour spécifier la taille et le recadrage
+    if (!url.includes('=s')) {
+      url = url.includes('?') ? `${url}&s=200-c` : `${url}=s200-c`;
+    }
+    
+    // Vérifier si l'URL est accessible
+    const img = new Image();
+    img.onerror = () => {
+      console.warn('Google profile image failed to load, using default image');
+      this.userProfileImage = '/assets/images/profile/user5.jpg';
+    };
+    img.src = url;
+    
+    return url;
+  }
+  return url;
+}
+----
+
+2. *Fallbacks HTML*: Utilisation de l'attribut `onerror` pour remplacer les images qui échouent au chargement
+
+[source,html]
+----
+<img 
+  [src]="userProfileImage" 
+  class="rounded-circle" 
+  onerror="this.src='/assets/images/profile/user5.jpg';"
+/>
+----
+
+Cette double approche (sanitisation côté TypeScript + fallback côté HTML) garantit que les utilisateurs auront toujours une image de profil affichée, même en cas de problème avec l'URL Google. 
+
+== Amélioration de l'Interface Utilisateur
+
+=== Modernisation des Pages de Formulaires
+
+La page de création/édition de projet a été entièrement refactorisée pour suivre les standards modernes du design system :
+
+==== Structure Adoptée
+* **Layout en grille** : Utilisation de la structure Bootstrap (`row`, `col-lg-X`) pour une disposition responsive
+* **Cartes unifiées** : Remplacement des composants personnalisés par des `mat-card` avec les classes standards `cardWithShadow theme-card`
+* **Classes utilitaires** : Adoption des classes CSS du thème existant (`m-b-20`, `f-w-600`, `text-primary`, etc.)
+
+==== Améliorations Apportées
+[cols="1,2"]
+|===
+|Aspect |Amélioration
+
+|CSS Personnalisé
+|Suppression complète du fichier SCSS pour utiliser uniquement les styles du thème
+
+|Structure HTML
+|Refactorisation en structure 2 colonnes (8/4) pour optimiser l'espace d'écran
+
+|Composants Material
+|Migration vers les composants Angular Material standards avec apparence cohérente
+
+|Responsive Design
+|Amélioration de l'affichage sur tous les formats d'écran
+|===
+
+==== Structure de la Page
+```
+├── Header (Titre + Actions)
+├── Colonne principale (col-lg-8)
+│   ├── Informations du projet
+│   ├── Critères de sélection
+│   └── Pondération des critères
+└── Colonne latérale (col-lg-4)
+    └── Aperçu en temps réel
+```
+
+Cette approche garantit la cohérence visuelle avec le reste de l'application et améliore l'expérience utilisateur. 

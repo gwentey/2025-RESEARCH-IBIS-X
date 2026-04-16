@@ -1,0 +1,98 @@
+= Tâches Celery
+:description: 3 queues, tâches, workers
+
+Voir aussi xref:05-audit/adr/0002-celery-vs-alternatives.adoc[ADR 0002 — Celery + Redis].
+
+== 3 queues actives — invariant
+
+[cols="1,1,3"]
+|===
+| Queue | Worker | Tâches
+| `ml_queue` | `ml-pipeline-worker` | `train_model`
+| `ai_queue` | `ml-pipeline-worker` (mêmes pods) | `analyze_dataset_with_ai`
+| `xai_queue` | `xai-engine-worker` | `generate_explanation_task`, `process_shap_explanation`, `process_lime_explanation`, `generate_llm_explanation`, `process_chat_question`, `generate_explanation_with_precalculated_shap`
+|===
+
+**Il n'existe pas de `llm_queue`.** Toute mention de `llm_queue` dans du code ou de la doc est une erreur. Cet invariant est verrouillé par CLAUDE.md, `memory-bank/conventions.md`, et plusieurs ADRs.
+
+== Workers
+
+=== `ml-pipeline-worker`
+
+Image : même `Dockerfile` que `ml-pipeline-service` (pas de `Dockerfile.worker`).
+
+Commande :
+
+[source,bash]
+----
+celery -A app.core.celery_app worker \
+  --loglevel=info \
+  --queues=ml_queue,ai_queue \
+  --concurrency=2
+----
+
+=== `xai-engine-worker`
+
+Image : `ibis-x-xai-engine-worker` via `xai-engine-service/Dockerfile.worker` (image séparée pour embarquer SHAP/LIME sans alourdir l'API).
+
+Commande :
+
+[source,bash]
+----
+celery -A app.core.celery_app worker \
+  --loglevel=info \
+  --queues=xai_queue \
+  --concurrency=2 \
+  --hostname=xai-worker@%h
+----
+
+== Dispatch depuis le code
+
+[source,python]
+----
+from app.tasks import train_model
+
+task = train_model.apply_async(
+    args=[experiment_id],
+    queue='ml_queue'
+)
+----
+
+Règle : **toujours** préciser `queue=`. Ne pas s'appuyer sur `task_routes` implicites si on peut être explicite.
+
+== Persistance des résultats
+
+* Les résultats (status, métriques, `artifact_uri`, etc.) sont écrits dans **PostgreSQL**, pas dans Redis.
+* Redis sert uniquement de broker Celery + cache applicatif éphémère.
+* Le frontend consulte les résultats via polling sur l'endpoint HTTP correspondant.
+
+== Configuration
+
+`{service}/app/core/celery_app.py` :
+
+[source,python]
+----
+from celery import Celery
+from app.core.config import settings
+
+celery_app = Celery(
+    'ml-pipeline',
+    broker=settings.REDIS_URL,
+    backend=settings.REDIS_URL,
+)
+
+celery_app.conf.task_routes = {
+    'app.tasks.train_model': {'queue': 'ml_queue'},
+    'app.tasks.analyze_dataset_with_ai': {'queue': 'ai_queue'},
+}
+----
+
+== Monitoring
+
+* Flower (optionnel) pour inspecter les queues en live.
+* Métriques Celery possibles via `celery-prometheus-exporter` (post-PoC).
+
+== Retry & erreurs
+
+* `@celery_app.task(autoretry_for=(SomeException,), retry_backoff=True, max_retries=3)`.
+* Pour les erreurs non récupérables (dataset corrompu) : task met `status='failed'` en BDD avec `error_message` et ne retry pas.

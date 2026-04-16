@@ -1,0 +1,85 @@
+= Plan de tests — matrice
+:description: Cas de test par module × niveau
+
+Matrice prescriptive : pour chaque module, quels tests doivent exister (unit / intégration / E2E).
+
+== Légende
+
+* ✅ — cas obligatoire (bloquant si manquant)
+* ⚠️ — recommandé
+* — — non applicable
+
+== Matrice par module
+
+[cols="2,1,1,1,3"]
+|===
+| Cas de test | Unit | Intégration | E2E | Commentaire
+
+6+|*api-gateway — authentification*
+| Login email + password réussi | ✅ | ✅ | ✅ | Parcours principal
+| Login avec mauvais mot de passe | ✅ | ✅ | — | Retour 401
+| Register nouveau compte | ✅ | ✅ | ✅ | Email unique
+| Register email déjà utilisé | ✅ | ✅ | — | Retour 400
+| OAuth Google callback OK | — | ✅ | ⚠️ | Mock Google
+| Token expiré | ✅ | ✅ | — | Retour 401 + refresh
+| DELETE compte + cascade | ✅ | ✅ | ✅ | RGPD art. 17
+
+6+|*api-gateway — autorisation*
+| User accède à ses propres données | ✅ | ✅ | — |
+| User tente d'accéder aux données d'un autre | ✅ | ✅ | — | Retour 403
+| Route admin refusée à user standard | ✅ | ✅ | — | `is_superuser` check
+
+6+|*service-selection — datasets*
+| Upload dataset CSV valide | ✅ | ✅ | ✅ | Manifest + fichiers
+| Upload dataset multi-fichiers | ✅ | ✅ | — | `dataset_files` multiples
+| Upload MIME invalide | ✅ | ✅ | — | Retour 400
+| Listing avec filtres combinés | ✅ | ✅ | ⚠️ | Tech + éthique + métier
+| DELETE dataset + cleanup Blob | ✅ | ✅ | — | Storage nettoyé
+| Preview avec pagination | ✅ | ✅ | — |
+
+6+|*ml-pipeline-service — training*
+| Preprocessing stratégies (imputation) | ✅ | — | — | mean / median / KNN
+| Encoding (one-hot / ordinal) | ✅ | — | — |
+| Scaling (Standard / MinMax) | ✅ | — | — |
+| Training Decision Tree OK | ✅ | ✅ | ✅ | Iris validation
+| Training Random Forest OK | ✅ | ✅ | — |
+| Training avec dataset malformé | ✅ | ✅ | — | Retour status=failed
+| Persistance `artifact_uri` | ✅ | ✅ | — | Blob Storage
+| Métriques classification complètes | ✅ | — | — | accuracy, precision, recall, F1, confusion
+| Métriques régression complètes | ✅ | — | — | MSE, RMSE, MAE, R²
+| Celery task dispatch sur `ml_queue` | ✅ | ✅ | — | Queue correcte
+
+6+|*ml-pipeline-service — analyse IA*
+| `analyze_dataset_with_ai` sur `ai_queue` | ✅ | ✅ | — | Mock OpenAI
+| Cache `data_quality_analyses` hit | ✅ | ✅ | — | Pas de 2e appel OpenAI
+| Cache invalidation `dataset_version` | ✅ | ✅ | — |
+
+6+|*xai-engine-service — explications*
+| SHAP sur arbre (TreeExplainer) | ✅ | ✅ | ✅ | Iris
+| SHAP sur modèle non-arbre (KernelExplainer) | ✅ | ✅ | — |
+| LIME sur instance | ✅ | ✅ | — |
+| LLM narrative avec contexte SHAP | ✅ | ✅ | ⚠️ | Mock OpenAI
+| Chat : 5 questions autorisées | ✅ | ✅ | ✅ | Limite
+| Chat : 6e question refusée | ✅ | ✅ | — | Retour 429 ou 400
+| `generate_explanation_with_precalculated_shap` | ✅ | ✅ | — | Optimisation
+| Toutes tâches sur `xai_queue` seule | ✅ | ✅ | — | Pas de `llm_queue`
+
+6+|*Frontend — parcours*
+| Login → Dashboard | — | — | ✅ |
+| Upload dataset wizard complet | — | — | ✅ |
+| Wizard ML pipeline 5 étapes | — | — | ✅ |
+| Génération explication SHAP + chat | — | — | ✅ |
+| Bascule FR ↔ EN | — | — | ✅ | i18n
+| Suppression compte | — | — | ✅ | RGPD
+|===
+
+== Priorisation
+
+*Phase 1 (Lot 5)* : tous les `✅` marqués `unit` + `intégration`. Couverture cible 60 %.
+
+*Phase 2 (post-PoC)* : tous les E2E + `⚠️`.
+
+== Références
+
+* xref:05-audit/qualite/strategie-tests.adoc[Stratégie de tests]
+* xref:05-audit/qualite/couverture-objectifs.adoc[Objectifs de couverture]

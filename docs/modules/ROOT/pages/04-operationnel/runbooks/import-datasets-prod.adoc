@@ -1,0 +1,116 @@
+= Runbook — Import de datasets en production
+:description: Import batch depuis Kaggle vers la plateforme en prod
+
+== Contexte
+
+Permet de peupler le catalogue public avec des datasets Kaggle. Utile après un déploiement initial ou pour ajouter de nouveaux jeux de données.
+
+== Prérequis
+
+* Credentials Kaggle stockés dans le Secret K8s `kaggle-secrets` (voir xref:05-audit/securite/gestion-secrets.adoc[Gestion des secrets]).
+* Accès à `kubectl` sur le cluster AKS.
+* Liste des datasets à importer déclarée dans `datasets/kaggle-import/kaggle_datasets_config.yaml`.
+
+== Ajouter un dataset à importer
+
+. Trouver la référence Kaggle : URL `https://www.kaggle.com/datasets/USERNAME/DATASET-NAME` → slug `USERNAME/DATASET-NAME`.
+. Éditer `datasets/kaggle-import/kaggle_datasets_config.yaml` :
++
+[source,yaml]
+----
+datasets:
+  nouveau_dataset:
+    kaggle_ref: "username/dataset-name"
+    domain: "éducation"                 # ou santé, finance, etc.
+    description: "Description concise"
+    ml_task: "classification"           # ou regression
+    target_column: "nom_colonne_cible"
+    license: "CC0"                      # ou autre
+    ethical_notes: "..."
+----
+. Commit + PR.
+. Après merge, le fichier est déployé dans le ConfigMap `kaggle-config`.
+
+== Exécution de l'import (prod)
+
+=== Méthode 1 — Job ad hoc
+
+[source,bash]
+----
+kubectl apply -f k8s/base/jobs/kaggle-dataset-import-job.yaml
+
+# Suivre les logs
+kubectl logs -f job/kaggle-dataset-import-job -n ibis-x
+
+# Vérifier le statut final
+kubectl get jobs -n ibis-x
+kubectl describe job kaggle-dataset-import-job -n ibis-x
+----
+
+=== Méthode 2 — CronJob programmé (optionnel)
+
+Pour un refresh périodique (post-PoC).
+
+[source,yaml]
+----
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kaggle-import-cronjob
+  namespace: ibis-x
+spec:
+  schedule: "0 2 * * 0"   # dimanche 02h00
+  jobTemplate:
+    spec:
+      template:
+        # idem kaggle-dataset-import-job
+----
+
+== Validation post-import
+
+* [ ] Job terminé avec statut `Completed`.
+* [ ] Logs : "✅ Dataset {name} importé" pour chaque entrée attendue.
+* [ ] Dans l'UI admin : les datasets apparaissent avec leurs scores.
+* [ ] Blob Storage : fichiers Parquet présents sous `ibis-x-datasets/{dataset_id}/`.
+* [ ] PostgreSQL : lignes dans `datasets`, `dataset_files`, `file_columns`.
+
+== Dépannage
+
+=== ❌ Authentification Kaggle échouée
+
+* Vérifier le Secret `kaggle-secrets` :
++
+[source,bash]
+----
+kubectl get secret kaggle-secrets -n ibis-x -o yaml
+----
+* Les clés doivent être `username` et `key`, base64-encodées.
+* Rotation si clé expirée (via kaggle.com/account).
+
+=== ❌ Dataset trop volumineux / timeout
+
+* Augmenter `spec.activeDeadlineSeconds` du Job.
+* Activer le mode `large_dataset: true` dans la config (traitement par chunks).
+
+=== ❌ Conflit avec dataset existant (slug identique)
+
+* La logique d'import détecte les doublons par slug Kaggle et skippe (log "Dataset déjà présent — skip").
+* Pour forcer la re-importation : passer `--force-refresh` dans les args du Job.
+
+=== ❌ Blob Storage saturé
+
+* Vérifier quota Azure Blob Storage.
+* Nettoyer les datasets obsolètes (via UI admin ou `DELETE /datasets/{id}`).
+
+== Post-import
+
+* Publication d'un message utilisateurs (*"{N} nouveaux datasets disponibles"*) si visible.
+* Vérification des scores éthiques automatiques (analyse IA) : déclencher `POST /datasets/{id}/analyze` si souhaité.
+* Mise à jour de la documentation catalogue si un domaine nouveau a été ajouté.
+
+== Références
+
+* Configuration : `datasets/kaggle-import/kaggle_datasets_config.yaml`.
+* Templates manifest : `datasets/kaggle-import/TEMPLATES_GUIDE.md`.
+* Code : `datasets/kaggle-import/importer_lib/`.
+* Page technique : xref:03-technique/services/service-selection.adoc[service-selection].

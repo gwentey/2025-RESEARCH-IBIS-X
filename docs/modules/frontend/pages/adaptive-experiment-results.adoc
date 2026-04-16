@@ -1,0 +1,160 @@
+= Page Résultats d'Expérience Adaptative
+:description: Guide utilisateur de la page Résultats d'Expérience adaptée selon le type de tâche et le modèle choisi
+:keywords: résultats, expérience, KPI, visualisations, classification, régression, decision tree, random forest
+
+== Vue d'ensemble
+
+La page Résultats d'Expérience d'IBIS-X s'adapte dynamiquement selon la combinaison de votre tâche ML et du modèle choisi, offrant une expérience personnalisée et pédagogique.
+
+== Combinaisons Supportées
+
+=== 1. Classification + Decision Tree
+
+**KPIs Principaux :**
+* F1-macro (principal)
+* Accuracy
+* Precision-macro, Recall-macro
+* ROC-AUC (si binaire)
+
+**Visualisations :**
+* Matrice de confusion (multi-classes)
+* Courbe ROC & PR (classification binaire)
+* Visualisation de l'arbre (si profondeur ≤ 6)
+
+**Explications :**
+* Globales : Importances + structure de l'arbre
+* Locales : Chemin de décision d'un point
+
+=== 2. Classification + Random Forest
+
+**KPIs Principaux :**
+* F1-macro (principal)
+* Accuracy, ROC-AUC
+* Score OOB (si activé)
+
+**Visualisations :**
+* Matrice de confusion
+* Courbes ROC & PR (binaire)
+* Barres d'importance des features
+* Permutation Importance (si activée)
+
+**Explications :**
+* Globales : Importances (impureté + permutation)
+* Locales : SHAP pour 1 observation
+
+=== 3. Régression + Decision Tree
+
+**KPIs Principaux :**
+* MAE (principal)
+* RMSE
+* R²
+
+**Visualisations :**
+* Scatter y_vrai vs y_prédit (avec diagonale idéale)
+* Résidus vs prédictions
+* Histogramme des résidus
+* Visualisation de l'arbre (si peu profond)
+
+**Explications :**
+* Globales : Importances + arbre
+* Locales : Chemin de décision pour une ligne
+
+=== 4. Régression + Random Forest
+
+**KPIs Principaux :**
+* MAE (principal)
+* RMSE
+* R²
+
+**Visualisations :**
+* Scatter y_vrai vs y_prédit
+* Résidus vs prédictions
+* Histogramme des résidus
+* Barres d'importance des features
+* PDP/ALE plots (option avancée)
+
+**Explications :**
+* Globales : Importances (impureté + permutation)
+* Locales : SHAP pour une ligne
+
+== Sections de la Page
+
+=== 1. Résumé de l'Expérience
+
+Affiche les informations contextuelles :
+* Tâche choisie (Classification ou Régression)
+* Modèle choisi (Decision Tree ou Random Forest)
+* Paramètres utilisés (seed, split, CV, hyperparamètres)
+* Temps d'entraînement
+
+=== 2. KPIs Principaux
+
+Les métriques s'adaptent automatiquement :
+
+**Pour Classification :**
+* F1-macro : Performance moyenne sur toutes les classes
+* Accuracy : Pourcentage de prédictions correctes
+* ROC-AUC : Capacité de discrimination
+
+**Pour Régression :**
+* MAE : Erreur absolue moyenne (unité de la cible)
+* RMSE : Pénalise les grandes erreurs
+* R² : Variance expliquée par le modèle
+
+=== 3. Visualisations Adaptées
+
+Les graphiques changent selon le contexte :
+
+**Classification :**
+* Matrice de confusion
+* Courbes ROC/PR
+* Importance des features (Random Forest)
+
+**Régression :**
+* Scatter prédictions vs réalité
+* Analyse des résidus
+* Importance des features (Random Forest)
+
+=== 4. Comparaison avec Baseline
+
+Compare automatiquement avec un modèle de référence :
+* **Classification :** Modèle majoritaire
+* **Régression :** Modèle médiane
+
+=== 5. Explications Pédagogiques
+
+Chaque section inclut des explications adaptées au niveau novice :
+
+[source,text]
+----
+"F1-macro : moyenne des performances sur toutes les classes, 
+idéal si certaines classes sont rares."
+
+"MAE : erreur moyenne absolue entre valeur réelle et prédite, 
+exprimée dans l'unité de la cible."
+----
+
+== Conseils d'Interprétation
+
+=== Matrice de Confusion
+La diagonale montre les bonnes prédictions. Les confusions fréquentes indiquent des classes difficiles à distinguer.
+
+=== Courbe ROC
+Plus elle s'éloigne de la diagonale vers le coin supérieur gauche, meilleur est le modèle.
+
+=== Scatter Plot (Régression)
+Les points doivent suivre la diagonale idéale pour un modèle parfait.
+
+=== Analyse des Résidus
+L'histogramme doit être centré sur zéro pour un modèle non biaisé.
+
+== Recommandations Intelligentes
+
+Le système propose automatiquement :
+* Essayer Random Forest si Decision Tree < 85%
+* Optimiser les hyperparamètres si performance < 80%
+* Vérifier la qualité des données si performance < 70%
+
+== Support Multilingue
+
+L'interface supporte le français et l'anglais avec traductions contextuelles des explications pédagogiques.

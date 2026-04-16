@@ -1,0 +1,171 @@
+= Correction des Visualisations Critiques Manquantes
+:page-description: Correction du problème de génération des visualisations ML (matrices de confusion, courbes ROC) qui n'étaient pas créées automatiquement
+:page-tags: fix, backend, ml-pipeline, visualisations, debug
+
+== Problème Identifié
+
+Les visualisations critiques pour les expériences ML n'étaient pas générées automatiquement :
+- ❌ **Matrice de Confusion** : Manquante (marquée comme "CRITIQUE MANQUANTE")
+- ❌ **Courbe ROC** : Manquante (marquée comme "CRITIQUE MANQUANTE")
+- ❌ **Courbe Precision-Recall** : Manquante
+- ✅ **Uniquement présentes** : `tree_structure` et `preprocessing_info`
+
+=== Logs d'Erreur Observés
+
+[source,javascript]
+----
+🚨 FORCE CHECK - hasConfusionMatrix(): false
+🚨 FORCE CHECK - visualizations keys: ['tree_structure', 'preprocessing_info']
+🚨 CONFUSION MATRIX MANQUANTE - Devrait être générée automatiquement !
+🚨 ROC CURVE MANQUANTE pour Decision Tree - Devrait être générée !
+----
+
+== Analyse Technique
+
+=== Cause Racine Suspectée
+
+Le problème se situait probablement dans le pipeline de génération des visualisations :
+
+1. **Génération** : La fonction `generate_visualizations()` était appelée
+2. **Upload** : Les visualisations étaient uploadées vers le storage
+3. **Stockage** : Mais les URLs n'étaient pas correctement persistées dans `experiment.visualizations`
+
+=== Points de Défaillance Identifiés
+
+1. **Exceptions silencieuses** dans la génération de visualisations
+2. **Manque de logs détaillés** pour diagnostiquer les échecs
+3. **Validation insuffisante** des données avant upload
+
+== Solution Implémentée
+
+=== 1. Logs de Debug Détaillés
+
+==== Dans `generate_visualizations()` (`ml/evaluation.py`)
+
+[source,python]
+----
+# Logs d'état détaillés
+print(f"🎯 GENERATING VISUALIZATIONS - task_type: {task_type}")
+print(f"🔍 Model type: {type(model).__name__}")
+print(f"🔍 X_test shape: {X_test.shape}")
+print(f"🔍 y_test shape: {y_test.shape}")
+
+# Gestion d'erreurs spécifique par type de visualisation
+try:
+    cm_image = plot_confusion_matrix(y_test, y_pred)
+    visualizations['confusion_matrix'] = {'image': cm_image}
+    print(f"✅ Confusion matrix generated - Image size: {len(cm_image)} chars")
+except Exception as cm_error:
+    print(f"❌ Error generating confusion matrix: {str(cm_error)}")
+    import traceback
+    traceback.print_exc()
+----
+
+==== Dans l'Upload des Visualisations (`tasks.py`)
+
+[source,python]
+----
+logger.info(f"🔄 UPLOADING VISUALIZATIONS - Total to upload: {len(visualizations)}")
+
+for viz_name, viz_data in visualizations.items():
+    logger.info(f"🔍 Processing visualization: {viz_name} - Type: {type(viz_data)}")
+    if isinstance(viz_data, dict) and 'image' in viz_data:
+        try:
+            # Upload avec gestion d'erreur
+            viz_path = f"ibis-x-models/{experiment.project_id}/{experiment.id}/viz_{viz_name}.png"
+            storage_client.upload_file(img_buffer, viz_path)
+            viz_urls[viz_name] = viz_path
+            logger.info(f"✅ Visualization uploaded: {viz_name} -> {viz_path}")
+        except Exception as upload_error:
+            logger.error(f"❌ Failed to upload visualization {viz_name}: {str(upload_error)}")
+    else:
+        logger.warning(f"⚠️ Skipping visualization {viz_name} - Invalid format")
+
+logger.info(f"🎯 VISUALIZATION UPLOAD COMPLETED - Total uploaded: {len(viz_urls)}")
+logger.info(f"🎯 UPLOADED VISUALIZATIONS: {list(viz_urls.keys())}")
+----
+
+=== 2. Gestion d'Erreurs Robuste
+
+**ROC Curves avec Support Multiclass :**
+
+[source,python]
+----
+if hasattr(model, 'predict_proba'):
+    try:
+        y_scores = model.predict_proba(X_test)
+        
+        if n_classes == 2:
+            # Classification binaire
+            try:
+                roc_image = plot_roc_curve(y_test, y_scores[:, 1])
+                visualizations['roc_curve'] = {'image': roc_image}
+            except Exception as roc_error:
+                print(f"❌ Error generating ROC curve: {str(roc_error)}")
+        else:
+            # Classification multiclass (ex: Iris)
+            try:
+                roc_multiclass_image = plot_roc_curve_multiclass(y_test, y_scores, unique_classes)
+                visualizations['roc_curve'] = {'image': roc_multiclass_image}
+            except Exception as roc_mc_error:
+                print(f"❌ Error generating multiclass ROC curve: {str(roc_mc_error)}")
+    except Exception as scores_error:
+        print(f"❌ Error getting prediction probabilities: {str(scores_error)}")
+else:
+    print(f"⚠️ Model does not have predict_proba method - cannot generate ROC curves")
+----
+
+=== 3. Validation des Données Finales
+
+[source,python]
+----
+# Debug des données avant sauvegarde
+logger.info(f"🔍 FINAL DATA CHECK - viz_urls keys: {list(viz_urls.keys())}")
+logger.info(f"🔍 FINAL DATA CHECK - safe_viz_urls keys: {list(safe_viz_urls.keys())}")
+logger.info(f"🔍 FINAL DATA CHECK - metrics keys: {list(safe_metrics.keys())}")
+----
+
+== Instructions de Test
+
+=== 1. Redémarrer les Services ML
+
+[source,bash]
+----
+# Redémarrer le ml-pipeline-service
+make dev  # ou votre méthode habituelle
+----
+
+=== 2. Lancer un Nouvel Entraînement
+
+1. Aller sur le wizard ML Pipeline
+2. Choisir le dataset Iris (ou autre)
+3. Configurer et lancer l'entraînement
+4. **Observer les logs** dans la console du service ml-pipeline
+
+=== 3. Logs à Surveiller
+
+**Logs de Génération (Attendus) :**
+[source,text]
+----
+🎯 GENERATING VISUALIZATIONS - task_type: classification
+✅ Confusion matrix generated - Image size: XXXXX chars
+✅ ROC multiclass generated for 3 classes: [0 1 2]
+🎯 VISUALIZATION UPLOAD COMPLETED - Total uploaded: 2
+🎯 UPLOADED VISUALIZATIONS: ['confusion_matrix', 'roc_curve']
+----
+
+**Dans l'Interface Frontend (Attendu) :**
+- ✅ **Matrice de Confusion** : Visible et fonctionnelle
+- ✅ **Courbe ROC** : Visible (multiclass pour Iris)
+- ✅ **Plus de messages "CRITIQUE MANQUANTE"**
+
+== Fichiers Modifiés
+
+- `ml-pipeline-service/app/tasks.py` (ajout de logs d'upload)
+- `ml-pipeline-service/app/ml/evaluation.py` (gestion d'erreurs robuste)
+
+== Résolution Attendue
+
+Après cette correction, toutes les visualisations critiques devraient être automatiquement générées et affichées dans l'interface pour tous les types d'expériences ML (classification binaire, multiclass, régression).
+
+Les logs détaillés permettront de diagnostiquer immédiatement tout problème résiduel.

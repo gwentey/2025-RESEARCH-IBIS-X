@@ -1,0 +1,152 @@
+= Correction du problème d'upload de dataset : Métadonnées incorrectes
+:toc: auto
+:toclevels: 3
+
+== Problème identifié
+
+Lors de la création d'un dataset via l'interface d'upload, les métadonnées affichées ne correspondaient pas aux choix de l'utilisateur. 
+
+=== Symptômes observés
+
+* L'utilisateur ne remplissait que les champs obligatoires (nom, domaine, tâche ML)
+* Après création, le dataset affichait des métadonnées incorrectes comme :
+  - "Dataset divisé (train/test)" alors que non spécifié
+  - "Anonymisation appliquée" alors que non spécifié  
+  - "Facteurs temporels" alors que non spécifié
+  - "Métadonnées fournies" alors que non spécifié
+
+== Cause racine
+
+Le problème provenait de valeurs par défaut incorrectes dans le formulaire Angular :
+
+[source,typescript]
+----
+// PROBLÉMATIQUE : Valeurs par défaut incorrectes
+split: [false],  // Implique "Non divisé" au lieu de "Inconnu"
+temporal_factors: [false],  // Implique "Pas de facteurs temporels"
+anonymization_applied: [false],  // Implique "Pas d'anonymisation"
+metadata_provided_with_dataset: [false],  // Implique "Pas de métadonnées"
+----
+
+Ces valeurs `false` étaient envoyées au backend et interprétées comme des réponses définitives "Non" au lieu de "Statut inconnu".
+
+== Solution mise en place
+
+=== 1. Correction des valeurs par défaut (Frontend)
+
+Modification du formulaire dans `metadata-form.component.ts` :
+
+[source,typescript]
+----
+// CORRIGÉ : null pour indiquer un statut inconnu
+split: [null],  // Inconnu au lieu de "Non divisé"
+has_missing_values: [null],  // Inconnu au lieu de "Pas de valeurs manquantes"
+temporal_factors: [null],  // Inconnu au lieu de "Pas de facteurs temporels"
+data_quality_documented: [null],  // Inconnu au lieu de "Non documenté"
+security_measures_in_place: [null],  // Inconnu au lieu de "Pas de mesures"
+anonymization_applied: [null],  // Inconnu au lieu de "Pas d'anonymisation"
+metadata_provided_with_dataset: [null],  // Inconnu au lieu de "Pas de métadonnées"
+// ... etc pour tous les champs booléens
+----
+
+=== 2. Filtrage intelligent des données (Service)
+
+Modification du service `dataset-upload.service.ts` pour ne pas envoyer les valeurs non spécifiées :
+
+[source,typescript]
+----
+Object.keys(metadata).forEach(key => {
+  const value = (metadata as any)[key];
+  
+  // Skip les valeurs null/undefined (statut inconnu)
+  if (value === null || value === undefined) {
+    console.log(`FormData [${key}]: SKIPPED (statut inconnu)`);
+    return;
+  }
+  
+  // Skip les tableaux vides (pas de sélection)
+  if (Array.isArray(value) && value.length === 0) {
+    console.log(`FormData [${key}]: SKIPPED (array vide)`);
+    return;
+  }
+  
+  // Envoyer seulement les valeurs explicitement renseignées
+  // ...
+});
+----
+
+=== 3. Ajustement des valeurs par défaut (Backend)
+
+Modification de l'endpoint backend dans `service-selection/app/main.py` :
+
+[source,python]
+----
+# CORRIGÉ : Form(None) au lieu de Form(False)
+split: Optional[bool] = Form(None),
+has_missing_values: Optional[bool] = Form(None),
+temporal_factors: Optional[bool] = Form(None),
+anonymization_applied: Optional[bool] = Form(None),
+metadata_provided_with_dataset: Optional[bool] = Form(None),
+# ... etc
+----
+
+== Logs de debugging ajoutés
+
+Pour faciliter le diagnostic futur, des logs détaillés ont été ajoutés :
+
+=== Frontend (Wizard)
+* Log des métadonnées reçues du formulaire
+* Log des données finales avant envoi au service
+* Log des erreurs détaillées
+
+=== Frontend (Service) 
+* Log de la construction du FormData
+* Affichage des valeurs incluses/exclues avec raisons
+
+=== Backend
+* Log des métadonnées reçues du frontend
+* Log des valeurs finales avant insertion en BDD
+
+== Test de la solution
+
+Pour tester la correction :
+
+1. **Créer un dataset minimal** :
+   - Renseigner seulement nom, domaine et tâche ML
+   - Laisser tous les autres champs par défaut
+   
+2. **Vérifier les logs** :
+   - Console navigateur : voir les données envoyées
+   - Logs backend : voir les données reçues et traitées
+   
+3. **Contrôler le résultat** :
+   - Page de détail du dataset
+   - Les métadonnées doivent refléter seulement ce qui a été renseigné
+
+== Impact et bénéfices
+
+=== Avant la correction
+* Informations trompeuses sur les datasets
+* Métadonnées générées automatiquement incorrectes
+* Confusion pour les utilisateurs
+
+=== Après la correction
+* Métadonnées précises reflétant uniquement les informations renseignées
+* Distinction claire entre "Non" et "Inconnu/Non spécifié"
+* Meilleure qualité des données dans la base
+
+== Prévention
+
+Pour éviter ce type de problème à l'avenir :
+
+1. **Utiliser `null` par défaut** pour les champs optionnels booléens
+2. **Filtrer les valeurs non renseignées** avant envoi
+3. **Tester systématiquement** les valeurs par défaut avec des cas d'usage minimal
+4. **Conserver les logs de debugging** pour diagnostic rapide
+
+== Files concernés
+
+* `frontend/src/app/pages/datasets/dataset-upload/metadata-form/metadata-form.component.ts`
+* `frontend/src/app/services/dataset-upload.service.ts`
+* `frontend/src/app/pages/datasets/dataset-upload/wizard/upload-wizard.component.ts`
+* `service-selection/app/main.py`

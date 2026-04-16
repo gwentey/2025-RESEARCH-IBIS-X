@@ -1,0 +1,85 @@
+= Validation scientifique — dataset Iris
+:description: Contrôle de cohérence des résultats ML sur un dataset de référence
+
+Le dataset https://archive.ics.uci.edu/ml/datasets/iris[Iris] sert de **référence** pour valider que le pipeline ML d'IBIS-X produit des résultats cohérents avec la littérature.
+
+== Pourquoi Iris ?
+
+* Dataset historique, parfaitement documenté.
+* Petite taille (150 instances, 4 features, 3 classes) — entraînement rapide.
+* Résultats de référence connus pour chaque algorithme sklearn.
+* Classes bien séparées (setosa) et partiellement superposées (versicolor/virginica) → permet de tester les explications XAI.
+
+== Résultats attendus
+
+[cols="2,1,1,3"]
+|===
+| Algorithme | Accuracy test cible | Tolérance | Commentaire
+
+| DecisionTreeClassifier (max_depth=3) | 0.93–0.97 | ± 0.02 | Variance due au split random
+| RandomForestClassifier (n_estimators=100) | 0.95–0.98 | ± 0.02 |
+| LogisticRegression (default) | 0.93–0.97 | ± 0.02 | Bon sur Iris
+| GradientBoostingClassifier | 0.93–0.97 | ± 0.02 |
+|===
+
+== Validation XAI attendue
+
+=== SHAP
+
+Pour un Random Forest sur Iris :
+
+* La feature la plus importante globalement doit être `petal length (cm)` ou `petal width (cm)`.
+* `sepal length` et `sepal width` ont des importances moindres.
+* Sur une instance de classe `setosa`, la feature `petal length` doit avoir un SHAP value fortement positif pour cette classe.
+
+=== LIME
+
+Les explications locales sur une même instance doivent :
+
+* Être cohérentes avec SHAP à ±20 % sur les rangs d'importance.
+* Produire des plages de variation raisonnables (pas d'outlier à 10 000 %).
+
+=== LLM narrative
+
+La narrative générée doit :
+
+* Mentionner les pétales comme facteurs discriminants.
+* Ne pas inventer de features inexistantes dans Iris.
+* Respecter le format attendu (résumé ≤ 300 mots).
+
+== Procédure de validation
+
+[source,bash]
+----
+# 1. Importer Iris via le pipeline dataset
+curl -X POST http://localhost:9000/datasets \
+  -H "Authorization: Bearer $TOKEN" \
+  -F "file=@iris.csv" \
+  -F "manifest=@iris_manifest.json"
+
+# 2. Lancer training Random Forest
+curl -X POST http://localhost:9000/experiments \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"dataset_id": "...", "algorithm": "random_forest", ...}'
+
+# 3. Poller le résultat, vérifier metrics.accuracy ∈ [0.95, 0.98]
+
+# 4. Générer explication SHAP
+curl -X POST http://localhost:9000/explanations \
+  -d '{"experiment_id": "...", "method": "shap"}'
+
+# 5. Vérifier feature_importance ordering
+----
+
+== Cas de non-validation
+
+Si les résultats s'écartent des plages attendues :
+
+* Vérifier la version des libs (`scikit-learn==1.3.2`, `shap==0.43.0`) — incompatibilité possible.
+* Vérifier le `random_state` (doit être fixé pour reproductibilité).
+* Vérifier le preprocessing : pas de fuite (target dans les features), scaling cohérent.
+* Vérifier les visualisations (les courbes ROC doivent présenter 3 classes nommées, pas 0/1/2).
+
+== Historique
+
+Document initial consolidé depuis `docs/modules/ROOT/pages/validation/iris-results-validation.adoc` lors du Lot 4 de la refonte documentaire.

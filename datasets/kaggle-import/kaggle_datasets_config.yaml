@@ -1,0 +1,883 @@
+datasets:
+  # Education Domain
+  student_performance:
+    kaggle_ref: "spscientist/students-performance-in-exams"
+    domain: "education"
+    description: "Student performance analysis with various factors"
+    ml_task: "classification"
+    target_column: "math_score"
+    
+  student_stress:
+    kaggle_ref: "samyakb/student-stress-factors"
+    domain: "education" 
+    description: "Analysis of stress factors affecting students"
+    ml_task: "regression"
+    target_column: "stress_level"
+    
+  student_depression:
+    kaggle_ref: "adilshamim8/student-depression-dataset"
+    domain: "education"
+    description: "Mental health analysis of students"
+    ml_task: "classification"
+    target_column: "depression"
+    
+  social_media_addiction:
+    kaggle_ref: "adilshamim8/social-media-addiction-vs-relationships"
+    domain: "social"
+    description: "Social media usage and mental health correlation"
+    ml_task: "classification"
+    target_column: "addiction_level"
+    
+  riiid_answer_prediction:
+    kaggle_ref: "c/riiid-test-answer-prediction"
+    domain: "education" 
+    description: "Large-scale educational data for answer prediction (EdNet)"
+    ml_task: "classification"
+    target_column: "answered_correctly"
+    large_dataset: true  # Indicate this is a large dataset
+    competition_dataset: true  # Competition dataset - may have access restrictions
+    alternative_ref: "pratyushrathore/ednet-dataset"  # Public alternative if competition data unavailable
+    status: "competition_restricted"  # Indicates potential API access issues
+    
+  oulad_dataset:
+    kaggle_ref: "vjcalling/ouladdata"
+    domain: "education"
+    description: "Open University Learning Analytics Dataset"
+    ml_task: "classification"
+    target_column: "final_result"
+    multi_file: true  # Indicate this has multiple CSV files
+    large_dataset: true  # Enable memory optimization
+    chunk_size: 2000  # Smaller chunks for memory optimization (default: 10000)
+    memory_optimized: true  # Use memory-efficient processing
+    process_files_sequentially: true  # Process one file at a time to reduce memory usage
+    
+  academic_performance:
+    kaggle_ref: "nikhil7280/student-performance-multiple-linear-regression"
+    domain: "education"
+    description: "Academic performance prediction with multiple factors"
+    ml_task: "regression"
+    target_column: "cgpa"
+    
+  asap_essay_scoring:
+    kaggle_ref: "lburleigh/asap-2-0"
+    domain: "education"
+    description: "Automated essay scoring for educational assessment"
+    ml_task: "regression"
+    target_column: "score"
+    # Dataset for automated essay scoring with standardized corpus
+    instances_count: 24000
+    features_count: 2
+    year: 2012
+    representativity_level: "medium"
+    citation_link: "https://aclanthology.org/N13-1073/"
+    has_missing_values: false
+    external_documentation_available: true
+    
+  student_dropout_success:
+    kaggle_ref: "adilshamim8/predict-students-dropout-and-academic-success"
+    domain: "education"
+    description: "Predict student dropout and academic success in Portuguese higher education"
+    ml_task: "classification"
+    target_column: "Target"
+    # 3-class classification: Dropout, Enrolled, Graduate
+    instances_count: 4424
+    features_count: 36
+    year: 2019
+    representativity_level: "medium"
+    citation_link: "https://www.sciencedirect.com/science/article/pii/S2352340919306988"
+    has_missing_values: false
+    external_documentation_available: true
+    num_citations: 90
+    
+  assistments_2012_2013:
+    kaggle_ref: "nicolaswattiez/skillbuilder-data-2009-2010"
+    domain: "education"
+    description: "Analyze student responses to mathematics exercises in ASSISTments tutoring system"
+    ml_task: "classification"
+    target_column: "original"
+    # Large educational dataset with temporal factors
+    instances_count: 346860
+    features_count: 35
+    year: 2012
+    representativity_level: "medium"
+    citation_link: "ASSISTments Data Set 2012-2013 (kaggle.com)"
+    has_missing_values: true
+    global_missing_percentage: 0.3
+    missing_values_handling_method: "row_deletion"
+    temporal_factors: true
+    external_documentation_available: true
+    num_citations: 600
+    large_dataset: true
+    
+  xapi_edu_data:
+    kaggle_ref: "aljarah/xAPI-Edu-Data"
+    domain: "education"
+    description: "Students academic performance dataset from Learning Management System using xAPI"
+    ml_task: "classification"
+    target_column: "Class"
+    # 3-class classification: Low-Level, Middle-Level, High-Level performance
+    instances_count: 480
+    features_count: 16
+    year: 2015
+    representativity_level: "low"
+    citation_link: "https://educationaldatamining.org/files/conferences/EDM2015/papers/paper_30.pdf"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: true
+    external_documentation_available: true
+    num_citations: 120
+    license: "CC BY-SA 4.0"
+    
+  multimodal_play_behavior:
+    kaggle_ref: "ziya07/multimodal-play-behavior-dataset"
+    domain: "education"
+    description: "Multimodal dataset for analyzing teaching and play behavior in educational settings"
+    ml_task: "classification"
+    target_column: "behavior_class"
+    # Multimodal data with video, audio, text features
+    instances_count: 312
+    features_count: 50
+    year: 2020
+    representativity_level: "low"
+    citation_link: "https://github.com/zzxslp/MM-TBA"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: true
+    external_documentation_available: true
+    num_citations: 20
+    multimodal: true
+    split: true
+    
+  world_bank_education_stats:
+    kaggle_ref: "theworldbank/education-statistics"
+    domain: ["education", "finance"]
+    description: "World Bank EdStats with over 4000 internationally comparable education indicators"
+    ml_task: ["regression", "exploratory_analysis"]
+    target_column: "varies"
+    # Massive international education dataset with 254 columns
+    instances_count: 1000000  # Estimated based on countries x years x indicators
+    features_count: 254
+    year: 2024
+    representativity_level: "high"
+    citation_link: "https://www.kaggle.com/datasets/theworldbank/education-statistics"
+    has_missing_values: true
+    global_missing_percentage: 50.0
+    missing_values_handling_method: "none"
+    temporal_factors: true
+    external_documentation_available: true
+    num_citations: 596
+    large_dataset: true
+    license: "Unknown"
+    update_frequency: "daily"
+
+  education_indicators_2014:
+    kaggle_ref: "denisadutca/education-indicators-2014-worldwide"
+    domain: "education"
+    description: "Education level analysis for 107 countries using development indicators for 2014"
+    ml_task: ["exploratory_analysis", "clustering"]
+    target_column: ""
+    # Cross-country comparison with development indicators
+    instances_count: 107
+    features_count: 10
+    year: 2014
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/denisadutca/education-indicators-2014-worldwide"
+    has_missing_values: true
+    global_missing_percentage: 5.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: false
+    num_citations: 35
+    license: "Unknown"
+    analysis_tasks: ["PCA", "clustering", "descriptive_analysis"]
+
+  education_career_success:
+    kaggle_ref: "adilshamim8/education-and-career-success"
+    domain: ["education", "career"]
+    description: "Study how academic results, skills and extracurricular activities translate into professional outcomes"
+    ml_task: ["classification", "regression", "clustering"]
+    target_column: "salary"
+    # 400 recent graduates from diverse fields
+    instances_count: 400
+    features_count: 19
+    year: 2025
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/adilshamim8/education-and-career-success"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 134
+    license: "Unknown"
+    career_outcomes: ["employment", "salary", "promotion", "satisfaction"]
+
+  us_education_unification:
+    kaggle_ref: "noriuk/us-education-datasets-unification-project"
+    domain: ["education", "finance"]
+    description: "Unified K-12 financial, enrollment, and achievement data across US states from multiple sources"
+    ml_task: ["exploratory_analysis", "time_series_forecasting"]
+    target_column: ""
+    # Massive unification project with 6697 columns across US states and years
+    instances_count: 1715
+    features_count: 6697
+    year: 2019
+    representativity_level: "high"
+    citation_link: "https://www.kaggle.com/datasets/noriuk/us-education-datasets-unification-project"
+    has_missing_values: true
+    global_missing_percentage: 10.0
+    missing_values_handling_method: "none"
+    temporal_factors: true
+    external_documentation_available: true
+    num_citations: 492
+    license: "Other (specified in description)"
+    large_dataset: true
+    multi_file: true
+    time_range: "1986-2019"
+    geographic_scope: "US_states"
+    data_sources: ["Urban Institute", "NCES", "US Census Bureau"]
+    import_status: "failed"  # Dataset has corrupted files
+
+  student_performance_secondary:
+    kaggle_ref: "adilshamim8/personalized-learning-and-adaptive-education-dataset"
+    domain: "education"
+    description: "Analyze demographic, social and academic factors affecting student performance to predict final grade G3"
+    ml_task: ["regression", "classification"]
+    target_column: "G3"
+    # Classic Portuguese student performance dataset from Cortez & Silva
+    instances_count: 1298
+    features_count: 33
+    year: 2018
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/adilshamim8/personalized-learning-and-adaptive-education-dataset"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 39
+    license: "CC BY 4.0"
+    academic_subjects: ["mathematics", "portuguese"]
+    grade_scale: "0-20"
+    original_source: "Cortez & Silva (UCI Student Performance)"
+    import_status: "partial"  # CSV format issue with semicolon separator
+
+  times_university_rankings_2024:
+    kaggle_ref: "ddosad/timesworlduniversityrankings2024"
+    domain: "education"
+    description: "Comprehensive ranking of 1904 universities from 108 countries based on 18 performance indicators"
+    ml_task: ["ranking", "regression", "exploratory_analysis"]
+    target_column: "rank"
+    # Global university ranking with multiple performance scores
+    instances_count: 1904
+    features_count: 29
+    year: 2024
+    representativity_level: "high"
+    citation_link: "https://www.kaggle.com/datasets/ddosad/timesworlduniversityrankings2024"
+    has_missing_values: true
+    global_missing_percentage: 10.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 85
+    license: "Other (specified in description)"
+    ranking_methodology: "WUR 3.0"
+    performance_areas: ["teaching", "research_environment", "research_quality", "industry", "international_outlook"]
+    data_source: "Times Higher Education"
+    additional_universities: 769  # Reporter status universities
+
+  education_edge_iot_2024:
+    kaggle_ref: "ziya07/education-edge-iot-dataset"
+    domain: ["education", "iot"]
+    description: "Real-time 2024 student activity and behavior classification logs from IoT sensors and edge devices"
+    ml_task: ["classification", "time_series_analysis"]
+    target_column: "behavior_label"
+    # IoT educational data with biometric and behavioral analytics
+    instances_count: 1000  # Variable size based on simulation
+    features_count: 14
+    year: 2024
+    representativity_level: "low"
+    citation_link: "https://www.kaggle.com/datasets/ziya07/education-edge-iot-dataset"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: true
+    external_documentation_available: false
+    num_citations: 1
+    license: "CC0: Public Domain"
+    data_collection_type: "simulated"
+    sensor_types: ["attendance", "biometric", "interaction", "equipment_usage"]
+    behavior_labels: ["Attentive", "Distracted", "Collaborative", "Cheating", "Idle", "Needs_Assistance"]
+    update_frequency: "real_time_streaming"
+    edge_inference: true
+
+  placement_dataset_2024:
+    kaggle_ref: "shahpranshu27/placement-dataset-updated-2024"
+    domain: "education"
+    description: "Predict student salary packages (LPA) based on CGPA - ideal for linear regression practice"
+    ml_task: "regression"
+    target_column: "package"
+    # Simple but effective dataset for salary prediction modeling
+    instances_count: 200
+    features_count: 2
+    year: 2024
+    representativity_level: "low"
+    citation_link: "https://www.kaggle.com/datasets/shahpranshu27/placement-dataset-updated-2024"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: false
+    num_citations: 6
+    license: "MIT"
+    data_source: "Student placement records"
+    cgpa_range: "5.01-9.97"
+    package_range: "18.7-81.1 LPA"
+    regression_type: "linear_regression"
+    educational_purpose: true
+
+  coursera_courses_skills_2024:
+    kaggle_ref: "azraimohamad/coursera-course-data"
+    domain: ["education", "mooc"]
+    description: "Comprehensive dataset of 977 Coursera courses with organizations, skills, ratings, and metadata for recommendation systems and MOOC analysis"
+    ml_task: ["exploratory_analysis", "recommendation", "nlp"]
+    target_column: "ratings"
+    # Rich MOOC dataset scraped from Coursera with detailed course information
+    instances_count: 977
+    features_count: 19  # 6 main columns but 19 total according to Kaggle
+    year: 2024
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/azraimohamad/coursera-course-data"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: false
+    num_citations: 34
+    license: "Apache 2.0"
+    data_collection_method: "web_scraping"
+    platform: "Coursera"
+    course_types: ["courses", "specializations", "certificates"]
+    main_features: ["title", "organization", "skills", "ratings", "review_count", "misc_info"]
+    recommendation_ready: true
+
+  global_tuition_fees_2024:
+    kaggle_ref: "kathrinaroldan/global-tuition-fees-and-education-trends-2024"
+    domain: ["education", "finance"]
+    description: "Compare costs of private and public universities, enrollment rates, and scholarship availability across 50 countries for global education policy analysis"
+    ml_task: ["comparative_analysis", "regression", "clustering"]
+    target_column: "Average Tuition Fee (USD)"
+    # Comprehensive international education finance dataset
+    instances_count: 50
+    features_count: 16
+    year: 2024
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/kathrinaroldan/global-tuition-fees-and-education-trends-2024"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 0
+    license: "CC0: Public Domain"
+    geographic_coverage: "50_countries_worldwide"
+    currency_normalized: true  # All tuition fees converted to USD
+    economic_indicators: ["cost_of_living_index", "scholarship_availability"]
+    education_metrics: ["public_private_ratio", "enrollment_rates", "university_distribution"]
+    comparative_analysis_ready: true
+
+  student_performance_learning_2025:
+    kaggle_ref: "adilshamim8/student-performance-and-learning-style"
+    domain: "education"
+    description: "Integrate academic, demographic, behavioral, and psychological factors to analyze student performance and learning behavior with 14,003 anonymized student records"
+    ml_task: ["classification", "regression", "clustering"]
+    target_column: ["ExamScore", "FinalGrade"]
+    # Comprehensive student behavior and performance analysis dataset
+    instances_count: 14003
+    features_count: 16
+    year: 2025
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/adilshamim8/student-performance-and-learning-style"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 80
+    license: "CC BY 4.0"
+    behavioral_factors: ["StudyHours", "Attendance", "Extracurricular", "AssignmentCompletion", "Motivation", "StressLevel"]
+    engagement_metrics: ["OnlineCourses", "Discussions", "Resources", "Internet", "EduTech"]
+    demographic_factors: ["Gender", "Age", "LearningStyle"]
+    performance_indicators: ["ExamScore", "FinalGrade"]
+    age_range: "18-30 years"
+    anonymized: true
+    learning_analytics_ready: true
+    adaptive_learning_research: true
+
+  student_information_2024:
+    kaggle_ref: "zeeshier/student-information-dataset"
+    domain: "education"
+    description: "Simple educational dataset with 200 fictional students and 7 basic attributes - ideal for learning, practice, and SQL training"
+    ml_task: ["exploratory_analysis", "regression", "classification"]
+    target_column: "GPA"
+    # Compact practice dataset for educational purposes
+    instances_count: 200
+    features_count: 7
+    year: 2024
+    representativity_level: "low"
+    citation_link: "https://www.kaggle.com/datasets/zeeshier/student-information-dataset"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: false
+    num_citations: 35
+    license: "Apache 2.0"
+    student_demographics: ["StudentID", "Name", "Age", "Email"]
+    academic_info: ["Department", "GPA", "GraduationYear"]
+    departments: ["Computer Science", "Biology", "Mathematics", "Physics", "Chemistry"]
+    age_range: "18-25 years"
+    gpa_range: "2.0-4.0 scale"
+    graduation_years: "2024-2030"
+    dataset_type: "fictional"
+    educational_purpose: true
+    sql_practice_ready: true
+    beginner_friendly: true
+
+  world_university_ranking_qs_2024:
+    kaggle_ref: "muhammadbasitali/2024-world-university-ranking"
+    domain: "education"
+    description: "Comprehensive QS World University Rankings 2024 with 1,501 universities and 28 performance indicators including academic reputation, research output, and international diversity"
+    ml_task: ["ranking_analysis", "comparative_analysis", "clustering"]
+    target_column: "QS Rank"
+    # Global university ranking dataset with comprehensive performance metrics
+    instances_count: 1501
+    features_count: 28
+    year: 2024
+    representativity_level: "high"
+    citation_link: "https://www.kaggle.com/datasets/muhammadbasitali/2024-world-university-ranking"
+    has_missing_values: true
+    global_missing_percentage: 5.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 3
+    license: "CC0: Public Domain"
+    ranking_metrics: ["academic_reputation", "employer_reputation", "faculty_student_ratio", "citations_per_faculty", "international_diversity"]
+    geographic_coverage: "global"
+    university_count: 1501
+    top_universities: ["MIT", "Stanford", "Harvard", "Cambridge"]
+    regional_representation: ["Americas", "Europe", "Asia", "Oceania", "Africa"]
+    file_format: "xlsx"
+    comprehensive_indicators: true
+    benchmarking_ready: true
+    policy_analysis_ready: true
+    import_status: "pending_excel_support"  # Dataset configuration complete but requires Excel file support in import system
+
+  iris_species:
+    kaggle_ref: "uciml/iris"
+    domain: "biology"
+    description: "Classic Fisher's Iris dataset (1936) - the most famous dataset in machine learning history for multiclass classification of iris flower species"
+    ml_task: ["classification", "exploratory_analysis", "feature_selection"]
+    target_column: "Species"
+    # The legendary R.A. Fisher 1936 dataset - perfect for ML education and demonstrations
+    instances_count: 150
+    features_count: 4
+    year: 1936
+    representativity_level: "high"
+    citation_link: "https://www.kaggle.com/datasets/uciml/iris"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 0  # Historical dataset - citations uncounted
+    license: "CC0: Public Domain"
+    species: ["Iris-setosa", "Iris-versicolor", "Iris-virginica"]
+    measurements: ["SepalLengthCm", "SepalWidthCm", "PetalLengthCm", "PetalWidthCm"]
+    samples_per_species: 50
+    linearly_separable: "Setosa is linearly separable, Versicolor and Virginica are not"
+    historical_significance: "R.A. Fisher's 1936 paper 'The Use of Multiple Measurements in Taxonomic Problems'"
+    educational_value: "perfect_for_learning"
+    benchmark_dataset: true
+    clean_data: true
+    balanced_classes: true
+    small_size: "ideal_for_demos"
+
+  mushroom_classification:
+    kaggle_ref: "uciml/mushroom-classification"
+    domain: "biology"
+    description: "Classify mushrooms as edible or poisonous based on categorical features"
+    ml_task: "classification"
+    target_column: "class"
+    # Classic UCI dataset for binary classification of mushroom edibility
+    instances_count: 8124
+    features_count: 22
+    year: 1981
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/uciml/mushroom-classification"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 0  # UCI repository dataset
+    license: "CC0: Public Domain"
+    sources: "Audubon Society Field Guide to North American Mushrooms"
+    storage_uri: "mushrooms.csv"
+    species_count: 23
+    mushroom_families: ["Agaricus", "Lepiota"]
+    categorical_features: 22
+    feature_categories: ["cap-shape", "cap-surface", "cap-color", "bruises", "odor", "gill-attachment", "gill-spacing", "gill-size", "gill-color", "stalk-shape", "stalk-root", "stalk-surface-above-ring", "stalk-surface-below-ring", "stalk-color-above-ring", "stalk-color-below-ring", "veil-type", "veil-color", "ring-number", "ring-type", "spore-print-color", "population", "habitat"]
+    classes: ["edible", "poisonous"]
+    educational_value: "excellent_for_categorical_classification"
+    benchmark_dataset: true
+    clean_data: true
+    binary_classification: true
+
+  titanic_survival_prediction:
+    kaggle_ref: "yasserh/titanic-dataset"
+    domain: ["social", "research"]
+    description: "Predict survival of Titanic passengers based on demographic and travel information"
+    ml_task: "classification"
+    target_column: "Survived"
+    # Famous historical dataset for binary classification of passenger survival
+    instances_count: 891
+    features_count: 10
+    year: 2012
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/yasserh/titanic-dataset"
+    has_missing_values: true
+    global_missing_percentage: 0.2
+    missing_values_handling_method: "imputation"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 0
+    license: "CC0: Public Domain"
+    sources: "Historical Titanic passenger records"
+    storage_uri: "Titanic-Dataset.csv"
+    disaster_date: "1912-04-15"
+    ship_name: "RMS Titanic"
+    total_passengers_crew: 2224
+    casualties: 1502
+    survivors: 891  # Training set size
+    feature_categories: ["demographic", "socioeconomic", "family", "ticket", "cabin"]
+    classes: ["died", "survived"]
+    missing_features: ["Age", "Cabin"]
+    educational_value: "excellent_for_beginner_classification"
+    benchmark_dataset: true
+    historical_significance: true
+    binary_classification: true
+
+  pima_indians_diabetes:
+    kaggle_ref: "uciml/pima-indians-diabetes-database"
+    domain: "healthcare"
+    description: "Predict onset of diabetes based on diagnostic measurements"
+    ml_task: "classification"
+    target_column: "Outcome"
+    # Classic medical dataset for binary diabetes prediction
+    instances_count: 768
+    features_count: 8
+    year: 1988
+    representativity_level: "low"
+    citation_link: "https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database"
+    has_missing_values: true
+    global_missing_percentage: 0.1
+    missing_values_handling_method: "impute"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 0
+    license: "CC0: Public Domain"
+    sources: "National Institute of Diabetes and Digestive and Kidney Diseases"
+    storage_uri: "diabetes.csv"
+    population: "Pima Indian women aged ≥21"
+    medical_features: ["Pregnancies", "Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI", "DiabetesPedigreeFunction", "Age"]
+    classes: ["non-diabetic", "diabetic"]
+    missing_encoding: "zero_values"
+    affected_features: ["BloodPressure", "SkinThickness", "Insulin", "BMI"]
+    educational_value: "excellent_for_medical_ml"
+    benchmark_dataset: true
+    medical_ethics_considerations: true
+    binary_classification: true
+    health_domain: true
+
+  bank_marketing_dataset:
+    kaggle_ref: "janiobachmann/bank-marketing-dataset"
+    domain: ["finance", "marketing"]
+    description: "Predict if a client subscribes to a term deposit based on marketing campaign data"
+    ml_task: "classification"
+    target_column: "y"
+    # Portuguese bank marketing campaign dataset for term deposit subscription prediction
+    instances_count: 45211
+    features_count: 16
+    year: 2014
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/janiobachmann/bank-marketing-dataset"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: true
+    external_documentation_available: true
+    num_citations: 0
+    license: "CC0: Public Domain"
+    sources: "Portuguese bank marketing campaign data (Moro et al. 2014)"
+    storage_uri: "bank.csv"
+    campaign_type: "direct_telephone_marketing"
+    institution: "Portuguese banking institution"
+    features: ["age", "job", "marital", "education", "default", "balance", "housing", "loan", "contact", "day", "month", "duration", "campaign", "pdays", "previous", "poutcome"]
+    classes: ["no", "yes"]
+    campaign_period: "May 2008 to November 2010"
+    success_rate: "~11.3%"
+    contact_method: "telephone"
+    educational_value: "excellent_for_marketing_analytics"
+    benchmark_dataset: true
+    business_application: true
+    binary_classification: true
+    temporal_features: true
+
+  breast_cancer_wisconsin:
+    kaggle_ref: "uciml/breast-cancer-wisconsin-data"
+    domain: "healthcare"
+    description: "Classify breast tumors as malignant or benign based on image-derived features"
+    ml_task: "classification"
+    target_column: "diagnosis"
+    # Wisconsin breast cancer diagnostic dataset from FNA images
+    instances_count: 569
+    features_count: 30
+    year: 1995
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 0
+    license: "CC BY-NC-SA 4.0"
+    sources: "University of Wisconsin Hospitals, Madison"
+    storage_uri: "data.csv"
+    image_source: "Fine Needle Aspirate (FNA)"
+    institution: "University of Wisconsin Hospitals"
+    features_type: "image_derived_numerical"
+    feature_categories: ["mean_features", "se_features", "worst_features"]
+    classes: ["benign", "malignant"]
+    class_distribution: "357 benign, 212 malignant"
+    medical_procedure: "Fine Needle Aspirate biopsy"
+    cell_nuclei_features: 10
+    feature_variants: 3
+    educational_value: "excellent_for_medical_imaging_ml"
+    benchmark_dataset: true
+    medical_application: true
+    binary_classification: true
+    image_analysis: true
+
+  wine_quality_dataset:
+    kaggle_ref: "yasserh/wine-quality-dataset"
+    domain: ["business", "research"]
+    description: "Predict wine quality ratings based on physicochemical tests"
+    ml_task: ["classification", "regression"]
+    target_column: "quality"
+    # Portuguese Vinho Verde wine dataset for quality prediction
+    instances_count: 1599
+    features_count: 11
+    year: 2009
+    representativity_level: "low"
+    citation_link: "https://www.kaggle.com/datasets/yasserh/wine-quality-dataset"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 0
+    license: "CC0: Public Domain"
+    sources: "Portuguese Vinho Verde wine data (UCI ML repository)"
+    storage_uri: "WineQT.csv"
+    wine_type: "red_vinho_verde"
+    wine_origin: "Portugal"
+    physicochemical_tests: 11
+    quality_scale: "0-10"
+    quality_distribution: "imbalanced"
+    sensory_evaluation: true
+    features: ["fixed_acidity", "volatile_acidity", "citric_acid", "residual_sugar", "chlorides", "free_sulfur_dioxide", "total_sulfur_dioxide", "density", "pH", "sulphates", "alcohol"]
+    target_type: "ordinal"
+    educational_value: "excellent_for_regression_and_classification"
+    benchmark_dataset: true
+    food_industry_application: true
+    multi_task: true
+    ordinal_classification: true
+
+  palmer_archipelago_penguins:
+    kaggle_ref: "parulpandey/palmer-archipelago-antarctica-penguin-data"
+    domain: ["environment", "research"]
+    description: "Classify penguin species and analyze morphological measurements across islands"
+    ml_task: ["classification", "clustering"]
+    target_column: "species"
+    # Palmer Archipelago penguin data - modern replacement for Iris dataset
+    instances_count: 344
+    features_count: 8
+    year: 2014
+    representativity_level: "medium"
+    citation_link: "https://www.kaggle.com/datasets/parulpandey/palmer-archipelago-antarctica-penguin-data"
+    has_missing_values: true
+    global_missing_percentage: 0.1
+    missing_values_handling_method: "impute"
+    temporal_factors: true
+    external_documentation_available: true
+    num_citations: 0
+    license: "CC0: Public Domain"
+    sources: "Palmer Station LTER & Dr. Kristen Gorman"
+    storage_uri: "penguins_lter.csv"
+    location: "Palmer Archipelago, Antarctica"
+    species: ["Adelie", "Chinstrap", "Gentoo"]
+    islands: ["Torgersen", "Dream", "Biscoe"]
+    study_period: "2007-2009"
+    research_station: "Palmer Station LTER"
+    measurement_types: ["bill_length", "bill_depth", "flipper_length", "body_mass"]
+    sexual_dimorphism: true
+    ecological_study: true
+    educational_value: "excellent_for_multivariate_classification"
+    benchmark_dataset: true
+    iris_replacement: true
+    multi_class_classification: true
+    biological_data: true
+
+  heart_disease_dataset:
+    kaggle_ref: "johnsmith88/heart-disease-dataset"
+    domain: "healthcare"
+    description: "Predict presence of heart disease based on clinical attributes"
+    ml_task: "classification"
+    target_column: "target"
+    # UCI Heart Disease dataset - classic medical classification benchmark
+    instances_count: 303
+    features_count: 13
+    year: 1988
+    representativity_level: "low"
+    citation_link: "https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: false
+    external_documentation_available: true
+    num_citations: 0
+    license: "Unknown"
+    sources: "UCI Heart Disease database combining Cleveland, Hungary, Switzerland, Long Beach"
+    storage_uri: "heart.csv"
+    medical_databases: ["Cleveland", "Hungary", "Switzerland", "Long Beach"]
+    original_attributes: 76
+    selected_attributes: 14
+    clinical_features: ["age", "sex", "chest_pain", "blood_pressure", "cholesterol", "blood_sugar", "ecg", "heart_rate", "angina", "st_depression", "st_slope", "vessels", "thalassemia"]
+    target_encoding: "0=no disease, 1=disease"
+    hospitals: "Multiple international medical centers"
+    patient_anonymization: true
+    educational_value: "excellent_for_medical_classification"
+    benchmark_dataset: true
+    medical_application: true
+    binary_classification: true
+    cardiovascular_medicine: true
+
+  student_academic_risk_assessment_2025:
+    kaggle_ref: "gwentey/student-academic-risk-assessment-dataset-2025"
+    domain: "education"
+    description: "Assess and predict academic risk levels for students to enable early intervention and personalized educational support"
+    ml_task: ["classification", "clustering"]
+    target_column: "risk_level"
+    # Comprehensive 2025 student academic assessment with excellent ethical standards
+    instances_count: 5000
+    features_count: 25
+    year: 2025
+    representativity_level: "excellent"
+    citation_link: "https://www.kaggle.com/datasets/gwentey/student-academic-risk-assessment-dataset-2025"
+    has_missing_values: false
+    global_missing_percentage: 0.0
+    missing_values_handling_method: "none"
+    temporal_factors: true
+    external_documentation_available: true
+    num_citations: 0
+    license: "CC BY 4.0"
+    sources: "Comprehensive educational institutions data with ethical consent and privacy protection"
+    storage_uri: "student_academic_risk_2025.csv"
+    # EXCELLENCE ÉTHIQUE - Toutes les bonnes pratiques mises en place
+    student_diversity: "excellent_international_representation"
+    socioeconomic_balance: "comprehensive_all_backgrounds"
+    gender_balance: "perfectly_balanced"
+    age_range: "diverse_educational_levels"
+    geographic_coverage: "global_educational_systems"
+    institutional_variety: "public_private_charter_homeschool"
+    # QUALITÉ PARFAITE DES DONNÉES
+    data_completeness: "100%_no_missing_values"
+    data_validation: "triple_verified_quality_control"
+    data_consistency: "standardized_across_institutions"
+    longitudinal_tracking: true
+    student_outcomes_verified: true
+    # CONSENTEMENT ET TRANSPARENCE EXCELLENTS
+    explicit_student_consent: true
+    parental_consent_minors: true
+    institutional_ethics_approval: true
+    data_usage_transparency: true
+    student_data_rights_respected: true
+    opt_out_mechanisms_available: true
+    # PROTECTION ET ANONYMISATION PARFAITES
+    student_anonymization_complete: true
+    institution_anonymization: true
+    location_generalized: true
+    temporal_identifiers_removed: true
+    # ÉQUITÉ ET NON-DISCRIMINATION MAXIMALES
+    bias_detection_performed: true
+    fairness_metrics_validated: true
+    demographic_parity_ensured: true
+    equal_opportunity_verified: true
+    socioeconomic_bias_mitigated: true
+    cultural_sensitivity_reviewed: true
+    # DOCUMENTATION ET GOUVERNANCE EXEMPLAIRES
+    comprehensive_metadata: true
+    ethical_review_board_approved: true
+    data_governance_framework: true
+    regular_audits_performed: true
+    stakeholder_involvement: true
+    educational_value: "outstanding_for_ethical_educational_analytics"
+    benchmark_dataset: true
+    ethical_showcase_dataset: true
+    privacy_preserving: true
+    educational_equity_focus: true
+
+# Configuration globale
+config:
+  # Cache settings
+  cache_duration_days: 7  # Re-download after 7 days
+  
+  # Processing settings
+  convert_to_parquet: true
+  chunk_size: 10000  # For large datasets (can be overridden per dataset)
+  
+  # Memory optimization settings
+  memory_management:
+    enable_gc_between_chunks: true  # Force garbage collection between chunks
+    max_memory_usage_mb: 6000      # Maximum memory usage in MB before optimization
+    pandas_low_memory: true        # Use low_memory option for pandas.read_csv
+    disable_categorical_inference: true  # Disable automatic categorical detection for speed
+  
+  # Validation settings
+  validate_after_download: true
+  extract_metadata: true
+  
+  # Storage settings (UUID architecture)
+  upload_to_storage: true
+  cleanup_after_upload: true
+  use_uuid_structure: true  # datasets/{uuid_dataset}/{uuid_file}.parquet
+  
+  # Database settings (UUID architecture)
+  create_file_columns: true  # Créer les entrées FileColumn avec métadonnées
+  analyze_column_types: true  # Analyser les types de données
+  detect_pii: true           # Détecter les données personnelles
+  
+  # Kaggle API settings
+  max_retries: 3
+  timeout_seconds: 300
+  
+  # MinIO settings for local development
+  minio:
+    endpoint: "http://minio-service.ibis-x.svc.cluster.local:6700"
+    bucket: "ibis-x-datasets"
+    # Credentials are in environment variables 

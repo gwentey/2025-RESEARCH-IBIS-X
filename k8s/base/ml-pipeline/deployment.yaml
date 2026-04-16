@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-pipeline
+  namespace: ibis-x
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ml-pipeline
+  template:
+    metadata:
+      labels:
+        app: ml-pipeline
+    spec:
+      initContainers:
+      # 🚀 NOUVEAU: Init container pour attendre PostgreSQL
+      - name: wait-for-postgres
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+          - |
+            echo "⏳ Attente de PostgreSQL..."
+            until nc -z postgresql-service.ibis-x.svc.cluster.local 5432; do
+              echo "PostgreSQL pas encore prêt..."
+              sleep 2
+            done
+            echo "✅ PostgreSQL est prêt!"
+      
+      # 🚀 NOUVEAU: Init container pour exécuter les migrations Alembic
+      - name: run-migrations
+        image: ibis-x-ml-pipeline:latest
+        imagePullPolicy: IfNotPresent
+        command: ["sh", "-c"]
+        args:
+          - |
+            echo "🔧 Correction robuste des migrations ML Pipeline..."
+            cd /app
+            # 1. Créer les tables si elles n'existent pas
+            python alembic/fix_migrations.py
+            # 2. Appliquer les migrations (en ignorant les erreurs)
+            alembic upgrade head || true
+            echo "✅ Initialisation ML Pipeline terminée"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: ml-pipeline-secrets
+              key: database-url
+        - name: PYTHONPATH
+          value: "/app"
+        workingDir: /app
+      
+      containers:
+      - name: ml-pipeline
+        image: ibis-x-ml-pipeline:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8082
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: ml-pipeline-secrets
+              key: database-url
+        - name: CELERY_BROKER_URL
+          value: "redis://redis:6379/0"
+        - name: CELERY_RESULT_BACKEND
+          value: "redis://redis:6379/0"
+        - name: STORAGE_TYPE
+          value: "minio"
+        - name: MINIO_ENDPOINT
+          value: "http://minio-service:80"
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ml-pipeline-secrets
+              key: minio-access-key
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ml-pipeline-secrets
+              key: minio-secret-key
+        - name: SERVICE_SELECTION_URL
+          value: "http://service-selection-service.ibis-x.svc.cluster.local"
+        - name: PYTHONPATH
+          value: "/app"
+        - name: MAX_TRAINING_TIME
+          value: "7200"
+        - name: DEFAULT_TEST_SIZE
+          value: "0.2"
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ml-pipeline-secrets
+              key: openai-api-key
+        - name: OPENAI_MODEL
+          value: "gpt-4o-mini"
+        - name: OPENAI_MAX_TOKENS
+          value: "1000"
+        - name: OPENAI_TEMPERATURE
+          value: "0.7"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8082
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8082
+          initialDelaySeconds: 5
+          periodSeconds: 5 

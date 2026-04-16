@@ -1,0 +1,73 @@
+= ADR 0002 — Celery + Redis pour les tâches asynchrones
+
+[cols="1,3"]
+|===
+| Statut | accepted
+| Date | 2025-Q1
+|===
+
+== Contexte & problème
+
+Plusieurs opérations dépassent largement la durée acceptable d'une requête HTTP synchrone :
+
+* Entraînement d'un modèle ML (10 s à plusieurs minutes).
+* Analyse de qualité d'un dataset via OpenAI (quelques secondes à 30 s).
+* Calcul d'explications SHAP/LIME sur un modèle entraîné (variable).
+
+Exigences : statut interrogeable par le frontend (polling), résistance aux redémarrages de workers, séparation des charges ML et XAI pour pouvoir scaler indépendamment.
+
+== Décision
+
+Nous adoptons **Celery avec broker Redis** et **3 queues dédiées par domaine** :
+
+* `ml_queue` — tâches d'entraînement ML (`ml-pipeline-worker`).
+* `ai_queue` — analyses IA OpenAI (`ml-pipeline-worker`, même container que `ml_queue`).
+* `xai_queue` — toutes tâches XAI (`xai-engine-worker`, image dédiée via `Dockerfile.worker`).
+
+Le statut et les résultats sont persistés **en PostgreSQL** (pas dans Redis) : Redis sert uniquement de broker + cache applicatif éphémère.
+
+== Alternatives envisagées
+
+=== A. FastAPI BackgroundTasks
+
+* ✅ Avantages : natif, zéro dépendance supplémentaire.
+* ❌ Rejet : exécution in-process, perd les tâches au redémarrage, pas de parallélisme au-delà de l'event loop, pas de priorisation par queue.
+
+=== B. Dramatiq
+
+* ✅ Avantages : API plus moderne que Celery, meilleure ergonomie développeur.
+* ❌ Rejet : écosystème et connaissances plus limités ; Celery est la référence pour un projet pédagogique, mieux documenté et attendu au niveau Master.
+
+=== C. RQ (Redis Queue)
+
+* ✅ Avantages : simple.
+* ❌ Rejet : pas de routing par queue avec workers dédiés aussi propre que Celery, moins d'outillage (Flower).
+
+=== D. Kafka + microservice consumer
+
+* ✅ Avantages : scalabilité massive, rejeu natif.
+* ❌ Rejet : surdimensionné pour le PoC, infrastructure supplémentaire à gérer.
+
+== Conséquences
+
+=== Positives
+
+* Isolation réelle des charges : un worker SHAP gourmand en mémoire ne bloque pas un training ML.
+* Retry automatique possible via décorateurs Celery.
+* Monitoring simple via Flower (si activé).
+
+=== Négatives / coûts
+
+* Dépendance à Redis (StatefulSet supplémentaire en K8s).
+* 3 queues → 3 noms à maintenir cohérents code/config/doc. **Règle dure : aucune `llm_queue` ne doit apparaître** (invariant documenté dans `CLAUDE.md` et `memory-bank/conventions.md`).
+* Images Docker différenciées (ml-pipeline worker = même image que l'API ; xai-engine worker = `Dockerfile.worker` séparé).
+
+=== Neutres
+
+* Les résultats passent par la BDD, ce qui ajoute une écriture par tâche mais simplifie l'accès pour le frontend (polling par ID).
+
+== Références
+
+* Code : `ml-pipeline-service/app/core/celery_app.py`, `xai-engine-service/app/core/celery_app.py`.
+* Manifests : `k8s/base/ml-pipeline/celery-worker-deployment.yaml`, `k8s/base/xai-engine/celery-worker-deployment.yaml`.
+* Page dédiée : xref:03-technique/celery-taches-async.adoc[Tâches Celery].

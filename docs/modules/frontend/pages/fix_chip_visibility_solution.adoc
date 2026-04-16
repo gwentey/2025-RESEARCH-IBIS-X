@@ -1,0 +1,75 @@
+= Correction de la visibilité des chips Angular Material
+
+== Problème identifié
+
+Sur la page de création de projet (`/app/projects/new`), les chips Material Design affichant les critères actifs utilisaient une couleur bleue foncée (`color="primary"` avec `selected`) qui rendait le texte pratiquement illisible.
+
+Les classes CSS problématiques étaient :
+- `mdc-evolution-chip__action`
+- `mat-mdc-chip-action`
+- `mdc-evolution-chip__action--primary`
+- `mdc-evolution-chip__action--presentational`
+
+== Solution implémentée
+
+=== 1. Styles CSS personnalisés
+
+Ajout de styles CSS spécifiques dans `project-form.component.ts` pour surcharger les styles Material Design :
+
+[source,css]
+----
+.active-criteria-chips .mat-mdc-chip {
+  background-color: rgba(25, 118, 210, 0.1) !important;
+  color: #1976d2 !important;
+  border: 1px solid rgba(25, 118, 210, 0.3) !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+}
+
+.active-criteria-chips .mat-mdc-chip:hover {
+  background-color: rgba(25, 118, 210, 0.15) !important;
+  border-color: rgba(25, 118, 210, 0.4) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2) !important;
+}
+----
+
+=== 2. Modification du template HTML
+
+Suppression des propriétés problématiques et ajout d'une classe personnalisée :
+
+[source,html]
+----
+<!-- AVANT -->
+<mat-chip-set>
+  <mat-chip *ngFor="let weight of currentWeights" color="primary" selected>
+    {{ weight.criterion_name }} ({{ (weight.weight * 100) | number:'1.0-0' }}%)
+  </mat-chip>
+</mat-chip-set>
+
+<!-- APRÈS -->
+<mat-chip-set class="active-criteria-chips">
+  <mat-chip *ngFor="let weight of currentWeights">
+    {{ weight.criterion_name }} ({{ (weight.weight * 100) | number:'1.0-0' }}%)
+  </mat-chip>
+</mat-chip-set>
+----
+
+== Résultat
+
+Les chips affichent maintenant :
+- Un fond bleu clair avec transparence pour un bon contraste
+- Un texte bleu foncé parfaitement lisible
+- Une bordure subtile pour la définition
+- Un effet hover élégant avec élévation
+
+== Fichiers modifiés
+
+- `frontend/src/app/pages/projects/project-form.component.ts` : Ajout des styles CSS
+- `frontend/src/app/pages/projects/project-form.component.html` : Modification du template
+
+== Note technique
+
+Cette solution utilise `!important` pour surcharger les styles Material Design profondément imbriqués. Bien que généralement déconseillé, c'est nécessaire ici car Material Design utilise des spécificités CSS très élevées pour ses composants.
+
+La couleur utilisée (`#1976d2`) correspond à la couleur primaire standard de Material Design, garantissant une cohérence visuelle avec le reste de l'interface.

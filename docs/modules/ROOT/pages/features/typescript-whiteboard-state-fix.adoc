@@ -1,0 +1,84 @@
+= Correction TypeScript - État du Whiteboard
+:page-tags: typescript, fix, state-management
+:page-description: Résolution de l'erreur TypeScript concernant whiteboardState
+
+== Problème Identifié
+
+**Erreur TypeScript** :
+```
+error TS18047: 'this.whiteboardState' is possibly 'null'.
+4283     const currentZoom = this.whiteboardState?.zoom || 1;
+```
+
+**Cause** : La propriété `whiteboardState` n'était pas déclarée comme propriété de classe, mais était utilisée comme telle dans `updateTreeLinks()`.
+
+== Solution Implémentée
+
+=== 1. Déclaration de la Propriété
+
+Ajout de la propriété dans la classe du composant :
+
+[source,typescript]
+----
+// Propriété pour stocker l'état du whiteboard
+private whiteboardState: any = null;
+----
+
+=== 2. Initialisation dans showTreeFullscreen()
+
+[source,typescript]
+----
+// Initialiser l'état du whiteboard
+const whiteboardState = {
+  zoom: 1,
+  panX: 0,
+  panY: 0,
+  isDragging: false,
+  dragStartX: 0,
+  dragStartY: 0,
+  lastMouseX: 0,
+  lastMouseY: 0,
+  horizontalSpacing: 100,
+  verticalSpacing: 100,
+  originalTreeData: null as any
+};
+
+// Stocker l'état dans la propriété de classe
+this.whiteboardState = whiteboardState;
+----
+
+=== 3. Réinitialisation à la Fermeture
+
+[source,typescript]
+----
+private closeTreeFullscreenPopup(): void {
+  // ... code existant ...
+  
+  // Réinitialiser l'état du whiteboard
+  this.whiteboardState = null;
+  
+  console.log('✅ Popup fullscreen fermée');
+}
+----
+
+=== 4. Utilisation Sécurisée avec l'Opérateur Optionnel
+
+[source,typescript]
+----
+// Dans updateTreeLinks()
+const currentZoom = this.whiteboardState?.zoom || 1;
+----
+
+== Avantages de cette Approche
+
+1. **Type Safety** : TypeScript peut maintenant vérifier correctement l'utilisation de `whiteboardState`
+2. **Gestion Mémoire** : L'état est correctement nettoyé à la fermeture
+3. **Cohérence** : L'état est accessible partout dans le composant
+4. **Sécurité** : L'opérateur `?.` empêche les erreurs si `whiteboardState` est null
+
+== Impact
+
+- ✅ Plus d'erreur TypeScript
+- ✅ Code plus robuste
+- ✅ Meilleure gestion de l'état
+- ✅ Prévention des fuites mémoire

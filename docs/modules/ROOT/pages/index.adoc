@@ -1,0 +1,60 @@
+= IBIS-X — Documentation
+:description: Plateforme XAI & Pipeline ML — Master 2 MIAGE
+
+IBIS-X est une plateforme microservices de démonstration (PoC académique) dédiée à l'**Intelligence Artificielle Explicable (XAI)**. Elle guide un utilisateur — même non expert — de la sélection d'un dataset jusqu'à l'interprétation détaillée d'un modèle entraîné.
+
+== Trois parcours selon votre profil
+
+[cols="1,3,2"]
+|===
+| Profil | Ce que vous cherchez | Entrée
+
+| 👤 *Utilisateur*
+| Comprendre *comment utiliser* la plateforme — sélectionner un dataset, lancer un pipeline ML, générer une explication XAI.
+| xref:02-fonctionnel/index.adoc[Guide utilisateur]
+
+| 💻 *Développeur*
+| Comprendre *l'architecture, le code, les conventions* pour contribuer ou maintenir la plateforme.
+| xref:03-technique/index.adoc[Guide technique] · xref:06-contribution/index.adoc[Contribution]
+
+| 🔎 *Auditeur / Jury*
+| Évaluer *sécurité, RGPD, éthique IA, traçabilité* pour une revue académique ou réglementaire.
+| xref:05-audit/dossier-audit.adoc[Dossier d'audit]
+|===
+
+== Six piliers documentaires
+
+. xref:01-projet/index.adoc[*Projet*] — vision, périmètre PoC, roadmap, glossaire.
+. xref:02-fonctionnel/index.adoc[*Fonctionnel*] — personas, parcours, specs par module, user stories.
+. xref:03-technique/index.adoc[*Technique*] — architecture (C4), services, frontend, références API/BDD/Celery.
+. xref:04-operationnel/index.adoc[*Opérationnel*] — installation, déploiement, runbooks, monitoring.
+. xref:05-audit/dossier-audit.adoc[*Audit & conformité*] — sécurité, RGPD, éthique IA, ADRs, qualité, traçabilité.
+. xref:06-contribution/index.adoc[*Contribution*] — onboarding dev, git flow, conventions, publication.
+
+== Démarrage rapide (10 minutes)
+
+[source,bash]
+----
+git clone <URL_DU_DEPOT>
+cd 2025-research-exai
+cp .env.example .env   # Remplir les 8 variables obligatoires
+
+# Windows (Git Bash) — AVANT make dev
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+export PYTHONIOENCODING=utf-8 PYTHONUTF8=1
+
+make dev
+----
+
+Accès : Frontend http://localhost:8080 · API http://localhost:9000/docs
+
+Détails : xref:04-operationnel/installation/local-minikube.adoc[Démarrage local Minikube].
+
+== Conventions clefs
+
+* *Backend* : FastAPI + Pydantic `BaseSettings`, SQLAlchemy + Alembic (une `version_table` par service sur la base `ibis_x_db` partagée).
+* *Tâches async* : Celery avec 3 queues — `ml_queue`, `ai_queue`, `xai_queue`.
+* *Frontend* : Angular 19 + Material (pas de Tailwind), i18n FR/EN obligatoire via `@ngx-translate`.
+* *Infra* : Kubernetes (Minikube local / AKS Azure) via Kustomize, images préfixées `ibis-x-`.
+
+Voir xref:03-technique/stack-technique.adoc[Stack technique raisonnée] pour les justifications.

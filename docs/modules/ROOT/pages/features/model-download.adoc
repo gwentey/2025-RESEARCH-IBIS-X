@@ -1,0 +1,128 @@
+= Téléchargement de Modèles Entraînés
+:author: EXAI Team
+:date: 2025-09-11
+:tags: feature, ml-pipeline, model-download
+
+== Description
+
+La fonctionnalité de téléchargement de modèles permet aux utilisateurs de récupérer les modèles entraînés au format `.joblib` pour une utilisation externe ou une intégration dans d'autres applications.
+
+== Fonctionnement
+
+=== Interface Utilisateur
+
+Sur la page de résultats d'expérimentation, un bouton "Télécharger le Modèle" est disponible dans le footer :
+
+[source,html]
+----
+<button mat-flat-button color="primary" (click)="downloadModel()">
+  <mat-icon>download</mat-icon>
+  <span>Télécharger le Modèle</span>
+</button>
+----
+
+=== Backend (FastAPI)
+
+Nouvel endpoint créé dans `ml-pipeline-service/app/main.py` :
+
+[source,python]
+----
+@app.get("/experiments/{experiment_id}/download-model")
+def download_model(experiment_id: str, db: Session = Depends(get_db)):
+    """Download the trained model file for an experiment"""
+    
+    # Validation :
+    # - Expérience existe
+    # - Statut = 'completed'
+    # - model_uri disponible
+    
+    # Téléchargement depuis MinIO
+    model_data = storage_client.download_file(experiment.model_uri)
+    
+    # Retour du fichier
+    return StreamingResponse(
+        io.BytesIO(model_data),
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+----
+
+=== Frontend (Angular)
+
+==== Service ML Pipeline
+
+[source,typescript]
+----
+downloadModel(experimentId: string): Observable<Blob> {
+  return this.http.get(`${this.apiUrl}/experiments/${experimentId}/download-model`, { 
+    responseType: 'blob' 
+  });
+}
+----
+
+==== Composant Résultats
+
+[source,typescript]
+----
+downloadModel(): void {
+  this.mlPipelineService.downloadModel(this.experimentId).subscribe({
+    next: (blob: Blob) => {
+      // Créer URL temporaire et déclencher téléchargement
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      // ... 
+    }
+  });
+}
+----
+
+== Validation et Sécurité
+
+=== Vérifications Backend
+* L'expérience doit exister
+* L'expérience doit être complétée (`status = 'completed'`)
+* Le modèle doit être disponible (`model_uri` non null)
+* Authentification utilisateur (via API Gateway)
+
+=== Format du Fichier
+* **Format** : `.joblib` (Scikit-learn serialization)
+* **Taille** : Typiquement 1-10 MB selon la complexité du modèle
+* **Contenu** : Modèle entraîné complet avec hyperparamètres
+
+== Utilisation du Modèle Téléchargé
+
+=== Chargement en Python
+
+[source,python]
+----
+import joblib
+from sklearn.metrics import accuracy_score
+
+# Charger le modèle
+model = joblib.load('model_experiment_id_v20250911.joblib')
+
+# Utiliser pour prédictions
+predictions = model.predict(X_new)
+----
+
+=== Informations Incluses
+
+Le modèle téléchargé contient :
+* L'algorithme entraîné (DecisionTreeClassifier/Regressor, RandomForestClassifier/Regressor)
+* Les hyperparamètres utilisés
+* L'état complet du modèle pour reproduction des résultats
+
+== Cas d'Usage
+
+1. **Déploiement en production** : Intégrer le modèle dans une application
+2. **Recherche académique** : Reproduire les résultats ou comparaisons
+3. **Audit et compliance** : Archivage des modèles pour traçabilité
+4. **Collaboration** : Partager le modèle avec d'autres équipes
+
+== Limitations
+
+* Seuls les modèles d'expériences complétées peuvent être téléchargés
+* Le modèle est au format Scikit-learn (compatible Python uniquement)
+* Taille limitée par les capacités de stockage MinIO

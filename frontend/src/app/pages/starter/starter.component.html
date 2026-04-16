@@ -1,0 +1,235 @@
+<!-- Dashboard Principal IBIS-X -->
+<div class="container-fluid p-24" *ngIf="dashboardData$ | async as data">
+  
+  <!-- Header du Dashboard -->
+  <div class="dashboard-header mb-32">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <h1 class="dashboard-title">{{ 'DASHBOARD.WELCOME.TITLE' | translate }}</h1>
+        <p class="dashboard-subtitle">{{ 'DASHBOARD.WELCOME.SUBTITLE' | translate }}</p>
+      </div>
+      <div class="text-right">
+        <p class="mat-body-2 text-muted mb-4">{{ currentTime | date:'EEEE d MMMM y' }}</p>
+        <p class="mat-body-2 text-muted">{{ currentTime | date:'HH:mm' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Métriques Principales -->
+  <div class="row mb-32">
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-16">
+      <mat-card class="metric-card">
+        <mat-card-content class="metric-content p-24">
+          <div class="metric-icon primary">
+            <i-tabler name="chart-line"></i-tabler>
+          </div>
+          <div class="metric-value">{{ formatNumber(data.metrics.totalExperiments) }}</div>
+          <div class="metric-title">{{ 'DASHBOARD.METRICS.TOTAL_EXPERIMENTS' | translate }}</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-16">
+      <mat-card class="metric-card">
+        <mat-card-content class="metric-content p-24">
+          <div class="metric-icon success">
+            <i-tabler name="folder"></i-tabler>
+          </div>
+          <div class="metric-value">{{ formatNumber(data.metrics.activeProjects) }}</div>
+          <div class="metric-title">{{ 'DASHBOARD.METRICS.ACTIVE_PROJECTS' | translate }}</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-16">
+      <mat-card class="metric-card">
+        <mat-card-content class="metric-content p-24">
+          <div class="metric-icon warning">
+            <i-tabler name="target"></i-tabler>
+          </div>
+          <div class="metric-value">{{ data.metrics.successRate }}%</div>
+          <div class="metric-title">{{ 'DASHBOARD.METRICS.SUCCESS_RATE' | translate }}</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-sm-6 mb-16">
+      <mat-card class="metric-card">
+        <mat-card-content class="metric-content p-24">
+          <div class="metric-icon accent">
+            <i-tabler name="clock"></i-tabler>
+          </div>
+          <div class="metric-value">{{ data.metrics.avgTrainingTime > 60 ? (data.metrics.avgTrainingTime / 60).toFixed(1) + 'm' : data.metrics.avgTrainingTime + 's' }}</div>
+          <div class="metric-title">{{ 'DASHBOARD.METRICS.AVG_TRAINING_TIME' | translate }}</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Contenu Principal -->
+  <div class="row">
+    <!-- Colonne Gauche (2/3) -->
+    <div class="col-lg-8">
+      
+      <!-- Activités Récentes -->
+      <mat-card class="activity-card mb-24">
+        <div class="card-header-custom">
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="card-title-modern">{{ 'DASHBOARD.RECENT_ACTIVITIES.TITLE' | translate }}</h2>
+            <button mat-button color="primary" routerLink="/app/ml-pipeline">
+              {{ 'DASHBOARD.RECENT_ACTIVITIES.VIEW_ALL' | translate }}
+            </button>
+          </div>
+        </div>
+        
+        <div class="activity-list" *ngIf="data.recentActivities.length > 0; else noActivities">
+          <div class="activity-item" *ngFor="let activity of data.recentActivities">
+            <div class="activity-icon" [class]="activity.color">
+              <i-tabler [name]="activity.icon"></i-tabler>
+            </div>
+            <div class="activity-details">
+              <div class="activity-title">{{ activity.title | translate:activity.metadata }}</div>
+              <div class="activity-description">{{ activity.description | translate:activity.metadata }}</div>
+              <div class="activity-time">{{ getRelativeTime(activity.timestamp) }}</div>
+            </div>
+            <button mat-icon-button *ngIf="activity.link" [routerLink]="activity.link" color="primary">
+              <i-tabler name="chevron_right"></i-tabler>
+            </button>
+          </div>
+        </div>
+
+        <ng-template #noActivities>
+          <div class="p-48 text-center">
+            <i-tabler name="inbox" class="text-muted mb-16"></i-tabler>
+            <p class="mat-body-1 text-muted">{{ 'DASHBOARD.RECENT_ACTIVITIES.NO_ACTIVITIES' | translate }}</p>
+            <button mat-flat-button color="primary" routerLink="/app/projects/new">
+              {{ 'DASHBOARD.RECENT_ACTIVITIES.START_PROJECT' | translate }}
+            </button>
+          </div>
+        </ng-template>
+      </mat-card>
+
+      <!-- Section Tutorials -->
+      <mat-card class="tutorial-card">
+        <div class="card-header-custom">
+          <h2 class="card-title-modern">{{ 'DASHBOARD.TUTORIALS.TITLE' | translate }}</h2>
+          <p class="card-subtitle">{{ 'DASHBOARD.TUTORIALS.SUBTITLE' | translate }}</p>
+        </div>
+        
+        <div class="tutorial-grid p-24">
+          <div class="tutorial-item" *ngFor="let video of data.tutorialVideos" (click)="openYoutubeVideo(video.youtubeUrl)">
+            <div class="tutorial-thumbnail">
+              <img [src]="video.thumbnailUrl" [alt]="video.title | translate" loading="lazy">
+              <div class="play-overlay">
+                <i-tabler name="play"></i-tabler>
+              </div>
+              <div class="duration-badge">{{ video.duration }}</div>
+            </div>
+            <div class="tutorial-content">
+              <div class="tutorial-title">{{ video.title | translate }}</div>
+              <div class="tutorial-description">{{ video.description | translate }}</div>
+              <div class="tutorial-meta">
+                <span class="difficulty-badge" [class]="'difficulty-' + video.difficulty">
+                  {{ 'DASHBOARD.TUTORIALS.DIFFICULTY.' + video.difficulty.toUpperCase() | translate }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Colonne Droite (1/3) -->
+    <div class="col-lg-4">
+      
+      <!-- Actions Rapides -->
+      <mat-card class="quick-actions-card mb-24">
+        <div class="card-header-custom">
+          <h2 class="card-title-modern">{{ 'DASHBOARD.QUICK_ACTIONS.TITLE' | translate }}</h2>
+          <p class="card-subtitle">{{ 'DASHBOARD.QUICK_ACTIONS.SUBTITLE' | translate }}</p>
+        </div>
+        
+        <div class="quick-actions-grid">
+          <button 
+            mat-button 
+            class="quick-action-btn"
+            [class]="'quick-action-' + action.color"
+            [routerLink]="action.route"
+            [disabled]="!action.enabled"
+            *ngFor="let action of data.quickActions">
+            <div class="quick-action-content">
+              <div class="quick-action-icon">
+                <i-tabler [name]="action.icon"></i-tabler>
+              </div>
+              <div class="quick-action-text">
+                <div class="quick-action-title">{{ action.title | translate }}</div>
+                <div class="quick-action-desc">{{ action.description | translate }}</div>
+              </div>
+            </div>
+        </button>
+        </div>
+      </mat-card>
+
+      <!-- Projets Récents -->
+      <mat-card class="projects-card mb-24" *ngIf="data.recentProjects.length > 0">
+        <div class="card-header-custom">
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="card-title-modern">{{ 'DASHBOARD.RECENT_PROJECTS.TITLE' | translate }}</h2>
+            <button mat-button color="primary" routerLink="/app/projects">
+              {{ 'DASHBOARD.RECENT_PROJECTS.VIEW_ALL' | translate }}
+        </button>
+      </div>
+        </div>
+        
+        <div class="projects-list p-16">
+          <div class="project-item" *ngFor="let project of data.recentProjects" [routerLink]="'/app/projects/' + project.id">
+            <div class="project-icon">
+              <i-tabler name="folder"></i-tabler>
+            </div>
+            <div class="project-details">
+              <div class="project-name">{{ project.name }}</div>
+              <div class="project-date">{{ project.created_at | date:'short' }}</div>
+            </div>
+            <i-tabler name="chevron_right" class="text-muted"></i-tabler>
+          </div>
+        </div>
+  </mat-card>
+
+      <!-- Statistiques Système -->
+      <mat-card class="system-status-card">
+        <div class="card-header-custom">
+          <h2 class="card-title-modern">{{ 'DASHBOARD.SYSTEM_STATUS.TITLE' | translate }}</h2>
+        </div>
+        
+        <div class="status-list p-16">
+          <div class="status-item">
+            <div class="status-indicator online"></div>
+            <div class="status-details">
+              <div class="status-name">{{ 'DASHBOARD.SYSTEM_STATUS.ML_PIPELINE' | translate }}</div>
+              <div class="status-value">{{ 'DASHBOARD.SYSTEM_STATUS.OPERATIONAL' | translate }}</div>
+            </div>
+          </div>
+          
+          <div class="status-item">
+            <div class="status-indicator online"></div>
+            <div class="status-details">
+              <div class="status-name">{{ 'DASHBOARD.SYSTEM_STATUS.XAI_ENGINE' | translate }}</div>
+              <div class="status-value">{{ 'DASHBOARD.SYSTEM_STATUS.OPERATIONAL' | translate }}</div>
+            </div>
+          </div>
+          
+          <div class="status-item">
+            <div class="status-indicator online"></div>
+            <div class="status-details">
+              <div class="status-name">{{ 'DASHBOARD.SYSTEM_STATUS.DATASETS' | translate }}</div>
+              <div class="status-value">{{ 'DASHBOARD.SYSTEM_STATUS.OPERATIONAL' | translate }}</div>
+            </div>
+          </div>
+</div>
+
+        <div class="system-info">
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

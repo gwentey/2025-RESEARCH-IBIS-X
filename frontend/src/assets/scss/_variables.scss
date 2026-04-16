@@ -1,0 +1,42 @@
+// font
+$font-family: "Plus Jakarta Sans", sans-serif;
+
+// light color variable
+
+// Sidenav
+$sidenav-desktop: 270px !default;
+$sidenav-mini: 80px !default;
+$header-height: 70px !default;
+
+//BorderColor
+$borderColor: var(--mat-sys-outline-variant);
+$borderformColor: var(--mat-sys-outline-variant);
+
+// custom - Couleurs Sorbonne forcées
+$primary: #242e54; // Bleu Sorbonne principal
+$secondary: #9d876a; // Beige Sorbonne
+$accent: #9d876a; // Beige Sorbonne pour accent
+$error: #ef4444; // Rouge d'erreur
+$warning: #f8c076;
+$success: #4bd08b;
+$white: #ffffff;
+
+$light: var(--mat-sys-surface-bright);
+$light-primary: var(--mat-sys-primary-fixed-dim);
+$light-secondary: var(--mat-sys-secondary-fixed-dim);
+$light-accent: var(--mat-sys-secondary-fixed-dim);
+$light-error: var(--mat-sys-error-fixed-dim);
+$light-warning: rgba(248, 192, 118, 0.15);
+$light-success: rgba(75, 208, 139, 0.15);
+
+// layout
+$boxedWidth: 1200px;
+$border-radius: 18px;
+$layout-padding: 20px;
+
+$card-spacer: 30px;
+
+$text-color: var(--mat-sys-on-background);
+
+$dark-text-secondary: rgba(255, 255, 255, 0.67);
+$dark-body-bg: #141a21;

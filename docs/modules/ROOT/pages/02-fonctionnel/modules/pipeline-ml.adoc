@@ -1,0 +1,87 @@
+= Module fonctionnel — Pipeline ML
+:description: Sélection dataset → preprocessing → entraînement → résultats
+:toc: left
+
+Ce module guide un utilisateur, **même non-expert**, de la sélection d'un dataset jusqu'à l'obtention d'un modèle entraîné et de ses métriques.
+
+== Parcours utilisateur
+
+[mermaid]
+----
+flowchart LR
+    A[1. Sélection<br/>dataset] --> B[2. Configuration<br/>preprocessing]
+    B --> C[3. Choix<br/>algorithme + hyperparamètres]
+    C --> D[4. Entraînement<br/>async Celery]
+    D --> E[5. Résultats<br/>métriques + visus]
+    E --> F[6. Explications<br/>XAI — module dédié]
+----
+
+L'interface est un **wizard en 5 étapes** qui guide l'utilisateur sans exiger de connaissances préalables en ML.
+
+== Étape 1 — Sélection du dataset
+
+L'utilisateur choisit un dataset depuis :
+
+* son propre catalogue (datasets uploadés) ;
+* le catalogue public (datasets importés depuis Kaggle) ;
+* les filtres combinés (critères techniques, éthiques, métier).
+
+Voir xref:02-fonctionnel/modules/selection-datasets.adoc[Sélection de datasets] pour le détail des filtres.
+
+== Étape 2 — Configuration du preprocessing
+
+Le wizard propose des **stratégies intelligentes** issues de l'analyse qualité IA (si disponible) :
+
+* *Valeurs manquantes* : mean / median / mode / drop / KNN imputer selon le type de colonne.
+* *Scaling* : StandardScaler / MinMaxScaler / aucun, selon l'algorithme choisi ensuite.
+* *Encodage catégoriel* : one-hot / ordinal / target, avec suggestion par cardinalité.
+* *Colonne cible* et type de tâche : classification / régression (détecté automatiquement pour les colonnes numériques via le seuil de valeurs uniques).
+* *Split train/test* : 80/20 par défaut, ajustable.
+
+La configuration est stockée dans `experiments.preprocessing_config` (JSONB).
+
+== Étape 3 — Algorithme & hyperparamètres
+
+Algorithmes disponibles selon la tâche :
+
+* *Classification* : Decision Tree, Random Forest, Logistic Regression, Gradient Boosting.
+* *Régression* : Linear Regression, Decision Tree Regressor, Random Forest Regressor.
+
+Les hyperparamètres sont proposés avec des valeurs par défaut raisonnables et une aide contextuelle.
+
+Stocké dans `experiments.hyperparameters` (JSONB).
+
+== Étape 4 — Entraînement
+
+Au lancement :
+
+. `ml-pipeline-service` crée l'expérience (statut `pending`) et publie la tâche `train_model` sur la queue `ml_queue`.
+. Le `ml-pipeline-worker` consomme, met à jour `progress` et `status` au fil de l'exécution.
+. Le modèle entraîné est sérialisé (joblib) et persisté dans le stockage objets, référencé par `experiments.artifact_uri`.
+. Les visualisations (matrice de confusion, courbes ROC, feature importance) sont également stockées.
+
+Durée typique : 10 s à quelques minutes selon dataset et algorithme. Le frontend affiche une barre de progression polling.
+
+== Étape 5 — Résultats
+
+L'interface présente :
+
+* *Métriques* : accuracy, precision, recall, F1 (classification) ; MSE, RMSE, MAE, R² (régression).
+* *Matrice de confusion* interactive (classification).
+* *Courbes ROC* multi-classes avec vrais noms de classes.
+* *Importance des features* (feature_importance ou coefficients).
+* *Actions* : générer une explication XAI, télécharger le modèle (.joblib).
+
+Voir xref:02-fonctionnel/modules/explications-xai.adoc[Explications XAI] pour la suite.
+
+== Spécificités & limites du PoC
+
+* Pas de tuning automatique (grid search / bayesian).
+* Pas d'ensembles de plusieurs modèles (stacking).
+* Entraînement **single-node** sklearn — pas de distribution.
+* Prédiction ad-hoc (`POST /experiments/{id}/predict`) *non implémentée* à ce stade.
+
+== Référence technique
+
+Code source : `ml-pipeline-service/app/tasks.py::train_model`, `ml-pipeline-service/app/services/`. +
+Spécification technique : xref:03-technique/services/ml-pipeline-service.adoc[ml-pipeline-service].

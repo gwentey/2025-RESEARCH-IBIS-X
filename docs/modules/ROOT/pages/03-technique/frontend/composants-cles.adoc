@@ -1,0 +1,68 @@
+= Frontend — composants clés
+:description: Inventaire des composants significatifs
+
+== Layouts
+
+* `FullLayoutComponent` — shell principal post-authentification (sidebar + topbar + content).
+* `BlankLayoutComponent` — shell minimal (onboarding, erreurs).
+* `AuthLayoutComponent` — shell connexion/inscription.
+
+== Authentification
+
+* `LoginPageComponent`, `RegisterPageComponent`, `OAuthCallbackComponent`.
+* `LoginBackgroundAnimationComponent` — animation IA dédiée.
+
+== Datasets
+
+* `DatasetListPageComponent` (smart) — listing + filtres.
+* `DatasetCardComponent` / `DatasetRowComponent` (dumb) — vues grille/liste.
+* `DatasetFiltersComponent` — panneau latéral filtres (sliders dual-range, scores, dropdown domaines).
+* `DatasetDetailPageComponent` — vue détaillée multi-onglets.
+* `DatasetUploadWizardComponent` — wizard upload.
+* `DataQualityPanelComponent` — affichage analyse IA.
+
+== Projets
+
+* `ProjectListPageComponent`, `ProjectDetailPageComponent`.
+* `ProjectRecommendationHeatmapComponent` — heatmap de recommandation.
+
+== ML Pipeline
+
+* `MLPipelinePresentationComponent` — hero de présentation.
+* `MLPipelineWizardComponent` — wizard 5 étapes (plein écran).
+* `PreprocessingStepComponent`, `AlgorithmStepComponent`, `HyperparametersStepComponent`.
+* `ExperimentProgressComponent` — barre de progression polling.
+* `ExperimentResultsComponent` — affichage métriques avec onglets.
+* `ConfusionMatrixComponent`, `RocCurveComponent`, `FeatureImportanceComponent`.
+
+== XAI
+
+* `XaiExplanationPageComponent` — conteneur principal.
+* `ShapGlobalComponent`, `ShapLocalComponent`, `LimeLocalComponent`.
+* `ChatComponent` — interface de chat avec compteur (≤ 5).
+* `WebshapExecutorComponent` — exécution client-side.
+* `InteractiveTreeComponent` — visualisation arbre de décision draggable/fullscreen.
+
+== Admin
+
+* `UserManagementComponent`, `DatasetManagementComponent`, `EthicalTemplatesComponent`.
+
+== Shared
+
+* `ConfirmDialogComponent` — dialog de confirmation générique.
+* `LoadingSpinnerComponent`, `EmptyStateComponent`, `ErrorBannerComponent`.
+* `TranslatedSnackBarComponent` — notifications i18n.
+* `BreadcrumbComponent`.
+
+== Conventions
+
+* Un composant = un fichier `.ts` + `.html` + `.scss` + éventuellement `.spec.ts`.
+* Nommage `{Domaine}{Nom}{Page|Component}Component`.
+* Standalone (Angular 19) avec `imports` explicites.
+* Tests unitaires obligatoires pour les composants "smart".
+
+== Patterns internes
+
+* Polling async (expériences, explications) via un service dédié qui encapsule `setInterval` ou `interval(2000)` RxJS.
+* Scrollbars personnalisées via `ngx-scrollbar` sur les panneaux longs.
+* Animations limitées (pas d'AI-slop visuel — voir CHANGELOG design audit).

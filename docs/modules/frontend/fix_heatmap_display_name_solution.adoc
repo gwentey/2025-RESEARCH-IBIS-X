@@ -1,0 +1,92 @@
+= Correction de l'affichage du nom dans la heatmap de recommandations
+
+[cols="1,3", options="header"]
+|===
+| Propriété | Valeur
+| Date | 21 septembre 2025
+| Composant | RecommendationHeatmapComponent
+| Type de correction | Frontend - Affichage des noms
+| Fichier principal | `frontend/src/app/pages/projects/components/recommendation-heatmap.component.ts`
+| Page concernée | `/app/projects/new` - Formulaire de création de projet
+|===
+
+== Problème identifié
+
+La heatmap de recommandations des datasets utilisait le champ `dataset_name` (nom technique interne) au lieu du `display_name` (nom d'affichage convivial pour l'utilisateur) dans :
+
+. L'axe Y de la heatmap (noms des datasets)
+. Le tooltip affiché au survol
+. Le calcul du hash pour optimiser les re-rendus
+
+== Solution mise en œuvre
+
+=== 1. Correction de l'axe Y (ligne 331)
+
+[source,typescript]
+----
+// AVANT
+const yAxisData = this.datasets.map(d => d.dataset_name);
+
+// APRÈS
+const yAxisData = this.datasets.map(d => d.display_name);
+----
+
+=== 2. Correction du tooltip (ligne 390)
+
+[source,typescript]
+----
+// AVANT
+${truncateText(dataset.dataset_name, 25)}
+
+// APRÈS
+${truncateText(dataset.display_name, 25)}
+----
+
+=== 3. Correction du calcul de hash (ligne 200)
+
+[source,typescript]
+----
+// AVANT
+const currentDatasetHash = this.datasets.map(d => d.dataset_name).sort().join('|');
+
+// APRÈS
+const currentDatasetHash = this.datasets.map(d => d.display_name).sort().join('|');
+----
+
+== Différence entre les champs
+
+[cols="2,3,3", options="header"]
+|===
+| Champ | Description | Exemple
+| `dataset_name` | Nom technique interne, souvent provenant de Kaggle ou des métadonnées | `student_academic_risk_assessment_2025`
+| `display_name` | Nom d'affichage formaté pour l'utilisateur | `Student Academic Risk Assessment (2025)`
+|===
+
+== Impact utilisateur
+
+✅ **Amélioration de l'expérience utilisateur :**
+- Les noms affichés dans la heatmap sont maintenant plus lisibles et conviviaux
+- Le tooltip affiche des noms compréhensibles par les utilisateurs
+- Cohérence avec l'affichage des noms dans le reste de l'application
+
+== Test de la correction
+
+Pour vérifier que la correction fonctionne :
+
+. Accéder à la page `/app/projects/new`
+. Configurer les critères de sélection 
+. Observer la heatmap générée en bas de page
+. Vérifier que les noms des datasets sur l'axe Y sont des noms d'affichage formatés
+. Survoler les cellules et vérifier que le tooltip affiche le nom convivial
+
+== Fichiers modifiés
+
+- `frontend/src/app/pages/projects/components/recommendation-heatmap.component.ts`
+
+== Notes techniques
+
+Le modèle `DatasetScored` hérite de `Dataset` qui contient les deux champs :
+- `dataset_name: string` - Nom technique 
+- `display_name: string` - Nom d'affichage
+
+Cette correction assure la cohérence avec les autres composants qui utilisent déjà le `display_name` pour l'affichage utilisateur.

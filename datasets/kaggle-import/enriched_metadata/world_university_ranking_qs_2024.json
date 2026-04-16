@@ -1,0 +1,425 @@
+{
+  "dataset_name": "world_university_ranking_qs_2024",
+  "display_name": "2024 World University Ranking (QS)",
+  "objective": "Provide comprehensive QS World University Rankings 2024 with reputation and performance indicators for over 1,500 universities worldwide for benchmarking and comparative analysis",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "QS World University Rankings 2024 - Official ranking data compiled by Muhammad Basit Ali",
+  "storage_uri": "https://www.kaggle.com/datasets/muhammadbasitali/2024-world-university-ranking",
+  "citation_link": "https://www.kaggle.com/datasets/muhammadbasitali/2024-world-university-ranking",
+  "documentation_link": "https://www.kaggle.com/datasets/muhammadbasitali/2024-world-university-ranking",
+  "instances_number": 1501,
+  "features_number": 28,
+  "features_description": "Comprehensive university ranking dataset with 28 performance indicators including academic reputation, employer reputation, faculty-student ratio, citations per faculty, international diversity, and regional scores",
+  "domain": ["education"],
+  "representativity_description": "Global representation of 1,501 top universities across all continents with comprehensive QS ranking methodology indicators",
+  "representativity_level": "high",
+  "sample_balance_description": "Global coverage with universities from Americas, Europe, Asia, Oceania, and Africa - balanced representation across regions and institution types",
+  "sample_balance_level": "balanced",
+  "split": false,
+  "missing_values": {
+    "has_missing_values": true,
+    "global_missing_percentage": 5.0,
+    "description": "Some missing values or 'Reporter' status for certain indicators across universities",
+    "handling_method": "none"
+  },
+  "temporal_factors": false,
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "task": ["ranking_analysis", "comparative_analysis", "clustering"],
+  "year": 2024,
+  "license": "CC0: Public Domain",
+  "num_citations": 3,
+  "ranking_system": {
+    "methodology": "QS World University Rankings",
+    "ranking_body": "QS Quacquarelli Symonds",
+    "evaluation_year": 2024,
+    "universities_ranked": 1501,
+    "global_coverage": true,
+    "ranking_criteria": [
+      "Academic Reputation (40%)",
+      "Employer Reputation (10%)",
+      "Faculty-Student Ratio (20%)",
+      "Citations per Faculty (20%)",
+      "International Faculty Ratio (5%)",
+      "International Student Ratio (5%)"
+    ]
+  },
+  "geographic_distribution": {
+    "continents_covered": [
+      "North America",
+      "South America", 
+      "Europe",
+      "Asia",
+      "Oceania",
+      "Africa"
+    ],
+    "top_performing_regions": [
+      "United States",
+      "United Kingdom", 
+      "China",
+      "Australia",
+      "Canada",
+      "Germany",
+      "Singapore",
+      "Japan"
+    ],
+    "emerging_regions": [
+      "Asia-Pacific growth",
+      "Latin American representation",
+      "African universities inclusion"
+    ]
+  },
+  "top_tier_universities": {
+    "top_10_indicators": [
+      "Massachusetts Institute of Technology (MIT)",
+      "Stanford University", 
+      "Harvard University",
+      "University of Cambridge",
+      "University of Oxford",
+      "Imperial College London",
+      "University College London",
+      "ETH Zurich",
+      "National University of Singapore",
+      "University of Chicago"
+    ],
+    "regional_leaders": {
+      "north_america": ["MIT", "Stanford", "Harvard"],
+      "europe": ["Cambridge", "Oxford", "Imperial College"],
+      "asia": ["National University of Singapore", "Tsinghua University"],
+      "oceania": ["Australian National University", "University of Melbourne"]
+    }
+  },
+  "performance_indicators": {
+    "academic_excellence": [
+      "Academic Reputation Score",
+      "Citations per Faculty",
+      "Faculty-Student Ratio"
+    ],
+    "industry_connection": [
+      "Employer Reputation Score",
+      "Graduate Employability"
+    ],
+    "international_outlook": [
+      "International Faculty Ratio",
+      "International Student Ratio",
+      "International Research Network"
+    ],
+    "research_impact": [
+      "Citations per Faculty",
+      "Research Output",
+      "H-Index Score"
+    ]
+  },
+  "ethics": {
+    "informed_consent": false,
+    "transparency": false,
+    "user_control": false,
+    "equity_non_discrimination": false,
+    "security_measures_in_place": false,
+    "data_quality_documented": false,
+    "anonymization_applied": true,
+    "record_keeping_policy_exists": false,
+    "purpose_limitation_respected": false,
+    "accountability_defined": false
+  },
+  "column_details": [
+    {
+      "column_name": "QS Rank",
+      "position": 0,
+      "data_type_interpreted": "numerical_integer",
+      "description": "Overall QS World University Ranking position (1-1501)",
+      "is_target": true,
+      "missing_percentage": 0.0,
+      "range": "1-1501",
+      "category": "ranking_position",
+      "analysis_value": "primary_target"
+    },
+    {
+      "column_name": "University Name",
+      "position": 1,
+      "data_type_interpreted": "text",
+      "description": "Official name of the university or institution",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 1501,
+      "category": "institution_identifier",
+      "example_values": ["Massachusetts Institute of Technology", "Stanford University", "Harvard University"]
+    },
+    {
+      "column_name": "Country",
+      "position": 2,
+      "data_type_interpreted": "categorical",
+      "description": "Country where the university is located",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "geographic_classification",
+      "top_countries": ["United States", "United Kingdom", "China", "Germany", "Australia"]
+    },
+    {
+      "column_name": "Academic Reputation Score",
+      "position": 3,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Academic reputation score based on global academic survey (40% of total ranking)",
+      "is_target": false,
+      "missing_percentage": 2.0,
+      "scale": "0-100",
+      "category": "reputation_metric",
+      "weight_in_ranking": "40%",
+      "analysis_value": "very_high"
+    },
+    {
+      "column_name": "Employer Reputation Score",
+      "position": 4,
+      "data_type_interpreted": "numerical_continuous", 
+      "description": "Employer reputation score based on global employer survey (10% of total ranking)",
+      "is_target": false,
+      "missing_percentage": 3.0,
+      "scale": "0-100",
+      "category": "reputation_metric",
+      "weight_in_ranking": "10%",
+      "industry_relevance": "high"
+    },
+    {
+      "column_name": "Faculty Student Ratio Score",
+      "position": 5,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Faculty-to-student ratio score indicating teaching capacity (20% of total ranking)",
+      "is_target": false,
+      "missing_percentage": 4.0,
+      "scale": "0-100", 
+      "category": "capacity_metric",
+      "weight_in_ranking": "20%",
+      "teaching_quality_indicator": true
+    },
+    {
+      "column_name": "Citations per Faculty Score",
+      "position": 6,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Research impact score based on citations per faculty member (20% of total ranking)",
+      "is_target": false,
+      "missing_percentage": 1.0,
+      "scale": "0-100",
+      "category": "research_metric",
+      "weight_in_ranking": "20%",
+      "research_impact_indicator": true
+    },
+    {
+      "column_name": "International Faculty Ratio Score",
+      "position": 7,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "International faculty diversity score (5% of total ranking)",
+      "is_target": false,
+      "missing_percentage": 5.0,
+      "scale": "0-100",
+      "category": "diversity_metric",
+      "weight_in_ranking": "5%",
+      "internationalization_indicator": true
+    },
+    {
+      "column_name": "International Student Ratio Score",
+      "position": 8,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "International student diversity score (5% of total ranking)",
+      "is_target": false,
+      "missing_percentage": 5.0,
+      "scale": "0-100", 
+      "category": "diversity_metric",
+      "weight_in_ranking": "5%",
+      "global_appeal_indicator": true
+    },
+    {
+      "column_name": "Overall Score",
+      "position": 9,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Weighted overall score combining all ranking indicators",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "scale": "0-100",
+      "category": "composite_score",
+      "calculation": "weighted_average_all_indicators"
+    }
+  ],
+  "technical_specifications": {
+    "file_format": "XLSX",
+    "file_size": "323.98 kB",
+    "encoding": "UTF-8",
+    "data_quality": "high",
+    "completeness": "95%",
+    "excel_sheets": "single_sheet",
+    "data_validation": "QS_official_methodology"
+  },
+  "analytical_applications": {
+    "university_benchmarking": [
+      "Performance comparison across institutions",
+      "Regional competitive analysis",
+      "Institutional strength identification",
+      "Gap analysis for improvement areas"
+    ],
+    "policy_analysis": [
+      "National higher education system evaluation",
+      "International competitiveness assessment",
+      "Resource allocation optimization",
+      "Strategic planning for university development"
+    ],
+    "student_guidance": [
+      "University selection decision support",
+      "Program quality assessment",
+      "International study destination comparison",
+      "Career outcome prediction modeling"
+    ],
+    "research_applications": [
+      "Higher education trends analysis",
+      "Global university system dynamics",
+      "Internationalization impact studies",
+      "Academic excellence factor identification"
+    ]
+  },
+  "business_intelligence_opportunities": {
+    "education_sector": [
+      "Market positioning analysis",
+      "Competitive intelligence",
+      "Partnership opportunity identification",
+      "Brand reputation monitoring"
+    ],
+    "government_agencies": [
+      "National education policy development",
+      "International education strategy",
+      "University funding allocation",
+      "Global competitiveness tracking"
+    ],
+    "consulting_services": [
+      "University strategic planning",
+      "Institutional assessment",
+      "Market entry analysis",
+      "Performance improvement consulting"
+    ]
+  },
+  "data_science_applications": {
+    "ranking_prediction": [
+      "University ranking forecasting models",
+      "Performance trajectory prediction",
+      "Indicator importance analysis",
+      "Ranking volatility assessment"
+    ],
+    "clustering_analysis": [
+      "University peer group identification",
+      "Regional university profiles",
+      "Performance pattern recognition",
+      "Institutional typology development"
+    ],
+    "correlation_studies": [
+      "Performance indicator relationships",
+      "Geographic influence analysis",
+      "Size vs performance correlation",
+      "Specialization impact assessment"
+    ]
+  },
+  "visualization_opportunities": [
+    "Global university ranking heat maps",
+    "Regional performance comparison charts",
+    "Indicator correlation matrices",
+    "University performance radar charts",
+    "Trend analysis line graphs",
+    "Interactive ranking dashboards",
+    "Geographic distribution maps",
+    "Performance distribution histograms"
+  ],
+  "statistical_analysis_ready": {
+    "descriptive_statistics": "Distribution analysis of ranking indicators",
+    "correlation_analysis": "Relationship between different performance metrics",
+    "regression_modeling": "Ranking prediction based on indicator scores",
+    "cluster_analysis": "University grouping by performance patterns",
+    "trend_analysis": "Performance changes over time (if historical data available)",
+    "outlier_detection": "Identification of exceptional performing institutions"
+  },
+  "key_insights": [
+    "MIT maintains top position with exceptional research and reputation scores",
+    "US and UK universities dominate top rankings but Asian institutions rising",
+    "Strong correlation between academic reputation and overall ranking",
+    "International diversity increasingly important for top-tier rankings",
+    "Research citation impact critical for university excellence recognition",
+    "Regional variations in strengths: US (research), UK (reputation), Asia (growth)"
+  ],
+  "research_questions_enabled": [
+    "What factors most strongly predict university ranking success?",
+    "How does geographic location influence university performance patterns?",
+    "Which performance indicators show strongest correlation with overall ranking?",
+    "What characterizes universities with rapid ranking improvements?",
+    "How do international diversity metrics impact institutional reputation?",
+    "What regional trends emerge in global higher education competitiveness?"
+  ],
+  "quality_indicators": {
+    "data_authenticity": "Official QS ranking methodology and data",
+    "global_representativeness": "1,501 universities across all continents",
+    "methodological_rigor": "Established QS ranking criteria and weighting",
+    "temporal_relevance": "Current 2024 ranking data",
+    "indicator_comprehensiveness": "28 detailed performance metrics"
+  },
+  "limitations": [
+    "Some missing values (5%) for certain university indicators",
+    "Single-year snapshot without temporal trend analysis",
+    "QS methodology bias toward research-intensive institutions",
+    "English-language publication bias in citation metrics",
+    "Limited representation of specialized or vocational institutions",
+    "Regional variations in data collection completeness",
+    "Potential cultural bias in reputation survey responses"
+  ],
+  "complementary_datasets": [
+    "THE World University Rankings for methodology comparison",
+    "ARWU Academic Ranking for research focus comparison", 
+    "National university funding data for resource correlation",
+    "Graduate employment statistics for outcome validation",
+    "International student mobility data for diversity context",
+    "Research publication databases for citation validation"
+  ],
+  "recommended_analysis_workflow": [
+    "1. Exploratory data analysis of ranking distributions",
+    "2. Missing value assessment and handling strategy",
+    "3. Correlation analysis between ranking indicators",
+    "4. Regional and country-level performance comparison", 
+    "5. Clustering analysis for university peer groups",
+    "6. Predictive modeling for ranking estimation",
+    "7. Visualization dashboard for stakeholder communication"
+  ],
+  "stakeholder_value": {
+    "prospective_students": "University selection and program comparison",
+    "university_administrators": "Competitive positioning and strategic planning",
+    "government_agencies": "National education system assessment",
+    "researchers": "Higher education system analysis and trends",
+    "employers": "University graduate quality assessment",
+    "investors": "Education sector market intelligence"
+  },
+  "success_metrics": [
+    "Accuracy of ranking prediction models",
+    "Effectiveness of university benchmarking insights",
+    "Policy impact of analysis recommendations",
+    "Student decision-making support value",
+    "Institutional improvement strategy success",
+    "Stakeholder satisfaction with analytical insights"
+  ],
+  "data_processing_considerations": [
+    "Excel file format requires appropriate parsing",
+    "Missing value handling strategy needed",
+    "Categorical country data encoding required",
+    "Numerical score normalization for comparison",
+    "Text cleaning for university names standardization",
+    "Regional grouping creation for analysis"
+  ],
+  "machine_learning_readiness": {
+    "supervised_learning": "Ranking prediction using indicator scores",
+    "unsupervised_learning": "University clustering and pattern discovery",
+    "feature_engineering": "Composite score creation and indicator combinations", 
+    "model_validation": "Cross-validation with regional stratification",
+    "performance_metrics": "Ranking correlation and classification accuracy"
+  ],
+  "international_education_insights": [
+    "Global competition intensifies among top-tier universities",
+    "Asian universities demonstrate strong upward mobility",
+    "International diversity becomes competitive advantage",
+    "Research impact critical for sustained excellence",
+    "Regional specializations emerge in different ranking criteria",
+    "Brand reputation and academic quality strongly correlated"
+  ]
+}

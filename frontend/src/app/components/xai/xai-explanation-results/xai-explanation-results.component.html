@@ -1,0 +1,187 @@
+<!-- Page de Résultats XAI Moderne -->
+<div class="xai-results-container">
+  <!-- Loading State -->
+  <div class="loading-section" *ngIf="isLoading">
+    <div class="loading-card">
+      <div class="loading-animation">
+        <div class="pulse-circle"></div>
+        <mat-icon class="brain-icon">psychology</mat-icon>
+      </div>
+      <h2>Génération en cours...</h2>
+      <p>Analyse de votre modèle avec l'IA explicable</p>
+      <div class="progress-container" *ngIf="explanation?.progress">
+        <mat-progress-bar [value]="explanation.progress" mode="determinate"></mat-progress-bar>
+        <span class="progress-text">{{ explanation.progress }}%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-section" *ngIf="hasError && !isLoading">
+    <div class="error-card">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h2>Erreur lors de la génération</h2>
+      <p>{{ errorMessage || 'Une erreur s\'est produite lors de la génération de l\'explication.' }}</p>
+      <div class="error-actions">
+        <button mat-stroked-button (click)="onBack()">Retour</button>
+        <button mat-flat-button color="primary" (click)="retryLoading()">
+          <mat-icon>refresh</mat-icon>
+          Réessayer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing State -->
+  <div class="processing-section" *ngIf="explanation && explanation.status !== 'completed' && !isLoading && !hasError">
+    <div class="processing-card">
+      <div class="processing-animation">
+        <div class="pulse-circle"></div>
+        <mat-icon class="brain-icon">psychology</mat-icon>
+      </div>
+      <h2>Génération en cours...</h2>
+      <p>Votre explication IA est en cours de génération</p>
+      <div class="progress-container" *ngIf="explanation.progress">
+        <mat-progress-bar [value]="explanation.progress" mode="determinate"></mat-progress-bar>
+        <span class="progress-text">{{ explanation.progress }}%</span>
+      </div>
+      <div class="processing-info">
+        <div class="info-item">
+          <mat-icon>schedule</mat-icon>
+          <span>Temps estimé: 2-5 minutes</span>
+        </div>
+        <div class="info-item">
+          <mat-icon>auto_awesome</mat-icon>
+          <span>Méthode: {{ explanation.method_used || 'Automatique' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Content -->
+  <div class="results-section" *ngIf="explanation && explanation.status === 'completed' && !isLoading">
+    
+    <!-- Header -->
+    <div class="results-header">
+      <div class="header-content">
+        <div class="title-section">
+          <h1>
+            <mat-icon class="title-icon">psychology</mat-icon>
+            {{ 'XAI.RESULTS.TITLE' | translate }}
+          </h1>
+          <p>{{ 'XAI.RESULTS.SUBTITLE' | translate }}</p>
+        </div>
+        
+        <div class="meta-badges">
+          <div class="badge method-badge">
+            <mat-icon>science</mat-icon>
+            <span>{{ explanation.method_used || 'Auto' }}</span>
+          </div>
+          <div class="badge type-badge">
+            <mat-icon>visibility</mat-icon>
+            <span>{{ explanation.explanation_type || 'Global' | titlecase }}</span>
+          </div>
+          <div class="badge status-badge completed">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ 'XAI.RESULTS.COMPLETED' | translate }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="results-content">
+      
+      <!-- 🎯 Section Description Textuelle Contextualisée -->
+      <div class="textual-explanation-section" *ngIf="explanation?.text_explanation">
+        <div class="explanation-card">
+          <div class="card-header">
+            <div class="header-icon">
+              <mat-icon [ngClass]="getAudienceLevelIcon()">{{ getAudienceLevelIcon() }}</mat-icon>
+            </div>
+            <div class="header-content">
+              <h2>{{ getDescriptionTitle() }}</h2>
+              <p class="subtitle">{{ getDescriptionSubtitle() }}</p>
+            </div>
+            <div class="level-badge" [ngClass]="getAudienceLevelClass()">
+              <span>{{ getAudienceLevelLabel() }}</span>
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <div class="explanation-text" [ngClass]="getTextExplanationClass()" [innerHTML]="formatTextExplanation(explanation.text_explanation)">
+            </div>
+            
+            <!-- Méta-informations -->
+            <div class="explanation-meta">
+              <div class="meta-item">
+                <mat-icon>psychology</mat-icon>
+                <span>Méthode: {{ explanation.method_used | uppercase }}</span>
+              </div>
+              <div class="meta-item" *ngIf="explanation.processing_time_seconds">
+                <mat-icon>schedule</mat-icon>
+                <span>Généré en {{ explanation.processing_time_seconds }}s</span>
+              </div>
+              <div class="meta-item">
+                <mat-icon>auto_awesome</mat-icon>
+                <span>Adapté à votre niveau</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section visualisations (si disponibles) -->
+      <div class="visualizations-section" *ngIf="explanation?.visualizations && hasVisualizations()">
+        <div class="section-title">
+          <mat-icon>bar_chart</mat-icon>
+          <h3>Visualisations</h3>
+        </div>
+        
+        <div class="visualizations-grid">
+          <div class="visualization-card" *ngFor="let viz of getVisualizationsList()">
+            <h4>{{ viz.title }}</h4>
+            <div class="viz-container">
+              <img [src]="viz.url" [alt]="viz.title" class="viz-image">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="chat-section" *ngIf="explanation?.id && showChatButton">
+      <app-xai-chat-interface 
+        [explanationId]="explanation.id"
+        [maxQuestions]="5"
+        [language]="'fr'"
+        [compactMode]="compactMode"
+        [contextData]="contextData">
+      </app-xai-chat-interface>
+    </div>
+
+    <!-- Actions Footer -->
+    <div class="results-actions">
+      <div class="action-buttons">
+        <button mat-stroked-button class="action-btn" (click)="onBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Retour
+        </button>
+        <button mat-stroked-button class="action-btn" (click)="downloadResults()">
+          <mat-icon>download</mat-icon>
+          {{ 'XAI.RESULTS.DOWNLOAD_RESULTS' | translate }}
+        </button>
+        <button mat-stroked-button class="action-btn" (click)="shareResults()">
+          <mat-icon>share</mat-icon>
+          {{ 'XAI.RESULTS.SHARE_RESULTS' | translate }}
+        </button>
+        <button mat-flat-button color="primary" class="action-btn" (click)="newExplanation()">
+          <mat-icon>add</mat-icon>
+          {{ 'XAI.RESULTS.NEW_EXPLANATION' | translate }}
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

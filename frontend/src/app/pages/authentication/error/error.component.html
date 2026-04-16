@@ -1,0 +1,18 @@
+<div class="blank-layout-container justify-content-center">
+  <div class="row">
+    <div class="col-12 text-center">
+      <img src="/assets/images/backgrounds/errorimg.svg" alt="error-bg" />
+      <h2 class="auth-title f-w-600">{{ 'ERRORS.PAGE_NOT_FOUND_TITLE' | translate }}</h2>
+      <h6 class="f-s-20 f-w-600 m-y-30">
+        {{ 'ERRORS.PAGE_NOT_FOUND_MESSAGE' | translate }}
+      </h6>
+      <a
+        mat-flat-button
+        color="primary" 
+        style="color: white !important;"
+        [routerLink]="['/app/starter']"
+        >{{ 'ERRORS.GO_HOME' | translate }}</a
+      >
+    </div>
+  </div>
+</div>

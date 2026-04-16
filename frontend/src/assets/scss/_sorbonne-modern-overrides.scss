@@ -1,0 +1,632 @@
+// ==================================================
+// OVERRIDES AUTOMATIQUES POUR MODERNISER L'APPLICATION
+// ==================================================
+// Applique la palette Sorbonne+ moderne à toute l'application
+
+// ==================================================
+// BODY ET STRUCTURE GÉNÉRALE
+// ==================================================
+
+body {
+  background: var(--app-bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+// Fond principal de l'application avec gradient ULTRA-subtil
+.blank-layout-container,
+.main-container,
+.page-wrapper {
+  background: linear-gradient(180deg, 
+    #fafaf9 0%, 
+    #fbfbfb 50%,
+    #fefefe 100%
+  ) !important;
+  background-attachment: fixed;
+}
+
+// ==================================================
+// SIDEBAR ET NAVIGATION
+// ==================================================
+
+// Sidebar moderne avec touches TRÈS subtiles
+.app-sidebar,
+.mat-drawer {
+  background: linear-gradient(180deg, 
+    #ffffff 0%, 
+    #fafbfc 100%
+  ) !important;
+  border-right: 1px solid rgba(122, 137, 194, 0.1) !important;
+  
+  .sidebar-nav {
+    .sidebar-nav-item {
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: #fcfcfb !important;
+        border-left: 3px solid var(--accent-coral);
+        
+        .hide-menu {
+          color: var(--modern-blue-vivid) !important;
+        }
+      }
+      
+      &.active {
+        background: linear-gradient(90deg, 
+          #f8f9fc 0%, 
+          transparent 100%
+        ) !important;
+        border-left: 3px solid var(--accent-coral) !important;
+        
+        .hide-menu {
+          color: var(--modern-blue-vivid) !important;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+// ==================================================
+// CORRECTION MENU HOVER TROP SOMBRE
+// ==================================================
+
+// Éléments de menu Material List
+.mat-mdc-list-item {
+  &:hover {
+    background: rgba(255, 255, 255, 0.8) !important;
+    
+    // Texte bien visible au hover
+    .hide-menu,
+    .mdc-list-item__primary-text,
+    .mat-mdc-list-item-unscoped-content {
+      color: var(--modern-blue-vivid) !important;
+    }
+    
+    // Icône bien visible au hover
+    .mat-mdc-list-item-icon,
+    .routeIcon {
+      color: var(--modern-blue-vivid) !important;
+    }
+  }
+  
+  // Élément actif
+  &.activeMenu {
+    background: rgba(248, 249, 252, 0.6) !important;
+    
+    .hide-menu,
+    .mdc-list-item__primary-text {
+      color: var(--modern-blue-vivid) !important;
+      font-weight: 600 !important;
+    }
+    
+    .mat-mdc-list-item-icon {
+      color: var(--accent-coral) !important;
+    }
+    
+    &:hover {
+      background: rgba(252, 252, 251, 0.9) !important;
+      
+      .hide-menu,
+      .mdc-list-item__primary-text {
+        color: var(--modern-blue-vivid) !important;
+      }
+    }
+  }
+}
+
+// Corrections spécifiques pour les classes supplémentaires
+.mat-mdc-list-item.accent,
+.mat-mdc-list-item.mat-toolbar,
+.mat-mdc-list-item.mat-primary {
+  &:hover {
+    background: rgba(255, 255, 255, 0.9) !important;
+    
+    .hide-menu,
+    .mdc-list-item__primary-text,
+    .mat-mdc-list-item-unscoped-content {
+      color: var(--modern-blue-vivid) !important;
+    }
+    
+    .mat-mdc-list-item-icon,
+    .routeIcon {
+      color: var(--modern-blue-vivid) !important;
+    }
+  }
+}
+
+// ==================================================
+// CARTES ET CONTENEURS
+// ==================================================
+
+// Toutes les cartes Material Design modernisées - gradient TRÈS subtil
+.mat-mdc-card,
+.mat-card,
+.card {
+  background: linear-gradient(135deg, 
+    #ffffff 0%, 
+    #f8f9fc 100%
+  ) !important;
+  border: 1px solid rgba(92, 111, 179, 0.08) !important;
+  box-shadow: 0 4px 16px rgba(59, 75, 140, 0.06) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  
+  &:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 
+      0 8px 32px rgba(212, 165, 116, 0.12),
+      0 4px 16px rgba(30, 58, 138, 0.08) !important;
+    border-color: rgba(212, 165, 116, 0.3) !important;
+  }
+}
+
+// Cartes de dataset avec style moderne
+.dataset-card,
+.project-card,
+.dashboard-card {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-warm-cta);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover::before {
+    opacity: 1;
+  }
+  
+  .card-title {
+    color: var(--modern-blue-vivid) !important;
+    font-weight: 600 !important;
+  }
+  
+  .card-subtitle {
+    color: var(--text-secondary) !important;
+  }
+}
+
+// ==================================================
+// BOUTONS MODERNISÉS
+// ==================================================
+
+// Boutons primaires avec gradient chaleureux
+.mat-mdc-button.mat-primary,
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary,
+.btn-primary {
+  background: var(--gradient-warm-cta) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.3) !important;
+  transition: all 0.3s ease !important;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 24px rgba(30, 58, 138, 0.4) !important;
+  }
+}
+
+// Boutons secondaires modernes
+.mat-mdc-button,
+.mat-mdc-stroked-button {
+  border-color: var(--warm-gold) !important;
+  color: var(--modern-blue-vivid) !important;
+  
+  &:hover:not(:disabled) {
+    background: var(--warm-champagne) !important;
+    border-color: var(--accent-coral) !important;
+    color: var(--accent-coral) !important;
+  }
+}
+
+// ==================================================
+// TABLEAUX MODERNES - STYLE ML-PIPELINE WIZARD PARFAIT
+// ==================================================
+
+.mat-mdc-table,
+.mat-table {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border-collapse: collapse;
+  
+  .mat-mdc-header-row,
+  .mat-header-row {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    
+    .mat-mdc-header-cell,
+    .mat-header-cell {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: #495057;
+      white-space: nowrap;
+      border-bottom: none;
+      
+      mat-icon {
+        font-size: 18px;
+        vertical-align: middle;
+        margin-right: 0.5rem;
+        color: #6c757d;
+      }
+    }
+  }
+  
+  .mat-mdc-row,
+  .mat-row {
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .mat-mdc-cell,
+    .mat-cell {
+      padding: 0.5rem 0.75rem;
+      vertical-align: middle;
+      font-size: 0.85rem;
+      border-bottom: none;
+    }
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// Badges pour types de données
+.type-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: #e9ecef;
+  color: #495057;
+
+  &.integer, &.float, &.number { background: #e3f2fd; color: #1976d2; }
+  &.string, &.text { background: #f3e5f5; color: #7b1fa2; }
+  &.datetime, &.date { background: #e8f5e9; color: #388e3c; }
+  &.boolean { background: #eff6ff; color: #1e3a8a; }
+}
+
+// Colonnes avec icônes
+.column-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .type-icon {
+    color: #6c757d;
+    font-size: 20px;
+  }
+
+  .column-name {
+    font-weight: 500;
+    color: #212529;
+  }
+
+  .status-icon {
+    margin-left: auto;
+    font-size: 18px;
+
+    &.perfect { color: #28a745; }
+    &.good { color: #17a2b8; }
+    &.warning { color: #1e3a8a; }
+    &.danger { color: #dc3545; }
+  }
+}
+
+// Informations données manquantes
+.missing-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .missing-bar {
+    flex: 1;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+
+    .missing-fill {
+      height: 100%;
+      transition: width 0.3s;
+
+      &.low { background: #28a745; }
+      &.medium { background: #1e3a8a; }
+      &.high { background: #dc3545; }
+    }
+  }
+
+  .missing-text {
+    font-weight: 500;
+    font-size: 0.875rem;
+    min-width: 40px;
+    text-align: right;
+  }
+}
+
+.no-missing {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #28a745;
+  font-size: 0.875rem;
+
+  mat-icon {
+    font-size: 18px;
+  }
+}
+
+// Icônes spéciales (PII, Primary Key)
+.pii-icon {
+  color: #f44336 !important;
+  font-size: 18px !important;
+  background: rgba(244, 67, 54, 0.1);
+  padding: 0.25rem;
+  border-radius: 50%;
+}
+
+.pk-icon {
+  color: #1e3a8a !important;
+  font-size: 18px !important;
+  background: rgba(30, 58, 138, 0.1);
+  padding: 0.25rem;
+  border-radius: 50%;
+}
+
+// Chips d'exemples avec style amélioré
+.example-chip {
+  background: #f5f5f5 !important;
+  color: #495057 !important;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.25rem;
+  border: 1px solid #dee2e6;
+  font-weight: 500;
+}
+
+// ==================================================
+// CHIPS ET TAGS MODERNES
+// ==================================================
+
+.mat-mdc-chip,
+.mat-chip,
+.tag,
+.badge {
+  background: linear-gradient(135deg, 
+    var(--accent-coral) 0%, 
+    var(--accent-sunset) 100%
+  ) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3) !important;
+  font-weight: 500 !important;
+}
+
+// ==================================================
+// FORMULAIRES MATERIAL DESIGN - NATIF PUR
+// ==================================================
+
+// SUPPRESSION DE TOUTES LES PERSONNALISATIONS
+// Laisser Material Design fonctionner nativement
+// Seuls les placeholders globaux seront stylés
+
+// ==================================================
+// SELECTS MATERIAL DESIGN - NATIF PUR
+// ==================================================
+
+// SUPPRESSION DE TOUTES LES PERSONNALISATIONS
+// Laisser Material Design fonctionner nativement
+
+// ==================================================
+// PROGRESS BARS ET SPINNERS
+// ==================================================
+
+.mat-mdc-progress-bar {
+  .mdc-linear-progress__bar-inner {
+    background: var(--gradient-warm-cta) !important;
+  }
+  
+  .mdc-linear-progress__buffer {
+    background: var(--warm-champagne) !important;
+  }
+}
+
+.mat-mdc-progress-spinner circle,
+.mat-progress-spinner circle {
+  stroke: var(--accent-coral) !important;
+}
+
+// Supprimer le fond blanc des spinners
+.mat-mdc-progress-spinner,
+.mat-progress-spinner {
+  background: transparent !important;
+  
+  svg {
+    background: transparent !important;
+  }
+  
+  // Pour les spinners dans les boutons
+  &.mat-accent {
+    circle {
+      stroke: currentColor !important;
+    }
+  }
+}
+
+// ==================================================
+// TOOLTIPS ET DIALOGS
+// ==================================================
+
+.mat-mdc-tooltip {
+  background: rgba(17, 24, 39, 0.9) !important;
+  color: white !important;
+  font-size: 12px !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.mat-mdc-dialog-container {
+  background: linear-gradient(135deg, 
+    white 0%, 
+    #f9f9fb 100%
+  ) !important;
+  box-shadow: 0 24px 48px rgba(59, 75, 140, 0.15) !important;
+}
+
+// ==================================================
+// SECTIONS SPÉCIFIQUES
+// ==================================================
+
+// Dashboard moderne avec gradients TRÈS subtils
+.dashboard-container {
+  .stat-card {
+    background: linear-gradient(135deg, 
+      #fefefe 0%, 
+      white 100%
+    ) !important;
+    border-top: 4px solid var(--accent-coral) !important;
+    
+    .stat-number {
+      color: var(--modern-blue-vivid) !important;
+      font-weight: 700 !important;
+    }
+    
+    .stat-icon {
+      background: var(--gradient-warm-cta) !important;
+      color: white !important;
+      border-radius: 50%;
+      padding: 12px;
+    }
+  }
+}
+
+// Datasets page moderne avec couleurs TRÈS subtiles
+.datasets-container {
+  .dataset-filters {
+    background: #fcfcfb !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    border: 1px solid rgba(212, 165, 116, 0.2) !important;
+  }
+  
+  .dataset-grid {
+    .dataset-item {
+      border-left: 4px solid transparent !important;
+      
+      &:hover {
+        border-left-color: var(--accent-coral) !important;
+        background: linear-gradient(90deg, 
+          #fcfcfb 0%, 
+          white 100%
+        ) !important;
+      }
+    }
+  }
+}
+
+// ==================================================
+// HEADERS ET TITRES ÉLÉGANTS ET SOBRES
+// ==================================================
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--modern-blue-vivid) !important;
+  font-weight: 600 !important;
+
+  &.page-title {
+    color: var(--modern-blue-vivid) !important;
+    font-weight: 700 !important;
+    // Suppression de l'effet gradient multicolore
+  }
+}
+
+// Échelle typographique corrigée (FINDING-003 design-audit 2026-04-14)
+// Avant: h3 ≈ h2 (21/22px), h5 < h6 (14/16px), h1 weight 600 < h2 weight 700
+h1 { font-size: 2.25rem !important; font-weight: 700 !important; line-height: 1.2; }  // 36px
+h2 { font-size: 1.75rem !important; line-height: 1.25; }                                // 28px
+h3 { font-size: 1.375rem !important; line-height: 1.3; }                                // 22px
+h4 { font-size: 1.125rem !important; line-height: 1.35; }                               // 18px
+h5 { font-size: 1rem !important; line-height: 1.4; }                                    // 16px
+h6 { font-size: 0.875rem !important; line-height: 1.4; }                                // 14px
+
+// ==================================================
+// LIENS ET NAVIGATION
+// ==================================================
+
+a {
+  color: var(--modern-blue-vivid) !important;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: var(--accent-coral) !important;
+    text-decoration: none !important;
+  }
+}
+
+// ==================================================
+// ANIMATIONS GLOBALES
+// ==================================================
+
+// Pulse moderne pour éléments importants
+.pulse-modern {
+  animation: modern-pulse 2s infinite;
+}
+
+// Glow chaleureux pour highlights
+.warm-glow {
+  animation: warm-glow 3s ease-in-out infinite;
+}
+
+// ==================================================
+// PLACEHOLDERS GLOBAUX MINIMALISTES
+// ==================================================
+
+// Styles minimaux pour s'assurer que les placeholders sont visibles
+input::placeholder,
+textarea::placeholder {
+  color: rgba(0, 0, 0, 0.6);
+  opacity: 1;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.6);
+  opacity: 1;
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.6);
+  opacity: 1;
+}
+
+// ==================================================
+// RESPONSIVE ET MOBILE
+// ==================================================
+
+@media (max-width: 768px) {
+  .mat-mdc-card,
+  .card {
+    background: white !important;
+    border: 1px solid var(--border-light) !important;
+  }
+  
+  body {
+    background: var(--app-bg-primary) !important;
+  }
+}

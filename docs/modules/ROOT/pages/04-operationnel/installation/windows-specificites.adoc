@@ -1,0 +1,73 @@
+= Spécificités Windows
+:description: Pièges Docker / Python / Git Bash rencontrés sur Windows
+
+Cette page reflète link:../../../../../memory-bank/windows-gotchas.md[`memory-bank/windows-gotchas.md`] pour lecture intégrée à la documentation. La version *source de vérité* est dans `memory-bank/`.
+
+== 1. Plateforme arm64 par défaut sur machines Apple Silicon virtualisées / WSL
+
+Symptôme : pods en `CrashLoopBackOff`, erreurs `exec format error` dans les logs.
+
+Cause : Docker Desktop construit des images pour la plateforme hôte par défaut. Les images arm64 tournent sous QEMU dans Minikube x86 → extrêmement lent + crashes.
+
+Solution : **avant `make dev`** dans Git Bash :
+
+[source,bash]
+----
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+----
+
+== 2. Encodage cp1252 de Git Bash sur Windows
+
+Symptôme : `update-local-secrets.py` crashe avec `UnicodeEncodeError: 'charmap' codec can't encode character`.
+
+Cause : le terminal Windows par défaut est cp1252 ; les scripts Python écrivent des emojis de log qui ne s'encodent pas.
+
+Solution :
+
+[source,bash]
+----
+export PYTHONIOENCODING=utf-8 PYTHONUTF8=1
+----
+
+Pour éviter de répéter, ajouter à `~/.bashrc` de Git Bash.
+
+== 3. Deadlock `make dev | tee log.txt`
+
+Symptôme : `make dev` bloqué indéfiniment avec `tee` sur Windows.
+
+Cause : comportement de `tee` + Minikube logs → pipe bloquant.
+
+Solution : ne pas piper la sortie. Utiliser plutôt `make logs` en parallèle dans un autre terminal.
+
+== 4. `.env` incomplet
+
+Symptôme : pod au démarrage en `Error` avec `pydantic.ValidationError: field required` dans les logs.
+
+Cause : les 8 variables obligatoires de `.env` ne sont pas toutes remplies.
+
+Solution : comparer `.env.example` ↔ `.env`, remplir toutes les clés. Relancer `make dev`.
+
+== 5. Profil Minikube orphelin
+
+Symptôme : `minikube start` échoue avec "cluster already exists but not in the expected state".
+
+Cause : un précédent Minikube mal arrêté a laissé un profil incohérent.
+
+Solution :
+
+[source,bash]
+----
+make restart-minikube
+# ou, plus radical :
+minikube delete --all --purge
+make dev
+----
+
+== Checklist Windows pré-`make dev`
+
+* [ ] Git Bash ouvert (pas PowerShell, pas CMD).
+* [ ] `export DOCKER_DEFAULT_PLATFORM=linux/amd64` exécuté.
+* [ ] `export PYTHONIOENCODING=utf-8 PYTHONUTF8=1` exécuté.
+* [ ] Docker Desktop lancé avec WSL2 backend.
+* [ ] `.env` complet (8 variables).
+* [ ] Aucun Minikube précédent en état bizarre.

@@ -1,0 +1,227 @@
+{
+  "dataset_name": "education_career_success",
+  "display_name": "Education & Career Success Dataset",
+  "objective": "Study how academic results, skills, and extracurricular activities translate into professional outcomes including employment, salary, promotions, and job satisfaction",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Adil Shamim - Career outcome analysis of recent graduates",
+  "storage_uri": "https://www.kaggle.com/datasets/adilshamim8/education-and-career-success",
+  "citation_link": "https://www.kaggle.com/datasets/adilshamim8/education-and-career-success",
+  "documentation_link": "https://www.kaggle.com/datasets/adilshamim8/education-and-career-success",
+  "instances_number": 400,
+  "features_number": 19,
+  "features_description": "Identifier, age, gender, high school and university GPA, test scores, field of study, internships, projects, certifications, networking, communication skills, salary, promotions, job satisfaction",
+  "representativity_description": "400 recent graduates from diverse academic fields providing comprehensive view of education-to-career transition",
+  "representativity_level": "medium",
+  "split": false,
+  "missing_values": {
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "description": "Complete dataset with no missing values",
+    "handling_method": "none"
+  },
+  "temporal_factors": false,
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "task": ["classification", "regression", "clustering"],
+  "domain": ["education", "career"],
+  "year": 2025,
+  "license": "Unknown",
+  "num_citations": 134,
+  "ethics": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": false,
+    "security_measures_in_place": true,
+    "data_quality_documented": false,
+    "anonymization_applied": true,
+    "record_keeping_policy_exists": false,
+    "purpose_limitation_respected": true,
+    "accountability_defined": false
+  },
+  "column_details": [
+    {
+      "column_name": "student_id",
+      "data_type": "string",
+      "description": "Unique identifier for each graduate",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 400,
+      "example_values": ["STU001", "STU002", "STU003"]
+    },
+    {
+      "column_name": "age",
+      "data_type": "numeric",
+      "description": "Age of the graduate",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 21,
+      "max_value": 28
+    },
+    {
+      "column_name": "gender",
+      "data_type": "categorical",
+      "description": "Gender of the graduate",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 3,
+      "example_values": ["Male", "Female", "Other"]
+    },
+    {
+      "column_name": "high_school_gpa",
+      "data_type": "numeric",
+      "description": "Grade Point Average in high school (0-4 scale)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 2.0,
+      "max_value": 4.0
+    },
+    {
+      "column_name": "university_gpa",
+      "data_type": "numeric",
+      "description": "Grade Point Average in university (0-4 scale)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 2.0,
+      "max_value": 4.0
+    },
+    {
+      "column_name": "test_scores",
+      "data_type": "numeric",
+      "description": "Standardized test scores (SAT/GRE equivalent)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 400,
+      "max_value": 1600
+    },
+    {
+      "column_name": "field_of_study",
+      "data_type": "categorical",
+      "description": "Academic field/major of the graduate",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 15,
+      "example_values": ["Engineering", "Business", "Computer Science", "Arts", "Sciences"]
+    },
+    {
+      "column_name": "internships",
+      "data_type": "numeric",
+      "description": "Number of internships completed",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 5
+    },
+    {
+      "column_name": "projects",
+      "data_type": "numeric",
+      "description": "Number of academic/personal projects completed",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 20
+    },
+    {
+      "column_name": "certifications",
+      "data_type": "numeric",
+      "description": "Number of professional certifications obtained",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 10
+    },
+    {
+      "column_name": "networking_score",
+      "data_type": "numeric",
+      "description": "Professional networking activity score (1-10)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 1,
+      "max_value": 10
+    },
+    {
+      "column_name": "communication_skills",
+      "data_type": "numeric",
+      "description": "Communication skills rating (1-10)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 1,
+      "max_value": 10
+    },
+    {
+      "column_name": "salary",
+      "data_type": "numeric",
+      "description": "Annual salary in USD",
+      "is_target": true,
+      "missing_percentage": 0.0,
+      "min_value": 30000,
+      "max_value": 150000
+    },
+    {
+      "column_name": "promotions",
+      "data_type": "numeric",
+      "description": "Number of promotions received in first 2 years",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 3
+    },
+    {
+      "column_name": "job_satisfaction",
+      "data_type": "numeric",
+      "description": "Job satisfaction rating (1-10)",
+      "is_target": true,
+      "missing_percentage": 0.0,
+      "min_value": 1,
+      "max_value": 10
+    },
+    {
+      "column_name": "employment_status",
+      "data_type": "categorical",
+      "description": "Current employment status",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 4,
+      "example_values": ["Employed", "Unemployed", "Self-employed", "Further Study"]
+    },
+    {
+      "column_name": "career_field",
+      "data_type": "categorical",
+      "description": "Professional field of current employment",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 12,
+      "example_values": ["Technology", "Finance", "Healthcare", "Education", "Consulting"]
+    },
+    {
+      "column_name": "years_experience",
+      "data_type": "numeric",
+      "description": "Years of professional experience",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 5
+    },
+    {
+      "column_name": "leadership_experience",
+      "data_type": "boolean",
+      "description": "Whether the graduate has leadership experience",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 2,
+      "example_values": ["True", "False"]
+    }
+  ],
+  "usage_notes": "This dataset is ideal for analyzing the correlation between academic performance, skills development, and career outcomes. Perfect for predictive modeling of salary and job satisfaction based on educational and skill factors.",
+  "potential_applications": [
+    "Salary prediction based on academic and skill factors",
+    "Career success classification models",
+    "Analysis of factors contributing to job satisfaction",
+    "ROI analysis of educational investments (internships, certifications)",
+    "Career path recommendation systems",
+    "Skills gap analysis for different fields",
+    "Educational program effectiveness assessment"
+  ]
+}

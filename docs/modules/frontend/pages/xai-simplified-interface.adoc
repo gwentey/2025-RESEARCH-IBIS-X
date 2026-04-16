@@ -1,0 +1,183 @@
+= Interface XAI Simplifiée - Focus Chat IA
+:description: Documentation de la nouvelle interface XAI simplifiée axée sur le chat IA interactif
+:keywords: XAI, chat, IA, explicabilité, intelligence artificielle, simplifiée
+:page-layout: page
+
+== Vue d'ensemble
+
+L'interface XAI d'IBIS-X a été simplifiée pour se concentrer sur l'essentiel : le **chat IA interactif**. Cette approche épurée permet aux utilisateurs de poser directement leurs questions sur les résultats de leur modèle ML, sans se perdre dans des visualisations complexes.
+
+== Changements Apportés
+
+=== Fonctionnalités Supprimées
+
+Les éléments suivants ont été retirés pour une expérience plus focalisée :
+
+* **Analyse Contextuelle de Votre Modèle** : Section détaillée des performances
+* **Explication textuelle** : Textes explicatifs générés automatiquement  
+* **Visualisations** : Graphiques SHAP/LIME complexes
+* **Importance des Variables** : Tableaux et graphiques de features
+
+=== Fonctionnalité Conservée
+
+* **Chat IA Interactif** : Interface conversationnelle pour poser des questions sur le modèle
+
+== Utilisation de l'Interface Simplifiée
+
+=== Accès au Chat XAI
+
+1. Terminez votre expérience ML dans le pipeline
+2. Accédez aux résultats de l'expérience
+3. Cliquez sur **"Demander Explication"** dans la section XAI
+4. Attendez que la génération de l'explication soit terminée
+5. L'interface de chat s'affiche automatiquement
+
+=== Fonctionnement du Chat
+
+==== Questions Disponibles
+* **Limite** : 5 questions par session XAI
+* **Langues** : Français et Anglais supportés
+* **Contexte** : Le chat a accès à toutes les données de votre expérience ML
+
+==== Types de Questions Recommandées
+
+.Questions sur la Performance
+[source]
+----
+- "Pourquoi mon modèle a-t-il cette accuracy ?"
+- "Quelles sont les principales erreurs de classification ?"
+- "Comment améliorer les performances ?"
+----
+
+.Questions sur les Variables
+[source]
+----
+- "Quelles variables sont les plus importantes ?"
+- "Pourquoi la variable X influence-t-elle autant ?"
+- "Puis-je supprimer certaines variables ?"
+----
+
+.Questions sur les Prédictions
+[source]
+----
+- "Comment le modèle prend-il ses décisions ?"
+- "Y a-t-il des biais dans les prédictions ?"
+- "Le modèle est-il fiable pour mon cas d'usage ?"
+----
+
+== Avantages de cette Approche
+
+=== Simplicité d'Usage
+* **Focus clair** : Une seule interface à maîtriser
+* **Interaction naturelle** : Questions en langage naturel
+* **Réponses personnalisées** : Adaptées à votre contexte spécifique
+
+=== Efficacité
+* **Temps de chargement réduit** : Plus de visualisations lourdes à générer
+* **Réponses ciblées** : Obtenez exactement les informations dont vous avez besoin
+* **Session guidée** : 5 questions pour couvrir l'essentiel
+
+=== Accessibilité
+* **Niveau débutant** : Pas besoin de comprendre SHAP/LIME
+* **Niveau expert** : Possibilité de poser des questions techniques précises
+* **Multilingue** : Support FR/EN intégré
+
+== Architecture Technique
+
+=== Composants Impliqués
+
+.Frontend Angular
+* `xai-explanation-results.component.ts` : Interface simplifiée
+* `xai-chat-interface.component.ts` : Chat interactif (inchangé)
+
+.Backend Services  
+* `xai-engine-service` : Génération d'explications (sans artefacts)
+* **Endpoints supprimés** :
+  - `/explanations/{request_id}/artifacts`
+  - `/explanations/artifacts/{artifact_id}/download`  
+  - `/public/artifacts/{artifact_id}/download`
+
+=== Flux Simplifié
+
+[source,mermaid]
+----
+graph TD
+    A[Expérience ML Terminée] --> B[Demande Explication XAI]
+    B --> C[Génération Backend]
+    C --> D[Chat IA Disponible]
+    D --> E[5 Questions Maximum]
+    E --> F[Réponses Contextualisées]
+----
+
+== Migration depuis l'Ancienne Interface
+
+=== Pour les Utilisateurs
+
+Si vous étiez habitué à l'ancienne interface avec visualisations :
+
+* **Remplacez** la consultation de graphiques par des **questions directes** au chat
+* **Exemple** : Au lieu de regarder un graphique d'importance des variables, demandez : _"Quelles sont les 5 variables les plus importantes et pourquoi ?"_
+
+=== Pour les Développeurs
+
+Si vous travaillez sur des intégrations :
+
+* Les **endpoints d'artefacts** ne sont plus disponibles
+* L'**API de chat** reste inchangée
+* Les **réponses d'explication** ne contiennent plus de visualisations
+
+== Conseils d'Utilisation
+
+=== Optimiser vos 5 Questions
+
+1. **Commencez large** : "Comment évaluer la qualité de mon modèle ?"
+2. **Approfondissez** : "Pourquoi cette métrique spécifique ?"  
+3. **Explorez** : "Quelles variables puis-je améliorer ?"
+4. **Validez** : "Y a-t-il des risques ou biais ?"
+5. **Planifiez** : "Quelles sont les prochaines étapes ?"
+
+=== Exemples de Sessions Efficaces
+
+.Session Débutant
+[source]
+----
+1. "Mon modèle est-il bon avec 85% d'accuracy ?"
+2. "Quelles données sont les plus importantes ?"
+3. "Comment améliorer mes résultats ?"  
+4. "Y a-t-il des erreurs à éviter ?"
+5. "Puis-je utiliser ce modèle en production ?"
+----
+
+.Session Expert
+[source]
+----
+1. "Analyse de la matrice de confusion et des métriques par classe"
+2. "Distribution des erreurs de classification par variables"
+3. "Analyse des valeurs SHAP pour les top 10 features"
+4. "Évaluation du risque de surapprentissage"  
+5. "Recommandations d'hyperparameter tuning"
+----
+
+== Support et Dépannage
+
+=== Problèmes Courants
+
+.Chat ne se charge pas
+* Vérifiez que l'explication XAI est bien terminée (statut "completed")
+* Rafraîchissez la page si nécessaire
+
+.Réponses incohérentes  
+* Reformulez votre question de manière plus précise
+* Mentionnez le contexte spécifique (nom de variable, métrique, etc.)
+
+.Limite de questions atteinte
+* Créez une nouvelle demande d'explication pour une nouvelle session
+* Planifiez vos questions importantes à l'avance
+
+=== Contact Support
+
+Pour tout problème technique ou suggestion d'amélioration :
+
+* **GitHub** : Créez une issue dans le repository IBIS-X
+* **Email** : support@ibis-x.fr
+* **Documentation** : Consultez les guides utilisateur détaillés

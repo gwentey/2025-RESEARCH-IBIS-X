@@ -1,0 +1,86 @@
+= Cartographie des données personnelles
+:description: Inventaire des données personnelles collectées par IBIS-X
+
+== Statut
+
+IBIS-X est un PoC académique. Il traite des données personnelles minimales (comptes utilisateurs) et peut héberger des **datasets tiers** dont la conformité RGPD est de la responsabilité de l'uploadeur.
+
+== Inventaire par catégorie
+
+=== Données d'identification (obligatoires)
+
+[cols="1,2,1,2"]
+|===
+| Donnée | Table / Champ | Base légale | Finalité
+
+| Email | `users.email` | Exécution du contrat (compte) | Identification, notifications
+| Mot de passe haché | `users.hashed_password` | Exécution du contrat | Authentification (bcrypt)
+| Identifiant Google | `oauth_accounts.account_id` | Consentement (OAuth) | Login alternatif
+| UUID interne | `users.id` | Intérêt légitime | Jointure inter-tables
+|===
+
+=== Données de profil (optionnelles)
+
+* `users.first_name`, `users.last_name` (si renseignés).
+* Préférences d'interface (langue FR/EN, thème).
+
+=== Données d'usage
+
+* `projects.user_id`, `datasets.uploaded_by_id`, `experiments.user_id`, `explanation_requests` → rattachement des actions à l'utilisateur.
+* Horodatage (`created_at`, `updated_at`).
+* Messages de chat XAI (`chat_messages.content`) — peuvent contenir des informations saisies librement.
+
+=== Données de datasets uploadés
+
+**Les datasets eux-mêmes peuvent contenir des données personnelles**. C'est la responsabilité de l'uploadeur (CGU à accepter à l'upload). IBIS-X :
+
+* marque via flag éthique (`datasets.metadata.contains_pii`) les datasets signalés ;
+* permet une suppression par l'uploadeur à tout moment ;
+* n'exporte pas les datasets vers des tiers (sauf OpenAI pour l'analyse qualité — voir plus bas).
+
+=== Données envoyées à des sous-traitants
+
+[cols="1,2,3"]
+|===
+| Sous-traitant | Données | Finalité
+
+| Google (OAuth) | email + identifiant Google | Authentification (si l'utilisateur choisit OAuth)
+| OpenAI | **Métadonnées de datasets + contexte SHAP**. *Pas* les échantillons bruts. | Analyse qualité (`analyze_dataset_with_ai`) + narratives XAI
+| Azure (prod) | Toutes les données stockées | Hébergement (AKS, PostgreSQL, Blob Storage)
+| Kaggle | Aucune donnée utilisateur | *Source* d'import de datasets publics uniquement
+|===
+
+== Flux de données
+
+[mermaid]
+----
+flowchart LR
+    U([Utilisateur]) -->|email + password / OAuth| GW[api-gateway]
+    U -->|dataset + manifest| SEL[service-selection]
+    SEL --> BLOB[(Blob/MinIO)]
+    GW --> PG[(PostgreSQL)]
+    SEL --> PG
+    ML[ml-pipeline] -->|métadonnées + schéma| OAI[(OpenAI)]
+    XAI[xai-engine] -->|SHAP values + contexte| OAI
+----
+
+Remarque : les échantillons de données brutes ne sortent jamais du cluster vers OpenAI — seuls les métadonnées (types de colonnes, statistiques agrégées) et le contexte SHAP (importance des features) transitent.
+
+== Conservation
+
+[cols="1,2,2"]
+|===
+| Type | Durée | Déclencheur de suppression
+
+| Compte utilisateur | Jusqu'à suppression demandée | `DELETE /users/me`
+| Projets, expériences, explications | Liés au compte utilisateur | Suppression en cascade lors de la suppression du compte
+| Datasets uploadés | À la main par l'uploadeur | `DELETE /datasets/{id}` + suppression en Blob
+| Logs applicatifs | 30 jours (rétention K8s/Azure) | Rotation automatique
+| Cache `data_quality_analyses` | `expires_at` configurable | Purge via TTL
+|===
+
+== Lectures liées
+
+* xref:05-audit/rgpd/checklist-conformite.adoc[Checklist RGPD]
+* xref:05-audit/rgpd/droits-utilisateurs.adoc[Droits des utilisateurs]
+* xref:05-audit/rgpd/registre-traitements.adoc[Registre des traitements]

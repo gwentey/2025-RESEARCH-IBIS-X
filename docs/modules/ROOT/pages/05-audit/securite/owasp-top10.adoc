@@ -1,0 +1,64 @@
+= Couverture OWASP Top 10 (2021)
+:description: Positionnement IBIS-X vis-à-vis des 10 risques web OWASP
+
+[cols="1,2,3,1"]
+|===
+| # | Risque OWASP | Position IBIS-X | Statut
+
+| A01 | Broken Access Control
+| JWT vérifié sur toutes les routes hors `/auth/*`. Vérification `user_id` dans les queries (un user ne voit que ses ressources). Rôle admin réservé à certains endpoints.
+| 🟢
+
+| A02 | Cryptographic Failures
+| bcrypt pour les mots de passe. JWT HS256 signé avec `JWT_SECRET_KEY` ≥ 32 octets. HTTPS en prod. Pas de chiffrement côté BDD (données non critiques PoC).
+| 🟡 (chiffrement au repos possible via Azure)
+
+| A03 | Injection
+| ORM SQLAlchemy = requêtes paramétrées. Pydantic valide les payloads. Pas de `eval()` / `pickle.loads` sur inputs utilisateur. Prompt injection LLM bornée par template fixe.
+| 🟢
+
+| A04 | Insecure Design
+| Architecture documentée (ADRs). Modèle de menaces établi. Revue de code via PR obligatoire.
+| 🟢
+
+| A05 | Security Misconfiguration
+| ConfigMaps K8s + Secrets séparés. CORS restrictif en prod. Debug désactivé en prod (`ENV=production`). Images base slim.
+| 🟡 (durcissement Ingress à poursuivre)
+
+| A06 | Vulnerable and Outdated Components
+| Versions pinnées (`requirements.txt`, `package-lock.json`). Dependabot GitHub actif. Versions XAI verrouillées (`shap==0.43.0`, `lime==0.2.0.1`).
+| 🟡 (scan SCA auto à automatiser en CI)
+
+| A07 | Identification and Authentication Failures
+| fastapi-users + OAuth Google. Mots de passe policy (via fastapi-users). Tokens courts. Pas de "remember me" permanent.
+| 🟢
+
+| A08 | Software and Data Integrity Failures
+| Images Docker construites dans GitHub Actions. Pas d'installation de packages non signés. Manifests K8s versionnés.
+| 🟡 (signature d'image Cosign possible post-PoC)
+
+| A09 | Security Logging and Monitoring Failures
+| Logs applicatifs FastAPI (stdout → kubectl logs). Pas de SIEM. Pas d'alerting automatique.
+| 🔴 (gap connu, runbook incident response en Lot 5)
+
+| A10 | Server-Side Request Forgery
+| Pas d'endpoint prenant une URL utilisateur pour fetch. Kaggle import via références contrôlées (slug whitelist). LLM appels OpenAI via client officiel.
+| 🟢
+|===
+
+== Légende
+
+* 🟢 — contrôle en place et approprié pour le PoC.
+* 🟡 — contrôle partiel ou à renforcer post-PoC.
+* 🔴 — gap connu, à traiter en priorité.
+
+== Gaps prioritaires
+
+. *A09 Logging & Monitoring* — intégrer une stack Loki/Grafana ou Azure Monitor + alertes. Runbook d'incident rédigé au Lot 5.
+. *A06 Scan SCA en CI* — ajouter un workflow GitHub Actions avec Trivy + Snyk.
+. *A02 Chiffrement au repos* — activer TDE sur Azure Database for PostgreSQL en prod.
+
+== Références
+
+* https://owasp.org/Top10/[OWASP Top 10 2021]
+* xref:05-audit/securite/modele-menaces.adoc[Modèle de menaces STRIDE]

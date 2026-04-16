@@ -1,0 +1,83 @@
+= Évaluation éthique des datasets
+:description: Grille, critères, implémentation dans IBIS-X
+
+== Objectif
+
+Fournir à l'utilisateur une grille d'**auto-évaluation éthique** standardisée à l'upload d'un dataset, et afficher les scores dans le catalogue pour aider au choix.
+
+== Grille d'évaluation
+
+Trois dimensions, score 0-10 par dimension :
+
+=== Dimension 1 — Respect des personnes
+
+* *Anonymisation* : le dataset contient-il des identifiants directs (nom, email, adresse) ?
+* *Consentement* : les personnes concernées ont-elles consenti à l'usage (explicite, implicite, non documenté) ?
+* *Sensibilité* : présence de catégories particulières RGPD (santé, politique, religion…) ?
+
+=== Dimension 2 — Représentativité & biais
+
+* *Couverture démographique* : le dataset représente-t-il fidèlement la population d'intérêt ?
+* *Biais connus* : biais documentés dans la source (ex. "dataset américain extrapolable ?").
+* *Déséquilibre de classes* : détecté automatiquement par l'analyse qualité.
+
+=== Dimension 3 — Licence & transparence
+
+* *Licence* : compatible (CC0, MIT, Apache) vs restrictive (non commerciale) vs incertaine.
+* *Traçabilité de la source* : Kaggle avec URL, upload manuel avec provenance documentée, ou source non vérifiable.
+* *Documentation* : présence d'un `data card` (description du jeu, variables, limites).
+
+== Implémentation actuelle
+
+=== À l'upload
+
+L'utilisateur renseigne un *manifest* avec les champs éthiques (`datasets.metadata`) :
+
+* `contains_pii: boolean`
+* `anonymization_method: string` (k-anonymity, differential privacy, none)
+* `license: string`
+* `source_url: string`
+* `ethical_evaluation: jsonb` — réponses structurées à la grille
+
+Les *templates* prédéfinis sont gérés via `ethical_templates` (accessibles via `GET /ethical-templates`).
+
+=== Affichage dans le catalogue
+
+* Badge éthique en carte de dataset (vert / jaune / rouge selon score agrégé).
+* Détail par dimension en vue détaillée.
+* Filtres : "score éthique ≥ X", "sans PII", "licence permissive".
+
+=== Évaluation automatique (analyse IA)
+
+La tâche `analyze_dataset_with_ai` (queue `ai_queue`) analyse aussi :
+
+* Candidates colonnes PII (détection par nom et pattern).
+* Déséquilibre de classes (si colonne cible identifiée).
+* Biais statistiques évidents (variance nulle, colonne constante, corrélation parfaite avec la cible suggérant une fuite).
+
+Les résultats enrichissent la vue détaillée mais **ne modifient pas** le score éthique saisi par l'uploadeur (principe : l'utilisateur reste responsable).
+
+== Responsabilité
+
+L'équipe IBIS-X :
+
+* fournit la grille, les templates, l'analyse automatique ;
+* n'audite pas manuellement les datasets.
+
+L'uploadeur :
+
+* remplit honnêtement le manifest ;
+* reste responsable de la licéité et de la conformité RGPD du contenu.
+
+== Évolutions possibles post-PoC
+
+. Double validation éthique pour les datasets publics (communauté + admin).
+. Détection automatique de PII plus fine (NER sur colonnes textuelles).
+. Suggestion automatique de techniques de dé-biaisage (lien vers preprocessing).
+. Badge de re-évaluation après chaque mise à jour du dataset.
+
+== Références
+
+* Code : `service-selection/app/models.py::EthicalTemplate`, `service-selection/app/services/ethical_evaluation.py`.
+* Templates : accessibles via l'API `GET /ethical-templates`.
+* Principes : xref:05-audit/ethique-ia/principes.adoc[Principes éthiques].

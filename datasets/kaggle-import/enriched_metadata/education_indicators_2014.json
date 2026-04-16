@@ -1,0 +1,153 @@
+{
+  "dataset_name": "education_indicators_2014",
+  "display_name": "Education Indicators 2014 - 107 Countries",
+  "objective": "Analyze education level across 107 countries using key development indicators such as population, GDP, primary school repetition rates, out-of-school children, and enrollment statistics",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "World Bank Open Data - International Statistics",
+  "storage_uri": "https://www.kaggle.com/datasets/denisadutca/education-indicators-2014-worldwide",
+  "citation_link": "https://www.kaggle.com/datasets/denisadutca/education-indicators-2014-worldwide",
+  "documentation_link": "https://www.kaggle.com/datasets/denisadutca/education-indicators-2014-worldwide",
+  "instances_number": 107,
+  "features_number": 10,
+  "features_description": "Population, GDP, percentage of repeaters in primary education, out-of-school children, enrollment in secondary and primary education, unemployment rate, life expectancy at birth, theoretical duration of primary education",
+  "representativity_description": "Cross-country comparison covering 107 countries worldwide with 2014 snapshot data",
+  "representativity_level": "medium",
+  "split": false,
+  "missing_values": {
+    "has_missing_values": true,
+    "global_missing_percentage": 5.0,
+    "description": "Some indicators missing according to country data availability for 2014",
+    "handling_method": "none"
+  },
+  "temporal_factors": false,
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": false,
+  "task": ["exploratory_analysis", "clustering", "PCA"],
+  "domain": ["education"],
+  "year": 2014,
+  "license": "Unknown",
+  "num_citations": 35,
+  "ethics": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures_in_place": true,
+    "data_quality_documented": false,
+    "anonymization_applied": false,
+    "record_keeping_policy_exists": true,
+    "purpose_limitation_respected": true,
+    "accountability_defined": false
+  },
+  "column_details": [
+    {
+      "column_name": "Country Name",
+      "data_type": "string",
+      "description": "Name of the country",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 107,
+      "example_values": ["Albania", "Azerbaijan", "Belgium", "Chile", "Germany"]
+    },
+    {
+      "column_name": "PPT",
+      "data_type": "numeric",
+      "description": "Total Population",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 107,
+      "min_value": 351706,
+      "max_value": 1395380000
+    },
+    {
+      "column_name": "GDP",
+      "data_type": "numeric",
+      "description": "Gross Domestic Product",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 107,
+      "min_value": 1399000000,
+      "max_value": 78377100000000
+    },
+    {
+      "column_name": "PRPE",
+      "data_type": "numeric",
+      "description": "Percentage of Repeaters in Primary Education",
+      "is_target": false,
+      "missing_percentage": 5.0,
+      "unique_values": 106,
+      "min_value": 0.0,
+      "max_value": 24.3
+    },
+    {
+      "column_name": "OOCP",
+      "data_type": "numeric",
+      "description": "Out-of-school Children of Primary School age",
+      "is_target": false,
+      "missing_percentage": 5.0,
+      "unique_values": 107,
+      "min_value": 397,
+      "max_value": 60943456
+    },
+    {
+      "column_name": "ESE",
+      "data_type": "numeric",
+      "description": "Enrollment in Secondary Education",
+      "is_target": false,
+      "missing_percentage": 5.0,
+      "unique_values": 107,
+      "min_value": 30230,
+      "max_value": 568015872
+    },
+    {
+      "column_name": "EPE",
+      "data_type": "numeric",
+      "description": "Enrollment in Primary Education",
+      "is_target": false,
+      "missing_percentage": 5.0,
+      "unique_values": 107,
+      "min_value": 24072,
+      "max_value": 719054784
+    },
+    {
+      "column_name": "UNEMP",
+      "data_type": "numeric",
+      "description": "Unemployment Rate (%)",
+      "is_target": false,
+      "missing_percentage": 5.0,
+      "unique_values": 107,
+      "min_value": 1.0,
+      "max_value": 31.0
+    },
+    {
+      "column_name": "LEB",
+      "data_type": "numeric",
+      "description": "Life Expectancy at Birth (years)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 107,
+      "min_value": 49.7,
+      "max_value": 84.0
+    },
+    {
+      "column_name": "TDP",
+      "data_type": "numeric",
+      "description": "Theoretical Duration of Primary Education (years)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 4,
+      "min_value": 4,
+      "max_value": 7
+    }
+  ],
+  "usage_notes": "This dataset is perfect for cross-country education analysis, clustering countries by education development level, PCA for dimensionality reduction of development indicators, and comparative studies of education systems worldwide.",
+  "potential_applications": [
+    "Country clustering by education development",
+    "Principal Component Analysis of education indicators",
+    "Correlation analysis between GDP and education metrics",
+    "Comparative education system analysis",
+    "Policy development insights for education improvement"
+  ]
+}

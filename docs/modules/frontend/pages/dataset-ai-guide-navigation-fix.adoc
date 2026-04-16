@@ -1,0 +1,172 @@
+= Correction de la Navigation du Guide IA vers le Pipeline ML
+:page-title: Fix Navigation Guide IA - Pipeline ML
+:page-description: Correction de la redirection depuis le Guide IA des datasets vers le wizard ML Pipeline
+:page-category: Frontend
+:page-version: 1.0
+:page-tags: frontend,datasets,ia-guide,ml-pipeline,navigation,fix
+
+== Problème Résolu
+
+=== Symptômes
+Lorsqu'un utilisateur cliquait sur le bouton "Démarrer le pipeline" dans la section Guide IA d'un dataset, au lieu d'être redirigé vers le wizard ML Pipeline, il était envoyé vers une page d'erreur d'authentification.
+
+**URL d'erreur obtenue :**
+----
+http://localhost:8080/authentication/error?datasetId=8b371dc4-6950-4d68-bb46-67f89fc4a147&source=ai-guide
+----
+
+**URL attendue :**
+----
+http://localhost:8080/ml-pipeline-wizard?datasetId=8b371dc4-6950-4d68-bb46-67f89fc4a147&datasetName=Iris
+----
+
+=== Analyse des Routes
+
+La configuration des routes Angular (`app.routes.ts`) définit deux chemins pour le wizard ML :
+
+1. **Route plein écran :** `/ml-pipeline-wizard` avec `BlankComponent`
+2. **Route dans l'app :** `/app/ml-pipeline/wizard` avec `FullComponent`
+
+Le composant `dataset-listing.component.ts` utilisait correctement la route plein écran `/ml-pipeline-wizard`, mais le composant `dataset-ai-guide.component.ts` utilisait incorrectement `/app/ml-pipeline-wizard` (qui n'existe pas).
+
+== Solution Implémentée
+
+=== Modifications Apportées
+
+**Fichier modifié :** `frontend/src/app/pages/datasets/components/dataset-ai-guide.component.ts`
+
+**Avant :**
+[source,typescript]
+----
+startPipelineWithDataset(): void {
+  if (!this.dataset) {
+    this.showError('Aucun dataset sélectionné pour démarrer le pipeline');
+    return;
+  }
+
+  // Naviguer vers le wizard de pipeline ML avec le dataset pré-sélectionné
+  this.router.navigate(['/app/ml-pipeline-wizard'], {
+    queryParams: { 
+      datasetId: this.dataset.id,
+      source: 'ai-guide'
+    }
+  });
+}
+----
+
+**Après :**
+[source,typescript]
+----
+startPipelineWithDataset(): void {
+  if (!this.dataset) {
+    this.showError('Aucun dataset sélectionné pour démarrer le pipeline');
+    return;
+  }
+
+  // Naviguer vers le wizard de pipeline ML avec le dataset pré-sélectionné
+  this.router.navigate(['/ml-pipeline-wizard'], {
+    queryParams: { 
+      datasetId: this.dataset.id,
+      datasetName: this.dataset.display_name,
+      source: 'ai-guide'
+    }
+  });
+}
+----
+
+=== Corrections Apportées
+
+1. **Route correcte** : Changement de `/app/ml-pipeline-wizard` vers `/ml-pipeline-wizard`
+2. **Paramètre manquant** : Ajout de `datasetName: this.dataset.display_name`
+3. **Traçabilité** : Conservation du paramètre `source: 'ai-guide'`
+
+== Détails Techniques
+
+=== Configuration de Routage
+
+Le wizard ML Pipeline est configuré en mode plein écran pour offrir une expérience utilisateur optimale lors de la création de pipelines ML.
+
+[source,typescript]
+----
+// app.routes.ts
+{
+  path: 'ml-pipeline-wizard',
+  component: BlankComponent,
+  canActivate: [authGuard, onboardingGuard],
+  children: [
+    {
+      path: '',
+      loadComponent: () =>
+        import('./pages/ml-pipeline/wizard/ml-pipeline-wizard.component')
+          .then((m) => m.MlPipelineWizardComponent),
+    }
+  ]
+}
+----
+
+=== Paramètres Attendus
+
+Le wizard ML Pipeline attend les paramètres suivants :
+
+- `datasetId` : Identifiant unique du dataset sélectionné
+- `datasetName` : Nom d'affichage du dataset pour l'interface utilisateur
+- `source` (optionnel) : Source de la navigation pour la traçabilité
+
+== Test de la Correction
+
+=== Étapes de Test
+
+1. **Navigation vers un dataset**
+   - Aller sur `http://localhost:8080/app/datasets/{dataset-id}`
+
+2. **Utilisation du Guide IA**
+   - Cliquer sur "Analyser ce dataset" dans la section Guide IA
+   - Attendre la fin de l'analyse
+
+3. **Démarrage du Pipeline**
+   - Cliquer sur le bouton "Démarrer le pipeline"
+   - Vérifier la redirection vers l'URL correcte
+
+=== Résultat Attendu
+
+L'utilisateur doit être redirigé vers :
+----
+http://localhost:8080/ml-pipeline-wizard?datasetId={id}&datasetName={name}&source=ai-guide
+----
+
+== Impact Utilisateur
+
+=== Bénéfices
+
+- **Expérience fluide** : La transition du Guide IA vers le Pipeline ML fonctionne correctement
+- **Pas de page d'erreur** : Élimination de la redirection vers la page d'erreur d'authentification
+- **Pré-remplissage** : Le dataset est automatiquement sélectionné dans le wizard
+- **Traçabilité** : Le système peut identifier que l'utilisateur vient du Guide IA
+
+=== Cas d'Usage
+
+Cette correction améliore particulièrement l'expérience pour :
+
+- Les utilisateurs débutants utilisant le Guide IA pour découvrir les recommandations ML
+- Les workflows guidés où l'IA suggère des paramètres optimaux
+- La continuité entre l'analyse des données et la création de pipelines ML
+
+== Notes de Développement
+
+=== Cohérence des Routes
+
+Cette correction assure la cohérence avec les autres composants comme `dataset-listing.component.ts` qui utilisent déjà la route correcte `/ml-pipeline-wizard`.
+
+=== Tests Supplémentaires
+
+Il est recommandé de vérifier :
+
+1. La navigation depuis d'autres composants vers le wizard ML
+2. Le bon fonctionnement des paramètres passés au wizard
+3. La gestion des cas d'erreur (dataset non trouvé, etc.)
+
+== Voir Aussi
+
+- xref:ROOT:ml-pipeline-wizard-guide.adoc[Guide du Wizard ML Pipeline]
+- xref:ROOT:dataset-ai-guide.adoc[Documentation du Guide IA]
+- xref:ROOT:angular-routing-guide.adoc[Configuration du Routage Angular]

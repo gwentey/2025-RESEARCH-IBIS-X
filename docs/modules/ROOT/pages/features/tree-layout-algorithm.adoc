@@ -1,0 +1,151 @@
+= Algorithme de Disposition d'Arbre - Visualisation Interactive
+:page-tags: algorithm, tree-layout, visualization
+:page-description: Algorithme amélioré pour éviter la superposition des nœuds
+
+== Vue d'Ensemble
+
+L'algorithme de disposition d'arbre a été amélioré pour résoudre les problèmes de superposition des nœuds qui se produisaient avec l'approche naïve d'espacement fixe.
+
+== Problème Initial
+
+Avec un espacement fixe entre les nœuds :
+- Les sous-arbres larges se chevauchaient
+- Les feuilles se superposaient parfaitement sur les nœuds internes
+- Disposition trop serrée pour les arbres complexes
+
+== Solution Implémentée
+
+=== 1. Calcul de Largeur de Sous-arbre
+
+[source,typescript]
+----
+const calculateSubtreeWidth = (node: any): number => {
+  if (!node.children || node.children.length === 0) {
+    return nodeWidth + minHorizontalSpacing; // Feuille
+  }
+  
+  let totalWidth = 0;
+  node.children.forEach((child: any) => {
+    totalWidth += calculateSubtreeWidth(child); // Récursif
+  });
+  
+  return Math.max(totalWidth, nodeWidth + minHorizontalSpacing);
+};
+----
+
+=== 2. Positionnement Adaptatif
+
+Au lieu d'un espacement fixe, chaque nœud est positionné selon la largeur de son sous-arbre :
+
+[source,typescript]
+----
+// Calculer la largeur de chaque enfant
+node.children.forEach((child: any) => {
+  const width = calculateSubtreeWidth(child);
+  childWidths.push(width);
+  totalChildrenWidth += width;
+});
+
+// Positionner les enfants
+let currentX = x - totalChildrenWidth / 2;
+node.children.forEach((child: any, i: number) => {
+  const childX = currentX + childWidths[i] / 2;
+  processNode(child, childX, y + verticalSpacing, currentIndex);
+  currentX += childWidths[i];
+});
+----
+
+=== 3. Décalage Aléatoire
+
+Pour éviter la superposition parfaite de nœuds identiques :
+
+[source,typescript]
+----
+const randomOffsetX = (Math.random() - 0.5) * 10; // ±5px
+const randomOffsetY = (Math.random() - 0.5) * 10; // ±5px
+
+x: x + randomOffsetX,
+y: y + randomOffsetY,
+----
+
+=== 4. Gestion du Z-Index
+
+Hiérarchie visuelle claire :
+- Nœuds internes : `z-index: 10`
+- Feuilles : `z-index: 20`
+- Nœud en cours de déplacement : `z-index: 1000`
+
+== Paramètres de Configuration
+
+[cols="1,1,2"]
+|===
+|Paramètre |Valeur |Description
+
+|`nodeWidth`
+|140px
+|Largeur standard d'un nœud
+
+|`nodeHeight`
+|60px
+|Hauteur standard d'un nœud
+
+|`minHorizontalSpacing`
+|250px
+|Espacement minimum horizontal (augmenté de 200px)
+
+|`verticalSpacing`
+|120px
+|Espacement vertical entre niveaux (augmenté de 100px)
+
+|`randomOffset`
+|±5px
+|Décalage aléatoire pour éviter la superposition
+|===
+
+== Avantages
+
+1. **Aucune superposition** : Chaque sous-arbre a son espace dédié
+2. **Disposition équilibrée** : L'arbre reste centré et symétrique
+3. **Scalabilité** : Fonctionne avec des arbres de toute taille
+4. **Flexibilité** : Les nœuds peuvent être repositionnés manuellement
+
+== Interactions Utilisateur
+
+=== Hover
+- Scale : 105%
+- Ombre augmentée
+- Indication visuelle du nœud interactif
+
+=== Drag & Drop
+- Scale : 110%
+- Z-index maximisé (1000)
+- Mise à jour temps réel des liens
+
+=== Retour à la Position
+- Animation fluide (0.8s ease)
+- Fonction "Réorganiser" disponible
+
+== Performance
+
+L'algorithme a une complexité O(n) où n est le nombre de nœuds :
+- Un seul parcours pour calculer les largeurs
+- Un seul parcours pour positionner les nœuds
+- Mise à jour des liens optimisée
+
+== Cas d'Usage
+
+=== Arbres Équilibrés
+L'algorithme distribue uniformément l'espace entre les branches.
+
+=== Arbres Déséquilibrés
+Les branches avec plus de nœuds reçoivent plus d'espace automatiquement.
+
+=== Arbres Profonds
+L'espacement vertical généreux permet une lecture claire même pour des arbres très profonds.
+
+== Améliorations Futures
+
+1. **Compactage intelligent** : Réduire l'espace inutilisé
+2. **Disposition alternative** : Mode radial ou vertical
+3. **Clustering** : Regrouper les nœuds similaires
+4. **Animation de transition** : Lors du changement de disposition

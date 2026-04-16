@@ -1,0 +1,136 @@
+= Service — ml-pipeline-service
+:description: Preprocessing, entraînement ML, cache analyse qualité IA
+:toc: left
+
+== Rôle
+
+* Exécuter le pipeline ML complet : preprocessing → split → training → évaluation → persistance artefact.
+* Cacher les analyses de qualité IA des datasets (table `data_quality_analyses`).
+
+== Périmètre
+
+✅ **Inclut** : endpoints `/experiments`, orchestration Celery, workers `train_model` (queue `ml_queue`) et `analyze_dataset_with_ai` (queue `ai_queue`), persistance `artifact_uri` dans le stockage objets.
+
+❌ **Exclut** : techniques XAI (voir xref:03-technique/services/xai-engine-service.adoc[xai-engine-service]), gestion datasets (voir xref:03-technique/services/service-selection.adoc[service-selection]).
+
+== Architecture interne
+
+```
+ml-pipeline-service/
+├── app/
+│   ├── models.py               # Experiment, DataQualityAnalysis
+│   ├── schemas.py              # Pydantic request/response
+│   ├── crud.py                 # Opérations BDD
+│   ├── services/               # Logique preprocessing & training
+│   │   ├── preprocessing.py
+│   │   ├── training.py
+│   │   └── metrics.py
+│   ├── tasks.py                # @celery_app.task train_model, analyze_dataset_with_ai
+│   ├── core/
+│   │   ├── celery_app.py       # Config 2 queues : ml_queue + ai_queue
+│   │   └── config.py           # BaseSettings
+│   └── main.py                 # FastAPI app + routes
+├── alembic/
+│   └── versions/
+│       ├── 001_initial_migration.py
+│       ├── 002_rename_model_to_artifact.py
+│       └── add_data_quality_analysis_table.py
+├── Dockerfile                  # Image commune service + worker
+└── requirements.txt
+```
+
+== Queues Celery & tâches
+
+[cols="1,1,3"]
+|===
+| Queue | Tâche | Description
+
+| `ml_queue`
+| `train_model`
+| Training bout-en-bout : chargement dataset, preprocessing, entraînement, évaluation, persistance `artifact_uri`.
+
+| `ai_queue`
+| `analyze_dataset_with_ai`
+| Appel OpenAI pour analyser la qualité d'un dataset ; résultat caché dans `data_quality_analyses`.
+|===
+
+Le worker est déployé via le **même Dockerfile** que le service web (pas de `Dockerfile.worker`). Commande réelle :
+
+[source,bash]
+----
+celery -A app.core.celery_app worker --loglevel=info --queues=ml_queue,ai_queue --concurrency=2
+----
+
+== Pipeline de preprocessing
+
+Orchestré dans `app/services/preprocessing.py`. Étapes appliquées selon `experiments.preprocessing_config` :
+
+. *Chargement* : lecture du dataset depuis le stockage objets (`storage_path` + `dataset_files`).
+. *Split* target / features selon `target_column`.
+. *Split* train/test selon `test_size`.
+. *Imputation* des valeurs manquantes : stratégie par colonne (`mean`, `median`, `mode`, `knn`, `drop`).
+. *Encodage* des colonnes catégorielles : one-hot / ordinal / target encoding.
+. *Scaling* : StandardScaler, MinMaxScaler, ou aucun.
+. *Détection* automatique du type de tâche pour colonnes numériques (seuil de valeurs uniques → classification vs régression).
+
+== Entraînement
+
+Algorithmes (scikit-learn ≥ 1.3) :
+
+* Classification : `DecisionTreeClassifier`, `RandomForestClassifier`, `LogisticRegression`, `GradientBoostingClassifier`.
+* Régression : `LinearRegression`, `DecisionTreeRegressor`, `RandomForestRegressor`.
+
+Métriques calculées automatiquement (stockées dans `experiments.metrics` JSONB) :
+
+* Classification : accuracy, precision, recall, F1, matrice de confusion, courbes ROC (multi-classes supportées).
+* Régression : MSE, RMSE, MAE, R², résidus.
+
+== Artefacts produits
+
+Persistés dans le stockage objets (MinIO/Azure Blob) sous `ibis-x-models/{project_id}/{experiment_id}/` :
+
+* `model.joblib` — modèle sérialisé (référencé par `artifact_uri`).
+* `confusion_matrix.png`, `roc_curve.png`, `feature_importance.png` — visualisations PNG/JSON.
+* `preprocessing_pipeline.joblib` — pipeline sklearn complet (pour re-prédiction cohérente).
+
+== Cache d'analyse qualité (DataQualityAnalysis)
+
+Évite des appels OpenAI répétés à l'affichage d'un dataset.
+
+* *Clé d'invalidation* : `dataset_version` (hash des métadonnées du dataset).
+* *TTL* : `expires_at` (configurable).
+* *Contenu* : JSON produit par OpenAI (analyse colonne-par-colonne, stratégies suggérées, score global).
+* *Dépendance externe* : `OPENAI_API_KEY` (variable d'environnement obligatoire).
+
+Voir xref:03-technique/architecture/modele-donnees.adoc[Modèle de données] pour le schéma de la table.
+
+== Dépendances externes
+
+* PostgreSQL (`ibis_x_db`) — `alembic_version_ml_pipeline`.
+* Redis — broker Celery.
+* MinIO / Azure Blob — datasets en entrée + artefacts en sortie.
+* OpenAI API — pour `analyze_dataset_with_ai` uniquement.
+
+== Endpoints exposés (extrait)
+
+[cols="1,1,3"]
+|===
+| Méthode | Route | Rôle
+
+| POST | `/experiments` | Créer une expérience (déclenche `train_model` async)
+| GET | `/experiments/{id}` | Statut + métriques (polling)
+| GET | `/experiments?project_id=...` | Listing
+| DELETE | `/experiments/{id}` | Suppression (y compris artefact)
+| POST | `/datasets/{id}/analyze` | Déclencher `analyze_dataset_with_ai`
+| GET | `/datasets/{id}/analysis` | Récupérer le cache d'analyse
+|===
+
+Référence complète : xref:03-technique/api-reference.adoc[API reference].
+
+== Historique des doublons documentaires
+
+Pages archivées dans `docs/ARCHIVE/LEGACY-DUPLICATES/` dont le contenu est consolidé ici :
+
+* `ml-pipeline-service-complete.adoc`
+* `advanced-data-cleaning.adoc`, `advanced-data-cleaning-strategies.adoc`
+* `data-cleaning-architecture.adoc`, `data-cleaning-wizard-integration.adoc`, `cleaning-config-separation-guide.adoc`

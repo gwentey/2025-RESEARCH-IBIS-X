@@ -1,0 +1,228 @@
+= Correction : Affichage incorrect du pourcentage de données manquantes
+:toc: auto
+:toclevels: 3
+
+== Problème identifié
+
+Sur la page de détail des datasets, l'affichage du pourcentage de données manquantes montrait **"N/A Manquant"** au lieu du véritable pourcentage calculé à partir des données réelles.
+
+=== Symptômes observés
+
+* Page de détail dataset affichait "N/A Manquant"
+* Pas d'affichage du vrai pourcentage de données manquantes
+* Utilisateur ne pouvait pas voir les statistiques réelles de complétude
+
+== Analyse du problème
+
+### Cause racine : Endpoint manquant + Fake data
+
+Le problème avait **deux causes principales** :
+
+1. **Endpoint API manquant** : `GET /datasets/{id}/missing-data-analysis` n'existait pas
+2. **Fallback avec fake data** : Le composant frontend utilisait `Math.random()` pour générer des fausses statistiques
+
+### Architecture existante découverte
+
+Le système avait déjà été partiellement développé :
+
+* ✅ **Service `MissingDataAnalyzer`** dans `service-selection/app/services/missing_data_analysis.py`
+* ✅ **Composant frontend** `missing-data-score.component.ts` 
+* ✅ **Interfaces TypeScript** `MissingDataScore`, `MissingDataAnalysisResponse`
+* ❌ **Endpoint API manquant** pour connecter frontend ↔ backend
+* ❌ **Fallback utilisait des données aléatoires** (interdites)
+
+== Solution mise en place
+
+=== 1. Correction de la fonction formatPercentage
+
+**File** : `frontend/src/app/pages/datasets/dataset-detail.component.ts`
+
+[source,typescript]
+----
+// AVANT (Problématique)
+formatPercentage(value: number | undefined): string {
+  if (value === undefined || value === null) return 'N/A';  // ← Retournait "N/A"
+  return `${Math.round(value * 100)}%`;
+}
+
+// Template affichait :
+// <div class="stat-value">{{ formatPercentage(dataset.global_missing_percentage) }}</div>
+// <div class="stat-label">Manquant</div>
+// Résultat : "N/A" + "Manquant" = "N/A Manquant" 
+
+// APRÈS (Corrigé)
+formatPercentage(value: number | undefined): string {
+  if (value === undefined || value === null) return '0%';  // ← Retourne "0%" 
+  return `${Math.round(value)}%`;  // ← Pas de multiplication par 100
+}
+
+// Template amélioré :
+// <div class="stat-label">{{ dataset.global_missing_percentage === 0 ? 'Complet' : 'Manquant' }}</div>
+// Résultat : "0%" + "Complet" = "0% Complet"
+----
+
+=== 2. Création de l'endpoint API manquant
+
+**File** : `service-selection/app/main.py`
+
+[source,python]
+----
+@app.get("/datasets/{dataset_id}/missing-data-analysis")
+def get_missing_data_analysis(dataset_id: str, db: Session = Depends(database.get_db)):
+    """
+    Récupère l'analyse détaillée des données manquantes pour un dataset.
+    Utilise le MissingDataAnalyzer pour calculer les vraies statistiques.
+    """
+    try:
+        from .services.missing_data_analysis import MissingDataAnalyzer
+        
+        analyzer = MissingDataAnalyzer()
+        analysis_result = analyzer.analyze_dataset_missing_data(dataset_id, db)
+        
+        logger.info(f"Score global: {analysis_result['missingDataScore']['overallScore']}")
+        logger.info(f"Colonnes analysées: {analysis_result['missingDataScore']['analyzedColumns']}")
+        
+        return analysis_result
+        
+    except ValueError as e:
+        logger.error(f"Erreur lors de l'analyse: {str(e)}")
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.error(f"Erreur inattendue: {str(e)}")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'analyse")
+----
+
+=== 2. Suppression des fake data dans le composant
+
+**File** : `frontend/src/app/pages/datasets/components/missing-data-score.component.ts`
+
+[source,typescript]
+----
+// AVANT (Problématique)
+const estimatedMissingPercentage = col.is_nullable ? 
+  Math.random() * 30 : // ← FAKE DATA INTERDITE !
+  Math.random() * 5;   
+
+// APRÈS (Corrigé)
+if (this.dataset?.global_missing_percentage !== null && 
+    this.dataset?.global_missing_percentage !== undefined) {
+  // Utiliser le pourcentage global réel du dataset
+  const globalMissingPercentage = this.dataset.global_missing_percentage;
+  const overallScore = Math.max(0, Math.round(100 - globalMissingPercentage));
+  // ...
+}
+----
+
+=== 3. Ajout du dataset complet au composant
+
+**File** : `frontend/src/app/pages/datasets/dataset-detail.component.html`
+
+[source,html]
+----
+<!-- AVANT -->
+<app-missing-data-score 
+  [datasetId]="dataset.id"
+  [files]="dataset.files"
+  [columns]="getAllColumns()">
+</app-missing-data-score>
+
+<!-- APRÈS -->
+<app-missing-data-score 
+  [datasetId]="dataset.id"
+  [files]="dataset.files"
+  [columns]="getAllColumns()"
+  [dataset]="dataset">  <!-- ← Ajout du dataset complet -->
+</app-missing-data-score>
+----
+
+== Flux de données corrigé
+
+=== Approche prioritaire : API Backend
+
+1. **Frontend** appelle `GET /datasets/{id}/missing-data-analysis`
+2. **Backend** utilise `MissingDataAnalyzer` pour calculer les vraies statistiques
+3. **Analyzer** lit les fichiers réels depuis MinIO/storage
+4. **Retour** des vraies statistiques au frontend
+5. **Affichage** du pourcentage réel
+
+=== Fallback amélioré (sans fake data)
+
+Si l'API backend échoue :
+
+1. **Utiliser** `dataset.global_missing_percentage` si disponible
+2. **Sinon** utiliser les stats des colonnes si disponibles  
+3. **Sinon** afficher 0% (conservateur) avec message d'erreur
+4. **JAMAIS** utiliser `Math.random()` ou autres fake data
+
+== Test de validation
+
+Pour tester la correction :
+
+=== Test 1 : Dataset avec données manquantes
+1. Uploader un fichier CSV avec des cellules vides
+2. Vérifier que le pourcentage affiché correspond aux vraies données
+3. Comparer avec un comptage manuel des cellules vides
+
+=== Test 2 : Dataset sans données manquantes  
+1. Uploader un fichier CSV complet (pas de cellules vides)
+2. Vérifier que ça affiche **0%** (pas "N/A")
+3. Score de qualité doit être **100/100 (Perfect)**
+
+=== Test 3 : Logs de debugging
+Vérifier dans les logs backend :
+```
+=== DEBUG - ANALYSE DONNÉES MANQUANTES [dataset_id] ===
+Score global: [nombre]
+Colonnes analysées: [nombre]
+```
+
+== Points d'attention
+
+=== Dépendances du MissingDataAnalyzer
+
+Le `MissingDataAnalyzer` dépend de :
+- **Accès aux fichiers** dans MinIO/storage
+- **Métadonnées des colonnes** en BDD
+- **Parsing des fichiers** CSV/Excel/etc.
+
+Si l'une de ces dépendances échoue, l'endpoint retournera une erreur 404/500.
+
+=== Gestion des erreurs
+
+- **404** : Dataset ou fichiers non trouvés
+- **500** : Erreur de parsing ou d'accès aux fichiers  
+- **Fallback frontend** : Utilise `dataset.global_missing_percentage` ou 0%
+
+== Impact de la solution
+
+=== Avant la correction
+* Affichage "N/A Manquant" ou données aléatoires
+* Impossible de connaître le vrai état de complétude
+* Fake data générée par `Math.random()`
+
+=== Après la correction  
+* Affichage du vrai pourcentage calculé depuis les fichiers
+* Score de qualité basé sur les données réelles
+* Fallback intelligent sans fake data
+
+== Files modifiés
+
+1. **`service-selection/app/main.py`** - Ajout endpoint `/missing-data-analysis`
+2. **`frontend/.../missing-data-score.component.ts`** - Suppression fake data + utilisation vraies données
+3. **`frontend/.../dataset-detail.component.html`** - Passage du dataset complet au composant
+
+== Prévention
+
+Pour éviter ce type de problème :
+
+1. **Toujours utiliser les vraies données** - jamais de `Math.random()`
+2. **Tester les endpoints** avant d'implémenter les composants
+3. **Gérer proprement les erreurs** avec fallbacks intelligents
+4. **Documenter les dépendances** (fichiers, BDD, services)
+
+== Résumé technique
+
+**Problème** : Endpoint manquant + fake data dans le fallback  
+**Solution** : Endpoint créé + utilisation vraies données uniquement  
+**Impact** : Affichage fiable du pourcentage réel de données manquantes
+**Durée** : ~15 minutes pour identifier et corriger

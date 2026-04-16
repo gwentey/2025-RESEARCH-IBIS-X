@@ -1,0 +1,315 @@
+import { BreakpointObserver, MediaMatcher } from '@angular/cdk/layout';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { MatSidenav, MatSidenavContent } from '@angular/material/sidenav';
+import { CoreService } from 'src/app/services/core.service';
+import { AppSettings } from 'src/app/config';
+import { filter } from 'rxjs/operators';
+import { NavigationEnd, Router } from '@angular/router';
+import { navItems, getTranslatedNavItems, getTranslatedNavItemsWithRoles } from './vertical/sidebar/sidebar-data';
+import { NavService } from '../../services/nav.service';
+import { RoleService, UserRole } from '../../services/role.service';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { AppNavItemComponent } from './vertical/sidebar/nav-item/nav-item.component';
+import { RouterModule } from '@angular/router';
+import { MaterialModule } from 'src/app/material.module';
+import { CommonModule } from '@angular/common';
+import { SidebarComponent } from './vertical/sidebar/sidebar.component';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { TablerIconsModule } from 'angular-tabler-icons';
+import { VerticalHeaderComponent } from './vertical/header/header.component';
+import { HorizontalHeaderComponent } from './horizontal/header/header.component';
+import { AppHorizontalSidebarComponent } from './horizontal/sidebar/sidebar.component';
+import { AppBreadcrumbComponent } from './shared/breadcrumb/breadcrumb.component';
+import { CustomizerComponent } from './shared/customizer/customizer.component';
+import { BrandingComponent } from './vertical/sidebar/branding.component';
+import { UserNameDisplayComponent } from 'src/app/components/user-name-display';
+import { AuthService } from 'src/app/services/auth.service';
+import { UserRead } from 'src/app/models/auth.models';
+
+const MOBILE_VIEW = 'screen and (max-width: 768px)';
+const TABLET_VIEW = 'screen and (min-width: 769px) and (max-width: 1024px)';
+const MONITOR_VIEW = 'screen and (min-width: 1024px)';
+const BELOWMONITOR = 'screen and (max-width: 1023px)';
+
+// for mobile app sidebar
+interface apps {
+  id: number;
+  img: string;
+  title: string;
+  subtitle: string;
+  link: string;
+}
+
+interface quicklinks {
+  id: number;
+  title: string;
+  link: string;
+}
+
+@Component({
+    selector: 'app-full',
+    imports: [
+        RouterModule,
+        AppNavItemComponent,
+        MaterialModule,
+        CommonModule,
+        SidebarComponent,
+        NgScrollbarModule,
+        TablerIconsModule,
+        VerticalHeaderComponent,
+        HorizontalHeaderComponent,
+        AppHorizontalSidebarComponent,
+        AppBreadcrumbComponent,
+        CustomizerComponent,
+        BrandingComponent,
+        UserNameDisplayComponent,
+        TranslateModule
+    ],
+    templateUrl: './full.component.html',
+    styleUrls: [],
+    encapsulation: ViewEncapsulation.None
+})
+export class FullComponent implements OnInit {
+  navItems = navItems;
+
+  // Informations de l'utilisateur actuel
+  currentUser: UserRead | null = null;
+  userDisplayName: string = 'Chargement...';
+  userRole: string = 'Utilisateur';
+  userEmail: string = '';
+  userProfileImage: string = '/assets/images/profile/user5.jpg'; // Image par défaut
+
+  @ViewChild('leftsidenav')
+  public sidenav: MatSidenav;
+
+  @ViewChild('mobilesidenav')
+  public mobilesidenav: MatSidenav;
+  resView = false;
+  @ViewChild('content', { static: true }) content!: MatSidenavContent;
+  //get options from service
+  options = this.settings.getOptions();
+  private layoutChangesSubscription = Subscription.EMPTY;
+  private isMobileScreen = false;
+  private isContentWidthFixed = true;
+  private isCollapsedWidthFixed = false;
+  private htmlElement!: HTMLHtmlElement;
+
+  get isOver(): boolean {
+    return this.isMobileScreen;
+  }
+
+  get isTablet(): boolean {
+    return this.resView;
+  }
+
+  // FINDING-001 (design-audit 2026-04-14): purged template-admin demo
+  // apps (chat, invoice, calendar, tickets, courses, e-commerce, contacts,
+  // email) and quicklinks (Pricing, Notes, Employee, Todo, Treeview). None
+  // of these modules belong to IBIS-X. Mobile app drawer now hidden until
+  // real IBIS-X quick actions are defined.
+  apps: apps[] = [];
+
+  quicklinks: quicklinks[] = [];
+
+  constructor(
+    private settings: CoreService,
+    private mediaMatcher: MediaMatcher,
+    private router: Router,
+    private breakpointObserver: BreakpointObserver,
+    private navService: NavService,
+    private authService: AuthService,
+    private roleService: RoleService,
+    private translate: TranslateService
+  ) {
+    this.htmlElement = document.querySelector('html')!;
+    this.layoutChangesSubscription = this.breakpointObserver
+      .observe([MOBILE_VIEW, TABLET_VIEW, MONITOR_VIEW, BELOWMONITOR])
+      .subscribe((state) => {
+        // SidenavOpened must be reset true when layout changes
+        this.options.sidenavOpened = true;
+        this.isMobileScreen = state.breakpoints[BELOWMONITOR];
+        if (this.options.sidenavCollapsed == false) {
+          this.options.sidenavCollapsed = state.breakpoints[TABLET_VIEW];
+        }
+        this.isContentWidthFixed = state.breakpoints[MONITOR_VIEW];
+        this.resView = state.breakpoints[BELOWMONITOR];
+      });
+
+    // Initialize project theme with options
+    this.receiveOptions(this.options);
+    
+    // Force light theme
+    this.htmlElement.classList.add('light-theme');
+    this.htmlElement.classList.remove('dark-theme');
+
+    // This is for scroll to top
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((e) => {
+        this.content.scrollTo({ top: 0 });
+      });
+  }
+
+  ngOnInit(): void {
+    // Charger les informations de l'utilisateur connecté
+    this.loadUserInfo();
+
+    // Initialiser les navItems traduits avec rôles
+    this.updateNavItems();
+
+    // Écouter les changements de langue pour mettre à jour les navItems
+    this.translate.onLangChange.subscribe(() => {
+      this.updateNavItems();
+    });
+
+    // Écouter les changements de rôle pour mettre à jour les navItems
+    this.roleService.getCurrentRole().subscribe(() => {
+      this.updateNavItems();
+    });
+  }
+
+  /**
+   * Met à jour les navItems avec les traductions et les rôles
+   */
+  private updateNavItems(): void {
+    const currentRole = this.roleService.getCurrentRoleSync();
+    this.navItems = getTranslatedNavItemsWithRoles(this.translate, currentRole);
+  }
+
+  /**
+   * Charge les informations de l'utilisateur connecté
+   */
+  loadUserInfo(): void {
+    if (this.authService.isAuthenticated()) {
+      this.authService.getCurrentUser().subscribe({
+        next: (user) => {
+          this.currentUser = user;
+          this.userEmail = user.email;
+
+          // Déterminer le nom à afficher par ordre de priorité
+          if (user.pseudo) {
+            // 1. Utiliser le pseudo s'il existe
+            this.userDisplayName = user.pseudo;
+          } else if (user.given_name && user.family_name) {
+            // 2. Sinon utiliser le nom complet s'il existe (prénom + nom)
+            this.userDisplayName = `${user.given_name} ${user.family_name}`;
+          } else if (user.given_name) {
+            // 3. Sinon juste le prénom s'il existe
+            this.userDisplayName = user.given_name;
+          } else {
+            // 4. Sinon fallback sur l'email
+            this.userDisplayName = user.email.split('@')[0];
+          }
+
+          // Utiliser l'image de profil si disponible
+          if (user.picture) {
+            this.userProfileImage = this.sanitizeGoogleImageUrl(user.picture);
+          }
+
+          // Définir le rôle basé sur le nouveau système
+          if (user.role) {
+            this.userRole = this.roleService.getRoleDisplayName(user.role as UserRole);
+          } else if (user.is_superuser) {
+            this.userRole = 'Admin';
+          } else {
+            this.userRole = 'Utilisateur';
+          }
+
+          // Rafraîchir le rôle dans le RoleService pour déclencher la mise à jour de la navigation
+          this.roleService.refreshCurrentRole();
+        },
+        error: (error) => {
+          console.error('Erreur lors du chargement des informations utilisateur', error);
+          // Fallback sur des valeurs par défaut
+          this.userDisplayName = 'Utilisateur';
+        }
+      });
+    }
+  }
+
+  /**
+   * Sanitize Google profile image URLs to ensure they are displayable in Angular
+   * and handle CORS issues with Google images
+   */
+  sanitizeGoogleImageUrl(url: string): string {
+    // Vérifier si c'est une URL Google Photos
+    if (url && url.includes('googleusercontent.com')) {
+      // Ajouter un paramètre pour éviter la mise en cache et les problèmes CORS
+      // On ajoute =s200-c comme paramètre pour spécifier la taille et le recadrage
+      if (!url.includes('=s')) {
+        url = url.includes('?') ? `${url}&s=200-c` : `${url}=s200-c`;
+      }
+      return url;
+    }
+    return url;
+  }
+
+  /**
+   * Déconnecte l'utilisateur
+   */
+  logout(): void {
+    this.authService.logout();
+  }
+
+  /**
+   * Navigue directement vers l'assistant guidé d'ajout de dataset
+   * Accessible à tous les utilisateurs, le guard gérera les permissions
+   */
+  navigateToAddDataset(): void {
+    this.router.navigate(['/app/datasets/upload/wizard']);
+  }
+
+  ngOnDestroy() {
+    this.layoutChangesSubscription.unsubscribe();
+  }
+
+  toggleCollapsed() {
+    this.isContentWidthFixed = false;
+    this.options.sidenavCollapsed = !this.options.sidenavCollapsed;
+    this.resetCollapsedState();
+  }
+
+  resetCollapsedState(timer = 400) {
+    setTimeout(() => this.settings.setOptions(this.options), timer);
+  }
+
+  onSidenavClosedStart() {
+    this.isContentWidthFixed = false;
+  }
+
+  onSidenavOpenedChange(isOpened: boolean) {
+    this.isCollapsedWidthFixed = !this.isOver;
+    this.options.sidenavOpened = isOpened;
+    this.settings.setOptions(this.options);
+  }
+
+  receiveOptions(options: AppSettings): void {
+    //this.options = options;
+
+    this.toggleColorsTheme(options);
+  }
+
+  toggleActiveSidenav(): void {
+    // Toggle the appropriate sidenav based on the current view mode
+    if (this.resView && this.mobilesidenav) {
+      this.mobilesidenav.toggle();
+    } else if (this.sidenav) {
+      this.sidenav.toggle();
+    }
+  }
+
+
+
+  toggleColorsTheme(options: AppSettings) {
+    // Remove any existing theme class dynamically
+    this.htmlElement.classList.forEach((className) => {
+      if (className.endsWith('_theme')) {
+        this.htmlElement.classList.remove(className);
+      }
+    });
+
+    // Add the selected theme class
+    this.htmlElement.classList.add(options.activeTheme);
+  }
+}

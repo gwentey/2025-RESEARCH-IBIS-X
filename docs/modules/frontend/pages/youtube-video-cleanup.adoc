@@ -1,0 +1,199 @@
+= Suppression des Éléments YouTube Indésirables
+:page-layout: docs
+:page-title: Masquage des éléments YouTube - IBIS X
+:page-description: Documentation pour supprimer l'image de profil et les liens YouTube
+:page-keywords: youtube, iframe, video, masquage, branding
+
+== Vue d'ensemble
+
+Cette documentation explique comment supprimer les éléments YouTube indésirables comme l'image de profil de la chaîne et le lien "regarder sur YouTube" qui apparaissent dans la vidéo intégrée.
+
+== Problème
+
+Lors de l'intégration d'une vidéo YouTube via iframe, certains éléments apparaissent par défaut :
+* L'image de profil de la chaîne en bas à gauche
+* Le nom de la chaîne
+* Le lien "regarder sur YouTube"
+* Le logo YouTube en bas à droite
+
+== Solution mise en place
+
+=== 1. Paramètres d'URL YouTube
+
+Modification de l'URL de l'iframe avec des paramètres spécifiques :
+
+```html
+<iframe 
+    src="https://www.youtube.com/embed/VIDEO_ID?autoplay=0&controls=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3" 
+    title="YouTube video player" 
+    frameborder="0" 
+    allowfullscreen>
+</iframe>
+```
+
+==== Paramètres utilisés :
+
+* `modestbranding=1` : Réduit l'affichage du logo YouTube
+* `rel=0` : Limite les vidéos suggérées à celles de la même chaîne
+* `showinfo=0` : Masque les informations de la vidéo (titre, auteur)
+* `iv_load_policy=3` : Masque les annotations
+* `controls=1` : Affiche les contrôles de lecture
+
+=== 2. Masquage CSS
+
+Ajout de styles CSS pour masquer visuellement les éléments restants :
+
+```scss
+.youtube-video-container {
+    position: relative;
+    
+    // Masque pour le logo YouTube en bas à droite
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: 80px;
+        height: 60px;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 5;
+        pointer-events: none;
+        border-radius: 4px;
+    }
+    
+    // Masque pour l'image de profil en bas à gauche
+    &::before {
+        content: '';
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        width: 200px;
+        height: 40px;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 5;
+        pointer-events: none;
+        border-radius: 4px;
+    }
+}
+```
+
+=== 3. Versions alternatives
+
+==== Masquage complet des contrôles
+
+```scss
+.youtube-video-clean {
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: linear-gradient(transparent 0%, rgba(0, 0, 0, 0.9) 100%);
+        z-index: 5;
+        pointer-events: none;
+    }
+}
+```
+
+==== Masquage minimal et précis
+
+```scss
+.youtube-minimal {
+    .youtube-video-container {
+        &::after {
+            // Logo YouTube uniquement
+            width: 70px;
+            height: 50px;
+        }
+        
+        &::before {
+            // Image de profil uniquement
+            width: 120px;
+            height: 35px;
+        }
+    }
+}
+```
+
+== Implémentation technique
+
+=== Structure HTML
+
+```html
+<div class="youtube-video-container">
+    <iframe src="[URL avec paramètres]"></iframe>
+    <div class="youtube-overlay-mask"></div>
+</div>
+```
+
+=== Classes CSS disponibles
+
+* `.youtube-video-container` : Style de base avec masquage
+* `.youtube-video-clean` : Masquage complet des contrôles
+* `.youtube-minimal` : Masquage précis et minimal
+
+== Avantages de cette approche
+
+✅ **Non-intrusif** : N'affecte pas la fonctionnalité de la vidéo
+✅ **Responsive** : S'adapte à toutes les tailles d'écran  
+✅ **Performant** : Utilise uniquement du CSS
+✅ **Flexible** : Plusieurs options de masquage disponibles
+✅ **Accessible** : Maintient l'accessibilité de la vidéo
+
+== Limites
+
+⚠️ **Dépendant de YouTube** : Si YouTube change sa structure, les masques peuvent ne plus être alignés
+⚠️ **Masquage visuel** : Les éléments existent toujours dans le DOM
+⚠️ **Maintenance** : Peut nécessiter des ajustements si YouTube modifie son interface
+
+== Utilisation
+
+Pour appliquer le masquage, il suffit d'utiliser la classe `.youtube-video-container` qui est appliquée automatiquement.
+
+Pour utiliser une variante spécifique :
+
+```html
+<!-- Masquage complet -->
+<div class="youtube-video-clean">
+    <div class="youtube-video-container">
+        <!-- iframe ici -->
+    </div>
+</div>
+
+<!-- Masquage minimal -->
+<div class="youtube-minimal">
+    <div class="youtube-video-container">
+        <!-- iframe ici -->
+    </div>
+</div>
+```
+
+== Tests recommandés
+
+1. **Vérifier sur différents navigateurs** : Chrome, Firefox, Safari, Edge
+2. **Tester la responsivité** : Desktop, tablette, mobile
+3. **Contrôler l'alignement** : Les masques doivent parfaitement couvrir les éléments
+4. **Vérifier la fonctionnalité** : Les contrôles de lecture doivent rester accessibles
+5. **Tester avec d'autres vidéos** : S'assurer que ça fonctionne avec différentes vidéos
+
+== Dépannage
+
+=== Les éléments sont encore visibles
+
+1. Vérifier que les paramètres d'URL sont corrects
+2. S'assurer que les styles CSS sont bien appliqués
+3. Vérifier la position des masques dans l'inspecteur
+
+=== Les contrôles ne fonctionnent plus
+
+1. Vérifier que `pointer-events: none` est appliqué aux masques
+2. S'assurer que les masques ne recouvrent pas les boutons de contrôle
+3. Ajuster les dimensions des masques si nécessaire
+
+=== La vidéo ne se charge pas
+
+1. Vérifier l'ID de la vidéo dans l'URL
+2. S'assurer que la vidéo est publique et intégrable
+3. Vérifier les paramètres `allow` de l'iframe

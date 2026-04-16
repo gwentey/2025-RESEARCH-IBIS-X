@@ -1,0 +1,39 @@
+= Pilier 3 — Technique (guide développeur)
+:description: Architecture, services, frontend, références API/BDD/Celery
+
+Ce pilier s'adresse aux **développeurs** qui contribuent au code ou maintiennent la plateforme.
+
+== Architecture
+
+* xref:03-technique/architecture/vue-ensemble.adoc[Vue d'ensemble — C4 niveau 1 & 2 (Mermaid)]
+* xref:03-technique/architecture/microservices.adoc[Microservices & responsabilités]
+* xref:03-technique/architecture/flux-communication.adoc[Flux de communication] — REST synchrone + Celery async.
+* xref:03-technique/architecture/modele-donnees.adoc[Modèle de données — ERD]
+* xref:03-technique/architecture/deploiement.adoc[Topologie de déploiement Kubernetes]
+
+== Services
+
+* xref:03-technique/services/api-gateway.adoc[api-gateway] — auth JWT/OAuth, routage, rôles utilisateurs.
+* xref:03-technique/services/service-selection.adoc[service-selection] — datasets (storage_path + dataset_files + file_columns).
+* xref:03-technique/services/ml-pipeline-service.adoc[ml-pipeline-service] — Celery `ml_queue` (training) + `ai_queue` (analyse OpenAI).
+* xref:03-technique/services/xai-engine-service.adoc[xai-engine-service] — Celery `xai_queue` (SHAP/LIME/LLM/chat), worker dédié via `Dockerfile.worker`.
+
+== Frontend
+
+* xref:03-technique/frontend/architecture-angular.adoc[Architecture Angular] — modules, lazy loading, Smart/Dumb.
+* xref:03-technique/frontend/i18n.adoc[i18n FR/EN] — `@ngx-translate`, règles impératives.
+* xref:03-technique/frontend/composants-cles.adoc[Composants clés]
+* xref:03-technique/frontend/design-system.adoc[Design system Sorbonne]
+
+== Références
+
+* xref:03-technique/api-reference.adoc[Référence API] (OpenAPI agrégé)
+* xref:03-technique/base-de-donnees.adoc[Base `ibis_x_db` & migrations Alembic par service]
+* xref:03-technique/celery-taches-async.adoc[Tâches Celery — 3 queues actives]
+* xref:03-technique/stockage-objets.adoc[Stockage objets MinIO / Azure Blob]
+* xref:03-technique/stack-technique.adoc[Stack technique raisonnée]
+
+[NOTE]
+====
+Les pages détaillées sont produites aux **Lots 3-4** du plan de refonte. Les diagrammes sont versionnés en Mermaid dans les blocs Asciidoc.
+====

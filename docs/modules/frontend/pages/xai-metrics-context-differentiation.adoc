@@ -1,0 +1,141 @@
+= Différenciation des Métriques selon le Type de Tâche dans XAI
+:toc:
+:toc-title: Table des matières
+:sectnums:
+
+== Vue d'ensemble
+
+Le système XAI a été amélioré pour différencier correctement les métriques selon le type de tâche ML (régression vs classification) lors de l'envoi du contexte au chat.
+
+== Problématique
+
+Auparavant, le chat recevait toutes les métriques avec des valeurs par défaut (0) même quand elles n'étaient pas applicables :
+
+* Pour une régression : F1 score = 0, precision = 0, recall = 0
+* Pour une classification : R² = 0, MAE = 0, RMSE = 0
+
+Cela causait des réponses incorrectes du chat, qui disait par exemple "Le F1 score est de 0" pour un modèle de régression au lieu d'expliquer que cette métrique n'est pas applicable.
+
+== Solution Implémentée
+
+=== 1. Détection du Type de Tâche
+
+[source,typescript]
+----
+const taskType = results?.preprocessing_config?.['task_type'] || 'classification';
+const isRegression = taskType === 'regression';
+----
+
+=== 2. Construction Conditionnelle des Métriques
+
+==== Pour la Régression
+
+[source,typescript]
+----
+metricsData = {
+  task_type: 'regression',
+  overall_score: results?.metrics?.r2_score ? Math.round(results.metrics.r2_score * 100) : 0,
+  r2_score: results?.metrics?.r2_score || 0,
+  mae: results?.metrics?.mae || 0,
+  mse: results?.metrics?.mse || 0,
+  rmse: results?.metrics?.rmse || 0,
+  // Flag et explication pour métriques non applicables
+  classification_metrics_not_applicable: true,
+  explanation_for_missing_metrics: "Les métriques F1, précision et rappel ne sont pas applicables..."
+}
+----
+
+==== Pour la Classification
+
+[source,typescript]
+----
+metricsData = {
+  task_type: 'classification',
+  overall_score: results?.metrics?.accuracy ? Math.round(results.metrics.accuracy * 100) : 0,
+  accuracy: results?.metrics?.accuracy || 0,
+  f1_score: results?.metrics?.f1_macro || results?.metrics?.f1_score || 0,
+  precision: results?.metrics?.precision_macro || results?.metrics?.precision || 0,
+  recall: results?.metrics?.recall_macro || results?.metrics?.recall || 0,
+  // Flag et explication pour métriques non applicables
+  regression_metrics_not_applicable: true,
+  explanation_for_missing_metrics: "Les métriques R², MAE, RMSE et MSE ne sont pas applicables..."
+}
+----
+
+== Métriques par Type de Tâche
+
+[cols="2,3,3", options="header"]
+|===
+| Type de Tâche | Métriques Pertinentes | Métriques Non Applicables
+
+| **Régression**
+| • R² (Coefficient de détermination) +
+  • MAE (Mean Absolute Error) +
+  • RMSE (Root Mean Square Error) +
+  • MSE (Mean Square Error)
+| • F1 Score +
+  • Precision +
+  • Recall +
+  • Accuracy +
+  • Confusion Matrix
+
+| **Classification**
+| • Accuracy +
+  • F1 Score +
+  • Precision +
+  • Recall +
+  • Confusion Matrix +
+  • ROC AUC (binaire)
+| • R² +
+  • MAE +
+  • RMSE +
+  • MSE
+|===
+
+== Avantages de cette Approche
+
+. **Clarté pour le Chat** : Le chat sait exactement quelles métriques sont pertinentes
+. **Réponses Appropriées** : Au lieu de dire "F1 = 0", le chat explique pourquoi F1 n'est pas applicable
+. **Éducation de l'Utilisateur** : Les explications aident à comprendre les différences entre régression et classification
+. **Contexte Enrichi** : Les flags `is_regression` et `is_classification` facilitent le traitement
+
+== Exemple de Réponse Chat Améliorée
+
+=== Avant (Incorrect)
+----
+Utilisateur : "Quel est le F1 score de mon modèle ?"
+Chat : "Le F1 score de votre modèle est de 0."
+----
+
+=== Après (Correct)
+----
+Utilisateur : "Quel est le F1 score de mon modèle ?"
+Chat : "Le F1 score n'est pas applicable à votre modèle de régression. 
+Cette métrique est utilisée uniquement pour les problèmes de classification. 
+Pour évaluer votre modèle de régression, je vous recommande de regarder :
+- Le R² score : 62.8% (variance expliquée)
+- Le MAE : 3.779 (erreur absolue moyenne)
+- Le RMSE : 4.446 (racine de l'erreur quadratique)
+Ces métriques sont plus appropriées pour mesurer la performance de votre modèle de régression."
+----
+
+== Impact sur l'Expérience Utilisateur
+
+* **Moins de Confusion** : Les utilisateurs comprennent mieux pourquoi certaines métriques ne sont pas disponibles
+* **Apprentissage** : Le système devient pédagogique en expliquant les différences
+* **Précision** : Les réponses du chat sont plus précises et contextuelles
+* **Professionnalisme** : Le système montre une compréhension approfondie du ML
+
+== Tests Recommandés
+
+1. Créer un modèle de régression et demander au chat le F1 score
+2. Créer un modèle de classification et demander au chat le R² score
+3. Vérifier que les explications sont claires et pédagogiques
+4. S'assurer que les bonnes métriques sont affichées pour chaque type
+
+== Notes Techniques
+
+* Le type de tâche est déterminé depuis `preprocessing_config.task_type`
+* Les métriques sont conditionnellement incluses dans le contexte ML
+* Le backend XAI n'a pas besoin de modification car il transmet le contexte au chat tel quel
+* Le chat (LLM) utilise les flags et explications pour générer des réponses appropriées

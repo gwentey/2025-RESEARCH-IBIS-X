@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Référence de l&#8217;API EXAI :: Documentation 2025 Research EXAI</title>
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">Documentation 2025 Research EXAI</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="EXAI" data-version="1.0">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Documentation Principale</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Accueil</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Guide de démarrage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guide Utilisateur</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#user-guide/account-management.adoc">Gestion du compte</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../user-guide/account-deletion.html">Suppression du compte</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../user-guide/dataset-selection.html">Sélection de datasets</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../user-guide/dataset-detailed-view.html">Vue détaillée des datasets</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#user-guide/project-creation.adoc">Création de projets</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../user-guide/project-management.html">Gestion des projets</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#user-guide/model-training.adoc">Entraînement de modèles</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#user-guide/xai-analysis.adoc">Analyse XAI</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#user-guide/report-generation.adoc">Génération de rapports</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#user-guide/results-interpretation.adoc">Interprétation des résultats</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guide Développeur</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="api-reference.html">Référence API</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="authentication-error-messages.html">Messages d&#8217;erreur d&#8217;authentification</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/code-style-guide.adoc">Guide de style de code</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/component-library.adoc">Bibliothèque de composants</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/deployment-checklist.adoc">Checklist de déploiement</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/docker-compose-setup.adoc">Configuration Docker Compose</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/environment-variables.adoc">Variables d&#8217;environnement</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/error-handling.adoc">Gestion des erreurs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/frontend-architecture.adoc">Architecture Frontend</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/i18n-guide.adoc">Guide d&#8217;internationalisation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/local-development.adoc">Développement local</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/logging-guide.adoc">Guide de journalisation</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/ml-pipeline-integration.adoc">Intégration ML Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/performance-optimization.adoc">Optimisation des performances</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/security-guidelines.adoc">Directives de sécurité</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/testing-strategy.adoc">Stratégie de test</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/troubleshooting.adoc">Dépannage</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/user-authentication.adoc">Authentification utilisateur</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="#dev-guide/xai-engine-integration.adoc">Intégration XAI Engine</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides de Données</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="dataset-management-guide.html">Guide de Gestion des Datasets</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="auto-dataset-initialization.html">Auto-Initialisation des Datasets</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="object-storage-implementation.html">Implémentation du Stockage d&#8217;Objets</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="storage-setup-guide.html">Guide de Configuration du Stockage</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Guides de Déploiement</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development/azure-deployment.html">Déploiement Azure</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../development/database-migrations.html">Migrations de base de données</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Documentation Principale</span>
+    <span class="version">1.0</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Documentation Principale</a></div>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1.0</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Documentation Principale</a></li>
+    <li>Guide Développeur</li>
+    <li><a href="api-reference.html">Référence API</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///C:/xampp/htdocs/2025-research-exai/docs/modules/ROOT/pages/dev-guide/api-reference.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Référence de l&#8217;API EXAI</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ce document fournit une vue d&#8217;ensemble structurée de l&#8217;API REST de la plateforme EXAI. L&#8217;accès principal aux fonctionnalités se fait via l'<strong>API Gateway</strong>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>La ressource <strong>principale et la plus à jour</strong> pour explorer les API est la <strong>documentation interactive (Swagger UI)</strong> générée automatiquement par chaque service FastAPI.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>API Gateway :</strong> Accédez à <code>&lt;URL_API_GATEWAY&gt;/docs</code> (obtenez l&#8217;URL via <code>minikube service api-gateway --url -n exai</code>).</p>
+</li>
+<li>
+<p><strong>Autres Services (pour debug) :</strong> Accédez à <code>&lt;URL_SERVICE_X&gt;/docs</code> (obtenez l&#8217;URL via <code>minikube service &lt;nom-service&gt; --url -n exai</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Cette page vise à compléter cette documentation interactive en fournissant :
+*   Une vue d&#8217;ensemble des endpoints clés.
+*   Des explications sur les concepts transverses comme l&#8217;authentification.
+*   Des exemples d&#8217;utilisation avec <code>curl</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Pour savoir comment obtenir les URL des services, consultez la section "Accéder à l&#8217;application" du guide <a href="../getting-started.html" class="xref page">Installation &amp; Démarrage Rapide</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_authentification_jwt"><a class="anchor" href="#_authentification_jwt"></a>Authentification (JWT)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Toutes les routes de l&#8217;API Gateway (sauf potentiellement <code>/docs</code>, <code>/openapi.json</code> et une route de login) sont protégées et nécessitent un <strong>jeton JWT (JSON Web Token)</strong> valide.</p>
+</div>
+<div class="sect2">
+<h3 id="_obtenir_un_token"><a class="anchor" href="#_obtenir_un_token"></a>Obtenir un Token</h3>
+<div class="paragraph">
+<p>Pour obtenir un token, vous devez envoyer une requête POST au endpoint d&#8217;authentification de l&#8217;API Gateway (le chemin exact est à confirmer, supposons <code>/api/v1/auth/login</code>) avec les identifiants utilisateur.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Méthode &amp; Chemin :</strong> <code>POST /api/v1/auth/login</code> (sur l&#8217;API Gateway)</p>
+</li>
+<li>
+<p><strong>Corps de la Requête :</strong> <code>application/x-www-form-urlencoded</code> (courant pour OAuth2/token) ou <code>application/json</code>.</p>
+</li>
+<li>
+<p>Exemple (<code>x-www-form-urlencoded</code>) : <code>username=votre_nom_utilisateur&amp;password=votre_mot_de_passe</code></p>
+</li>
+<li>
+<p>Exemple (<code>json</code>) : <code>{"username": "votre_nom_utilisateur", "password": "votre_mot_de_passe"}</code></p>
+</li>
+<li>
+<p><strong>Réponse Succès (200 OK) :</strong> Un objet JSON contenant le token.
+<code><code>json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9&#8230;&#8203;",
+  "token_type": "bearer"
+}
+</code></code></p>
+</li>
+<li>
+<p><strong>Exemple <code>curl</code> (form-urlencoded) :</strong>
+----
+curl -X POST "&lt;URL_API_GATEWAY&gt;/api/v1/auth/login" \
+-H "Content-Type: application/x-www-form-urlencoded" \
+-d "username=testuser&amp;password=testpassword"
+----</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_utiliser_le_token"><a class="anchor" href="#_utiliser_le_token"></a>Utiliser le Token</h3>
+<div class="paragraph">
+<p>Une fois le token obtenu, vous devez l&#8217;inclure dans l&#8217;en-tête <code>Authorization</code> de toutes vos requêtes suivantes vers les endpoints protégés, en préfixant le token par `Bearer ` (avec un espace).</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>En-tête HTTP :</strong> <code>Authorization: Bearer &lt;VOTRE_ACCESS_TOKEN&gt;</code></p>
+</li>
+<li>
+<p><strong>Exemple <code>curl</code> (pour un endpoint GET) :</strong>
+----
+TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9&#8230;&#8203;" # Remplacez par votre token
+curl -X GET "&lt;URL_API_GATEWAY&gt;/api/v1/datasets/" \
+-H "Authorization: Bearer $TOKEN"
+----</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_endpoints_principaux_de_lapi_gateway_apiv1"><a class="anchor" href="#_endpoints_principaux_de_lapi_gateway_apiv1"></a>Endpoints Principaux de l&#8217;API Gateway (<code>/api/v1/&#8230;&#8203;</code>)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>L&#8217;API Gateway expose les routes suivantes, qui sont les points d&#8217;entrée pour le Frontend. Elles se chargent de router les appels vers les services backend appropriés.</p>
+</div>
+<div class="paragraph">
+<p><strong>(Note : Les chemins exacts <code>/api/v1/&#8230;&#8203;</code> sont des exemples et devront être confirmés.)</strong></p>
+</div>
+<div class="sect2">
+<h3 id="_authentification"><a class="anchor" href="#_authentification"></a>Authentification</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>POST /api/v1/auth/login</code></p>
+</li>
+<li>
+<p><strong>Description :</strong> Permet à un utilisateur de s&#8217;authentifier et d&#8217;obtenir un token JWT.</p>
+</li>
+<li>
+<p><strong>Service Backend :</strong> Logique gérée potentiellement par l&#8217;API Gateway elle-même ou un microservice d&#8217;authentification dédié (si créé).</p>
+</li>
+<li>
+<p><strong>Voir :</strong> Section Authentification ci-dessus.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gestion_des_datasets_via_service_sélection"><a class="anchor" href="#_gestion_des_datasets_via_service_sélection"></a>Gestion des Datasets (via Service Sélection)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>GET /api/v1/datasets/</code></p>
+</li>
+<li>
+<p><strong>Description :</strong> Liste les datasets disponibles.</p>
+</li>
+<li>
+<p><strong>Service Backend :</strong> <code>service-selection</code></p>
+</li>
+<li>
+<p><strong>Voir :</strong> Référence du Service Sélection ci-dessous.</p>
+</li>
+<li>
+<p><code>POST /api/v1/datasets/</code></p>
+</li>
+<li>
+<p><strong>Description :</strong> Crée un nouveau dataset (métadonnées).</p>
+</li>
+<li>
+<p><strong>Service Backend :</strong> <code>service-selection</code></p>
+</li>
+<li>
+<p><strong>Voir :</strong> Référence du Service Sélection ci-dessous.</p>
+</li>
+<li>
+<p><code>GET /api/v1/datasets/{dataset_id}</code></p>
+</li>
+<li>
+<p><strong>Description :</strong> Récupère les détails d&#8217;un dataset spécifique.</p>
+</li>
+<li>
+<p><strong>Service Backend :</strong> <code>service-selection</code></p>
+</li>
+<li>
+<p><strong>Voir :</strong> Référence du Service Sélection ci-dessous.</p>
+</li>
+<li>
+<p><code>POST /api/v1/datasets/search</code> (Exemple)</p>
+</li>
+<li>
+<p><strong>Description :</strong> Recherche des datasets selon des critères spécifiques.</p>
+</li>
+<li>
+<p><strong>Service Backend :</strong> <code>service-selection</code></p>
+</li>
+<li>
+<p><strong>Voir :</strong> Référence du Service Sélection ci-dessous.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pipeline_ml_via_service_ml"><a class="anchor" href="#_pipeline_ml_via_service_ml"></a>Pipeline ML (via Service ML)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>POST /api/v1/ml/train</code> (Exemple)</p>
+</li>
+<li>
+<p><strong>Description :</strong> Lance une tâche d&#8217;entraînement de modèle ML.</p>
+</li>
+<li>
+<p><strong>Service Backend :</strong> <code>service-ml</code></p>
+</li>
+<li>
+<p><strong>Voir :</strong> Référence du Service ML ci-dessous.</p>
+</li>
+<li>
+<p><code>GET /api/v1/ml/jobs/{job_id}</code> (Exemple)</p>
+</li>
+<li>
+<p><strong>Description :</strong> Récupère le statut ou les résultats d&#8217;une tâche d&#8217;entraînement.</p>
+</li>
+<li>
+<p><strong>Service Backend :</strong> <code>service-ml</code></p>
+</li>
+<li>
+<p><strong>Voir :</strong> Référence du Service ML ci-dessous.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_explicabilité_xai_via_service_xai"><a class="anchor" href="#_explicabilité_xai_via_service_xai"></a>Explicabilité XAI (via Service XAI)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>POST /api/v1/xai/explain</code> (Exemple)</p>
+</li>
+<li>
+<p><strong>Description :</strong> Lance une tâche de génération d&#8217;explication XAI.</p>
+</li>
+<li>
+<p><strong>Service Backend :</strong> <code>service-xai</code></p>
+</li>
+<li>
+<p><strong>Voir :</strong> Référence du Service XAI ci-dessous.</p>
+</li>
+<li>
+<p><code>GET /api/v1/xai/jobs/{job_id}</code> (Exemple)</p>
+</li>
+<li>
+<p><strong>Description :</strong> Récupère le statut ou les résultats d&#8217;une tâche XAI.</p>
+</li>
+<li>
+<p><strong>Service Backend :</strong> <code>service-xai</code></p>
+</li>
+<li>
+<p><strong>Voir :</strong> Référence du Service XAI ci-dessous.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_référence_api_par_service_backend"><a class="anchor" href="#_référence_api_par_service_backend"></a>Référence API par Service Backend</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cette section détaille les endpoints clés exposés par chaque microservice backend. Notez que ces endpoints sont normalement appelés <strong>via</strong> l&#8217;API Gateway, mais peuvent être utiles pour le développement ou le débogage direct.</p>
+</div>
+<div class="sect2">
+<h3 id="_service_sélection_service_selection"><a class="anchor" href="#_service_sélection_service_selection"></a>Service Sélection (<code>service-selection</code>)</h3>
+<div class="paragraph">
+<p>Ce service gère les métadonnées des datasets.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Endpoint :</strong> <code>GET /datasets/</code></p>
+</li>
+<li>
+<p><strong>Description :</strong> Récupère la liste de tous les datasets enregistrés.</p>
+</li>
+<li>
+<p><strong>Paramètres Query :</strong> (Optionnels) <code>skip: int = 0</code>, <code>limit: int = 100</code> pour la pagination.</p>
+</li>
+<li>
+<p><strong>Réponse Succès (200 OK) :</strong> Liste d&#8217;objets Dataset.
+<code><code>json
+[
+  {
+    "id": 1,
+    "name": "Dataset Iris",
+    "description": "Le classique dataset Iris.",
+    "file_path": "/data/iris.csv",
+    "file_type": "csv"
+  },
+  &#8230;&#8203;
+]
+</code></code></p>
+</li>
+<li>
+<p><strong>Exemple <code>curl</code> (authentifié via Gateway) :</strong>
+----
+TOKEN="&#8230;&#8203;"
+curl -X GET "&lt;URL_API_GATEWAY&gt;/api/v1/datasets/?limit=10" -H "Authorization: Bearer $TOKEN"
+----</p>
+</li>
+<li>
+<p><strong>Endpoint :</strong> <code>POST /datasets/</code></p>
+</li>
+<li>
+<p><strong>Description :</strong> Enregistre un nouveau dataset dans le catalogue.</p>
+</li>
+<li>
+<p><strong>Corps de la Requête (JSON) :</strong> Objet <code>DatasetCreate</code>.
+<code><code>json
+{
+  "name": "Mon Nouveau Dataset",
+  "description": "Description du dataset.",
+  "file_path": "/chemin/vers/fichier.csv",
+  "file_type": "csv"
+}
+</code></code></p>
+</li>
+<li>
+<p><strong>Réponse Succès (201 Created) :</strong> L&#8217;objet Dataset créé (avec son ID).
+<code><code>json
+{
+  "id": 3,
+  "name": "Mon Nouveau Dataset", &#8230;&#8203;
+}
+</code></code></p>
+</li>
+<li>
+<p><strong>Exemple <code>curl</code> (authentifié via Gateway) :</strong>
+----
+TOKEN="&#8230;&#8203;"
+curl -X POST "&lt;URL_API_GATEWAY&gt;/api/v1/datasets/" \
+-H "Authorization: Bearer $TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"name": "Test", "description": "Test desc", "file_path": "/path", "file_type": "csv"}'
+----</p>
+</li>
+<li>
+<p><strong>Endpoint :</strong> <code>GET /datasets/{dataset_id}</code></p>
+</li>
+<li>
+<p><strong>Description :</strong> Récupère les détails d&#8217;un dataset par son ID.</p>
+</li>
+<li>
+<p><strong>Paramètre Path :</strong> <code>{dataset_id}: int</code>.</p>
+</li>
+<li>
+<p><strong>Réponse Succès (200 OK) :</strong> Objet Dataset.</p>
+</li>
+<li>
+<p><strong>Réponse Erreur (404 Not Found) :</strong> Si l&#8217;ID n&#8217;existe pas.</p>
+</li>
+<li>
+<p><strong>Exemple <code>curl</code> (authentifié via Gateway) :</strong>
+----
+TOKEN="&#8230;&#8203;"
+curl -X GET "&lt;URL_API_GATEWAY&gt;/api/v1/datasets/1" -H "Authorization: Bearer $TOKEN"
+----</p>
+</li>
+<li>
+<p><strong>Endpoint :</strong> <code>POST /datasets/search</code> (Exemple)</p>
+</li>
+<li>
+<p><strong>Description :</strong> Recherche des datasets selon des critères.</p>
+</li>
+<li>
+<p><strong>Corps de la Requête (JSON) :</strong> Objet <code>DatasetSearchCriteria</code>.
+<code><code>json
+{
+  "name_contains": "Iris",
+  "min_rows": 100,
+  "ethical_tags": ["no_bias"]
+}
+</code></code></p>
+</li>
+<li>
+<p><strong>Réponse Succès (200 OK) :</strong> Liste des objets Dataset correspondants.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_service_ml_service_ml"><a class="anchor" href="#_service_ml_service_ml"></a>Service ML (<code>service-ml</code>)</h3>
+<div class="paragraph">
+<p><strong>(Endpoints à définir et documenter ici : lancement entraînement, récupération statut/résultats&#8230;&#8203;)</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_service_xai_service_xai"><a class="anchor" href="#_service_xai_service_xai"></a>Service XAI (<code>service-xai</code>)</h3>
+<div class="paragraph">
+<p><strong>(Endpoints à définir et documenter ici : lancement explication, récupération statut/résultats&#8230;&#8203;)</strong></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modèles_de_données_communs_exemples"><a class="anchor" href="#_modèles_de_données_communs_exemples"></a>Modèles de Données Communs (Exemples)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_objet_dataset"><a class="anchor" href="#_objet_dataset"></a>Objet <code>Dataset</code></h3>
+<div class="paragraph">
+<p>Représente les métadonnées d&#8217;un jeu de données.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "id": int,             // Identifiant unique généré par la base de données
+  "name": str,           // Nom du dataset
+  "description": str,    // Description textuelle
+  "file_path": str,      // Chemin d'accès au fichier de données (sur un volume partagé ?)
+  "file_type": str,      // Type de fichier (ex: "csv", "parquet")
+  "metadata": dict | None // Autres métadonnées techniques/éthiques/métier (nb lignes, colonnes, tags...)
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+= Ajouter une feature
+:description: Règle Doc = Code et parcours complet
+
+Règle absolue : **aucune feature n'est complète sans sa documentation**.
+
+== Parcours type (petite feature)
+
+. Issue GitHub décrivant le besoin + critères d'acceptation.
+. Branche `feat/<slug>`.
+. Écriture du test (TDD recommandé — test qui échoue d'abord).
+. Implémentation.
+. Documentation dans le pilier adéquat.
+. Mise à jour `CHANGELOG.md`.
+. PR + revue + merge.
+
+== Checklist documentation par type de feature
+
+[cols="1,3"]
+|===
+| Feature | Pages à mettre à jour
+
+| Nouvel endpoint API
+| xref:03-technique/api-reference.adoc[api-reference.adoc] + page du service concerné
+
+| Nouveau composant frontend
+| xref:03-technique/frontend/composants-cles.adoc[Composants clés] + éventuellement module xref:02-fonctionnel/index.adoc[fonctionnel]
+
+| Nouveau flux inter-services
+| xref:03-technique/architecture/flux-communication.adoc[Flux de communication] (séquence Mermaid)
+
+| Nouvelle table ou colonne
+| xref:03-technique/base-de-donnees.adoc[base-de-donnees.adoc] + xref:03-technique/architecture/modele-donnees.adoc[ERD] (migration Alembic obligatoire)
+
+| Nouvelle tâche Celery
+| xref:03-technique/celery-taches-async.adoc[celery-taches-async.adoc] + page service concerné
+
+| Décision architecturale
+| Nouveau xref:05-audit/adr/template-adr.adoc[ADR] dans `05-audit/adr/`
+
+| Nouveau parcours utilisateur
+| xref:02-fonctionnel/parcours-utilisateur.adoc[parcours-utilisateur.adoc] + module concerné + xref:02-fonctionnel/user-stories.adoc[user-stories.adoc]
+
+| Nouvelle chaîne i18n
+| `frontend/src/assets/i18n/fr.json` + `en.json` **les deux**
+
+| Impact sécurité / RGPD
+| xref:05-audit/securite/modele-menaces.adoc[STRIDE] + xref:05-audit/rgpd/cartographie-donnees.adoc[Cartographie] si applicable
+
+| Changement de dépendance externe
+| xref:05-audit/rgpd/registre-traitements.adoc[Registre des traitements] si nouveau sous-traitant
+|===
+
+== Tests à prévoir
+
+Voir xref:05-audit/qualite/plan-tests.adoc[Plan de tests] :
+
+* Unit (comportement isolé).
+* Intégration (endpoint + BDD).
+* E2E si impact utilisateur critique.
+
+== Traçabilité
+
+Ajouter une ligne dans xref:05-audit/tracabilite/exigences-implementation.adoc[Matrice exigences ↔ code].
+
+== Invariants à ne jamais casser
+
+* 3 queues Celery (`ml_queue`, `ai_queue`, `xai_queue`).
+* `artifact_uri` (pas `model_uri`).
+* `users.is_superuser` = propriété calculée (pas de colonne).
+* Une `version_table` Alembic par service.
+* Angular Material (pas de Tailwind).
+* i18n FR+EN toujours synchronisé.

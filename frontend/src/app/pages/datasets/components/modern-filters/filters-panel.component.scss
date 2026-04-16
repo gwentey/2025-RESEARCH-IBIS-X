@@ -1,0 +1,486 @@
+// ===============================================
+// PANEL DE FILTRES SAAS MODERNE - FORCE THÈME CLAIR
+// ===============================================
+
+.modern-filters-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  // FORCE THÈME CLAIR ULTRA-AGRESSIF - TOUT EN BLANC !
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #1a202c !important;
+  color-scheme: light !important;
+
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  // FORCE ABSOLUMENT TOUT EN THÈME CLAIR
+  *, *::before, *::after {
+    color-scheme: light !important;
+    background-color: transparent !important;
+    color: #1a202c !important;
+  }
+
+  // FORCE LES ICÔNES Material
+  mat-icon, .mat-icon {
+    color: #4f46e5 !important;
+    background: transparent !important;
+  }
+
+  // FORCE LES BOUTONS
+  button, .mat-mdc-button, .mat-mdc-icon-button {
+    background: #ffffff !important;
+    color: #4f46e5 !important;
+    border-color: #e2e8f0 !important;
+  }
+
+  // FORCE LES CONTENEURS
+  div, section, article, header, footer {
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+
+  &.loading {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+}
+
+// ===============================================
+// HEADER SECTION
+// ===============================================
+
+.panel-header {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  padding: 20px 24px;
+  color: #1a202c !important;
+  position: relative;
+
+  // FORCE TOUT EN BLANC DANS LE HEADER
+  *, *::before, *::after {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #1a202c !important;
+  }
+
+  mat-icon, .mat-icon {
+    color: #4f46e5 !important;
+    background: transparent !important;
+  }
+
+  button {
+    background: #ffffff !important;
+    color: #4f46e5 !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    .header-main {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+
+                  .header-icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        background: rgba(99, 102, 241, 0.1);
+        border: 2px solid rgba(99, 102, 241, 0.2);
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(99, 102, 241, 0.1);
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(99, 102, 241, 0.15);
+          border-color: rgba(99, 102, 241, 0.3);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .header-icon {
+          color: #4f46e5 !important;
+          font-size: 24px !important;
+          width: 24px !important;
+          height: 24px !important;
+          font-weight: 500 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          font-family: 'Material Icons' !important;
+          font-style: normal !important;
+          line-height: 1 !important;
+          text-transform: none !important;
+          letter-spacing: normal !important;
+          word-wrap: normal !important;
+          white-space: nowrap !important;
+          direction: ltr !important;
+          -webkit-font-smoothing: antialiased !important;
+          text-rendering: optimizeLegibility !important;
+          -moz-osx-font-smoothing: grayscale !important;
+          font-feature-settings: 'liga' !important;
+        }
+      }
+
+      .header-text {
+        .panel-title {
+          font-size: 22px;
+          font-weight: 600;
+          color: #111827 !important;
+          margin: 0 0 4px 0;
+          letter-spacing: -0.025em;
+          line-height: 1.3;
+        }
+
+        .panel-subtitle {
+          font-size: 14px;
+          color: #6b7280 !important;
+          margin: 0;
+          line-height: 1.5;
+          font-weight: 400;
+        }
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-self: flex-start;
+
+      .reset-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        color: #64748b !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        transition: all 0.2s ease;
+
+        &:hover:not(:disabled) {
+          background: #fef2f2 !important;
+          color: #dc2626 !important;
+          border-color: #fecaca !important;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15);
+        }
+
+        &:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+          transform: none;
+          box-shadow: none;
+        }
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      .close-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        color: #64748b !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+        &:hover {
+          background: #f8fafc !important;
+          color: #1e293b !important;
+          border-color: #cbd5e1 !important;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(15, 23, 42, 0.05);
+        }
+
+        &:active {
+          transform: translateY(0);
+          box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1);
+        }
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
+
+  .active-filters-section {
+    border-top: 1px solid #f3f4f6;
+    padding: 20px 24px 16px 24px;
+    margin-top: 8px;
+
+    .modern-chip-bar {
+      // Espacement propre pour les chips
+      ::ng-deep {
+        .filter-chip-bar {
+          background: #f8fafc !important;
+          border: 1px solid #e2e8f0 !important;
+          border-radius: 12px !important;
+          padding: 24px !important;
+
+          .chip-bar-header {
+            margin-bottom: 16px !important;
+
+            .header-info {
+              .info-icon {
+                color: #4f46e5 !important;
+                font-size: 18px !important;
+                width: 18px !important;
+                height: 18px !important;
+              }
+
+              .info-text {
+                font-size: 14px !important;
+                font-weight: 600 !important;
+                color: #475569 !important;
+              }
+            }
+
+            .clear-all-btn {
+              // Styles déjà définis dans le composant
+            }
+          }
+
+          .chips-container {
+            gap: 20px !important;
+
+            .visible-chips {
+              .chips-set {
+                gap: 20px !important;
+                row-gap: 16px !important;
+
+                .filter-chip {
+                  margin: 8px 12px 8px 0 !important;
+                  // Éviter les chevauchements
+                  position: relative !important;
+                  z-index: 1 !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===============================================
+// CONTENU PRINCIPAL
+// ===============================================
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background: #ffffff !important;
+  color: #1a202c !important;
+
+  .filters-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 100%;
+    margin: 0 auto;
+
+    .filter-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 0 8px;
+
+      // Layout simple et clean avec espacement moderne
+    }
+  }
+}
+
+
+
+
+
+// ===============================================
+// LOADING OVERLAY
+// ===============================================
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  .loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+
+    .loading-text {
+      font-size: 14px;
+      color: #64748b;
+      font-weight: 500;
+    }
+  }
+}
+
+// ===============================================
+// RESPONSIVE
+// ===============================================
+
+@media (max-width: 768px) {
+  .panel-header {
+    padding: 16px 20px;
+
+    .header-content {
+      margin-bottom: 12px;
+
+      .header-left {
+        gap: 12px;
+
+        .header-text {
+          .panel-title {
+            font-size: 18px;
+          }
+
+          .panel-subtitle {
+            font-size: 13px;
+          }
+        }
+      }
+
+      .header-actions {
+        .reset-btn,
+        .close-btn {
+          width: 36px;
+          height: 36px;
+        }
+      }
+    }
+  }
+
+
+
+  .panel-content {
+    padding: 16px 20px;
+
+    .filters-form {
+      gap: 12px;
+
+      .filter-groups {
+        padding: 0 4px;
+        gap: 8px;
+      }
+    }
+  }
+
+
+}
+
+// ===============================================
+// ANIMATIONS
+// ===============================================
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.panel-content {
+  animation: slideInDown 0.3s ease;
+}
+
+
+
+// ===============================================
+// SCROLL PERSONNALISÉ
+// ===============================================
+
+.panel-content {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f8fafc;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+
+    &:hover {
+      background: #94a3b8;
+    }
+  }
+}
+
+// ===============================================
+// THÈME SOMBRE (OPTIONNEL)
+// ===============================================
+
+@media (prefers-color-scheme: dark) {
+  .modern-filters-panel {
+    background: #1e293b;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+
+    .panel-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border-color: #334155;
+
+      .header-text {
+        .panel-title {
+          color: #f1f5f9;
+        }
+
+        .panel-subtitle {
+          color: #94a3b8;
+        }
+      }
+    }
+
+
+
+
+  }
+}

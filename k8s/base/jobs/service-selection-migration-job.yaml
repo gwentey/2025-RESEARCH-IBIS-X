@@ -1,0 +1,47 @@
+# service-selection-migration-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: service-selection-migration-job
+  namespace: ibis-x
+spec:
+  # Supprime automatiquement le job après 5 minutes
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 3 # Nombre de tentatives avant d'échouer
+  template:
+    metadata:
+      labels:
+        job: service-selection-migration
+    spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+          - |
+            echo "Waiting for PostgreSQL to be ready..."
+            until nc -z postgresql-service.ibis-x.svc.cluster.local 5432; do
+              echo "PostgreSQL is not ready yet..."
+              sleep 2
+            done
+            echo "PostgreSQL is ready!"
+      containers:
+      - name: migration
+        # IMAGE LOCALE pour développement
+        image: service-selection:latest
+        imagePullPolicy: IfNotPresent
+        command: ["sh", "-c"]
+        args:
+          - |
+            echo "Début de la migration Service Selection..."
+            cd /app
+            alembic upgrade head
+            echo "Migration Service Selection terminée avec succès"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: database-url
+        workingDir: /app
+      restartPolicy: OnFailure 

@@ -1,0 +1,69 @@
+= Critères d'acceptation
+:description: Conditions de réussite par user story
+
+Format https://en.wikipedia.org/wiki/Given-When-Then[Given-When-Then] pour les US clés.
+
+== US-01 — Inscription email+password
+
+* *Étant donné* un visiteur non authentifié sur `/register`
+* *Quand* il soumet un email valide + mot de passe ≥ 8 caractères
+* *Alors* un compte est créé avec `role='user'` et il est redirigé vers l'onboarding
+* *ET* un JWT lui est délivré dans la même requête
+
+== US-04 — Suppression de compte
+
+* *Étant donné* un utilisateur authentifié
+* *Quand* il appelle `DELETE /users/me`
+* *Alors* toutes ses données (chat, explanations, experiments+artifacts, datasets+files, projects, oauth_accounts, user) sont supprimées en cascade
+* *ET* les fichiers Blob associés sont également supprimés
+* *ET* il reçoit une confirmation HTTP 204
+* *ET* son JWT devient invalide
+
+== US-11 — Filtres de catalogue
+
+* *Étant donné* un utilisateur sur `/app/datasets`
+* *Quand* il applique un filtre combiné (ex. "nb lignes ∈ [100, 10000]" + "score éthique ≥ 7" + "domain = éducation")
+* *Alors* la liste affiche uniquement les datasets satisfaisant les trois critères
+* *ET* le compteur de résultats est à jour
+
+== US-20 — Wizard ML
+
+* *Étant donné* un utilisateur avec un dataset sélectionné
+* *Quand* il complète les 5 étapes du wizard et clique "Lancer"
+* *Alors* une ligne `experiments` est créée avec `status='pending'`
+* *ET* une tâche `train_model` est publiée sur `ml_queue`
+* *ET* l'utilisateur est redirigé vers `/app/experiments/{id}` avec la barre de progression
+
+== US-23 — Progression temps réel
+
+* *Étant donné* une expérience en cours (`status='running'`)
+* *Quand* le frontend poll `GET /experiments/{id}` toutes les 2 s
+* *Alors* le champ `progress` se met à jour (0 → 100)
+* *ET* à 100, `status` passe à `completed`
+
+== US-30 — Explication SHAP globale
+
+* *Étant donné* une expérience `completed` avec `artifact_uri`
+* *Quand* l'utilisateur demande `POST /explanations {method: 'shap', scope: 'global'}`
+* *Alors* une tâche `generate_explanation_task` est publiée sur `xai_queue`
+* *ET* une fois `completed`, le résultat contient un tableau d'importance par feature
+* *ET* le top-3 des features est cohérent avec `feature_importance` de l'expérience (différence < 20 %)
+
+== US-33 — Chat limité à 5 questions
+
+* *Étant donné* une explication avec déjà 4 messages utilisateur dans son `chat_messages`
+* *Quand* l'utilisateur poste une 5e question
+* *Alors* le traitement est accepté (→ `completed` avec réponse LLM)
+* *Quand* il poste une 6e question
+* *Alors* l'API retourne HTTP 429 `Too Many Requests` avec un message invitant à ouvrir une nouvelle session
+
+== US-51 — Import Kaggle admin
+
+* *Étant donné* un admin lance le Job `kaggle-dataset-import-job`
+* *Quand* la configuration `kaggle_datasets_config.yaml` liste 10 datasets
+* *Alors* 10 entrées `datasets` + fichiers Blob + `dataset_files` + `file_columns` sont créés
+* *ET* les slugs déjà présents sont skippés (idempotence)
+
+== Tests associés
+
+Chaque critère d'acceptation doit être couvert par au moins un test d'intégration ou E2E : voir xref:05-audit/qualite/plan-tests.adoc[Plan de tests].

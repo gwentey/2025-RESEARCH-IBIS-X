@@ -1,0 +1,77 @@
+= Dossier d'audit — IBIS-X
+:description: Point d'entrée unique pour un auditeur, un jury ou un évaluateur
+:toc: left
+:toclevels: 2
+
+== À qui s'adresse ce dossier ?
+
+Cette page est le **point d'entrée** pour :
+
+* un *jury académique* (Master 2 MIAGE) qui évalue la rigueur technique, la conformité et la traçabilité du projet ;
+* un *auditeur externe* qui vérifie sécurité, RGPD et éthique IA ;
+* un *relecteur technique* qui veut comprendre les décisions d'architecture sans lire tout le code.
+
+== Vue synthétique du projet
+
+* *Nature* : Proof of Concept académique (Master 2 MIAGE).
+* *Domaine* : plateforme d'expérimentation XAI (Explainable AI) avec pipeline ML.
+* *Stack* : 4 microservices Python (FastAPI) + frontend Angular 19, orchestrés par Kubernetes.
+* *Données* : datasets publics (Kaggle), utilisateurs de la plateforme (email, mot de passe haché, OAuth Google).
+* *Environnements* : Minikube (local dev), AKS Azure (prod).
+
+Voir xref:03-technique/architecture/vue-ensemble.adoc[Vue d'ensemble architecture] pour le schéma C4.
+
+== Checklist d'audit
+
+[cols="1,4,1"]
+|===
+| Domaine | Référence documentaire | Statut
+
+| 🔐 Sécurité applicative
+| xref:05-audit/securite/politique.adoc[Politique] · xref:05-audit/securite/owasp-top10.adoc[OWASP Top 10] · xref:05-audit/securite/modele-menaces.adoc[Modèle STRIDE]
+| 🟡 À finaliser (Lot 4)
+
+| 🔑 Gestion des secrets
+| xref:05-audit/securite/gestion-secrets.adoc[Secrets K8s, rotation, .env]
+| 🟡 À finaliser (Lot 4)
+
+| 📋 RGPD / GDPR
+| xref:05-audit/rgpd/cartographie-donnees.adoc[Cartographie] · xref:05-audit/rgpd/checklist-conformite.adoc[Checklist] · xref:05-audit/rgpd/droits-utilisateurs.adoc[Droits] · xref:05-audit/rgpd/registre-traitements.adoc[Registre]
+| 🟡 À finaliser (Lot 4)
+
+| ⚖️ Éthique IA
+| xref:05-audit/ethique-ia/principes.adoc[Principes] · xref:05-audit/ethique-ia/evaluation-datasets.adoc[Évaluation éthique des datasets]
+| 🟡 À finaliser (Lot 4)
+
+| 📐 Décisions d'architecture
+| xref:05-audit/adr/template-adr.adoc[Template MADR] + 6 ADRs (microservices, Celery, Postgres, Angular Material, Kubernetes, SHAP/LIME)
+| 🟡 À finaliser (Lot 4)
+
+| ✅ Qualité & tests
+| xref:05-audit/qualite/strategie-tests.adoc[Stratégie] · xref:05-audit/qualite/plan-tests.adoc[Plan de tests] · xref:05-audit/qualite/validation-iris.adoc[Validation Iris]
+| 🟡 À finaliser (Lot 4)
+
+| 🔗 Traçabilité exigences ↔ code
+| xref:05-audit/tracabilite/exigences-implementation.adoc[Matrice]
+| 🟡 À finaliser (Lot 4)
+
+| 📝 Journal de changements
+| xref:05-audit/tracabilite/journal-changements.adoc[Journal] + lien:{url-project}/blob/main/CHANGELOG.md[CHANGELOG.md]
+| 🟢 En place
+|===
+
+== Parcours recommandé pour un jury (30 minutes)
+
+. Lire cette page (*5 min*).
+. xref:01-projet/vision.adoc[Vision & périmètre PoC] (*3 min*).
+. xref:03-technique/architecture/vue-ensemble.adoc[Schéma C4 global] (*5 min*).
+. Parcourir les **6 ADRs** xref:05-audit/adr/template-adr.adoc[(dossier ADR)] (*10 min*).
+. xref:05-audit/rgpd/checklist-conformite.adoc[Checklist RGPD] (*3 min*).
+. xref:05-audit/tracabilite/exigences-implementation.adoc[Matrice de traçabilité] (*4 min*).
+
+== Références complémentaires
+
+* link:../../../CLAUDE.md[`CLAUDE.md`] — contrat IA / invariants projet.
+* link:../../../memory-bank/architecture.md[`memory-bank/architecture.md`] — source de vérité architecture.
+* link:../../../CHANGELOG.md[`CHANGELOG.md`] — historique des versions.
+* link:../../../SECURITY.md[`SECURITY.md`] — signalement de vulnérabilités.

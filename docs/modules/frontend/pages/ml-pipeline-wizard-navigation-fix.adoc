@@ -1,0 +1,80 @@
+= Correction Navigation Bouton Retour - Wizard Pipeline ML
+:navtitle: Fix Navigation Wizard ML
+:page-description: Documentation de la correction du bouton retour dans le wizard de pipeline ML
+:page-keywords: wizard, navigation, bouton retour, pipeline ML, datasets
+:page-aliases: 
+
+== Problème Identifié
+
+Le bouton "Retour" dans le wizard de pipeline ML (`/ml-pipeline-wizard`) redirigeait incorrectement vers une page d'erreur d'authentification (`/authentication/error`) au lieu de rediriger vers la page des datasets.
+
+=== URL Problématique
+
+Depuis l'URL: `http://localhost:8080/ml-pipeline-wizard?datasetId=79da3198-7211-43bd-8098-c8ae33eb6d4e&datasetName=Iris`
+
+Le bouton retour devrait rediriger vers: `http://localhost:8080/app/datasets`
+
+== Solution Implémentée
+
+=== Modification du Composant
+
+Fichier modifié: `frontend/src/app/pages/ml-pipeline/wizard/ml-pipeline-wizard.component.ts`
+
+La méthode `goBack()` a été simplifiée pour rediriger systématiquement vers la page des datasets:
+
+[source,typescript]
+----
+goBack() {
+  // Empêcher la navigation pendant l'entraînement
+  if (this.isTraining) {
+    console.log('🚫 Navigation bloquée pendant l\'entraînement');
+    return;
+  }
+
+  // Navigation de retour vers la page des datasets
+  // Puisque le wizard est lancé depuis la sélection d'un dataset,
+  // on redirige toujours vers la liste des datasets
+  console.log('🔙 Navigation retour vers la page des datasets');
+  this.router.navigate(['/app/datasets']);
+}
+----
+
+=== Logique Antérieure (Problématique)
+
+L'ancienne implémentation tentait de naviguer vers:
+- Le dashboard ML du projet si un `projectId` était disponible
+- Une `returnUrl` depuis les paramètres de requête
+- Cette logique causait des redirections incorrectes vers la page d'erreur
+
+=== Nouvelle Logique
+
+La nouvelle implémentation:
+- Redirige systématiquement vers `/app/datasets`
+- Respecte toujours la restriction de navigation pendant l'entraînement
+- Simplifie la logique en éliminant les cas complexes de routing
+
+== Impact Utilisateur
+
+=== Comportement Attendu
+
+1. L'utilisateur accède au wizard ML depuis la page des datasets
+2. L'utilisateur clique sur le bouton "Retour" dans le wizard
+3. L'utilisateur est correctement redirigé vers la liste des datasets
+
+=== Test de Validation
+
+Pour valider la correction:
+
+1. Naviguer vers `/app/datasets`
+2. Sélectionner un dataset et lancer le wizard ML
+3. Cliquer sur le bouton "Retour" dans le header du wizard
+4. Vérifier la redirection vers `/app/datasets`
+
+== Notes Techniques
+
+- La méthode maintient la protection contre la navigation pendant l'entraînement
+- La navigation utilise le router Angular standard
+- Aucun impact sur les autres fonctionnalités du wizard
+- Solution compatible avec l'architecture existante
+
+Cette correction améliore l'expérience utilisateur en assurant une navigation cohérente et prévisible dans l'application.

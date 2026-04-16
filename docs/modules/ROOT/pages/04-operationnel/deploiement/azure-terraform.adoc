@@ -1,0 +1,103 @@
+= Déploiement Azure + Terraform
+:description: Provisionning et déploiement en production
+
+La source détaillée est link:../../../../../README-Terraform.md[README-Terraform.md] à la racine du dépôt. Cette page en donne la synthèse.
+
+== Vue d'ensemble
+
+[mermaid]
+----
+flowchart LR
+    gh[GitHub Actions] -->|apply| tf[Terraform]
+    tf -->|crée| azure[(Azure)]
+    azure --> rg[Resource Group]
+    rg --> aks[AKS Cluster]
+    rg --> pg[(PostgreSQL Flexible Server)]
+    rg --> blob[(Blob Storage)]
+    rg --> kv[(Key Vault)]
+    gh -->|skaffold deploy| aks
+----
+
+== Ressources Azure provisionnées
+
+[cols="1,2"]
+|===
+| Ressource | Rôle
+| Resource Group | Regroupement logique (`ibis-x-prod-rg`)
+| AKS | Cluster Kubernetes (2-3 nodes)
+| PostgreSQL Flexible Server | Base `ibis_x_db`
+| Blob Storage | Datasets + artefacts
+| Key Vault | Secrets (JWT, OAuth, OpenAI, Kaggle, DB)
+| Container Registry (optionnel) | Images Docker
+| Log Analytics | Logs + métriques
+|===
+
+== Prérequis
+
+* Azure CLI connecté (`az login`).
+* Terraform ≥ 1.5.
+* Service Principal avec droits Contributor.
+* Un domaine (optionnel) pour Ingress HTTPS.
+
+== Procédure — première mise en production
+
+[source,bash]
+----
+cd terraform
+terraform init
+terraform plan -out=tfplan
+terraform apply tfplan
+----
+
+Créations typiques en ~15 minutes.
+
+== Déploiement applicatif
+
+Après le provisionning Terraform :
+
+. Configurer `kubectl` pour pointer vers AKS :
++
+[source,bash]
+----
+az aks get-credentials --resource-group ibis-x-prod-rg --name ibis-x-prod-aks
+----
+. Générer / synchroniser les secrets depuis Azure Key Vault → Kubernetes Secrets.
+. Appliquer les overlays Kustomize :
++
+[source,bash]
+----
+kubectl apply -k k8s/overlays/azure/
+----
+. Vérifier :
++
+[source,bash]
+----
+kubectl get pods -n ibis-x
+kubectl get ingress -n ibis-x
+----
+
+== Mise à jour applicative
+
+Push sur `main` → GitHub Actions :
+
+. Build images Docker.
+. Push vers Container Registry.
+. Application Kustomize sur AKS.
+. Migration Jobs exécutées comme initContainers avant rollout.
+
+== Rollback
+
+Voir xref:04-operationnel/runbooks/rollback-deploiement.adoc[Runbook rollback].
+
+== Surveillance
+
+Voir xref:04-operationnel/monitoring-logs.adoc[Monitoring & logs].
+
+== Destruction (hors production)
+
+[source,bash]
+----
+terraform destroy
+----
+
+**Irréversible** (perte des données en Blob + PostgreSQL). Backup préalable obligatoire.

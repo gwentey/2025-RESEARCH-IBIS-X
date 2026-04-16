@@ -1,0 +1,16 @@
+= Pilier 1 — Projet
+:description: Vision, périmètre, roadmap et vocabulaire d'IBIS-X
+
+Ce pilier décrit **pourquoi** et **pour qui** IBIS-X existe, **quelles sont les limites du PoC**, et le **vocabulaire** partagé par toute la documentation.
+
+== Contenu
+
+* xref:01-projet/vision.adoc[Vision & objectifs] — mission, public cible, valeur académique.
+* xref:01-projet/perimetre-poc.adoc[Périmètre PoC] — ce qui est dans le scope, ce qui ne l'est pas.
+* xref:01-projet/roadmap.adoc[Roadmap] — phases passées, en cours, à venir.
+* xref:01-projet/glossaire.adoc[Glossaire] — acronymes & concepts domaine (reflet de `memory-bank/glossary.md`).
+
+[NOTE]
+====
+Les pages détaillées de ce pilier sont consolidées depuis l'ancien PRD (`memory-bank/ARCHIVE/prd_ibis_x_poc_v2.md`) dans le **Lot 3** du plan de refonte documentaire.
+====

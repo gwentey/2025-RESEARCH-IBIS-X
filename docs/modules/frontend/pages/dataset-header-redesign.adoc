@@ -1,0 +1,173 @@
+= Refonte du Header de Page Dataset : Style Stripe/Linear
+:navtitle: Refonte Header Dataset
+:description: Documentation de la refonte du header de la page de détail des datasets selon les standards Stripe/Linear
+
+== Vue d'ensemble
+
+Le header de la page de détail des datasets a été complètement redesigné pour adopter un style moderne inspiré des interfaces de Stripe et Linear, remplaçant l'ancien design complexe avec particules animées par une approche plus épurée et professionnelle.
+
+== Changements Effectués
+
+=== Remplacement du Design Hero
+
+**Avant :**
+- Header complexe avec particules animées
+- Background avec gradients multiples et effets de mesh
+- Animations CSS lourdes (float, pulse-glow, rotate)
+- Score de qualité affiché dans un cercle animé
+- Layout en grille complexe avec icône domaine surdimensionnée
+
+**Après :**
+- Header épuré style Stripe/Linear
+- Design basé sur une hiérarchie visuelle claire
+- Utilisation native d'Angular Material
+- Layout responsive et accessible
+- Focus sur le contenu plutôt que les effets visuels
+
+=== Nouvelle Structure HTML
+
+[source,html]
+----
+<div class="stripe-header">
+  <div class="header-container">
+    <!-- Navigation breadcrumb -->
+    <nav class="header-nav">...</nav>
+    
+    <!-- Contenu principal -->
+    <div class="header-content">
+      <div class="dataset-identity">
+        <div class="dataset-icon">...</div>
+        <div class="dataset-details">...</div>
+      </div>
+      <div class="header-actions">...</div>
+    </div>
+    
+    <!-- Tags avec Angular Material chips -->
+    <div class="tags-section">...</div>
+  </div>
+</div>
+----
+
+=== Améliorations UX/UI
+
+==== Icônes de Domaine
+- Taille réduite (64x64px → plus moderne)
+- Couleurs spécifiques par domaine (education, healthcare, finance, technology)
+- Design cohérent avec le système Material Design
+
+==== Badges de Statut
+- Badges de qualité avec codes couleur sémantiques
+- Badges de disponibilité (public, premium, restricted)
+- Design inspiré des status badges de GitHub/Linear
+
+==== Métriques en Pills
+- Affichage des métriques dans des "pills" modernes
+- Icônes Material Design cohérentes
+- Hover effects subtils
+
+==== Actions Simplifiées
+- Boutons Material Design standards
+- Hiérarchie claire (primary, outlined, icon)
+- Groupement logique des actions
+
+=== Styles CSS Modernisés
+
+==== Variables CSS Utilisées
+[source,scss]
+----
+// Utilisation des tokens Material Design
+var(--mat-sys-surface)
+var(--mat-sys-primary)
+var(--mat-sys-on-surface)
+var(--mat-sys-outline-variant)
+----
+
+==== Responsive Design
+- Mobile-first approach
+- Breakpoints cohérents (768px, 968px)
+- Adaptation intelligente des tailles et espacements
+- Conservation de la lisibilité sur toutes les tailles d'écran
+
+=== Méthodes TypeScript Ajoutées
+
+[source,typescript]
+----
+getDomainSlug(): string {
+  // Génère un slug pour les classes CSS spécifiques au domaine
+}
+
+getQualityLevel(): string {
+  // Retourne le niveau de qualité (excellent, good, fair, poor)
+}
+
+getAvailabilityClass(): string {
+  // Génère la classe CSS pour le badge de disponibilité
+}
+----
+
+== Avantages du Nouveau Design
+
+=== Performance
+- ✅ Suppression des animations CSS lourdes
+- ✅ Réduction de la complexité DOM
+- ✅ Amélioration du temps de rendu initial
+
+=== Accessibilité
+- ✅ Meilleur contraste en mode high contrast
+- ✅ Navigation au clavier améliorée
+- ✅ Support des screen readers optimisé
+- ✅ Focus states visibles et cohérents
+
+=== Maintenance
+- ✅ Code plus simple et maintenable
+- ✅ Utilisation standard d'Angular Material
+- ✅ Moins de CSS custom à maintenir
+- ✅ Structure plus logique et documentée
+
+=== Cohérence
+- ✅ Alignement avec le design system de l'application
+- ✅ Harmonisation avec les autres pages (projets, etc.)
+- ✅ Respect des patterns Material Design
+
+== Migration et Compatibilité
+
+=== Fonctionnalités Conservées
+- ✅ Toutes les informations du dataset
+- ✅ Actions disponibles (télécharger, modifier, favoris)
+- ✅ Affichage des métriques et du score de qualité
+- ✅ Tags de domaines et tâches ML
+- ✅ Navigation breadcrumb
+
+=== Nouveautés
+- ✅ Navigation breadcrumb cliquable avec routerLink
+- ✅ Badges de statut plus informatifs
+- ✅ Groupement logique des actions
+- ✅ Design responsive amélioré
+
+=== Tests Recommandés
+- [ ] Vérifier l'affichage sur mobile/tablette/desktop
+- [ ] Tester la navigation breadcrumb
+- [ ] Valider l'accessibilité (screen readers)
+- [ ] Contrôler les contrastes de couleurs
+- [ ] Vérifier les traductions FR/EN
+
+== Évolutions Futures Possibles
+
+=== Court terme
+- Ajout d'animations subtiles (micro-interactions)
+- Amélioration des tooltips contextuels
+- Mode sombre optimisé
+
+=== Moyen terme  
+- Score de qualité avec graphique circulaire Material
+- Actions avancées (export, partage social)
+- Prévisualisation rapide du dataset
+
+=== Long terme
+- Personnalisation de l'affichage par utilisateur
+- Intégration avec système de favoris avancé
+- Analytics d'utilisation des datasets
+
+== Conclusion
+
+Cette refonte représente une évolution majeure vers un design system plus mature et professionnel, tout en conservant toutes les fonctionnalités existantes. Le nouveau header s'intègre harmonieusement avec le reste de l'application et pose les bases d'une expérience utilisateur plus cohérente et accessible.

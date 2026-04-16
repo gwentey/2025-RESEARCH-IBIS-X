@@ -1,0 +1,179 @@
+name: Deploy Production IBIS-X v2 (Script Intelligent)
+
+on:
+  push:
+    branches:
+      - production
+  workflow_dispatch:  # Permettre le déclenchement manuel
+
+env:
+  # Variables d'environnement pour le mode PRODUCTION
+  GITHUB_ACTIONS: 'true'
+  IS_PRODUCTION: 'true'
+  
+  # Configuration Azure - NOMS FIXES (corrigés pour correspondre à Terraform)
+  AZURE_RESOURCE_GROUP: 'ibis-x-prod-rg'
+  AKS_CLUSTER_NAME: 'ibis-x-prod-aks'
+  K8S_NAMESPACE: 'ibis-x'
+  
+  # Configuration de l'application
+  WITH_DATA: 'true'
+
+jobs:
+  deploy:
+    name: 🚀 Déploiement Production Intelligent
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: 🔐 Connexion à Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 🛠️ Installation des outils
+        run: |
+          # Installer jq pour le parsing JSON
+          sudo apt-get update && sudo apt-get install -y jq
+          
+          # Installer kubectl (dernière version)
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          kubectl version --client
+          
+          # Installer Terraform
+          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install terraform
+
+      - name: 🔍 Découverte Dynamique de l'Infrastructure Azure
+        id: discover_infrastructure
+        run: |
+          echo "🔍 Découverte automatique de l'infrastructure Azure existante..."
+          
+          # Récupérer l'ACR existant dans le resource group
+          ACR_NAME=$(az acr list --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" --query "[0].name" -o tsv 2>/dev/null || echo "")
+          
+          if [[ -z "$ACR_NAME" ]]; then
+            echo "❌ Aucun ACR trouvé dans le resource group ${{ env.AZURE_RESOURCE_GROUP }}"
+            echo "🔍 Tentative de recherche dans tous les resource groups..."
+            
+            # Rechercher dans tous les RG avec pattern ibis-x
+            ACR_NAME=$(az acr list --query "[?contains(name, 'ibis') || contains(name, 'prod')].name" -o tsv | head -1 || echo "")
+            
+            if [[ -z "$ACR_NAME" ]]; then
+              echo "❌ ERREUR CRITIQUE: Aucun ACR trouvé ! Infrastructure manquante."
+              echo "💡 Solution: Créez l'infrastructure avec 'terraform apply' ou le script de déploiement manuel."
+              exit 1
+            fi
+            
+            # Récupérer le vrai resource group de l'ACR trouvé
+            REAL_RG=$(az acr show --name "$ACR_NAME" --query "resourceGroup" -o tsv)
+            echo "⚠️ ACR trouvé dans un autre resource group: $REAL_RG"
+            echo "AZURE_RESOURCE_GROUP=$REAL_RG" >> $GITHUB_ENV
+          fi
+          
+          # Vérifier l'AKS dans le même resource group
+          AKS_NAME=$(az aks list --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" --query "[0].name" -o tsv 2>/dev/null || echo "")
+          
+          if [[ -z "$AKS_NAME" ]]; then
+            echo "❌ Aucun cluster AKS trouvé dans le resource group ${{ env.AZURE_RESOURCE_GROUP }}"
+            # Rechercher avec pattern
+            AKS_NAME=$(az aks list --query "[?contains(name, 'ibis') || contains(name, 'prod')].name" -o tsv | head -1 || echo "")
+            
+            if [[ -z "$AKS_NAME" ]]; then
+              echo "❌ ERREUR CRITIQUE: Aucun cluster AKS trouvé !"
+              exit 1
+            fi
+          fi
+          
+          echo "✅ Infrastructure découverte:"
+          echo "  ACR: $ACR_NAME"
+          echo "  AKS: $AKS_NAME"
+          echo "  Resource Group: ${{ env.AZURE_RESOURCE_GROUP }}"
+          
+          # Exporter les variables pour les étapes suivantes
+          echo "AZURE_CONTAINER_REGISTRY=$ACR_NAME" >> $GITHUB_ENV
+          echo "AKS_CLUSTER_NAME=$AKS_NAME" >> $GITHUB_ENV
+          
+          # Outputs pour debugging
+          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
+          echo "aks_name=$AKS_NAME" >> $GITHUB_OUTPUT
+
+      - name: 🔑 Injection des secrets production dans les fichiers YAML
+        run: |
+          echo "🔐 Injection des secrets de production dans les fichiers K8s..."
+          
+          # Encodage Base64 des secrets
+          SECRET_KEY_B64=$(echo -n "${{ secrets.JWT_SECRET_KEY }}" | base64 -w 0)
+          DATABASE_URL_B64=$(echo -n "${{ secrets.DATABASE_URL }}" | base64 -w 0)
+          GOOGLE_CLIENT_ID_B64=$(echo -n "${{ secrets.GOOGLE_CLIENT_ID }}" | base64 -w 0)
+          GOOGLE_CLIENT_SECRET_B64=$(echo -n "${{ secrets.GOOGLE_CLIENT_SECRET }}" | base64 -w 0)
+          OAUTH_REDIRECT_URL_B64=$(echo -n "${{ secrets.OAUTH_REDIRECT_URL }}" | base64 -w 0)
+          KAGGLE_USERNAME_B64=$(echo -n "${{ secrets.KAGGLE_USERNAME }}" | base64 -w 0)
+          KAGGLE_KEY_B64=$(echo -n "${{ secrets.KAGGLE_KEY }}" | base64 -w 0)
+          
+          # Injection dans gateway-secrets.yaml
+          sed -i "s|secret-key: .*|secret-key: $SECRET_KEY_B64|g" k8s/base/api-gateway/gateway-secrets.yaml
+          sed -i "s|database-url: .*|database-url: $DATABASE_URL_B64|g" k8s/base/api-gateway/gateway-secrets.yaml
+          sed -i "s|google-client-id: .*|google-client-id: $GOOGLE_CLIENT_ID_B64|g" k8s/base/api-gateway/gateway-secrets.yaml
+          sed -i "s|google-client-secret: .*|google-client-secret: $GOOGLE_CLIENT_SECRET_B64|g" k8s/base/api-gateway/gateway-secrets.yaml
+          sed -i "s|oauth-redirect-url: .*|oauth-redirect-url: $OAUTH_REDIRECT_URL_B64|g" k8s/base/api-gateway/gateway-secrets.yaml
+          
+          # Injection dans kaggle-secrets.yaml
+          sed -i "s|username: .*|username: $KAGGLE_USERNAME_B64|g" k8s/base/service-selection/kaggle-secrets.yaml
+          sed -i "s|key: .*|key: $KAGGLE_KEY_B64|g" k8s/base/service-selection/kaggle-secrets.yaml
+          
+          echo "✅ Secrets injectés dans les fichiers YAML"
+
+      - name: 🚀 Déploiement automatique via script intelligent
+        run: |
+          echo "🚀 Lancement du script de déploiement intelligent..."
+          chmod +x scripts/deploy-to-azure.sh
+          
+          # Le script utilisera automatiquement les variables d'environnement découvertes
+          echo "📋 Variables d'environnement pour le script:"
+          echo "  AZURE_CONTAINER_REGISTRY=$AZURE_CONTAINER_REGISTRY"
+          echo "  AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME"
+          echo "  AZURE_RESOURCE_GROUP=$AZURE_RESOURCE_GROUP"
+          
+          ./scripts/deploy-to-azure.sh
+
+      - name: 📊 Vérification finale du déploiement
+        run: |
+          echo "📊 Vérification de l'état final de l'application..."
+          
+          # Afficher l'état des pods
+          kubectl get pods -n ${{ env.K8S_NAMESPACE }}
+          
+          # Afficher l'état des jobs
+          kubectl get jobs -n ${{ env.K8S_NAMESPACE }}
+          
+          # Afficher les ingress
+          kubectl get ingress -n ${{ env.K8S_NAMESPACE }}
+          
+          # Récupérer l'IP publique
+          PUBLIC_IP=$(kubectl get svc -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "N/A")
+          echo "🌐 IP publique de l'application: $PUBLIC_IP"
+          
+          # Test de connectivité (si IP disponible)
+          if [[ "$PUBLIC_IP" != "N/A" ]] && [[ -n "$PUBLIC_IP" ]]; then
+            echo "🧪 Test de connectivité..."
+            curl -s -o /dev/null -w "Status: %{http_code}\n" "http://$PUBLIC_IP" || echo "Test de connectivité échoué"
+          fi
+
+      - name: 📋 Résumé du déploiement
+        if: always()
+        run: |
+          echo "=================== RÉSUMÉ DÉPLOIEMENT ==================="
+          echo "✅ Mode: Production (GitHub Actions avec découverte automatique)"
+          echo "✅ ACR: $AZURE_CONTAINER_REGISTRY" 
+          echo "✅ AKS: $AKS_CLUSTER_NAME"
+          echo "✅ Resource Group: $AZURE_RESOURCE_GROUP"
+          echo "✅ Namespace: ${{ env.K8S_NAMESPACE }}"
+          echo "✅ Données: ${{ env.WITH_DATA }}"
+          echo "==========================================================" 

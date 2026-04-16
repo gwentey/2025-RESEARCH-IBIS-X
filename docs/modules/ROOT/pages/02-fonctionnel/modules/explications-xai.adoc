@@ -1,0 +1,75 @@
+= Module fonctionnel — Explications XAI
+:description: SHAP, LIME, LLM, chat contextuel
+
+== Parcours
+
+[mermaid]
+----
+flowchart LR
+    A[Expérience<br/>entraînée] --> B{Choisir<br/>méthode}
+    B -->|SHAP| C1[Calcul SHAP<br/>xai_queue]
+    B -->|LIME| C2[Calcul LIME<br/>xai_queue]
+    B -->|LLM narrative| C3[Génération texte<br/>xai_queue + OpenAI]
+    C1 --> D[Visualisation<br/>résultats]
+    C2 --> D
+    C3 --> D
+    D --> E{Chat<br/>contextuel ?}
+    E -->|oui, ≤ 5 Q| F[OpenAI + contexte SHAP]
+    F --> E
+----
+
+== Méthodes disponibles
+
+=== SHAP
+
+* Globale (importance moyenne des features).
+* Locale (contribution de chaque feature pour une instance).
+* `TreeExplainer` pour modèles arbres ; `KernelExplainer` en fallback.
+* Visualisations : bar chart d'importance + force plot par instance.
+
+=== LIME
+
+* Explication locale par approximation linéaire.
+* Utile pour les modèles non-arbres ou quand SHAP est trop coûteux.
+
+=== LLM narrative (OpenAI)
+
+* Traduit les valeurs SHAP/LIME en texte compréhensible.
+* Prompt fixe incluant : feature names, importance values, classe prédite, contexte du dataset.
+* Résultat : résumé ≤ 300 mots + points clefs.
+
+=== WebSHAP (client-side)
+
+* Exécution SHAP dans le navigateur pour les petites instances.
+* Accélère l'expérience utilisateur (< 1 s) sans requête backend.
+
+== Chat contextuel
+
+Après génération d'une explication, l'utilisateur peut poser des questions en langage naturel.
+
+* Limite : **5 questions par session** (comptées via `COUNT(*)` sur `chat_messages` où `role == 'user'`).
+* Contexte envoyé : explication courante + historique précédent des messages.
+* Pas de données brutes — seulement métadonnées + SHAP values.
+* Après 5 questions : refus `429 Too Many Requests` + invitation à créer une nouvelle session.
+
+== Queue Celery
+
+**Toutes** les tâches XAI (y compris LLM, y compris chat) sont routées sur `xai_queue`. **Il n'existe pas de `llm_queue`.**
+
+Détails : xref:03-technique/services/xai-engine-service.adoc[xai-engine-service].
+
+== Endpoints
+
+* `POST /explanations` — créer une demande
+* `GET /explanations/{id}` — récupérer résultats
+* `POST /explanations/{id}/chat` — poser une question
+* `GET /explanations/{id}/chat` — historique conversation
+* `GET /experiments/{id}/explanations` — toutes explications d'une expérience
+
+== Éthique & confidentialité
+
+Voir xref:05-audit/ethique-ia/principes.adoc[Principes éthiques IA]. En particulier :
+
+* Narratives LLM toujours étiquetées "générées par IA".
+* Aucune décision automatisée affectant l'utilisateur.
+* Explications reposent sur le modèle réel (pas d'hallucination LLM pure).

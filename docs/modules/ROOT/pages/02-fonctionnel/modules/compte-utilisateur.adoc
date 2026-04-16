@@ -1,0 +1,70 @@
+= Module fonctionnel — Compte utilisateur
+:description: Profil, paramètres, crédits, suppression (RGPD)
+
+== Profil
+
+L'utilisateur peut consulter et modifier :
+
+* Email (modification avec re-validation).
+* `first_name`, `last_name` (optionnels).
+* Préférences : langue (FR / EN).
+* Avatar (lien externe ou upload).
+
+Endpoints : `GET /users/me` · `PATCH /users/me`.
+
+UI : `/app/profile`.
+
+== Mot de passe
+
+* Changement via `PATCH /users/me` avec ancien + nouveau.
+* Pour OAuth Google uniquement : pas de mot de passe local ; le flow OAuth gère l'authentification.
+
+== Crédits (PoC simulé)
+
+Affichage d'un compteur de crédits (fonctionnalité de démonstration) indiquant le coût estimé des opérations coûteuses (training, appels OpenAI). Pas de facturation réelle.
+
+UI : `/app/profile/credits`.
+
+== Droits RGPD
+
+=== Droit d'accès (art. 15)
+
+Consultation de toutes les données via les endpoints `GET /users/me`, `GET /projects`, `GET /datasets?uploaded_by=me`, `GET /experiments?user_id=me`, `GET /explanations?user_id=me`.
+
+=== Droit de rectification (art. 16)
+
+`PATCH /users/me` pour les champs modifiables.
+
+=== Droit à l'effacement (art. 17)
+
+`DELETE /users/me` déclenche la suppression en cascade de toutes les données utilisateur :
+
+. Chat messages
+. Explanation requests
+. Experiments + artefacts Blob
+. Datasets uploadés + fichiers Blob
+. Projects
+. OAuth accounts
+. User
+
+Irréversible. Confirmation requise côté UI (`/app/profile/delete-account`).
+
+Détails : xref:05-audit/rgpd/droits-utilisateurs.adoc[Droits des utilisateurs].
+
+=== Droit à la portabilité (art. 20)
+
+PoC : composable via les endpoints `GET`. Endpoint consolidé `GET /users/me/export` prévu post-PoC.
+
+=== Droit d'opposition (art. 21)
+
+Aucun traitement marketing — opposition = suppression du compte.
+
+== Soft-delete (art. 18, limitation)
+
+Endpoint non exposé utilisateur en PoC ; procédure admin via `users.is_active = false`.
+
+== Sécurité du compte
+
+* JWT courts (1h).
+* Logout disponible (invalidation du token côté client).
+* Détection de login atypique : non implémentée en PoC.

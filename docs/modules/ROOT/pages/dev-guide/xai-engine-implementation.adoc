@@ -1,0 +1,224 @@
+= Implementation du Module XAI Engine
+:toc:
+:toclevels: 3
+:sectnums:
+:imagesdir: ../images
+
+== Vue d'ensemble
+
+Le module XAI Engine fournit des capacités d'explicabilité pour les modèles de machine learning d'IBIS-X. Il combine des techniques d'XAI (SHAP, LIME) avec un LLM adaptatif (OpenAI) pour générer des explications personnalisées selon le profil utilisateur.
+
+== Architecture Technique
+
+=== Service Backend (FastAPI)
+
+Le service XAI Engine est construit avec FastAPI et suit l'architecture microservices d'IBIS-X :
+
+[source,yaml]
+----
+xai-engine-service/
+├── app/
+│   ├── core/          # Configuration et Celery
+│   ├── endpoints/     # API REST endpoints
+│   ├── xai/          # Logique XAI (SHAP/LIME)
+│   ├── models.py     # Modèles SQLAlchemy
+│   ├── schemas.py    # Schémas Pydantic
+│   └── tasks.py      # Tâches Celery asynchrones
+├── alembic/          # Migrations database
+├── Dockerfile        # Image API
+└── Dockerfile.worker # Image Celery worker
+----
+
+=== Modèles de Données
+
+==== ExplanationRequest
+Stocke les demandes d'explication XAI :
+- `user_id` : Utilisateur demandeur
+- `experiment_id` : Expérience ML cible
+- `explanation_type` : global/local/feature_importance
+- `method_requested` : shap/lime/auto
+- `audience_level` : novice/intermediate/expert
+- `status` : pending/running/completed/failed
+- `llm_explanation` : Explication textuelle générée
+
+==== ChatMessage
+Historique des conversations avec le LLM :
+- `explanation_request_id` : Lien vers la demande
+- `message_type` : user_question/ai_response
+- `content` : Contenu du message
+- `tokens_used` : Consommation OpenAI
+
+=== Algorithmes XAI
+
+==== SHAP (SHapley Additive exPlanations)
+- Explications globales : Feature importance moyenne
+- Explications locales : Valeurs SHAP par instance
+- Visualisations : Summary plots, waterfall plots
+
+==== LIME (Local Interpretable Model-agnostic Explanations)
+- Explications locales uniquement
+- Approximation linéaire locale
+- Visualisations : Barplots de contributions
+
+=== Service LLM Adaptatif
+
+Le service LLM adapte automatiquement la complexité des explications :
+
+[source,python]
+----
+def get_complexity_prompt(audience_level, ai_familiarity):
+    if audience_level == "novice" or ai_familiarity == "debutant":
+        return "Explique de manière très simple, sans jargon..."
+    elif audience_level == "expert" and ai_familiarity == "expert":
+        return "Fournis une analyse technique détaillée..."
+    else:
+        return "Explique de manière claire et structurée..."
+----
+
+== Intégration Frontend
+
+=== Composants Angular
+
+==== XAIExplanationRequestComponent
+Formulaire de demande d'explication avec :
+- Sélection du type d'explication
+- Choix de la méthode (SHAP/LIME/Auto)
+- Niveau d'audience cible
+
+==== XAIExplanationResultsComponent
+Affichage des résultats :
+- Explication textuelle du LLM
+- Visualisations SHAP/LIME
+- Métriques de qualité
+- Bouton pour démarrer le chat
+
+==== XAIChatInterfaceComponent
+Interface chatbot interactive :
+- Limite de 5 questions par session
+- Adaptation automatique des réponses
+- Historique de conversation
+- Indicateur de questions restantes
+
+=== Intégration dans ML Pipeline
+
+La section XAI est automatiquement ajoutée à la page de résultats d'expérience :
+
+[source,html]
+----
+<section class="xai-section" *ngIf="experiment?.status === 'completed'">
+  <app-xai-explanation-request
+    [experimentId]="experimentId"
+    (explanationCreated)="onExplanationCreated($event)">
+  </app-xai-explanation-request>
+  
+  <app-xai-explanation-results
+    *ngIf="activeXAIRequestId"
+    [requestId]="activeXAIRequestId">
+  </app-xai-explanation-results>
+</section>
+----
+
+== Configuration et Déploiement
+
+=== Variables d'Environnement
+
+[source,yaml]
+----
+# OpenAI API
+OPENAI_API_KEY: "sk-..."
+OPENAI_MODEL: "gpt-3.5-turbo"
+OPENAI_MAX_TOKENS: 1000
+
+# Stockage
+STORAGE_BACKEND: "minio"  # ou "azure"
+STORAGE_ENDPOINT_URL: "http://minio-service:80"
+
+# Base de données
+DATABASE_URL: "postgresql+asyncpg://..."
+----
+
+=== Ressources Kubernetes
+
+==== Développement (Minikube)
+Ressources optimisées pour environnement contraint :
+- API : 256Mi-512Mi RAM
+- Worker : 256Mi-768Mi RAM
+
+==== Production (Azure)
+Ressources recommandées pour performance :
+- API : 1Gi-3Gi RAM
+- Worker : 2Gi-4Gi RAM
+
+=== Monitoring
+
+- Logs structurés avec correlation IDs
+- Métriques de performance (temps de génération)
+- Tracking de consommation OpenAI
+- Health checks avec dépendances
+
+== Workflow Complet
+
+[plantuml]
+----
+@startuml
+actor User
+participant Frontend
+participant "XAI API" as API
+participant "Celery Worker" as Worker
+participant "OpenAI API" as OpenAI
+database PostgreSQL
+database "Object Storage" as Storage
+
+User -> Frontend: Demande explication
+Frontend -> API: POST /explanations
+API -> PostgreSQL: Créer ExplanationRequest
+API -> Worker: Enqueue task
+API --> Frontend: request_id
+
+Worker -> PostgreSQL: Charger modèle/données
+Worker -> Worker: Générer SHAP/LIME
+Worker -> Storage: Sauver visualisations
+Worker -> OpenAI: Générer explication
+Worker -> PostgreSQL: Update results
+Worker -> PostgreSQL: Status = completed
+
+Frontend -> API: GET /explanations/{id}
+API -> PostgreSQL: Récupérer résultats
+API --> Frontend: Résultats + visualisations
+
+User -> Frontend: Poser question
+Frontend -> API: POST /chat
+API -> OpenAI: Question + contexte
+API -> PostgreSQL: Sauver message
+API --> Frontend: Réponse adaptée
+@enduml
+----
+
+== Optimisations et Bonnes Pratiques
+
+=== Performance
+- Cache des modèles ML en mémoire
+- Génération parallèle SHAP/LIME
+- Streaming des réponses LLM
+- Pagination des résultats
+
+=== Sécurité
+- Validation stricte des entrées
+- Rate limiting par utilisateur
+- Tokens OpenAI en secrets K8s
+- Audit trail complet
+
+=== Coûts
+- Limite de 5 questions par session
+- Monitoring consommation tokens
+- Cache intelligent des explications
+- Sélection automatique méthode optimale
+
+== Évolutions Futures
+
+1. Support de nouveaux algorithmes (GradCAM, Anchor)
+2. Explications multimodales (texte + image)
+3. Export PDF des rapports d'explication
+4. Fine-tuning du LLM sur corpus IBIS-X
+5. Visualisations interactives (D3.js)
+6. Support multi-langues (FR/EN/ES)

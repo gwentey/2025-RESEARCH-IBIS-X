@@ -1,0 +1,604 @@
+// ===============================================
+// FORMULAIRE SAAS MODERNE - STYLE STRIPE/LINEAR - FORCE THÈME CLAIR
+// ===============================================
+
+.modern-filter-group {
+  // FORCE THÈME CLAIR ULTRA-AGRESSIF - SUPRIME TOUT LE NOIR !
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #1a202c !important;
+  color-scheme: light !important;
+
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+
+  // FORCE ABSOLUMENT TOUT EN THÈME CLAIR - AUCUN NOIR AUTORISÉ
+  *, *::before, *::after {
+    color-scheme: light !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #1a202c !important;
+    border-color: #e2e8f0 !important;
+  }
+
+  // FORCE LES ICÔNES EN COULEUR VISIBLE
+  mat-icon, .mat-icon, i {
+    color: #4f46e5 !important;
+    background: transparent !important;
+  }
+
+  // FORCE LES BOUTONS EN BLANC
+  button, .mat-mdc-button, .mat-mdc-icon-button {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #4f46e5 !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+
+  // FORCE TOUS LES CONTENEURS
+  div, section, span, p, h1, h2, h3, h4, h5, h6, label {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+
+  &:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// ===============================================
+// HEADER SECTION
+// ===============================================
+
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #1a202c !important;
+
+  // FORCE TOUT LE CONTENU DU HEADER EN BLANC
+  *, *::before, *::after {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #1a202c !important;
+  }
+
+  mat-icon, .mat-icon {
+    color: #4f46e5 !important;
+    background: transparent !important;
+  }
+
+  button {
+    background: #ffffff !important;
+    color: #64748b !important;
+    border: none !important;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .header-icon {
+      color: #4f46e5;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    .header-info {
+      .header-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0 0 4px 0;
+      }
+
+      .header-subtitle {
+        font-size: 14px;
+        color: #64748b;
+        margin: 0;
+      }
+    }
+  }
+
+  .header-actions {
+    .toggle-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: #f8fafc;
+      border-radius: 6px;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background: #e2e8f0;
+        color: #475569;
+      }
+
+      &.expanded {
+        background: #4f46e5;
+        color: white;
+      }
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+// ===============================================
+// CONTENU DU FORMULAIRE
+// ===============================================
+
+.filter-content {
+  padding: 24px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  background: #ffffff !important;
+  color: #1a202c !important;
+
+  &.expanded {
+    max-height: 1000px;
+    padding: 24px;
+  }
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #ffffff !important;
+  color: #1a202c !important;
+
+    // FORCE ULTRA-AGRESSIF - TOUS LES COMPOSANTS MATERIAL EN BLANC !
+  ::ng-deep .mat-mdc-form-field,
+  ::ng-deep .mat-form-field {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #1a202c !important;
+
+    .mdc-text-field,
+    .mat-mdc-text-field-wrapper {
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      color: #1a202c !important;
+    }
+
+    .mat-mdc-input-element,
+    .mat-input-element,
+    input, textarea {
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      color: #1a202c !important;
+      border-color: #e2e8f0 !important;
+    }
+
+    .mdc-floating-label,
+    .mat-mdc-floating-label {
+      color: #64748b !important;
+      background: transparent !important;
+    }
+
+    .mdc-line-ripple,
+    .mat-mdc-line-ripple {
+      background-color: #4f46e5 !important;
+    }
+
+    .mdc-notched-outline,
+    .mat-mdc-notched-outline {
+      border-color: #e2e8f0 !important;
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__trailing,
+    .mdc-notched-outline__notch {
+      border-color: #e2e8f0 !important;
+      background: transparent !important;
+    }
+  }
+
+  ::ng-deep .mat-mdc-select,
+  ::ng-deep .mat-select {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #1a202c !important;
+
+    .mat-mdc-select-trigger {
+      color: #1a202c !important;
+      background: transparent !important;
+    }
+  }
+
+  ::ng-deep .mat-mdc-slide-toggle,
+  ::ng-deep .mat-slide-toggle {
+    color: #1a202c !important;
+
+    .mdc-switch {
+      background: transparent !important;
+    }
+
+    .mdc-switch__track {
+      background-color: #e2e8f0 !important;
+    }
+
+    .mdc-switch__handle {
+      background-color: #ffffff !important;
+    }
+  }
+
+  // FORCE LES ICÔNES MATERIAL
+  ::ng-deep mat-icon,
+  ::ng-deep .mat-icon {
+    color: #4f46e5 !important;
+    background: transparent !important;
+  }
+
+  // FORCE TOUS LES AUTRES ÉLÉMENTS
+  ::ng-deep div, ::ng-deep span, ::ng-deep p, ::ng-deep label {
+    background: transparent !important;
+    color: inherit !important;
+  }
+
+  // OPTIMISATION POUR ÉCRANS LARGES - Plus d'espace horizontal
+  @media (min-width: 1200px) {
+    gap: 32px;
+
+    // Layout en grille pour les sections numériques et qualité
+    &:has(.slider-container, .toggles-grid) {
+      .input-group {
+        margin-bottom: 24px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// ===============================================
+// GROUPES D'INPUTS
+// ===============================================
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .input-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      color: #6b7280;
+    }
+  }
+}
+
+// ===============================================
+// INPUTS MODERNES
+// ===============================================
+
+.modern-input {
+  ::ng-deep .mat-mdc-form-field {
+    .mat-mdc-text-field-wrapper {
+      background: #ffffff;
+      border-radius: 8px;
+    }
+
+    .mdc-notched-outline {
+      border-color: #d1d5db;
+    }
+
+    &:hover .mdc-notched-outline {
+      border-color: #9ca3af;
+    }
+
+    &.mat-focused .mdc-notched-outline {
+      border-color: #4f46e5;
+      border-width: 2px;
+    }
+
+    .mat-mdc-form-field-hint,
+    .mat-mdc-form-field-error {
+      font-size: 12px;
+    }
+  }
+}
+
+// ===============================================
+// CARTES DE DOMAINES
+// ===============================================
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+
+  // AMÉLIORATION POUR GRAND ÉCRAN - Équilibré
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 16px;
+  }
+}
+
+.domain-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    border-color: #4f46e5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+  }
+
+  &.selected {
+    border-color: #4f46e5;
+    background: #eef2ff;
+
+    .card-icon {
+      color: #4f46e5;
+    }
+
+    .check-icon {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      color: #10b981;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .card-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #6b7280;
+    transition: color 0.2s ease;
+  }
+
+  .card-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #374151;
+    text-align: center;
+    line-height: 1.2;
+  }
+}
+
+// ===============================================
+// CARTES DE CRITÈRES DE QUALITÉ
+// ===============================================
+
+.quality-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+.quality-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 70px;
+
+  &:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &.selected {
+    border-color: #059669;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    box-shadow: 0 2px 12px rgba(5, 150, 105, 0.15);
+
+    .card-icon {
+      color: #059669;
+    }
+
+    .card-label {
+      color: #065f46;
+      font-weight: 600;
+    }
+
+    .card-desc {
+      color: #047857;
+    }
+  }
+
+  .card-icon {
+    font-size: 24px;
+    color: #64748b;
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+
+    .card-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      line-height: 1.2;
+      transition: all 0.2s ease;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.3;
+      transition: color 0.2s ease;
+    }
+  }
+
+  .check-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 18px;
+    color: #059669;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.2s ease;
+  }
+
+  &.selected .check-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// ===============================================
+// SLIDER DUAL-RANGE MODERNE
+// ===============================================
+
+// ===============================================
+// DOUBLE RANGE SLIDER VANILLA - SOLUTION DÉFINITIVE
+// ===============================================
+
+.vanilla-range-container {
+  
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    .slider-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #4f46e5;
+      padding: 4px 8px;
+      background: #eef2ff;
+      border-radius: 4px;
+    }
+  }
+
+  .range-slider {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    margin: 24px 0;
+
+    .range-track {
+      position: absolute;
+      height: 8px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 4px;
+      top: 0;
+      z-index: 1; // DERRIÈRE les thumbs
+    }
+
+    .range-input {
+      position: absolute;
+      width: 100%;
+      height: 8px;
+      background: none;
+      pointer-events: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 24px;
+        width: 24px;
+        border-radius: 50%;
+        background: #667eea;
+        cursor: pointer;
+        border: 3px solid white;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        pointer-events: all;
+        transition: all 0.2s ease;
+        position: relative;
+        z-index: 10; // DEVANT la track
+      }
+
+      &::-webkit-slider-thumb:hover {
+        background: #5a6fd8;
+        transform: scale(1.1);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+      }
+
+      &::-moz-range-thumb {
+        height: 24px;
+        width: 24px;
+        border-radius: 50%;
+        background: #667eea;
+        cursor: pointer;
+        border: 3px solid white;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        pointer-events: all;
+        -moz-appearance: none;
+        transition: all 0.2s ease;
+      }
+
+      &::-moz-range-thumb:hover {
+        background: #5a6fd8;
+        transform: scale(1.1);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}

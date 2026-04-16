@@ -1,0 +1,297 @@
+= Déploiement Automatisé de l'Infrastructure Azure IBIS-X
+
+Ce guide décrit le processus de déploiement automatisé complet de l'application IBIS-X sur Microsoft Azure en utilisant les scripts Terraform optimisés et les outils d'orchestration Kubernetes.
+
+== 🚀 Nouvelle Approche : Déploiement 100% Automatisé et Robuste
+
+Nous avons développé un script de déploiement entièrement automatisé qui gère :
+
+- ✅ **Installation automatique de Helm** si non présent
+- ✅ **Création de l'infrastructure Azure** via Terraform
+- ✅ **Installation de NGINX Ingress Controller** via Helm
+- ✅ **Installation de Cert-Manager** pour les certificats SSL/TLS automatiques
+- ✅ **Configuration des règles de sécurité réseau** (ports 80, 443, 22)
+- ✅ **Déploiement des applications** avec Kustomize
+- ✅ **Exécution des migrations de base de données**
+- 🆕 **Import robuste des datasets Kaggle** avec gestion des timeouts
+- 🆕 **Retry automatique** pour builds Docker et opérations Kubernetes
+- 🆕 **Diagnostic automatique** et fallback intelligent en cas de problème
+- 🆕 **Continuation du déploiement** même en cas de timeout des jobs longs
+
+== Objectif
+
+Déployer rapidement et de manière reproductible l'ensemble de l'infrastructure et des applications IBIS-X sur Azure avec une seule commande.
+
+== Prérequis
+
+* Un compte Microsoft Azure avec un abonnement Pay-As-You-Go actif
+* Azure CLI installé et configuré
+* Docker installé et en cours d'exécution
+* Accès en écriture au repository Git du projet
+
+== 🔧 Préparation du Déploiement
+
+=== 1. Nettoyage de l'Infrastructure Existante (si nécessaire)
+
+Si vous avez déjà déployé manuellement des ressources IBIS-X, commencez par les nettoyer :
+
+[source,bash]
+----
+# Nettoyer l'infrastructure existante
+./scripts/destroy-azure-infrastructure.sh
+----
+
+⚠️ **ATTENTION**: Cette commande supprime DÉFINITIVEMENT toutes les ressources Azure existantes. Sauvegardez vos données importantes avant de continuer.
+
+=== 2. Configuration des Variables Terraform
+
+Le script va automatiquement créer le fichier `terraform.tfvars` s'il n'existe pas, mais vous pouvez le préparer :
+
+[source,bash]
+----
+cd terraform/azure-infrastructure/
+cp terraform.tfvars.example terraform.tfvars
+----
+
+Éditez le fichier selon vos besoins. Les valeurs par défaut sont optimisées pour IBIS-X :
+
+[source,terraform]
+----
+project_name = "ibis-x"
+environment  = "prod"
+location     = "East US"
+aks_node_count = 2
+aks_node_vm_size = "Standard_D2s_v3"
+----
+
+== 🚀 Déploiement Automatique
+
+=== Lancement du Déploiement Complet
+
+Une seule commande pour tout déployer :
+
+[source,bash]
+----
+./scripts/deploy-to-azure.sh
+----
+
+== 📋 Processus de Déploiement Détaillé
+
+Le script automatisé exécute les étapes suivantes :
+
+=== 1. **Vérification des Prérequis**
+- Vérifie la présence d'Azure CLI, Terraform, kubectl, Docker
+- Installe automatiquement Helm si nécessaire
+
+=== 2. **Configuration Azure**
+- Vérifie la connexion à Azure
+- Affiche l'abonnement actuel
+
+=== 3. **Infrastructure Terraform**
+- Initialise Terraform
+- Génère et affiche le plan de déploiement
+- Crée toutes les ressources Azure :
+  * Groupe de ressources
+  * Cluster AKS avec réseau virtuel
+  * Azure Container Registry
+  * Compte de stockage Azure
+  * IP publique
+  * Règles de sécurité réseau (ports 80, 443, 22)
+  * Log Analytics et Application Insights
+
+=== 4. **Configuration Kubernetes**
+- Configure kubectl pour le cluster AKS
+- Installe NGINX Ingress Controller via Helm
+- Installe Cert-Manager via Helm pour les certificats SSL automatiques
+
+=== 5. **Construction et Push des Images**
+- Construit les images Docker pour :
+  * `ibis-x-api-gateway`
+  * `ibis-x-service-selection`
+  * `ibis-x-frontend`
+- Les pousse vers Azure Container Registry
+
+=== 6. **Déploiement des Applications**
+- Met à jour automatiquement tous les noms de projet (IBIS-X → IBIS-X)
+- Déploie les applications via Kustomize
+- Attend que tous les pods soient prêts
+
+=== 7. **Migrations de Base de Données**
+- Exécute les jobs de migration Alembic
+- Vérifie la complétion des migrations
+
+=== 8. **Import Robuste des Datasets Kaggle**
+- Lance le job d'import avec timeouts étendus (60 minutes)
+- Surveille l'exécution avec logs en temps réel
+- Gère automatiquement les timeouts avec fallback intelligent
+- Continue le déploiement même si l'import prend du temps
+- Fournit les commandes pour suivi/relance manuel si nécessaire
+
+== 📊 Informations Post-Déploiement
+
+À la fin du déploiement, le script affiche :
+
+[source,text]
+----
+🎉 Déploiement IBIS-X terminé avec succès !
+
+📋 Informations de l'application :
+==================================
+🌐 URL de l'application: https://ibisx.fr
+🌐 URL de l'API: https://api.ibisx.fr
+🌐 URL HTTP (temporaire): http://<IP_PUBLIQUE>
+🗄️  Storage Account: <nom_compte>
+🐳 Container Registry: <nom_acr>.azurecr.io
+☸️  Cluster AKS: <nom_cluster>
+📦 Resource Group: <nom_groupe_ressources>
+----
+
+== 🔍 Vérification du Déploiement
+
+=== Vérifier les Pods
+[source,bash]
+----
+kubectl get pods -n ibis-x
+----
+
+=== Vérifier l'Ingress et les Certificats SSL
+[source,bash]
+----
+kubectl get ingress -n ibis-x
+kubectl get certificates -n ibis-x
+----
+
+=== Vérifier les Services
+[source,bash]
+----
+kubectl get services -n ibis-x
+kubectl get services -n ingress-nginx
+----
+
+== 🌐 Configuration DNS
+
+Pour activer les certificats SSL automatiques, configurez vos enregistrements DNS :
+
+[source,text]
+----
+A    ibisx.fr        -> <IP_PUBLIQUE>
+A    api.ibisx.fr    -> <IP_PUBLIQUE>
+----
+
+Les certificats Let's Encrypt se génèreront automatiquement une fois les DNS configurés.
+
+== 🔧 Maintenance et Debugging
+
+=== Voir les Logs
+[source,bash]
+----
+# Logs des applications
+kubectl logs -f deployment/api-gateway -n ibis-x
+kubectl logs -f deployment/service-selection -n ibis-x
+kubectl logs -f deployment/frontend -n ibis-x
+
+# Logs de l'Ingress Controller
+kubectl logs -f deployment/ingress-nginx-controller -n ingress-nginx
+
+# Logs de Cert-Manager
+kubectl logs -f deployment/cert-manager -n cert-manager
+----
+
+=== Redémarrer les Services
+[source,bash]
+----
+kubectl rollout restart deployment/api-gateway -n ibis-x
+kubectl rollout restart deployment/service-selection -n ibis-x
+kubectl rollout restart deployment/frontend -n ibis-x
+----
+
+== 🗑️ Nettoyage et Reconstruction
+
+Pour nettoyer complètement l'infrastructure et redéployer :
+
+[source,bash]
+----
+# 1. Supprimer toute l'infrastructure
+./scripts/destroy-azure-infrastructure.sh
+
+# 2. Redéployer
+./scripts/deploy-to-azure.sh
+----
+
+== ⚠️ Résolution des Problèmes Courants
+
+=== Problème : Certificats SSL non générés
+**Solution** : Vérifiez que vos enregistrements DNS pointent vers la bonne IP publique
+
+=== Problème : Pods en état "Pending"
+**Solution** : Vérifiez les ressources du cluster AKS
+[source,bash]
+----
+kubectl describe nodes
+kubectl get events -n ibis-x
+----
+
+=== Problème : Images Docker non trouvées
+**Solution** : Vérifiez que les images ont été correctement poussées vers ACR
+[source,bash]
+----
+az acr repository list --name <nom_acr>
+----
+
+=== 🆕 Problème : Job Kaggle timeout ou échec
+**Solution** : Le script gère automatiquement ces cas
+
+[NOTE]
+====
+**Le déploiement continue automatiquement** même si le job Kaggle prend du temps ou échoue temporairement.
+====
+
+[source,bash]
+----
+# Vérifier le statut du job Kaggle
+kubectl get jobs -n ibis-x
+kubectl get pods -n ibis-x -l job-name=kaggle-dataset-import-job
+
+# Suivre les logs du job en cours
+kubectl logs -f <kaggle-pod-name> -n ibis-x
+
+# Relancer l'import manuellement si nécessaire
+kubectl exec -n ibis-x deployment/service-selection -- python kaggle-import/main.py --force-refresh
+
+# Vérifier les datasets importés
+kubectl exec -n ibis-x deployment/service-selection -- ls -la /app/datasets/
+----
+
+=== 🆕 Problème : Build Docker échoue
+**Solution** : Le script retry automatiquement
+
+[source,bash]
+----
+# Si le retry automatique échoue, nettoyer Docker manuellement
+docker system prune -f
+docker builder prune -f
+
+# Puis relancer le script
+./scripts/deploy-to-azure.sh
+----
+
+== 🎯 Avantages du Nouveau Processus
+
+1. **Reproductibilité** : Déploiement identique à chaque fois
+2. **Rapidité** : Déploiement complet en ~15-20 minutes
+3. **Sécurité** : Certificats SSL automatiques
+4. **Maintenance** : Scripts de nettoyage automatisés
+5. **Monitoring** : Intégration complète avec Azure Monitor
+6. 🆕 **Robustesse** : Gestion automatique des timeouts et erreurs
+7. 🆕 **Résilience** : Retry automatique et fallback intelligent
+8. 🆕 **Fiabilité** : Continue même en cas de problèmes temporaires
+9. 🆕 **Diagnostic** : Logs détaillés et instructions de récupération automatiques
+
+== Prochaines Étapes
+
+Une fois le déploiement terminé, vous pouvez :
+
+1. Configurer le monitoring avancé avec Azure Application Insights
+2. Mettre en place des stratégies de sauvegarde automatisées
+3. Optimiser les performances selon vos besoins spécifiques
+4. Configurer des environnements de staging supplémentaires 

@@ -1,0 +1,14 @@
+# Patch pour le job de migration ML Pipeline en local (Minikube)
+# Remplace l'image ACR par une image locale buildée par Skaffold
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ml-pipeline-migration-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: ml-pipeline-migration
+        image: ibis-x-ml-pipeline:latest
+        imagePullPolicy: Never

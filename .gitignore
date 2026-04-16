@@ -1,0 +1,99 @@
+# Environnements virtuels Python
+.venv/
+venv/
+env/
+ENV/
+
+# Variables d'environnement
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Fichiers Python générés
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+.egg-info/
+dist/
+build/
+*.egg
+
+# Fichiers IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Scripts temporaires Windows générés par le Makefile
+port-forward-manager.bat
+logs-viewer.bat
+port-forward-pids.txt
+launch-ports.bat
+.DS_Store
+
+# Fichiers spécifiques à Kubernetes/Docker
+*.log
+*.tmp
+
+# Images Docker sauvegardées (trop volumineuses pour GitHub)
+*.tar
+busybox-*.tar
+postgres-*.tar
+node-*.tar
+nginx-*.tar
+python-*.tar
+
+# Node.js / Angular
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.angular/
+.pnp/
+.pnp.js
+coverage/
+/dist/
+/tmp/
+/out-tsc/
+
+# NOTE: NE PAS ignorer les dossiers de migrations Alembic !
+# Les fichiers suivants sont essentiels et doivent être versionnés :
+# alembic/versions/
+
+# Terraform - Fichiers générés (NE PAS versionner)
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate*
+**/terraform.tfvars
+**/tfplan
+.npm-cache/
+**/node_modules/.cache/
+.npm/
+.gstack/
+datasets/kaggle-import/cache/
+
+# === Claude Code / Cursor / editor session artifacts (local only) ===
+.claude/
+nul
+
+# === K8s secrets materialised locally from placeholders ===
+# The tracked secrets.yaml files contain REPLACE_WITH_* placeholders.
+# `make update-secrets` substitutes real values in-place from .env; these
+# mutated copies must never be committed back. Uncomment the block below
+# if you prefer to keep untouched placeholder files tracked and ignore
+# any locally-mutated variants (recommended for multi-developer setups):
+# k8s/base/api-gateway/gateway-secrets.yaml
+# k8s/base/ml-pipeline/secrets.yaml
+# k8s/base/service-selection/db-secrets.yaml
+# k8s/base/service-selection/kaggle-secrets.yaml
+# k8s/base/service-selection/storage-secrets.yaml
+# k8s/base/xai-engine/secrets.yaml

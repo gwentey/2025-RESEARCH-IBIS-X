@@ -1,0 +1,252 @@
+{
+  "dataset_name": "world_bank_education_stats",
+  "display_name": "World Bank Education Statistics (EdStats)",
+  "objective": "Provide internationally comparable indicators on education access, progression, completion, literacy, teachers, population, and expenditures worldwide",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "World Bank Open Data - EdStats",
+  "storage_uri": "https://www.kaggle.com/datasets/theworldbank/education-statistics",
+  "citation_link": "https://www.kaggle.com/datasets/theworldbank/education-statistics",
+  "documentation_link": "https://datatopics.worldbank.org/education/",
+  "instances_number": 1000000,
+  "features_number": 254,
+  "features_description": "Over 4000 internationally comparable education indicators covering access, progression, completion, literacy, teachers, population, expenditures, learning outcomes from international assessments (PISA, TIMSS, PIRLS), and equity data",
+  "year": 2024,
+  "domain": ["education", "finance"],
+  "task": ["regression", "exploratory_analysis"],
+  "target_column": "varies",
+  "representativity_description": "Global coverage with education indicators for numerous countries spanning multiple years with international comparability",
+  "representativity_level": "high",
+  "split": "multiple_files",
+  "missing_values": {
+    "description": "Extensive missing values due to data availability varying across countries and years",
+    "has_missing_values": true,
+    "global_missing_percentage": 50.0,
+    "handling_method": "none"
+  },
+  "temporal_factors": true,
+  "metadata_provided": true,
+  "external_documentation": true,
+  "ethical_compliance": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures": true,
+    "data_quality_documented": true,
+    "anonymization_applied": false,
+    "record_keeping_policy": true,
+    "purpose_limitation": true,
+    "accountability_defined": true
+  },
+  "citation_count": 596,
+  "license": "Unknown",
+  "contact_info": "World Bank Open Data Team",
+  "update_frequency": "daily",
+  "versioning": "2024",
+  "data_lineage": "Compiled from national education statistics offices, international assessments, and household surveys by World Bank EdStats team",
+  "quality_metrics": {
+    "completeness_score": 50,
+    "consistency_score": 95,
+    "ethical_compliance_score": 80
+  },
+  "special_features": {
+    "international_scope": true,
+    "temporal_coverage": "multiple_years",
+    "large_scale": true,
+    "official_statistics": true,
+    "multiple_file_structure": true
+  },
+  "file_structure": {
+    "main_files": [
+      "EdStatsData.csv",
+      "EdStatsSeries.csv", 
+      "EdStatsCountry.csv",
+      "EdStatsCountry-Series.csv",
+      "EdStatsFootNote.csv"
+    ],
+    "total_size_mb": 410.02,
+    "largest_file": "EdStatsData.csv (326.43 MB)"
+  },
+  "column_details": [
+    {
+      "column_name": "Country Name",
+      "position": 0,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Name of the country or territory",
+      "example_values": ["Afghanistan", "Albania", "Algeria", "Andorra"],
+      "stats": {
+        "unique_count": 270,
+        "coverage": "global"
+      }
+    },
+    {
+      "column_name": "Country Code",
+      "position": 1,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "ISO 3-letter country code",
+      "example_values": ["AFG", "ALB", "DZA", "AND"],
+      "stats": {
+        "unique_count": 270,
+        "format": "ISO_3166"
+      }
+    },
+    {
+      "column_name": "Indicator Name",
+      "position": 2,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Description of the education indicator",
+      "example_values": ["School enrollment, primary (% gross)", "Literacy rate, adult total (% of people ages 15 and above)", "Education expenditure (% of GDP)"],
+      "stats": {
+        "unique_count": 4000,
+        "categories": ["enrollment", "completion", "literacy", "expenditure", "teachers", "learning_outcomes"]
+      }
+    },
+    {
+      "column_name": "Indicator Code",
+      "position": 3,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Unique code for the education indicator",
+      "example_values": ["SE.PRM.ENRR", "SE.ADT.LITR.ZS", "SE.XPD.TOTL.GD.ZS"],
+      "stats": {
+        "unique_count": 4000,
+        "format": "world_bank_indicator_code"
+      }
+    },
+    {
+      "column_name": "Year_1970-2024",
+      "position": 4,
+      "data_type_original": "float64",
+      "data_type_interpreted": "numerical_float",
+      "is_nullable": true,
+      "is_pii": false,
+      "description": "Education indicator values by year (columns for each year from 1970 to 2024)",
+      "example_values": ["95.6", "87.3", "4.2", "null"],
+      "stats": {
+        "temporal_range": "1970-2024",
+        "missing_percentage_high": true,
+        "unit": "varies_by_indicator"
+      }
+    },
+    {
+      "column_name": "Education_Level",
+      "position": 5,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Education level covered by indicator",
+      "example_values": ["Pre-primary", "Primary", "Secondary", "Tertiary", "Vocational"],
+      "stats": {
+        "unique_count": 8,
+        "coverage": "full_education_cycle"
+      }
+    },
+    {
+      "column_name": "Gender",
+      "position": 6,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": true,
+      "is_pii": false,
+      "description": "Gender breakdown when available",
+      "example_values": ["Total", "Male", "Female"],
+      "stats": {
+        "unique_count": 3,
+        "equity_dimension": true
+      }
+    },
+    {
+      "column_name": "Urban_Rural",
+      "position": 7,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": true,
+      "is_pii": false,
+      "description": "Urban/rural breakdown when available",
+      "example_values": ["Total", "Urban", "Rural"],
+      "stats": {
+        "unique_count": 3,
+        "equity_dimension": true
+      }
+    },
+    {
+      "column_name": "Wealth_Quintile",
+      "position": 8,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": true,
+      "is_pii": false,
+      "description": "Wealth quintile breakdown for equity analysis",
+      "example_values": ["Total", "Poorest", "Second", "Middle", "Fourth", "Richest"],
+      "stats": {
+        "unique_count": 6,
+        "equity_dimension": true
+      }
+    },
+    {
+      "column_name": "Assessment_Type",
+      "position": 9,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": true,
+      "is_pii": false,
+      "description": "Type of learning assessment (PISA, TIMSS, PIRLS, etc.)",
+      "example_values": ["PISA", "TIMSS", "PIRLS", "SACMEQ", "PASEC"],
+      "stats": {
+        "unique_count": 15,
+        "learning_outcomes_focus": true
+      }
+    }
+  ],
+  "key_indicators": {
+    "enrollment_indicators": [
+      "School enrollment, primary (% gross)",
+      "School enrollment, secondary (% gross)", 
+      "School enrollment, tertiary (% gross)"
+    ],
+    "completion_indicators": [
+      "Primary completion rate, total (% of relevant age group)",
+      "Lower secondary completion rate, total (% of relevant age group)"
+    ],
+    "literacy_indicators": [
+      "Literacy rate, adult total (% of people ages 15 and above)",
+      "Literacy rate, youth total (% of people ages 15-24)"
+    ],
+    "expenditure_indicators": [
+      "Government expenditure on education, total (% of GDP)",
+      "Government expenditure on education, total (% of government expenditure)"
+    ],
+    "teacher_indicators": [
+      "Trained teachers in primary education (% of total teachers)",
+      "Pupil-teacher ratio, primary"
+    ],
+    "learning_outcome_indicators": [
+      "PISA: Mean performance on the mathematics scale",
+      "TIMSS: Mathematics, Grade 4",
+      "PIRLS: Reading, Grade 4"
+    ]
+  },
+  "research_applications": [
+    "International education policy analysis",
+    "Cross-country education system comparisons", 
+    "SDG 4 (Quality Education) monitoring",
+    "Education equity analysis",
+    "Education finance research",
+    "Learning outcomes research",
+    "Education system performance evaluation"
+  ]
+}

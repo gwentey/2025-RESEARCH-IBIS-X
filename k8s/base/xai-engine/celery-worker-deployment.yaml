@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xai-engine-celery-worker
+  namespace: ibis-x
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xai-engine-celery-worker
+  template:
+    metadata:
+      labels:
+        app: xai-engine-celery-worker
+    spec:
+      # ✅ SOLUTION DURABLE: Attendre que Redis et PostgreSQL soient disponibles
+      initContainers:
+      - name: wait-dependencies
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+          - |
+            echo "Attente Redis..."
+            until nc -z redis 6379; do
+              echo "Redis pas encore prêt - attente 2s"
+              sleep 2
+            done
+            echo "Redis disponible !"
+            
+            echo "Attente PostgreSQL..."
+            until nc -z postgresql-service 5432; do
+              echo "PostgreSQL pas encore prêt - attente 2s" 
+              sleep 2
+            done
+            echo "PostgreSQL disponible !"
+            
+            echo "Attente ML Pipeline Worker (pour cluster Celery)..."
+            sleep 10
+            echo "Dépendances OK - démarrage worker XAI"
+      containers:
+      - name: celery-worker
+        image: ibis-x-xai-engine-worker:latest
+        imagePullPolicy: IfNotPresent
+        command: ["celery", "-A", "app.core.celery_app", "worker", "--loglevel=info", "--queues=xai_queue", "--concurrency=2", "--hostname=xai-worker@%h"]
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: xai-engine-secrets
+              key: database-url
+        - name: CELERY_BROKER_URL
+          value: "redis://redis:6379/0"
+        - name: CELERY_RESULT_BACKEND
+          value: "redis://redis:6379/0"
+        - name: STORAGE_TYPE
+          value: "minio"
+        - name: MINIO_ENDPOINT
+          value: "http://minio-service:80"
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: xai-engine-secrets
+              key: minio-access-key
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: xai-engine-secrets
+              key: minio-secret-key
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: xai-engine-secrets
+              key: openai-api-key
+        # ✅ CORRECTION: URLs correctes des services Kubernetes
+        - name: ML_PIPELINE_URL
+          value: "http://ml-pipeline:8082"
+        - name: SERVICE_SELECTION_URL
+          value: "http://service-selection-service:80"
+        - name: API_GATEWAY_URL
+          value: "http://api-gateway-service.ibis-x.svc.cluster.local"
+        - name: PYTHONPATH
+          value: "/app"
+        - name: CELERY_WORKER_HIJACK_ROOT_LOGGER
+          value: "false"
+        - name: MPLCONFIGDIR
+          value: "/tmp/matplotlib"
+        - name: C_FORCE_ROOT
+          value: "1"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - |
+              # Vérifier que le worker Celery est connecté ET voit au moins 1 autre worker
+              celery -A app.core.celery_app inspect ping > /tmp/ping_result 2>&1
+              if [ $? -ne 0 ]; then exit 1; fi
+              
+              # Compter les workers visibles dans le cluster
+              WORKER_COUNT=$(celery -A app.core.celery_app inspect active 2>/dev/null | grep -c "node online" || echo "0")
+              if [ "$WORKER_COUNT" -lt 1 ]; then exit 1; fi
+              
+              # Worker ready si ping OK et cluster visible
+              exit 0
+          initialDelaySeconds: 45
+          periodSeconds: 30
+          timeoutSeconds: 15
+          failureThreshold: 5
+        livenessProbe:
+          exec:
+            command:
+            - celery
+            - -A
+            - app.core.celery_app
+            - inspect
+            - ping
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 10
+          failureThreshold: 3

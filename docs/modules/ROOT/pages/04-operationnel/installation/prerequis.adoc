@@ -1,0 +1,77 @@
+= Prérequis
+:description: Outils et ressources nécessaires pour IBIS-X en local
+
+== Système
+
+* *OS* : Windows 10/11, macOS, Linux.
+* *RAM* : 8 Go minimum, 16 Go recommandé (entraînement ML + Minikube).
+* *Disque* : 20 Go libres.
+
+== Outils requis
+
+[cols="1,1,2"]
+|===
+| Outil | Version | Rôle
+
+| Git | ≥ 2.30 | Clonage du dépôt
+| Docker Desktop | ≥ 24 | Build images + moteur Minikube (driver `docker`)
+| Minikube | ≥ 1.30 | Cluster K8s local
+| kubectl | ≥ 1.27 | CLI Kubernetes
+| Skaffold | ≥ 2.5 | Build + deploy incrémental
+| Make | — | Orchestrateur principal (GNU make)
+| Python | 3.11 | Scripts auxiliaires, dev hors cluster éventuel
+| Node.js | 20 LTS | Dev frontend hors cluster (optionnel si tout via `make dev`)
+|===
+
+== Comptes / credentials
+
+[cols="1,2"]
+|===
+| Service | Usage
+| Google Cloud Console | `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` pour OAuth
+| Kaggle | `KAGGLE_USERNAME` + `KAGGLE_KEY` pour import datasets
+| OpenAI | `OPENAI_API_KEY` pour analyse qualité + explications LLM
+|===
+
+Sans ces credentials :
+
+* OAuth Google ne fonctionnera pas (login email+password reste disponible).
+* Import Kaggle ne fonctionnera pas (upload manuel reste disponible).
+* Analyse qualité IA + chat XAI ne fonctionneront pas.
+
+== Variables d'environnement (`.env`)
+
+Copier `.env.example` → `.env` et remplir **les 8 variables** :
+
+[source,env]
+----
+JWT_SECRET_KEY=<32+ bytes aléatoires>
+DATABASE_URL=postgresql://ibis_x_user:password@postgresql-service:5432/ibis_x_db
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+OAUTH_REDIRECT_URL=http://localhost:8080/auth/google/callback
+KAGGLE_USERNAME=...
+KAGGLE_KEY=...
+OPENAI_API_KEY=sk-...
+----
+
+== Vérification pré-démarrage
+
+[source,bash]
+----
+docker --version
+minikube version
+kubectl version --client
+skaffold version
+make --version
+----
+
+Si un outil manque → installation selon la doc officielle.
+
+== Spécificités Windows
+
+Lire obligatoirement xref:04-operationnel/installation/windows-specificites.adoc[Spécificités Windows] avant `make dev` (arm64, encodage cp1252).
+
+== Suite
+
+xref:04-operationnel/installation/local-minikube.adoc[Démarrage local Minikube].

@@ -1,0 +1,86 @@
+= Redirection vers Login depuis la Page d'Accueil
+:page-layout: docs
+:page-title: Redirection Login - IBIS X
+:page-description: Configuration de la redirection du bouton "Commencer" vers la page de login
+:page-keywords: login, authentification, redirection, homepage, navigation
+
+== Vue d'ensemble
+
+Le bouton "Commencer" de la page d'accueil d'IBIS X redirige maintenant les utilisateurs vers la page de connexion (`/authentication/login`) au lieu de la page d'enregistrement.
+
+== Modification effectuée
+
+=== Code modifié
+
+**Fichier :** `frontend/src/app/pages/home/home.component.ts`
+
+**Avant :**
+```typescript
+startPipeline(): void {
+    this.router.navigate(['/authentication/register'], {
+        queryParams: { redirect: '/app/starter' }
+    });
+}
+```
+
+**Après :**
+```typescript
+startPipeline(): void {
+    this.router.navigate(['/authentication/login'], {
+        queryParams: { redirect: '/app/starter' }
+    });
+}
+```
+
+== Fonctionnement
+
+=== 1. Bouton "Commencer"
+
+Dans le template HTML (`home.component.html`), le bouton est défini comme suit :
+
+```html
+<a href="#" class="get-started-btn" (click)="startPipeline()">Commencer</a>
+```
+
+=== 2. Redirection avec paramètre
+
+Lorsque l'utilisateur clique sur "Commencer", il est redirigé vers :
+
+* **URL de destination :** `/authentication/login`
+* **Paramètre de redirection :** `redirect=/app/starter`
+
+=== 3. Après connexion réussie
+
+Une fois connecté, l'utilisateur sera automatiquement redirigé vers `/app/starter` (la page de démarrage de l'application).
+
+== Architecture de l'authentification
+
+=== Routes d'authentification disponibles
+
+Les routes d'authentification sont définies dans `authentication.routes.ts` :
+
+* `/authentication/login` - Page de connexion (AppSideLoginComponent)
+* `/authentication/register` - Page d'enregistrement (AppSideRegisterComponent)
+* `/authentication/callback` - Callback OAuth (OAuthCallbackComponent)
+* `/authentication/error` - Page d'erreur (AppErrorComponent)
+
+=== Gardes de route
+
+* **nonAuthGuard** : Protège les pages de login/register pour éviter l'accès aux utilisateurs déjà connectés
+* **authGuard** : Protège les pages de l'application nécessitant une authentification
+
+== Avantages de cette approche
+
+✅ **Parcours utilisateur optimisé** : Les utilisateurs existants peuvent se connecter directement
+
+✅ **Redirection automatique** : Après connexion, redirection vers la page cible
+
+✅ **Cohérence** : Maintient les paramètres de redirection pour l'expérience utilisateur
+
+✅ **Flexibilité** : Les nouveaux utilisateurs peuvent toujours accéder à l'enregistrement via les liens appropriés
+
+== Pages liées
+
+* xref:authentication-system.adoc[Système d'authentification]
+* xref:routing-configuration.adoc[Configuration des routes]
+* xref:user-onboarding.adoc[Processus d'intégration utilisateur]

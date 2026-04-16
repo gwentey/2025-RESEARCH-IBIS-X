@@ -1,0 +1,32 @@
+= Dev containers
+:description: Utiliser VS Code Dev Containers (optionnel)
+
+== Statut
+
+Dev containers sont **optionnels** pour IBIS-X. L'environnement canonique est `make dev` natif (voir xref:04-operationnel/installation/local-minikube.adoc[Démarrage local Minikube]).
+
+Le dev container peut être utile si :
+
+* La machine hôte ne peut pas installer Python 3.11 / Node 20.
+* On veut un environnement homogène en équipe.
+
+== Non livré en PoC
+
+Le fichier `.devcontainer/devcontainer.json` n'est pas inclus dans le dépôt (choix assumé pour éviter la confusion avec Minikube).
+
+Si besoin post-PoC, suivre le https://code.visualstudio.com/docs/devcontainers/containers[guide officiel] et cibler :
+
+* Base : `mcr.microsoft.com/devcontainers/python:3.11`.
+* Features : docker-outside-of-docker, kubectl, node.
+* Forward ports : 8080, 9000.
+
+== Alternative — container shell pour scripts ponctuels
+
+Pour exécuter un script Python isolé sans installer Python sur la machine :
+
+[source,bash]
+----
+docker run --rm -it -v "$PWD:/work" -w /work python:3.11-slim bash
+pip install -r requirements.txt
+python scripts/mon_script.py
+----

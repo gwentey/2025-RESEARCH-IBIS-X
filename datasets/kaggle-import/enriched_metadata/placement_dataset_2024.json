@@ -1,0 +1,178 @@
+{
+  "dataset_name": "placement_dataset_2024",
+  "display_name": "Placement Dataset Updated 2024",
+  "objective": "Predict student salary packages (in LPA) based on CGPA scores - perfect dataset for practicing linear regression and understanding correlation between academic performance and career outcomes",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Student placement records - Pranshu Shah compilation",
+  "storage_uri": "https://www.kaggle.com/datasets/shahpranshu27/placement-dataset-updated-2024",
+  "citation_link": "https://www.kaggle.com/datasets/shahpranshu27/placement-dataset-updated-2024",
+  "documentation_link": "https://www.kaggle.com/datasets/shahpranshu27/placement-dataset-updated-2024",
+  "instances_number": 200,
+  "features_number": 2,
+  "features_description": "Simple two-column dataset: CGPA (out of 10) as predictor and Package (in LPA - Lakhs Per Annum) as target variable for salary prediction",
+  "domain": ["education"],
+  "representativity_description": "Small collection of 200 student placement records showing relationship between academic performance and starting salaries - limited scope but educational value",
+  "representativity_level": "low",
+  "sample_balance_description": "Good distribution across CGPA range (5.01-9.97) and salary packages (18.7-81.1 LPA)",
+  "sample_balance_level": "balanced",
+  "split": false,
+  "missing_values": {
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "description": "Complete dataset with no missing values - ready for immediate analysis",
+    "handling_method": "none"
+  },
+  "temporal_factors": false,
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": false,
+  "task": ["regression"],
+  "year": 2024,
+  "license": "MIT",
+  "num_citations": 6,
+  "educational_context": {
+    "primary_purpose": "Linear regression learning",
+    "difficulty_level": "beginner",
+    "typical_algorithms": ["linear_regression", "polynomial_regression", "ridge_regression"],
+    "learning_objectives": [
+      "Understanding correlation between academic performance and salary",
+      "Practice linear regression implementation",
+      "Feature scaling and normalization",
+      "Model evaluation metrics (R², RMSE, MAE)"
+    ]
+  },
+  "data_characteristics": {
+    "cgpa_distribution": {
+      "min": 5.01,
+      "max": 9.97,
+      "range": "5.01-9.97 on 10-point scale",
+      "notes": "Indian academic grading system"
+    },
+    "salary_distribution": {
+      "min": 18.7,
+      "max": 81.1,
+      "unit": "LPA (Lakhs Per Annum)",
+      "currency": "INR",
+      "range": "18.7-81.1 LPA",
+      "notes": "Entry-level salaries in Indian tech industry"
+    },
+    "relationship": "Generally positive correlation between CGPA and package, with some outliers showing high packages despite lower CGPA"
+  },
+  "ethics": {
+    "informed_consent": true,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures_in_place": true,
+    "data_quality_documented": true,
+    "anonymization_applied": true,
+    "record_keeping_policy_exists": false,
+    "purpose_limitation_respected": true,
+    "accountability_defined": true
+  },
+  "column_details": [
+    {
+      "column_name": "cgpa",
+      "position": 0,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Cumulative Grade Point Average on 10-point scale - primary predictor variable",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 5.01,
+      "max_value": 9.97,
+      "mean_value": 7.2,
+      "std_value": 1.4,
+      "example_values": ["9.75", "5.36", "6.48", "8.59", "7.84"],
+      "category": "academic_performance"
+    },
+    {
+      "column_name": "package",
+      "position": 1,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Salary package in LPA (Lakhs Per Annum) - target variable for regression",
+      "is_target": true,
+      "missing_percentage": 0.0,
+      "min_value": 18.68,
+      "max_value": 81.11,
+      "mean_value": 45.5,
+      "std_value": 15.2,
+      "example_values": ["68.49", "23.32", "34.33", "59.05", "47.27"],
+      "category": "salary_outcome",
+      "unit": "LPA (Lakhs Per Annum)"
+    }
+  ],
+  "technical_specifications": {
+    "file_format": "CSV",
+    "file_size": "4.66_kB",
+    "compression": "none",
+    "encoding": "UTF-8",
+    "separator": "comma",
+    "data_quality": "high",
+    "outliers": "Some students with lower CGPA achieved higher packages"
+  },
+  "usage_notes": "This is an ideal beginner dataset for linear regression practice. The relationship between CGPA and salary package is generally positive but includes interesting outliers that demonstrate real-world complexity in career outcomes.",
+  "potential_applications": [
+    "Linear regression tutorial and practice",
+    "Correlation analysis between academic performance and salary",
+    "Feature scaling and normalization exercises",
+    "Model evaluation metrics learning",
+    "Data visualization practice (scatter plots, regression lines)",
+    "Statistical inference and hypothesis testing",
+    "Career counseling and salary expectation modeling",
+    "Educational outcome analysis",
+    "Recruitment and HR analytics",
+    "Academic performance benchmarking"
+  ],
+  "analytical_insights": [
+    "Positive correlation between CGPA and starting salary",
+    "CGPA explains significant variance in salary packages",
+    "Some high-performers (CGPA 9+) secure premium packages (65+ LPA)",
+    "Outliers exist: some students with lower CGPA (6-7) achieve good packages (35+ LPA)",
+    "Entry-level tech salaries range widely (18-81 LPA)",
+    "Academic performance is important but not the sole determinant of salary"
+  ],
+  "educational_value": [
+    "Perfect for teaching linear regression concepts",
+    "Demonstrates real-world data relationships",
+    "Shows importance of outlier analysis",
+    "Illustrates correlation vs causation principles",
+    "Provides career guidance insights",
+    "Excellent for statistical analysis practice"
+  ],
+  "limitations": [
+    "Small sample size (200 records)",
+    "Limited to specific context (likely Indian tech industry)",
+    "Only two variables - lacks additional predictive features",
+    "No information about universities, specializations, or companies",
+    "Temporal aspect not captured",
+    "Potential sampling bias in data collection"
+  ],
+  "indian_context": {
+    "grading_system": "10-point CGPA scale (typical in Indian universities)",
+    "salary_context": "LPA format common in Indian job market",
+    "industry_focus": "Likely tech/IT sector placements",
+    "currency": "Indian Rupees (INR)",
+    "academic_year": "2024 placement season"
+  },
+  "ml_learning_path": {
+    "beginner_exercises": [
+      "Scatter plot visualization",
+      "Simple linear regression fitting",
+      "R-squared calculation",
+      "Residual analysis"
+    ],
+    "intermediate_exercises": [
+      "Polynomial regression comparison",
+      "Cross-validation implementation",
+      "Feature engineering exploration",
+      "Outlier detection and handling"
+    ],
+    "advanced_exercises": [
+      "Regularization techniques",
+      "Ensemble methods comparison",
+      "Confidence interval prediction",
+      "Statistical significance testing"
+    ]
+  }
+}

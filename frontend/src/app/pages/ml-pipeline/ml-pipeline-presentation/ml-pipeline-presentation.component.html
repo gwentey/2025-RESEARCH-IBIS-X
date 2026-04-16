@@ -1,0 +1,519 @@
+<!-- ML Pipeline Dashboard Page -->
+<div class="ml-pipeline-presentation">
+
+  <!-- Hero Section avec Overview -->
+  <div class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+
+        <!-- Badge et titre -->
+        <div class="status-badge">
+          <div class="badge-dot"></div>
+          <span>{{ 'ML_PIPELINE.PRESENTATION.HERO.BADGE' | translate }}</span>
+            </div>
+
+            <h1 class="hero-title">
+          {{ 'ML_PIPELINE.PRESENTATION.HERO.TITLE' | translate }}
+            </h1>
+
+            <p class="hero-subtitle">
+          {{ 'ML_PIPELINE.PRESENTATION.HERO.SUBTITLE' | translate }}
+            </p>
+
+        <!-- Quick Actions -->
+        <div class="hero-actions">
+              <button
+            mat-flat-button
+                color="primary"
+            class="primary-action"
+                (click)="startNewExperiment()">
+            <mat-icon>add</mat-icon>
+            {{ 'ML_PIPELINE.PRESENTATION.HERO.START_BUTTON' | translate }}
+              </button>
+
+              <button
+                mat-stroked-button
+            class="secondary-action"
+            (click)="viewTutorials()">
+            <mat-icon>play_circle</mat-icon>
+            {{ 'ML_PIPELINE.PRESENTATION.HERO.WATCH_TUTORIALS' | translate }}
+              </button>
+            </div>
+
+      </div>
+
+      <!-- User Status Panel -->
+      <div class="user-status-panel">
+        <div class="status-card credits-card">
+          <div class="card-icon">
+            <mat-icon>account_balance_wallet</mat-icon>
+          </div>
+          <div class="card-content">
+            <div class="card-title">{{ 'ML_PIPELINE.PRESENTATION.STATUS.CREDITS_TITLE' | translate }}</div>
+            <div class="card-value">{{ userCredits || 0 }}</div>
+            <div class="card-subtitle">{{ 'ML_PIPELINE.PRESENTATION.STATUS.CREDITS_SUBTITLE' | translate }}</div>
+          </div>
+          <button mat-stroked-button class="card-action" (click)="refillCredits()">
+            <mat-icon>add</mat-icon>
+            {{ 'ML_PIPELINE.PRESENTATION.STATUS.CREDITS_REFILL' | translate }}
+          </button>
+            </div>
+
+        <div class="status-card experiments-card">
+          <div class="card-icon">
+            <mat-icon>science</mat-icon>
+          </div>
+          <div class="card-content">
+            <div class="card-title">{{ 'ML_PIPELINE.PRESENTATION.STATUS.EXPERIMENTS_TITLE' | translate }}</div>
+            <div class="card-value">{{ runningExperiments.length }}</div>
+            <div class="card-subtitle">{{ 'ML_PIPELINE.PRESENTATION.STATUS.EXPERIMENTS_SUBTITLE' | translate }}</div>
+          </div>
+          <button mat-stroked-button class="card-action" (click)="viewExperiments()">
+            <mat-icon>visibility</mat-icon>
+            {{ 'ML_PIPELINE.PRESENTATION.STATUS.EXPERIMENTS_VIEW_ALL' | translate }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pipeline Overview Schema -->
+  <div class="pipeline-schema-section">
+    <div class="container">
+
+          <div class="section-header">
+        <h2 class="section-title">{{ 'ML_PIPELINE.PRESENTATION.STEPS.TITLE' | translate }}</h2>
+        <p class="section-subtitle">{{ 'ML_PIPELINE.PRESENTATION.STEPS.SUBTITLE' | translate }}</p>
+          </div>
+
+      <!-- Visual Pipeline Flow -->
+      <div class="pipeline-flow">
+
+        <!-- Step 1 -->
+        <div class="pipeline-step" (click)="focusStep(0)">
+          <div class="step-number">1</div>
+          <div class="step-icon">
+            <mat-icon>storage</mat-icon>
+          </div>
+          <div class="step-content">
+            <h3>Dataset</h3>
+            <p>Choose or upload your data</p>
+          </div>
+          <div class="step-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+                  </div>
+                </div>
+
+        <!-- Step 2 -->
+        <div class="pipeline-step" (click)="focusStep(1)">
+          <div class="step-number">2</div>
+          <div class="step-icon">
+            <mat-icon>cleaning_services</mat-icon>
+          </div>
+          <div class="step-content">
+            <h3>Cleaning</h3>
+            <p>Fix missing values & outliers</p>
+          </div>
+          <div class="step-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+                  </div>
+                </div>
+
+        <!-- Step 3 -->
+        <div class="pipeline-step" (click)="focusStep(2)">
+          <div class="step-number">3</div>
+          <div class="step-icon">
+            <mat-icon>flag</mat-icon>
+          </div>
+          <div class="step-content">
+            <h3>Objective</h3>
+            <p>Define what to predict</p>
+                  </div>
+          <div class="step-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+                </div>
+              </div>
+
+        <!-- Step 4 -->
+        <div class="pipeline-step" (click)="focusStep(3)">
+          <div class="step-number">4</div>
+          <div class="step-icon">
+            <mat-icon>call_split</mat-icon>
+          </div>
+          <div class="step-content">
+            <h3>Division</h3>
+            <p>Split train/test data</p>
+          </div>
+          <div class="step-arrow">
+            <mat-icon>arrow_downward</mat-icon>
+                  </div>
+                </div>
+
+        <!-- Step 5 -->
+        <div class="pipeline-step" (click)="focusStep(4)">
+          <div class="step-number">5</div>
+          <div class="step-icon">
+            <mat-icon>transform</mat-icon>
+          </div>
+          <div class="step-content">
+            <h3>Preparation</h3>
+            <p>Feature engineering</p>
+          </div>
+          <div class="step-arrow">
+            <mat-icon>arrow_back</mat-icon>
+                  </div>
+                </div>
+
+        <!-- Step 6 -->
+        <div class="pipeline-step" (click)="focusStep(5)">
+          <div class="step-number">6</div>
+          <div class="step-icon">
+            <mat-icon>psychology</mat-icon>
+          </div>
+          <div class="step-content">
+            <h3>Algorithm</h3>
+            <p>AI model selection</p>
+                  </div>
+          <div class="step-arrow">
+            <mat-icon>arrow_back</mat-icon>
+                </div>
+              </div>
+
+        <!-- Step 7 -->
+        <div class="pipeline-step" (click)="focusStep(6)">
+          <div class="step-number">7</div>
+          <div class="step-icon">
+            <mat-icon>tune</mat-icon>
+          </div>
+          <div class="step-content">
+            <h3>Parameters</h3>
+            <p>Optimize settings</p>
+          </div>
+          <div class="step-arrow">
+            <mat-icon>arrow_back</mat-icon>
+                  </div>
+                </div>
+
+        <!-- Step 8 -->
+        <div class="pipeline-step final-step" (click)="focusStep(7)">
+          <div class="step-number">8</div>
+          <div class="step-icon">
+            <mat-icon>fitness_center</mat-icon>
+                  </div>
+          <div class="step-content">
+            <h3>Training</h3>
+            <p>Learn & explain</p>
+                </div>
+              </div>
+
+      </div>
+
+      <!-- Step Details Panel -->
+      <div class="step-details-panel" [class.visible]="focusedStep !== null">
+        <div class="panel-content" *ngIf="focusedStep !== null">
+          <div class="panel-header">
+            <h3>{{ getStepTitle(focusedStep) }}</h3>
+            <button mat-icon-button (click)="closeFocus()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="panel-body">
+            <p>{{ getStepDescription(focusedStep) }}</p>
+            <div class="step-features" *ngIf="getStepFeatures(focusedStep)">
+              <h4>Key Features:</h4>
+              <ul>
+                <li *ngFor="let feature of getStepFeatures(focusedStep)">{{ feature }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Current Activity Dashboard -->
+  <div class="activity-dashboard-section">
+    <div class="container">
+
+      <div class="dashboard-grid">
+
+        <!-- Running Experiments -->
+        <div class="dashboard-card experiments-card">
+          <div class="card-header">
+            <h3>
+              <mat-icon>science</mat-icon>
+              Active Experiments
+            </h3>
+            <span class="card-badge">{{ runningExperiments.length }}</span>
+          </div>
+
+          <div class="card-content">
+            <div class="experiment-item" *ngFor="let exp of runningExperiments.slice(0, 3)">
+              <div class="exp-info">
+                <div class="exp-name">Experiment {{ exp.id.substring(0, 8) }}</div>
+                <div class="exp-algorithm">{{ exp.algorithm }}</div>
+              </div>
+              <div class="exp-progress">
+                <mat-progress-bar mode="determinate" [value]="getExperimentProgress(exp)"></mat-progress-bar>
+                <span class="progress-text">{{ getExperimentProgress(exp) }}%</span>
+              </div>
+              <button mat-icon-button (click)="viewExperiment(exp.id)">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+
+            <div class="no-experiments" *ngIf="runningExperiments.length === 0">
+              <mat-icon>science</mat-icon>
+              <span>{{ 'ML_PIPELINE.DASHBOARD.NO_ACTIVE_EXPERIMENTS' | translate }}</span>
+              <button mat-stroked-button (click)="startNewExperiment()">
+                {{ 'ML_PIPELINE.DASHBOARD.START_FIRST_EXPERIMENT' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ML Concepts Guide -->
+        <div class="dashboard-card concepts-card">
+          <div class="card-header">
+            <h3>
+              <mat-icon>school</mat-icon>
+              ML Concepts
+            </h3>
+                  </div>
+
+          <div class="card-content">
+            <div class="concept-item" *ngFor="let concept of mlConcepts" (click)="explainConcept(concept.id)">
+              <div class="concept-icon">{{ concept.icon }}</div>
+              <div class="concept-content">
+                <div class="concept-name">{{ concept.name }}</div>
+                <div class="concept-description">{{ concept.description }}</div>
+              </div>
+              <mat-icon class="concept-arrow">arrow_forward_ios</mat-icon>
+            </div>
+                    </div>
+                  </div>
+
+        <!-- Quick Stats -->
+        <div class="dashboard-card stats-card">
+          <div class="card-header">
+            <h3>
+              <mat-icon>analytics</mat-icon>
+              Your ML Stats
+            </h3>
+                  </div>
+
+          <div class="card-content">
+            <div class="stat-grid">
+              <div class="stat-item">
+                <div class="stat-value">{{ userStats.totalExperiments }}</div>
+                <div class="stat-label">Total Models</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ userStats.avgAccuracy }}%</div>
+                <div class="stat-label">Avg. Accuracy</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ userStats.bestAccuracy }}%</div>
+                <div class="stat-label">Best Model</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ userStats.totalTime }}min</div>
+                <div class="stat-label">Training Time</div>
+              </div>
+            </div>
+                    </div>
+                  </div>
+
+        <!-- Tutorials & Resources -->
+        <div class="dashboard-card tutorials-card">
+          <div class="card-header">
+            <h3>
+              <mat-icon>play_circle</mat-icon>
+              Learning Resources
+            </h3>
+                  </div>
+
+          <div class="card-content">
+            <div class="tutorial-item" *ngFor="let tutorial of tutorials" (click)="watchTutorial(tutorial.id)">
+              <div class="tutorial-thumbnail">
+                <mat-icon>{{ tutorial.icon }}</mat-icon>
+                <div class="play-overlay">
+                  <mat-icon>play_arrow</mat-icon>
+                </div>
+              </div>
+              <div class="tutorial-content">
+                <div class="tutorial-title">{{ tutorial.title }}</div>
+                <div class="tutorial-duration">{{ tutorial.duration }}</div>
+                    </div>
+                  </div>
+
+            <button mat-stroked-button class="view-all-tutorials" (click)="viewAllTutorials()">
+              <mat-icon>library_books</mat-icon>
+              {{ 'ML_PIPELINE.DASHBOARD.VIEW_ALL_TUTORIALS' | translate }}
+            </button>
+          </div>
+                  </div>
+
+                </div>
+
+    </div>
+  </div>
+
+  <!-- Explainability Showcase -->
+  <div class="explainability-section">
+    <div class="container">
+
+      <div class="explainability-header">
+        <h2 class="section-title">Understand Every Prediction</h2>
+        <p class="section-subtitle">Our explainable AI shows you exactly why each decision was made</p>
+      </div>
+
+      <!-- XAI Demo -->
+      <div class="xai-demo-container">
+
+        <!-- Sample Prediction -->
+        <div class="prediction-demo">
+          <div class="demo-header">
+            <h4>Live Prediction Example</h4>
+            <div class="confidence-badge">94% Confident</div>
+          </div>
+
+          <div class="prediction-result">
+            <div class="result-icon success">
+              <mat-icon>check_circle</mat-icon>
+                  </div>
+            <div class="result-text">
+              <strong>Prediction: WILL PURCHASE</strong>
+              <span>This customer is likely to buy within 30 days</span>
+                  </div>
+                  </div>
+
+          <!-- Feature Importance -->
+          <div class="explanation-chart">
+            <h5>Why this prediction?</h5>
+            <div class="feature-bars">
+              <div class="feature-bar" *ngFor="let feature of sampleFeatures">
+                <div class="feature-label">{{ feature.name }}</div>
+                <div class="feature-importance">
+                  <div class="importance-bar" [style.width.%]="feature.importance"></div>
+                  <span class="importance-value">{{ feature.importance }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explanation Panel -->
+        <div class="explanation-panel">
+          <div class="explanation-item" *ngFor="let explanation of sampleExplanations">
+            <div class="explanation-icon">{{ explanation.icon }}</div>
+            <div class="explanation-content">
+              <strong>{{ explanation.factor }}</strong>
+              <span>{{ explanation.impact }}</span>
+            </div>
+            <div class="explanation-contribution">{{ explanation.contribution }}</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Quick Start Actions -->
+  <div class="quick-start-section">
+    <div class="container">
+
+      <div class="quick-start-grid">
+
+        <!-- Start Training -->
+        <div class="quick-action-card primary-card" (click)="startNewExperiment()">
+          <div class="card-background">
+            <mat-icon class="background-icon">rocket_launch</mat-icon>
+          </div>
+          <div class="card-content">
+            <mat-icon class="action-icon">add</mat-icon>
+            <h3>Start New Training</h3>
+            <p>Create a new ML model with guided steps</p>
+            <div class="action-meta">
+              <span>{{ userCredits }} credits available</span>
+            </div>
+          </div>
+          </div>
+
+        <!-- Continue Experiment -->
+        <div class="quick-action-card" (click)="continueLatest()" *ngIf="latestExperiment">
+          <div class="card-content">
+            <mat-icon class="action-icon">play_arrow</mat-icon>
+            <h3>Continue Latest</h3>
+            <p>Experiment {{ latestExperiment.id.substring(0, 8) }}</p>
+            <div class="action-meta">
+              <span>{{ getExperimentProgress(latestExperiment) }}% complete</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- View Results -->
+        <div class="quick-action-card" (click)="viewExperiments()">
+          <div class="card-content">
+            <mat-icon class="action-icon">assessment</mat-icon>
+            <h3>View Results</h3>
+            <p>Explore your trained models</p>
+            <div class="action-meta">
+              <span>{{ completedExperiments.length }} models ready</span>
+            </div>
+          </div>
+              </div>
+
+        <!-- Learn More -->
+        <div class="quick-action-card" (click)="viewTutorials()">
+          <div class="card-content">
+            <mat-icon class="action-icon">school</mat-icon>
+            <h3>Learn ML</h3>
+            <p>Watch tutorials & guides</p>
+            <div class="action-meta">
+              <span>{{ tutorials.length }} videos available</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Recent Activity Feed -->
+  <div class="activity-feed-section" *ngIf="recentActivity.length > 0">
+    <div class="container">
+
+      <div class="section-header">
+        <h2 class="section-title">{{ 'ML_PIPELINE.ACTIVITY_FEED.TITLE' | translate }}</h2>
+        <button mat-stroked-button (click)="viewAllActivity()">
+          {{ 'ML_PIPELINE.ACTIVITY_FEED.VIEW_ALL' | translate }}
+                </button>
+              </div>
+
+      <div class="activity-timeline">
+        <div class="activity-item" *ngFor="let activity of recentActivity.slice(0, 5)">
+          <div class="activity-time">{{ activity.timestamp | date:'HH:mm' }}</div>
+          <div class="activity-icon" [class]="activity.type">
+            <mat-icon>{{ getActivityIcon(activity.type) }}</mat-icon>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">{{ activity.title }}</div>
+            <div class="activity-description">{{ activity.description }}</div>
+          </div>
+          <div class="activity-action" *ngIf="activity.actionUrl">
+            <button mat-icon-button (click)="navigateToActivity(activity.actionUrl)">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

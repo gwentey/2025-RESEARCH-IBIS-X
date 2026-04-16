@@ -1,0 +1,75 @@
+= Droits des utilisateurs — implémentation
+:description: Implémentation concrète des droits RGPD dans le code
+
+== Droit d'accès (art. 15)
+
+L'utilisateur peut consulter :
+
+[cols="1,2,2"]
+|===
+| Donnée | Endpoint | Implémentation
+| Profil | `GET /users/me` | `api-gateway/app/routes/users.py`
+| Projets | `GET /projects` | `service-selection`
+| Datasets uploadés | `GET /datasets?uploaded_by=me` | `service-selection`
+| Expériences ML | `GET /experiments?user_id=me` | `ml-pipeline-service`
+| Explications | `GET /explanations?user_id=me` | `xai-engine-service`
+|===
+
+Pour une vue consolidée (export à télécharger), un endpoint dédié `GET /users/me/export` est *à implémenter post-PoC*.
+
+== Droit de rectification (art. 16)
+
+* `PATCH /users/me` — modification email, first_name, last_name, préférences.
+* `PUT /datasets/{id}` — modification métadonnées d'un dataset dont on est uploadeur.
+* `PUT /projects/{id}` — modification projet.
+
+Le champ `role` n'est modifiable que par un admin (`is_superuser == true`).
+
+== Droit à l'effacement / à l'oubli (art. 17)
+
+Endpoint : `DELETE /users/me`
+
+Effet en cascade (ordre d'exécution) :
+
+. Suppression de tous les `chat_messages` liés aux `explanation_requests` de l'utilisateur.
+. Suppression des `explanation_requests` de l'utilisateur.
+. Suppression des `experiments` + artefacts dans Blob Storage (`artifact_uri`).
+. Suppression des `data_quality_analyses` cache associées si elles ne concernent plus aucun dataset actif.
+. Suppression des `datasets` uploadés par l'utilisateur + fichiers dans Blob Storage (`storage_path`).
+. Suppression des `projects`.
+. Suppression de l'entrée `oauth_accounts` si applicable.
+. Suppression de l'entrée `users`.
+
+Irréversible. Délai d'exécution : synchrone à la requête (PoC — pas de queue dédiée).
+
+== Droit à la limitation (art. 18)
+
+Implémenté via `is_active = false` (soft-delete). L'utilisateur ne peut plus se connecter, mais ses données restent en BDD (p.ex. en cas de litige). Procédure manuelle par admin actuellement ; self-service à ajouter.
+
+== Droit à la portabilité (art. 20)
+
+PoC : l'utilisateur peut composer son export à partir des endpoints `GET` listés ci-dessus.
+
+Amélioration prévue : `GET /users/me/export` retournant un ZIP JSON (profil + projets + datasets métadonnées + expériences + explications).
+
+== Droit d'opposition (art. 21)
+
+Aucun traitement à des fins de prospection ou de décision automatisée affectant l'utilisateur.
+
+== Procédure utilisateur recommandée
+
+Pour exercer ses droits, un utilisateur peut :
+
+. Accéder directement aux endpoints (`GET`, `PATCH`, `DELETE`) via l'interface frontend (pages `/profile` et `/profile/delete-account`).
+. Pour toute demande complexe ou contestation : contacter le mainteneur du dépôt (voir `SECURITY.md` pour le canal privé).
+
+== Délais d'exécution
+
+* *Droit d'accès / rectification* : immédiat (requête synchrone).
+* *Droit à l'effacement* : immédiat (cascade SQL) ; suppression effective dans le Blob Storage dans la même transaction.
+* *Délai légal RGPD* : 1 mois (non atteint — exécution en temps réel).
+
+== Référence technique
+
+* Code : `api-gateway/app/routes/users.py`, `service-selection/app/crud.py`.
+* Tests : à écrire (Lot 5).

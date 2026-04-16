@@ -1,0 +1,41 @@
+# Patch pour ajuster les images des init containers en local (Minikube)
+# Applique imagePullPolicy: Never pour toutes les images locales
+
+# ML Pipeline
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-pipeline
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: run-migrations
+        imagePullPolicy: Never
+
+# API Gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: run-migrations
+        imagePullPolicy: Never
+
+# XAI Engine
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xai-engine
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: run-migrations
+        imagePullPolicy: Never

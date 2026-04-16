@@ -1,0 +1,250 @@
+= Guide d'Intégration XAI Complète
+:navtitle: XAI Intégration Complète
+:page-tags: xai, explicabilité, intégration
+
+== Vue d'ensemble du Workflow ML → Dataset → XAI
+
+Cette documentation décrit le workflow complet d'intégration entre le Machine Learning, les Datasets et l'eXplainable AI (XAI) dans IBIS-X.
+
+== Architecture du Système
+
+```
+Frontend Angular  →  API Gateway  →  ML Pipeline  →  XAI Engine
+     ↓                    ↓              ↓             ↓
+Dataset Selection    Authentification  Entraînement   Explications
+     ↓                    ↓              ↓             ↓
+   Columns           User Context    Results + ID    GPT-5 Nano
+```
+
+== Flux Complet de Données
+
+=== 1. Sélection Dataset et Entraînement
+
+[source,typescript]
+----
+// 1. Frontend: Sélection dataset
+const datasetId = "a63cb808-9eb4-4e5b-91f5-91849c2787fb";
+
+// 2. Configuration expérience ML
+const experimentConfig = {
+  dataset_id: datasetId,  // ✅ CRITIQUE: Lien Dataset
+  algorithm: "random_forest",
+  preprocessing_config: {
+    target_column: "Species",
+    task_type: "classification"
+  }
+};
+
+// 3. Lancement entraînement
+const experiment = await mlService.createExperiment(experimentConfig);
+----
+
+=== 2. Retour de Résultats avec Dataset ID
+
+[source,python]
+----
+# ml-pipeline-service/app/schemas.py
+class ExperimentStatus(BaseModel):
+    id: UUID
+    dataset_id: UUID  # ✅ CRITIQUE: ID du dataset
+    status: str
+    progress: Optional[int] = None
+    algorithm: str
+
+class ExperimentResults(BaseModel):
+    id: UUID
+    dataset_id: UUID  # ✅ CRITIQUE: ID du dataset
+    metrics: Dict[str, Any]
+    feature_importance: Dict[str, Any]
+    preprocessing_config: Dict[str, Any]
+----
+
+=== 3. Chargement des Colonnes Dataset
+
+[source,typescript]
+----
+// Frontend: Récupération dataset avec colonnes
+async loadDatasetColumns(datasetId: string) {
+  const dataset = await this.datasetService.getDataset(datasetId);
+  this.datasetColumns = dataset.columns || [];
+  
+  // ✅ Validation: Colonnes disponibles pour XAI
+  if (this.datasetColumns.length > 0) {
+    this.canRequestXAIExplanation = true;
+  }
+}
+----
+
+=== 4. Requête XAI avec Contexte Complet
+
+[source,typescript]
+----
+// Frontend: Requête explicabilité
+const xaiRequest = {
+  experiment_id: this.experiment.id,
+  dataset_id: this.experiment.dataset_id,  // ✅ Dataset ID présent
+  explanation_type: "feature_importance",
+  audience_level: "technical",
+  feature_names: this.datasetColumns.map(col => col.name)
+};
+
+await this.xaiService.requestExplanation(xaiRequest);
+----
+
+=== 5. Traitement XAI avec GPT-5 Nano
+
+[source,python]
+----
+# xai-engine-service/app/xai/llm_service.py
+class LLMService:
+    def __init__(self):
+        self.model = "gpt-5-mini"  # ✅ Modèle optimisé performance/coût
+        
+    async def generate_explanation(self, context: ExplanationContext):
+        # ✅ Contexte riche avec colonnes dataset
+        instructions = f"""
+        Dataset: {context.dataset_id}
+        Columns: {context.feature_names}
+        Task: {context.task_type}
+        Algorithm: {context.algorithm}
+        
+        Explique les résultats de manière {context.audience_level}.
+        """
+        
+        response = await self.client.responses.create(
+            model=self.model,
+            instructions=instructions,
+            input=context.data,
+            reasoning={"effort": "low"}
+        )
+        return response.content
+----
+
+== Points Critiques de l'Intégration
+
+=== ✅ Dataset ID Propagation
+
+Le `dataset_id` doit être présent à chaque étape :
+
+1. **ML Pipeline**: Retourné dans `ExperimentStatus` et `ExperimentResults`
+2. **Frontend**: Utilisé pour charger les colonnes dataset  
+3. **XAI**: Reçu pour contextualiser les explications
+
+=== ✅ Authentification Utilisateur
+
+```python
+# API Gateway → XAI Engine
+headers = {
+    "X-User-ID": current_user.id,
+    "X-User-Email": current_user.email
+}
+
+# XAI Engine: Lecture headers
+@router.post("/")
+async def create_explanation_request(
+    x_user_id: str = Header(None, alias="X-User-ID"),
+    x_user_email: str = Header(None, alias="X-User-Email")
+):
+    if not x_user_id:
+        raise HTTPException(401, "Authentification requise")
+```
+
+=== ✅ Gestion d'État Frontend
+
+```typescript
+// Conditions d'affichage XAI
+canRequestXAIExplanation(): boolean {
+  return this.experiment?.status === 'completed' 
+    && this.experiment?.dataset_id 
+    && this.datasetColumns?.length > 0;
+}
+
+// Interface conditionnelle
+<div *ngIf="canRequestXAIExplanation() && !activeXAIRequestId">
+  <app-xai-explanation-request></app-xai-explanation-request>
+</div>
+```
+
+== Configuration de Déploiement
+
+=== Force Rebuild Images
+
+```yaml
+# skaffold.yaml - Services critiques
+- image: ibis-x-ml-pipeline
+  docker:
+    noCache: true  # ✅ Force rebuild
+
+- image: ibis-x-xai-engine
+  docker:
+    noCache: true  # ✅ Force rebuild
+```
+
+=== Variables d'Environnement XAI
+
+```bash
+# .env
+OPENAI_API_KEY=sk-proj-your-key-here
+OPENAI_MODEL=gpt-5-nano
+OPENAI_REASONING_EFFORT=low
+```
+
+== Tests d'Intégration
+
+=== Scénario Complet de Test
+
+1. **Créer expérience ML** → Vérifier `dataset_id` présent
+2. **Attendre completion** → Status = 'completed' 
+3. **Charger colonnes** → `datasetColumns.length > 0`
+4. **Requête XAI** → Interface visible et fonctionnelle
+5. **Réception explications** → GPT-5 nano répond avec contexte
+
+=== Validation Automatique
+
+```bash
+# Script de test complet
+./scripts/test-xai-integration.sh
+
+# Étapes:
+# 1. Deploy application
+# 2. Create ML experiment  
+# 3. Wait completion
+# 4. Test XAI request
+# 5. Verify explanations
+```
+
+== Résolution des Problèmes Courants
+
+=== Dataset ID Manquant
+
+**Symptôme**: `❌ Pas de dataset_id dans le status`
+
+**Solution**: Vérifier que `ExperimentStatus` et `ExperimentResults` incluent `dataset_id`
+
+=== Colonnes Vides
+
+**Symptôme**: `✅ Colonnes chargées: 0 []`
+
+**Solution**: S'assurer que le `dataset_id` est correct et que `datasetService.getDataset()` fonctionne
+
+=== XAI 404/401
+
+**Symptôme**: Erreurs d'authentification ou routing
+
+**Solution**: Vérifier les headers `X-User-ID` et la configuration des routes API Gateway
+
+== Maintenance et Évolutions
+
+=== Ajout d'Algorithmes ML
+
+1. Mettre à jour `schemas.py` pour nouveaux algorithmes
+2. Configurer explications spécifiques dans XAI Engine
+3. Tester intégration complète
+
+=== Nouveaux Types d'Explications  
+
+1. Étendre `ExplanationType` dans models XAI
+2. Implémenter génération dans LLM Service
+3. Mettre à jour interface utilisateur
+
+Cette intégration garantit un workflow robuste et maintenable entre tous les composants du système d'explicabilité.

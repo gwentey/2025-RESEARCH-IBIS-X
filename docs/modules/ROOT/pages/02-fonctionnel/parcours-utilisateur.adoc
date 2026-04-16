@@ -1,0 +1,82 @@
+= Parcours utilisateur
+:description: De l'inscription à l'explication XAI
+
+== Parcours de bout en bout
+
+[mermaid]
+----
+flowchart LR
+    s1[1. Inscription<br/>ou OAuth] --> s2[2. Onboarding<br/>wizard]
+    s2 --> s3[3. Catalogue<br/>datasets]
+    s3 --> s4[4. Création<br/>projet]
+    s4 --> s5[5. Pipeline ML<br/>wizard 5 étapes]
+    s5 --> s6[6. Résultats<br/>métriques + visus]
+    s6 --> s7[7. Explication<br/>SHAP / LIME / LLM]
+    s7 --> s8[8. Chat<br/>≤ 5 questions]
+----
+
+== Étape par étape
+
+=== 1. Inscription
+
+* Email + mot de passe, ou OAuth Google.
+* Validation du compte, connexion automatique.
+* Création du premier cookie JWT (1h).
+
+=== 2. Onboarding
+
+* Wizard court (2-3 écrans) : présentation des concepts clefs.
+* `onboardingGuard` redirige vers ce flux tant qu'il n'est pas complété.
+
+=== 3. Catalogue de datasets
+
+* Vue grille/liste.
+* Filtres combinés (technique, éthique, métier).
+* Vue détaillée par dataset (colonnes, statistiques, scores, preview).
+* Option upload (pour `contributor` et `admin`).
+
+Voir xref:02-fonctionnel/modules/selection-datasets.adoc[Sélection de datasets].
+
+=== 4. Création d'un projet
+
+* Titre + description + dataset associé.
+* Critères d'intention (type de tâche, métrique privilégiée).
+* Recommandation de datasets via heatmap.
+
+Voir xref:02-fonctionnel/modules/gestion-projets.adoc[Gestion de projets].
+
+=== 5. Pipeline ML wizard
+
+Cinq étapes : sélection dataset, preprocessing, algorithme, hyperparamètres, lancement.
+
+Voir xref:02-fonctionnel/modules/pipeline-ml.adoc[Pipeline ML].
+
+=== 6. Résultats
+
+* Métriques (accuracy, precision, recall, F1 / MSE, RMSE, MAE, R²).
+* Matrice de confusion interactive.
+* Courbes ROC multi-classes.
+* Importance des features.
+* Action : "Générer une explication XAI".
+
+=== 7. Explications XAI
+
+* Choix de la méthode : SHAP (global + local), LIME, LLM narrative.
+* WebSHAP client-side pour les instances légères.
+
+Voir xref:02-fonctionnel/modules/explications-xai.adoc[Explications XAI].
+
+=== 8. Chat contextuel
+
+* Poser une question en langage naturel sur l'explication.
+* Limite : 5 questions par session (contrôlée côté backend).
+* Contexte envoyé à OpenAI : SHAP values + feature names, pas d'échantillons bruts.
+
+== Parcours annexes
+
+* *Collaboration* : partager un projet — xref:02-fonctionnel/modules/collaboration.adoc[Collaboration].
+* *Compte utilisateur* : profil, crédits, export, suppression — xref:02-fonctionnel/modules/compte-utilisateur.adoc[Compte utilisateur].
+
+== Multilingue
+
+Toute l'interface bascule FR ↔ EN via le sélecteur. Règle impérative i18n (voir xref:03-technique/frontend/i18n.adoc[i18n]).

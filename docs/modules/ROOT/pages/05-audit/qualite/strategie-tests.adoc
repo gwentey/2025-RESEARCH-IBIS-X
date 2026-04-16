@@ -1,0 +1,107 @@
+= Stratégie de tests
+:description: Vision, pyramide, périmètre par niveau
+
+== Vision
+
+La stratégie de tests IBIS-X suit la **pyramide classique** adaptée au PoC :
+
+[mermaid]
+----
+flowchart BT
+    e2e[E2E<br/>≈ 5 % des tests]
+    integ[Intégration<br/>≈ 20 %]
+    unit[Unitaires<br/>≈ 75 %]
+    unit --> integ --> e2e
+----
+
+* *Beaucoup* de tests unitaires (rapides, déterministes).
+* *Quelques* tests d'intégration (API ↔ BDD ↔ Redis).
+* *Peu* de tests E2E (lents ; déclenchés ponctuellement).
+
+== Périmètre par niveau
+
+=== Tests unitaires (pytest — backend / Jasmine — frontend)
+
+*Cibles* :
+
+* Logique `crud.py` (requêtes SQLAlchemy sur BDD en mémoire / test database).
+* Services métier (`ml-pipeline-service/app/services/preprocessing.py`, etc.).
+* Schemas Pydantic (validation des edge cases).
+* Tâches Celery (en mode `eager` — exécution synchrone).
+* Utilitaires frontend (services Angular, pipes, guards).
+
+*Règles* :
+
+* Un test = un comportement.
+* Pas d'accès réseau, pas d'appel OpenAI réel (mocks).
+* Couverture cible : **≥ 60 %** par service pour le PoC.
+
+=== Tests d'intégration
+
+*Cibles* :
+
+* Endpoints FastAPI contre une BDD PostgreSQL de test (TestContainers).
+* Communication api-gateway → service interne.
+* Publication Celery → consommation worker (eager ou broker fake).
+
+*Règles* :
+
+* Isolation par transaction SQL rollback.
+* Seed de données minimal via fixtures.
+
+=== Tests E2E
+
+*Cibles* :
+
+* Parcours complet : login → upload dataset → training → explication XAI.
+* Vérification multilingue (FR / EN).
+* Test visuel (captures) sur 3 résolutions clés.
+
+*Outil* : Playwright (recommandé) ou Cypress.
+
+*Règles* :
+
+* Déclenchés sur PR vers `main` uniquement (coûteux).
+* Environnement de test dédié (ou `make dev` local).
+
+== Outils & frameworks
+
+[cols="1,1,2"]
+|===
+| Couche | Outil | Commande
+
+| Backend unit/integration | pytest | `cd {service} && pytest`
+| Frontend unit | Jasmine + Karma | `cd frontend && npm test`
+| Frontend E2E | Playwright | `cd frontend && npm run e2e`
+| Couverture Python | coverage.py | `pytest --cov=app --cov-report=html`
+| Couverture TS | Karma coverage | `ng test --code-coverage`
+|===
+
+== Données de test
+
+* *Datasets* : Iris (validation scientifique), petit dataset synthétique (generated fixtures).
+* *Comptes utilisateurs* : créés à la volée par fixture.
+* *Secrets* : valeurs factices (`JWT_SECRET_KEY="test_secret_key_for_tests_only_32b"`).
+
+== Politique de non-régression
+
+* Chaque bug corrigé doit être accompagné d'un test qui reproduit le bug avant le fix.
+* Pas de PR mergée si les tests échouent en CI.
+* Le workflow GitHub Actions bloque le merge sur échec.
+
+== Gaps actuels & feuille de route
+
+[cols="1,3"]
+|===
+| Gap | Plan
+| Tests E2E multilingues | À ajouter Lot 5
+| Tests de charge (ML training sur gros dataset) | Post-PoC
+| Mutation testing (mutmut) | Post-PoC
+| Tests de sécurité (fuzzing API) | Post-PoC via OWASP ZAP
+|===
+
+== Références
+
+* xref:05-audit/qualite/plan-tests.adoc[Plan de tests — matrice détaillée]
+* xref:05-audit/qualite/couverture-objectifs.adoc[Objectifs de couverture]
+* xref:05-audit/qualite/validation-iris.adoc[Validation scientifique — dataset Iris]

@@ -1,0 +1,28 @@
+= Pilier 2 — Fonctionnel (guide utilisateur)
+:description: Ce que fait la plateforme, pour qui, et comment l'utiliser
+
+Ce pilier s'adresse aux **utilisateurs finaux** : chercheurs, étudiants, data scientists souhaitant utiliser IBIS-X sans connaître son implémentation.
+
+== Parcours utilisateur
+
+* xref:02-fonctionnel/personas-acteurs.adoc[Personas & acteurs] — qui utilise la plateforme, avec quels rôles (user, contributor, admin).
+* xref:02-fonctionnel/parcours-utilisateur.adoc[Parcours utilisateur de bout en bout] — du login à la génération d'une explication XAI.
+
+== Modules fonctionnels
+
+* xref:02-fonctionnel/modules/selection-datasets.adoc[Sélection de datasets] — catalogue, filtres (technique/éthique/métier), upload.
+* xref:02-fonctionnel/modules/gestion-projets.adoc[Gestion de projets] — création, configuration, collaborateurs.
+* xref:02-fonctionnel/modules/pipeline-ml.adoc[Pipeline ML] — wizard : preprocessing → training → résultats.
+* xref:02-fonctionnel/modules/explications-xai.adoc[Explications XAI] — SHAP, LIME, LLM, chat limité à 5 questions.
+* xref:02-fonctionnel/modules/collaboration.adoc[Collaboration] — partage, droits, commentaires.
+* xref:02-fonctionnel/modules/compte-utilisateur.adoc[Compte utilisateur] — profil, crédits, suppression (RGPD).
+
+== Spécification fonctionnelle
+
+* xref:02-fonctionnel/user-stories.adoc[User stories]
+* xref:02-fonctionnel/criteres-acceptation.adoc[Critères d'acceptation]
+
+[NOTE]
+====
+Ce pilier consolide les anciens fichiers dispersés dans `user-guide/` + 4 pages ML pipeline + 3 pages dataset view (fusion effectuée au **Lot 3** du plan de refonte).
+====

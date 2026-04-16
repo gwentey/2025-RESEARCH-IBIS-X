@@ -1,0 +1,172 @@
+= Correction de la Recommandation IA du ML Pipeline Wizard
+:navtitle: Fix Recommandation IA
+:page-tags: fix, ml-pipeline, ai, recommendation
+
+== Problème Résolu
+
+La fonctionnalité IA du wizard ML Pipeline qui recommande entre Classification et Régression ne fonctionnait pas correctement. L'IA retournait toujours "Type de données : inconnu" et ne pouvait pas faire de recommandation.
+
+== Diagnostic du Problème
+
+=== Symptômes Observés
+
+* L'IA affichait : "Il est impossible de déterminer si la classification est appropriée car le type des données de la colonne cible est inconnu"
+* Le bouton "Appliquer la recommandation" montrait "(unknown)"
+* Le problème se produisait avec tous les datasets, y compris "Student Exam Scores"
+
+=== Cause Racine Identifiée
+
+Le problème venait de l'endpoint `/datasets/{dataset_id}` du service-selection qui **ne retournait pas les colonnes** dans sa réponse.
+
+.Flux défaillant
+[source,text]
+----
+Frontend → ML Pipeline Service → Service Selection
+                ↓
+    get_dataset_info(dataset_id)
+                ↓
+GET /datasets/{dataset_id} → columns: [] (vide!)
+                ↓
+    AI Service → type = "Unknown" → Erreur
+----
+
+== Solution Implémentée
+
+=== Modifications du Service Selection
+
+Modification de l'endpoint `/datasets/{dataset_id}` dans `service-selection/app/main.py` :
+
+[source,python]
+----
+# AVANT (ligne 729)
+columns=[]  # Les colonnes peuvent être ajoutées plus tard si nécessaire
+
+# APRÈS 
+# Récupérer les colonnes du fichier depuis la base de données
+file_columns = db.query(models.FileColumn).filter(
+    models.FileColumn.dataset_file_id == file.id
+).order_by(models.FileColumn.position).all()
+
+# Convertir les colonnes en schémas ColumnMetadata
+columns_metadata = []
+for file_column in file_columns:
+    columns_metadata.append(schemas.ColumnMetadata(
+        column_name=file_column.column_name,
+        position=file_column.position,
+        data_type_original=file_column.data_type_original or "unknown",
+        data_type_interpreted=file_column.data_type_interpreted or file_column.data_type_original or "unknown",
+        # ... autres champs
+    ))
+----
+
+=== Améliorations du ML Pipeline Service
+
+Amélioration de la fonction `get_dataset_info` dans `ml-pipeline-service/app/services/dataset_service.py` :
+
+[source,python]
+----
+# Traiter les colonnes de tous les fichiers
+if 'files' in dataset_data and dataset_data['files']:
+    all_columns = []
+    for file in dataset_data['files']:
+        if 'columns' in file and file['columns']:
+            # Ajouter les colonnes de ce fichier
+            for col in file['columns']:
+                # Standardiser les noms de champs pour l'IA
+                standardized_col = {
+                    'name': col.get('column_name'),
+                    'column_name': col.get('column_name'),
+                    'type': col.get('data_type_interpreted') or col.get('data_type_original'),
+                    'data_type_interpreted': col.get('data_type_interpreted'),
+                    'data_type_original': col.get('data_type_original'),
+                    # ... autres champs
+                }
+                all_columns.append(standardized_col)
+    
+    transformed_data['columns'] = all_columns
+----
+
+=== Logging Amélioré
+
+Ajout de logs détaillés dans le service d'analyse IA pour faciliter le debugging :
+
+[source,python]
+----
+logger.info(f"🔍 ANALYSE IA: Colonne '{target_column}' de type '{target_type}' - L'IA va analyser")
+logger.info(f"🔍 COLONNES DISPONIBLES: {len(columns)} colonnes trouvées")
+if target_column_info:
+    logger.info(f"🔍 COLONNE CIBLE TROUVÉE: {json.dumps(target_column_info, indent=2, default=str)}")
+else:
+    logger.warning(f"⚠️ COLONNE CIBLE '{target_column}' NON TROUVÉE dans les colonnes disponibles")
+----
+
+== Test de la Solution
+
+Un script de test a été créé : `scripts/test_ai_fix.py`
+
+.Utilisation du script de test
+[source,bash]
+----
+cd /path/to/project
+python scripts/test_ai_fix.py
+----
+
+Le script vérifie :
+
+1. **Test 1** : L'endpoint `/datasets/{dataset_id}` retourne bien les colonnes
+2. **Test 2** : L'analyse IA peut être lancée sans erreur
+
+== Résultat Attendu
+
+Après cette correction, l'IA du ML Pipeline Wizard devrait :
+
+* ✅ Détecter correctement le type de données des colonnes cibles
+* ✅ Faire des recommandations précises entre Classification et Régression
+* ✅ Afficher des explications personnalisées pour chaque dataset
+* ✅ Permettre d'appliquer la recommandation avec le bon type de tâche
+
+.Exemple de sortie corrigée
+[source,text]
+----
+📊 Analyse de votre dataset "Student Exam Scores"
+Colonne cible : exam_score
+Type de données : numerical
+
+Régression ✓ Recommandé par l'IA
+Pour votre dataset :
+La colonne 'exam_score' est de type numérique (numerical) avec des valeurs 
+continues comme 85.5, 92.3, 78.9. Ceci indique clairement qu'il s'agit 
+d'une tâche de régression pour prédire des valeurs numériques continues.
+
+Exemples de prédictions :
+• Estimer le score d'examen d'un étudiant : 87.2
+• Prédire la note finale : 91.5
+• Calculer la performance académique : 84.8
+----
+
+== Fichiers Modifiés
+
+* `service-selection/app/main.py` - Correction de l'endpoint pour inclure les colonnes
+* `ml-pipeline-service/app/services/dataset_service.py` - Amélioration de la transformation des données
+* `ml-pipeline-service/app/ai/llm_service.py` - Ajout de logs détaillés
+* `scripts/test_ai_fix.py` - Script de test de la solution
+
+== Notes de Déploiement
+
+IMPORTANT: Après avoir appliqué ces modifications, il faut **redémarrer les services** :
+
+[source,bash]
+----
+# Redémarrer le service-selection
+kubectl rollout restart deployment/service-selection-deployment -n ibis-x
+
+# Redémarrer le ml-pipeline-service  
+kubectl rollout restart deployment/ml-pipeline-deployment -n ibis-x
+----
+
+Ou en développement local :
+[source,bash]
+----
+# Redémarrer avec Skaffold
+skaffold dev
+----

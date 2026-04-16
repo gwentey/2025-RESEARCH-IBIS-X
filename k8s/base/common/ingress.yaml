@@ -1,0 +1,66 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ibis-x-ingress
+  namespace: ibis-x # Assurez-vous que ce namespace est correct ou retirez-le si vous utilisez 'default'
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # ⚠️  STRATÉGIE SSL : Pour un NOUVEAU domaine, commencer avec "false" puis passer à "true"
+    # ✅ CERTIFICATS EXISTANTS : Garde "true" car les certificats sont déjà générés
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # CORS Configuration
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE, PATCH"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/cors-max-age: "86400"
+    # Configuration spéciale : Permettre CORS depuis les domaines de production et locaux
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ibisx.fr,https://www.ibisx.fr,http://ibisx.fr,http://localhost:8080,http://localhost:9000"
+    # Certificats Let's Encrypt (Cert-Manager)
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # Redirection www -> sans www (sera gérée par une règle séparée)
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - api.ibisx.fr # Votre nom d'hôte
+    - ibisx.fr   # Votre domaine racine
+    - www.ibisx.fr  # Redirection www
+    secretName: ibisx-tls  # Secret pour les certificats TLS
+  rules:
+  # API Backend
+  - host: api.ibisx.fr # Votre nom d'hôte
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway-service
+            port:
+              number: 80
+  # Frontend
+  - host: ibisx.fr # Votre domaine racine
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+  # Accès direct par IP (pour tests)
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+  # Les certificats TLS sont automatiquement fournis par Let's Encrypt
+  # grâce aux annotations cert-manager définies plus haut et à la section tls ci-dessus

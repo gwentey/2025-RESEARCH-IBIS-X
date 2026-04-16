@@ -1,0 +1,163 @@
+= Sélection de Datasets
+:description: Guide d'utilisation de l'interface de sélection des datasets dans IBIS-X
+
+== Vue d'ensemble
+
+L'interface de sélection des datasets d'IBIS-X offre une expérience moderne et intuitive pour explorer, filtrer et sélectionner des datasets pour vos projets d'explicabilité d'IA.
+
+== Interface utilisateur moderne
+
+=== Design fluide et cohérent
+L'interface utilise le design system Spike avec :
+
+* **Ombres Material Design** : Effets visuels subtils avec `level1/2/3`
+* **Coins arrondis** : Border-radius cohérents (`corner-medium`, `corner-large`)
+* **Transitions fluides** : Animations de 0.2s sur toutes les interactions
+* **Effets de hover** : Translation légère (-1px, -2px) pour la profondeur
+
+=== Barre de recherche avancée
+* **Zone de recherche moderne** : 
+  - Design arrondi avec ombres Material
+  - Effets de focus progressifs (level1 → level2 → level3)
+  - Padding optimisé (14px vertical, 16px horizontal)
+* **Filtres dropdown** : Accès rapide aux critères de filtrage
+* **Tri intelligent** : Options de tri par pertinence, date, nom
+
+== Cartes de datasets optimisées
+
+=== Badges informatifs clairs
+
+==== Score éthique
+[cols="1,1,3", options="header"]
+|===
+|Score |Couleur |Signification
+|80-100% |Vert |Conformité RGPD excellente, anonymisation complète
+|60-79% |Orange |Conformité partielle, quelques points d'attention
+|0-59% |Rouge |Non-conformité, risques éthiques importants
+|===
+
+==== Niveau de représentativité
+[cols="1,1,3", options="header"]
+|===
+|Niveau |Couleur |Signification
+|Élevée |Bleu |Dataset très représentatif de la population cible
+|Moyenne |Violet |Représentativité acceptable avec quelques biais
+|Faible |Gris |Représentativité limitée, utilisation avec précaution
+|===
+
+=== Statistiques responsives
+
+Les statistiques des datasets s'adaptent automatiquement :
+
+* **Desktop** : Affichage horizontal compact
+* **Tablette** : Retour à la ligne automatique si nécessaire
+* **Mobile** : Chaque statistique sur une ligne complète
+
+Les métriques affichées :
+* **Instances** : Nombre total d'échantillons
+* **Features** : Nombre de variables/colonnes
+* **Manquant** : Pourcentage de valeurs manquantes (si > 0%)
+
+=== Actions utilisateur améliorées
+
+==== Boutons d'action
+* **Voir** : Style outline bleu, pour prévisualiser le dataset
+* **Sélectionner** : Style filled bleu, action principale bien visible
+* **Favoris** : Icône cœur pour sauvegarder les datasets préférés
+
+Tous les boutons incluent :
+* Effets de hover avec élévation (-1px)
+* Ombres Material Design progressives
+* Transitions fluides pour une expérience premium
+
+== Filtrage et recherche
+
+=== Critères de filtrage
+* **Domaine** : éducation, santé, finance, etc.
+* **Tâche ML** : classification, régression, clustering
+* **Accès** : public vs privé
+* **Score éthique** : seuils minimum/maximum
+* **Représentativité** : niveau requis
+
+=== Recherche textuelle
+Recherche dans :
+* Nom du dataset
+* Description
+* Domaines d'application
+* Mots-clés
+
+=== Filtres actifs
+* **Chips visuels** : Affichage compact des filtres appliqués
+* **Suppression rapide** : Clic sur X pour retirer un filtre
+* **Reset global** : Bouton pour vider tous les filtres
+
+== Modes d'affichage
+
+=== Vue grille (par défaut)
+* **Cartes détaillées** : Informations complètes avec description
+* **Badges visuels** : Score éthique et représentativité
+* **Actions complètes** : Tous les boutons d'action disponibles
+
+=== Vue liste (compacte)
+* **Affichage dense** : Plus de datasets visibles à l'écran
+* **Informations essentielles** : Métriques clés seulement
+* **Navigation rapide** : Parcours efficace de nombreux datasets
+
+== Responsive design
+
+L'interface s'adapte à tous les écrans :
+
+=== Mobile (< 768px)
+* **Statistiques empilées** : Une métrique par ligne
+* **Boutons adaptés** : Taille tactile optimisée
+* **Navigation simplifiée** : Priorité aux actions essentielles
+
+=== Tablette (768px - 1024px)
+* **Grille adaptative** : 2 colonnes minimum
+* **Wrapping intelligent** : Réorganisation automatique du contenu
+
+=== Desktop (> 1024px)
+* **Grille optimisée** : 3-4 colonnes selon la taille d'écran
+* **Effets de hover** : Interactions riches pour souris/trackpad
+
+== Accessibilité
+
+=== Indicateurs visuels
+* **Tooltips explicatifs** : Information détaillée au survol
+* **Contrastes élevés** : Lisibilité optimale
+* **Icônes parlantes** : Symboles universels (sécurité, analytics, etc.)
+
+=== Navigation clavier
+* **Tabulation logique** : Parcours séquentiel des éléments
+* **Raccourcis clavier** : Accès rapide aux fonctions principales
+* **Focus visible** : Indication claire de l'élément actif
+
+== Bonnes pratiques
+
+=== Sélection efficace
+1. **Commencer large** : Utiliser la recherche textuelle d'abord
+2. **Affiner progressivement** : Ajouter des filtres spécifiques
+3. **Vérifier l'éthique** : Prioriser les scores éthiques élevés
+4. **Valider la représentativité** : S'assurer de la pertinence du dataset
+
+=== Gestion des favoris
+* **Sauvegarder les candidats** : Marquer les datasets intéressants
+* **Comparer facilement** : Accès rapide aux datasets favoris
+* **Organiser le workflow** : Préparation de sélections multiples
+
+== Dépannage
+
+=== Problèmes courants
+
+==== Aucun résultat trouvé
+* **Vérifier les filtres** : Critères peut-être trop restrictifs
+* **Élargir la recherche** : Utiliser des termes plus généraux
+* **Reset complet** : Vider tous les filtres et recommencer
+
+==== Performance lente
+* **Optimisation automatique** : L'interface charge par lots
+* **Cache intelligent** : Les résultats sont mis en cache
+* **Pagination** : Navigation par pages pour de gros volumes
+
+=== Support technique
+Pour toute assistance, consulter l'équipe de développement ou la documentation technique complète. 

@@ -1,0 +1,43 @@
+# api-gateway-migration-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  # Nom du Job. Utiliser generateName pour éviter les conflits si relancé rapidement,
+  # ou un nom fixe si géré par un pipeline qui supprime l'ancien job avant.
+  # On utilise un nom fixe ici pour simplifier.
+  name: api-gateway-migration-job
+  namespace: ibis-x # Assure-toi que c'est le bon namespace
+spec:
+  # ttlSecondsAfterFinished: 300 # Optionnel: Supprime le Job automatiquement après sa fin
+  backoffLimit: 3 # Nombre de tentatives avant d'échouer
+  template:
+    metadata:
+      labels:
+        job: api-gateway-migration
+    spec:
+      containers:
+      - name: api-gateway-migration
+        # IMAGE DYNAMIQUE - Remplacée automatiquement par le script de déploiement
+        image: PLACEHOLDER_ACR.azurecr.io/ibis-x-api-gateway:latest
+        command: ["sh", "-c"]
+        args:
+          - |
+            echo "Début de la migration API Gateway..."
+            cd /app
+            alembic upgrade head
+            echo "Migration API Gateway terminée avec succès"
+        env:
+        # Définir explicitement DATABASE_URL à partir de la clé du secret
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: gateway-secrets # Nom du Secret
+              key: database-url    # Nom de la clé DANS le Secret (corrigé avec tiret)
+        # Monte également les autres clés du secret si nécessaire (ex: SECRET_KEY si alembic/env.py l'utilise)
+        # Si SECRET_KEY est aussi dans gateway-secrets avec la clé 'secret-key':
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: gateway-secrets
+              key: secret-key # Assurez-vous que la clé est correcte dans le Secret
+      restartPolicy: OnFailure 

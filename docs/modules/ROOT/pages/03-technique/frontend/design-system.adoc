@@ -1,0 +1,91 @@
+= Frontend — design system Sorbonne
+:description: Thème, typographie, couleurs
+
+== Principes
+
+* Identité *Sorbonne moderne* — évoque la rigueur académique avec une modernité chaleureuse.
+* **Angular Material exclusif** comme base (voir xref:05-audit/adr/0004-angular-material-sans-tailwind.adoc[ADR 0004]).
+* SCSS personnalisé pour les overrides via `frontend/src/assets/scss/_sorbonne-modern-overrides.scss`.
+
+== Typographie
+
+[cols="1,1,2"]
+|===
+| Niveau | Taille | Usage
+| h1 | 36px | Titre de page principal
+| h2 | 28px | Section majeure
+| h3 | 22px | Sous-section
+| h4 | 18px | Sous-sous-section
+| h5 | 16px | Petit titre
+| h6 | 14px | Label, catégorie
+|===
+
+Weights : h1-h2 `700`, h3-h4 `600`, h5-h6 `500`. Corps de texte `400`, interligne 1.6.
+
+Échelle corrigée en 2026-04 (FINDING-003).
+
+== Palette
+
+Couleurs principales définies en SCSS et exposées comme variables CSS :
+
+* `--color-primary` — indigo Sorbonne profond
+* `--color-accent` — ocre chaleureux
+* `--color-success` / `--color-warning` / `--color-error`
+* Nuances `--color-neutral-100` à `--color-neutral-900`
+
+Mode sombre : non implémenté en PoC (évolution post-PoC).
+
+== Iconographie
+
+* Material Icons (via Angular Material).
+* Tabler Icons (via `angular-tabler-icons`).
+
+**Attention** : ne pas mélanger les deux dans un même composant (FINDING-011 en cours de résolution). Règle : préférer Material Icons sauf pour les pictogrammes spécifiques Tabler.
+
+== Espacements
+
+Grille 8px :
+
+* XXS 4px, XS 8px, S 16px, M 24px, L 32px, XL 48px, XXL 64px.
+
+Appliquée via mixins SCSS ou `mat-mdc-*` spacing.
+
+== Accessibilité
+
+* Tailles de cibles tactiles : 44px × 44px minimum (FINDING-008 partiellement résolu).
+* Contraste AA minimum sur texte et éléments interactifs.
+* `aria-*` sur composants custom.
+* Navigation clavier supportée par Material.
+
+== Animations
+
+* Transitions courtes (150-300 ms).
+* Pas d'animations gratuites ("AI-slop patterns" identifiés par l'audit design sont évités).
+* Angular Animations pour les wizards (slide).
+
+== Responsive
+
+Breakpoints Material :
+
+* `xs` < 600px
+* `sm` 600-960
+* `md` 960-1280
+* `lg` 1280-1920
+* `xl` > 1920
+
+Sidebar : collapse automatique sous `md`. Drawer mobile pour navigation.
+
+== Gabarit
+
+Les templates visuels de référence sont dans `.cursor/templates/src/app/`. *Règle de conformité* : avant de créer un nouveau composant, consulter les templates pour cohérence.
+
+== Corrections récentes (audit design 2026-04)
+
+Voir CHANGELOG.md section "Design audit fixes". Résumé :
+
+* FINDING-001 : purge des démos template-admin non utilisées.
+* FINDING-002 : i18n du hero ML Pipeline.
+* FINDING-003 : échelle de titres fixée.
+* FINDING-004 : route XAI corrigée.
+* FINDING-009 : bloc profil utilisateur dédupliqué.
+* FINDING-014 : bannière DEBUG supprimée.

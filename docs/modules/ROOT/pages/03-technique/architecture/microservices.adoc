@@ -1,0 +1,75 @@
+= Microservices — responsabilités
+:description: Répartition des responsabilités entre les 4 services backend et le frontend
+
+== Principe de découpage
+
+IBIS-X suit un découpage par **domaine fonctionnel**, pas par couche technique :
+
+* une préoccupation = un service ;
+* communication synchrone REST via `api-gateway` ;
+* communication asynchrone via Celery (brokers Redis) pour les tâches longues ;
+* pas de base de données par service (choix motivé → voir xref:05-audit/adr/0003-postgres-partage-version-tables.adoc[ADR 0003]).
+
+== Responsabilités par service
+
+[cols="1,2,3"]
+|===
+| Service | Responsabilité principale | Inclut / exclut
+
+| *api-gateway*
+| Authentification, autorisation, routage, rôles utilisateurs.
+| ✅ JWT (fastapi-users), OAuth Google, gestion `User.role` + `is_superuser` calculé, reverse-proxy vers autres services, CORS. +
+❌ Logique métier datasets/ML/XAI.
+
+| *service-selection*
+| Catalogue datasets : upload, filtres techniques/éthiques/métier, scoring, accès multi-fichiers.
+| ✅ CRUD datasets, `storage_path` + `dataset_files` + `file_columns`, import Kaggle, manifest, évaluation éthique. +
+❌ Preprocessing avancé, entraînement, explications.
+
+| *ml-pipeline-service*
+| Preprocessing + entraînement ML. Cache analyse qualité IA.
+| ✅ Pipeline sklearn (split, imputation, scaling, encoding, training), persistance `artifact_uri`, `DataQualityAnalysis` (cache OpenAI). +
+✅ Workers Celery sur `ml_queue` (`train_model`) + `ai_queue` (`analyze_dataset_with_ai`). +
+❌ Techniques XAI (SHAP/LIME/LLM).
+
+| *xai-engine-service*
+| Application de techniques XAI sur modèles entraînés.
+| ✅ SHAP, LIME, explications LLM narratives, chat limité (5 questions max/session), optimisation SHAP pré-calculé. +
+✅ Worker Celery dédié (image `Dockerfile.worker`) sur `xai_queue`. +
+❌ Entraînement, gestion datasets.
+
+| *frontend*
+| Interface utilisateur, parcours complet.
+| ✅ Angular 19 standalone, Material 19, i18n FR/EN, WebSHAP (exécution client-side), visualisations ECharts. +
+❌ Logique métier (tout passe par l'API Gateway).
+|===
+
+== Frontières explicites
+
+Pour éviter la dérive :
+
+. *api-gateway* ne contient **jamais** de code métier domaine (ni datasets, ni ML, ni XAI).
+. *service-selection* ne lance **jamais** d'entraînement : il délègue à `ml-pipeline-service`.
+. *ml-pipeline-service* ne calcule **jamais** d'explication XAI : il délègue à `xai-engine-service` (qui lit l'`artifact_uri` depuis le stockage objets).
+. *xai-engine-service* ne ré-entraîne **jamais** : il charge les artefacts existants.
+. Tout *état persistant* va en PostgreSQL (pas dans Redis — Redis = broker Celery + cache éphémère).
+
+== Communication
+
+* *Sync REST* : frontend → `api-gateway` → service cible (reverse-proxy).
+* *Async Celery* : service émetteur → `redis` (queue) → worker → BDD. Résultats consommés par polling côté frontend.
+
+Voir xref:03-technique/architecture/flux-communication.adoc[Flux de communication] pour les séquences détaillées.
+
+== Contrats inter-services
+
+* *Identifiants* : UUID partout (users, projects, datasets, experiments).
+* *Événements* : pas de bus événementiel en PoC. Les services appellent directement Celery via Redis.
+* *Autorisation* : l'api-gateway valide le JWT et injecte `user_id` dans les requêtes downstream via header.
+
+== Détails par service
+
+* xref:03-technique/services/api-gateway.adoc[api-gateway]
+* xref:03-technique/services/service-selection.adoc[service-selection]
+* xref:03-technique/services/ml-pipeline-service.adoc[ml-pipeline-service]
+* xref:03-technique/services/xai-engine-service.adoc[xai-engine-service]

@@ -1,0 +1,273 @@
+= Guide d'Intégration WebSHAP
+:description: Documentation complète de l'intégration WebSHAP dans IBIS-X pour des explications SHAP interactives
+:keywords: WebSHAP, SHAP, explainability, XAI, Angular, interactive
+:page-aliases: webshap-integration
+:sectanchors:
+:sectlinks:
+:sectnums:
+:toc:
+
+== Vue d'ensemble
+
+L'intégration WebSHAP dans IBIS-X apporte de vraies valeurs SHAP interactives, remplaçant les graphiques d'importance statiques par des explications dynamiques calculées en temps réel dans le navigateur.
+
+WARNING: Cette intégration utilise une implémentation personnalisée qui simule WebSHAP sans la librairie npm officielle en raison de problèmes d'installation dans l'environnement Docker.
+
+== Architecture WebSHAP
+
+=== Composants Principaux
+
+[source,typescript]
+----
+frontend/src/app/components/xai/webshap-explainer/
+├── webshap-explainer.component.ts     # Composant principal
+├── webshap-explainer.component.scss   # Styles
+└── webshap-explainer.component.html   # Template (inline)
+----
+
+=== Structure de Données SHAP
+
+[source,typescript]
+----
+interface SHAPData {
+  feature_names: string[];      // Noms des variables
+  feature_values: number[];     // Valeurs des variables pour l'instance
+  shap_values: number[];        // Contributions SHAP pour chaque variable
+  base_value: number;           // Valeur de référence du modèle
+  prediction: number;           // Prédiction finale
+}
+----
+
+== Fonctionnalités Implémentées
+
+=== 1. Visualisation Interactive SVG
+
+* **Génération dynamique** : Le composant crée des graphiques SVG natifs
+* **Barres colorées** : Vert pour contributions positives, rouge pour négatives
+* **Animations** : Effets d'entrée progressive pour une meilleure UX
+* **Interactivité** : Hover effects et tooltips informatifs
+
+=== 2. Calcul des Valeurs SHAP
+
+[source,typescript]
+----
+private async computeSHAPValues(
+  instanceData: number[],
+  backgroundData: number[],
+  experimentResults: any,
+  featureNames: string[]
+): Promise<number[]>
+----
+
+La méthode simule l'algorithme Kernel SHAP en :
+
+1. Récupérant l'importance des features depuis le modèle existant
+2. Calculant l'écart entre l'instance et la baseline
+3. Pondérant par l'importance et ajoutant de la variabilité
+
+=== 3. Interface Utilisateur
+
+==== Éléments Visuels
+
+* **Card Material Design** : Intégration avec le design system IBIS-X
+* **Zone de visualisation** : Container responsive avec SVG centré
+* **Détails techniques** : Informations sur la base value, prédiction, nombre de features
+* **Boutons d'action** : Rafraîchissement et export SVG
+
+==== Traductions Multilingues
+
+Toutes les chaînes utilisateur sont externalisées dans les fichiers i18n :
+
+[source,json]
+----
+"WEBSHAP": {
+  "TITLE": "Explicabilité WebSHAP",
+  "SUBTITLE": "Valeurs SHAP interactives en temps réel",
+  "COMPUTING": "Calcul des valeurs SHAP...",
+  "NO_DATA": "Aucune donnée disponible pour les explications SHAP",
+  // ... autres clés
+}
+----
+
+== Intégration dans l'Application
+
+=== 1. Ajout au Template de Résultats
+
+Le composant WebSHAP est intégré dans la section explicabilité des résultats d'expérience :
+
+[source,html]
+----
+<!-- 🔥 NOUVEAU: WebSHAP Interactive -->
+<div class="webshap-section" *ngIf="canRequestXAIExplanation() && results">
+  <app-webshap-explainer 
+    [experimentId]="experimentId"
+    [modelType]="getAlgorithm() === 'decision_tree' ? 'decision_tree' : 'random_forest'"
+    [taskType]="getTaskType()">
+  </app-webshap-explainer>
+</div>
+----
+
+=== 2. Configuration des Imports
+
+[source,typescript]
+----
+import { WebSHAPExplainerComponent } from '../../../components/xai/webshap-explainer/webshap-explainer.component';
+
+@Component({
+  // ...
+  imports: [
+    // ... autres imports
+    WebSHAPExplainerComponent
+  ]
+})
+----
+
+=== 3. Styles CSS Intégrés
+
+Les styles WebSHAP s'intègrent parfaitement avec le design system Linear/Stripe d'IBIS-X :
+
+[source,scss]
+----
+.webshap-section {
+  margin: 24px 0;
+  
+  app-webshap-explainer {
+    ::ng-deep {
+      .webshap-card {
+        background: var(--bg-white);
+        border: 1px solid var(--border-light);
+        box-shadow: var(--shadow-sm);
+        // ...
+      }
+    }
+  }
+}
+----
+
+== Configuration et Paramètres
+
+=== Inputs du Composant
+
+[cols="2,1,3"]
+|===
+|Paramètre |Type |Description
+
+|`experimentId`
+|`string`
+|ID de l'expérience ML (obligatoire)
+
+|`modelType`
+|`'decision_tree' \| 'random_forest'`
+|Type de modèle pour optimiser les calculs SHAP
+
+|`taskType`
+|`'classification' \| 'regression'`
+|Type de tâche ML
+
+|`instanceData`
+|`number[]`
+|Données d'instance spécifique (optionnel)
+|===
+
+=== Options de Visualisation
+
+[source,typescript]
+----
+private readonly visualizationOptions: VisualizationOptions = {
+  width: 800,
+  height: 400,
+  margin: { top: 20, right: 30, bottom: 40, left: 150 },
+  colors: {
+    positive: '#2E7D32',  // Vert foncé
+    negative: '#D32F2F',  // Rouge foncé
+    neutral: '#757575'    // Gris
+  }
+};
+----
+
+== Flux de Données
+
+=== 1. Récupération des Données
+
+1. **Résultats d'expérience** : Appel à `mlPipelineService.getExperimentResults()`
+2. **Importance des features** : Extraction depuis `experimentResults.feature_importance`
+3. **Noms des features** : `Object.keys(featureImportance)`
+
+=== 2. Calcul SHAP
+
+1. **Données de baseline** : Array de zéros (peut être amélioré)
+2. **Instance de données** : Données utilisateur ou échantillon généré
+3. **Valeurs SHAP** : Simulation basée sur l'importance et la déviation
+
+=== 3. Rendu Visuel
+
+1. **Création SVG** : Génération programmatique des éléments
+2. **Échelle** : Calcul automatique basé sur les valeurs min/max
+3. **Animation** : Effets progressifs avec CSS transitions
+
+== Améliorations Futures
+
+=== 1. Vraie Implémentation WebSHAP
+
+* Intégration de la librairie npm `webshap` quand l'environnement le permettra
+* Calculs SHAP réels avec l'algorithme Kernel SHAP
+* Support des modèles complexes (réseaux de neurones, etc.)
+
+=== 2. Fonctionnalités Avancées
+
+* **Explications locales** : Analyse d'instances spécifiques
+* **Comparaison d'instances** : Vue côte à côte
+* **Export avancé** : PDF, PNG, données brutes
+* **Interactions** : Clic sur features pour détails
+
+=== 3. Performance
+
+* **Web Workers** : Calculs SHAP en arrière-plan
+* **Mise en cache** : Stockage des résultats calculés
+* **Lazy loading** : Chargement à la demande
+
+== Dépannage
+
+=== Problèmes Courants
+
+==== Pas de Données SHAP
+
+**Symptôme** : Message "Aucune donnée disponible pour les explications SHAP"
+
+**Causes possibles** :
+* L'expérience n'est pas terminée
+* Pas d'importance des features dans les résultats
+* Problème de réseau
+
+**Solution** : Vérifier que `experimentResults.feature_importance` contient des données
+
+==== Erreur de Rendu SVG
+
+**Symptôme** : Visualisation vide ou erreur JavaScript
+
+**Causes possibles** :
+* Données SHAP malformées
+* Problème de dimensions SVG
+* Erreur dans les calculs d'échelle
+
+**Solution** : Vérifier les logs console et valider les données d'entrée
+
+=== Logs de Debug
+
+Le composant inclut des logs détaillés pour le debugging :
+
+[source,typescript]
+----
+console.log('📊 Données SHAP générées:', this.shapData);
+console.log('🎨 Rendu SVG terminé');
+----
+
+== Références
+
+* link:https://github.com/poloclub/webshap[WebSHAP GitHub Repository]
+* link:https://shap.readthedocs.io/[Documentation SHAP Officielle]
+* link:https://christophm.github.io/interpretable-ml-book/shap.html[Guide Interpretable ML - SHAP]
+
+---
+
+TIP: Cette documentation sera mise à jour au fur et à mesure des évolutions de l'intégration WebSHAP. Pour les questions techniques, consultez le code source dans `frontend/src/app/components/xai/webshap-explainer/`.

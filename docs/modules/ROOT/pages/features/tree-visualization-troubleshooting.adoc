@@ -1,0 +1,151 @@
+= Dépannage de la Visualisation d'Arbre Interactive
+:page-tags: troubleshooting, tree-visualization, debug
+:page-description: Guide de résolution des problèmes courants avec la visualisation d'arbre
+
+== Problèmes Résolus
+
+=== Les liens ne s'affichent pas ou sont décalés
+
+**Problème** : Les liens entre les nœuds de l'arbre ne s'affichent pas du tout ou apparaissent décalés par rapport aux nœuds.
+
+**Cause** : Désynchronisation entre les systèmes de coordonnées des nœuds HTML et du SVG des liens.
+
+**Solution appliquée** :
+
+1. **Stockage des coordonnées** : Ajout d'attributs `data-x` et `data-y` aux nœuds HTML pour stocker leurs positions réelles
+2. **ViewBox SVG** : Configuration d'un viewBox approprié (`-2000 -2000 4000 4000`) pour couvrir tout l'espace de l'arbre
+3. **Mise à jour dynamique** : Les coordonnées sont mises à jour lors du drag & drop des nœuds
+4. **Offset des liens** : Les liens partent du bas du parent et arrivent en haut de l'enfant (offset de 30px)
+
+[source,typescript]
+----
+// Stockage des positions lors de la création
+node.dataset['x'] = nodeData.x.toString();
+node.dataset['y'] = nodeData.y.toString();
+
+// Mise à jour lors du drag
+const newX = newLeft + width/2;
+const newY = newTop + height/2;
+node.dataset['x'] = newX.toString();
+node.dataset['y'] = newY.toString();
+----
+
+=== L'arbre ne s'affiche pas du tout
+
+**Problème** : Aucun nœud n'apparaît dans le tableau blanc.
+
+**Solutions** :
+
+1. **Vérifier les données** :
+   - Ouvrir la console du navigateur
+   - Chercher les logs `🌲 Chargement des vraies données de l'arbre...`
+   - Vérifier que `getTreeData()` retourne bien des données
+
+2. **Données de démonstration** :
+   - Si aucune donnée réelle n'est disponible, l'arbre affiche automatiquement des données de démonstration
+   - Un message d'avertissement orange s'affiche en haut
+
+3. **Structure du backend** :
+   - S'assurer que `evaluation.py` génère bien `tree_structure` dans les visualizations
+   - Vérifier que le modèle a bien une méthode `get_tree_structure()`
+
+=== Performance avec de grands arbres
+
+**Problème** : L'interface devient lente avec des arbres de plus de 100 nœuds.
+
+**Solutions** :
+
+1. **Limitation de la profondeur** :
+   - Lors de l'entraînement, limiter `max_depth` du Decision Tree
+   - Pour Random Forest, afficher seulement un arbre représentatif
+
+2. **Optimisations** :
+   - Les liens sont mis à jour seulement à la fin du drag, pas pendant
+   - Utilisation de `requestAnimationFrame` pour les animations fluides
+
+== Problèmes Connus
+
+=== Chevauchement des nœuds
+
+**Description** : Les nœuds peuvent se chevaucher lors de l'affichage initial si l'arbre est très large.
+
+**Contournement** :
+- Utiliser les contrôles d'espacement pour écarter les nœuds
+- Réorganiser manuellement les nœuds par drag & drop
+- Utiliser le zoom arrière pour voir l'ensemble
+
+=== Export SVG incomplet
+
+**Description** : L'export SVG peut ne pas capturer tous les styles CSS appliqués aux nœuds.
+
+**Contournement** :
+- Les styles inline sont préservés
+- Pour un export de haute qualité, faire une capture d'écran
+
+== Debugging Avancé
+
+=== Activer les logs détaillés
+
+Pour débugger les problèmes de visualisation :
+
+[source,javascript]
+----
+// Dans la console du navigateur
+localStorage.setItem('debug_tree_viz', 'true');
+
+// Recharger la page pour voir les logs détaillés
+----
+
+=== Vérifier la structure des données
+
+[source,javascript]
+----
+// Dans la console, après ouverture du tableau blanc
+const treeData = this.getTreeData();
+console.log('Structure de l\'arbre:', treeData);
+
+// Vérifier les connexions
+console.log('Connexions:', this.nodeConnections);
+
+// Vérifier les positions
+console.log('Positions:', this.nodePositions);
+----
+
+=== Réinitialiser l'état
+
+Si l'arbre est dans un état incohérent :
+
+1. Fermer le mode fullscreen (Escape)
+2. Rafraîchir la page
+3. Réouvrir le tableau blanc
+
+== Messages d'Erreur Courants
+
+[cols="1,2"]
+|===
+|Message |Solution
+
+|`❌ Container tree-whiteboard-canvas non trouvé !`
+|La popup n'est pas correctement initialisée. Vérifier que le bouton fullscreen fonctionne.
+
+|`⚠️ Aucune donnée d'arbre depuis le backend`
+|Le modèle n'a pas généré de structure d'arbre. Réentraîner avec un Decision Tree ou Random Forest.
+
+|`❌ Impossible de convertir les données de l'arbre`
+|Format de données incorrect. Vérifier la structure JSON retournée par le backend.
+
+|`⚠️ Parent node X non trouvé`
+|Incohérence dans les connexions. Les indices des nœuds ne correspondent pas.
+|===
+
+== Support
+
+Pour les problèmes non couverts dans ce guide :
+
+1. Vérifier les logs de la console navigateur
+2. Consulter le fichier `experiment-results.component.ts`
+3. Vérifier que toutes les dépendances sont à jour
+4. Signaler le problème avec :
+   - Screenshot du problème
+   - Logs de la console
+   - Type de modèle et taille du dataset

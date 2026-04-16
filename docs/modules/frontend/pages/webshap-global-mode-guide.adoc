@@ -1,0 +1,224 @@
+= Guide WebSHAP : Mode Global vs Mode Local
+:revdate: {docdate}
+
+== Vue d'ensemble
+
+WebSHAP a été étendu pour supporter deux modes d'explications :
+
+- **Mode Local** : Explique une prédiction spécifique
+- **Mode Global** : Analyse l'ensemble du modèle sur tout le dataset
+
+== Nouveautés implémentées
+
+=== Mode Global (Nouveau)
+Le mode global fournit une vue d'ensemble du comportement du modèle :
+
+==== Fonctionnalités
+- **Importance des Variables SHAP** : Basée sur la moyenne des valeurs absolues SHAP
+- **Interface de sélection** : Boutons pour choisir le type de visualisation
+- **Statistiques globales** : Nombre de variables, importance moyenne, type de visualisation
+
+==== Données générées
+[source,typescript]
+----
+interface SHAPGlobalData {
+  feature_names: string[];
+  feature_importance: number[];
+  shap_summary: {
+    feature_name: string;
+    values: number[];        // Distribution des valeurs SHAP
+    feature_values: number[]; // Valeurs originales des features
+  }[];
+  mean_absolute_shap: number[];
+}
+----
+
+=== Mode Local (Existant)
+Le mode local garde ses fonctionnalités originales :
+
+- Analyse d'une instance spécifique
+- Formule Base + Contributions = Prédiction
+- Visualisation waterfall des contributions
+
+== Configuration
+
+=== Usage dans les composants
+
+==== Mode Global (recommandé)
+[source,html]
+----
+<app-webshap-explainer 
+  [experimentId]="experimentId"
+  [modelType]="'random_forest'"
+  [taskType]="'classification'"
+  explanationMode="global">
+</app-webshap-explainer>
+----
+
+==== Mode Local
+[source,html]
+----
+<app-webshap-explainer 
+  [experimentId]="experimentId"
+  [modelType]="'decision_tree'"
+  [taskType]="'regression'"
+  explanationMode="local"
+  [instanceData]="[1.2, 3.4, 5.6, 7.8]">
+</app-webshap-explainer>
+----
+
+== Différences visuelles
+
+=== Mode Global
+- **Couleur** : Vert (#4caf50)
+- **Icône** : `public` (globe)
+- **Badge** : "Tout le dataset"
+- **Contrôles** : Sélecteur de type de visualisation
+- **Métriques** : Variables, Importance Moyenne, Type
+
+=== Mode Local  
+- **Couleur** : Violet (#9c27b0)
+- **Icône** : `psychology` (cerveau)
+- **Badge** : "Une prédiction"
+- **Métriques** : Base, Contributions, Prédiction
+
+== Types de visualisations
+
+=== Feature Importance (Implémenté)
+Graphique en barres horizontal montrant :
+- Variables triées par importance décroissante
+- Valeurs d'importance SHAP normalisées
+- Animation d'entrée progressive
+- Labels interactifs avec hover
+
+=== Summary Plot (Planifié)
+Graphique de dispersion (beeswarm plot) qui montrera :
+- Distribution des valeurs SHAP pour chaque feature
+- Corrélation avec les valeurs des features
+- Points colorés selon la valeur de la feature
+
+== Algorithmes supportés
+
+=== Simulation des données SHAP
+Le composant simule actuellement des valeurs SHAP réalistes en :
+
+1. **Utilisant l'importance existante** des features du modèle
+2. **Générant une distribution normale** de valeurs SHAP
+3. **Corrélant la variabilité** avec l'importance de la feature
+4. **Normalisant les résultats** pour cohérence
+
+=== Calcul de l'importance globale
+[source,typescript]
+----
+// Moyenne des valeurs absolues SHAP sur tous les échantillons
+const meanAbsolute = summary.map(item => 
+  item.values.reduce((sum, val) => sum + Math.abs(val), 0) / item.values.length
+);
+
+// Normalisation par rapport au maximum d'importance existant
+const importance = meanAbsolute.map(val => 
+  (val / Math.max(...meanAbsolute)) * maxImportance
+);
+----
+
+== Styles et design
+
+=== Classes CSS principales
+[source,scss]
+----
+.webshap-card.global-mode {
+  border: 2px solid #4caf50;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fff8 100%);
+}
+
+.visualization-controls {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.technical-summary.global {
+  background: rgba(76, 175, 80, 0.08);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+----
+
+=== Boutons de contrôle
+- **Actif** : Background #4caf50, texte blanc
+- **Inactif** : Background blanc, bordure grise
+- **Hover** : Effet de levée et ombre
+
+== Intégration avec les résultats d'expérience
+
+=== Mise à jour de l'interface
+La page des résultats utilise maintenant le mode global par défaut :
+
+[source,html]
+----
+<!-- Explication pédagogique mise à jour -->
+<div class="xai-explanation-card" style="background: linear-gradient(135deg, #e8f5e8 0%, #f3e5f5 100%);">
+  <h3>Explications SHAP Globales</h3>
+  <span class="badge">Tout le dataset</span>
+  <p>WebSHAP Global analyse l'ensemble du modèle pour identifier 
+     l'importance moyenne des variables.</p>
+</div>
+----
+
+=== Cohérence avec l'importance traditionnelle
+Le WebSHAP global **complète** (ne remplace pas) le graphique d'importance traditionnel :
+
+- **Importance traditionnelle** : Basée sur les algorithmes ML (ex: Gini)
+- **Importance SHAP** : Basée sur la théorie des jeux et les contributions
+
+== Avantages du mode global
+
+=== Pour l'utilisateur
+1. **Vue d'ensemble** immédiate du modèle complet
+2. **Cohérence** avec les attentes d'analyse globale
+3. **Complémentarité** avec l'importance traditionnelle
+4. **Pas de confusion** avec des instances spécifiques
+
+=== Pour le développement
+1. **Extensibilité** vers d'autres visualisations (summary plots, interactions)
+2. **Performance** : Une seule analyse par modèle vs une par instance
+3. **Consistance** : Résultats reproductibles
+4. **Comparabilité** : Même base de calcul pour tous les modèles
+
+== Fichiers modifiés
+
+[source,plaintext]
+----
+frontend/src/app/components/xai/webshap-explainer/
+├── webshap-explainer.component.ts (étendu)
+└── webshap-explainer.component.scss (styles ajoutés)
+
+frontend/src/app/pages/ml-pipeline/experiment-results/
+├── experiment-results.component.html (usage mis à jour)
+└── experiment-results.component.scss (styles globaux ajoutés)
+----
+
+== Roadmap
+
+=== Phase 1 ✅
+- [x] Mode global avec feature importance
+- [x] Interface de sélection des visualisations
+- [x] Styles distinctifs et cohérents
+- [x] Intégration dans la page de résultats
+
+=== Phase 2 (Planifié)
+- [ ] Summary plots (beeswarm)
+- [ ] Partial dependence plots
+- [ ] Interaction plots
+- [ ] Connexion avec un vrai moteur SHAP (ex: SHAP.js)
+
+=== Phase 3 (Future)
+- [ ] Explications hybrides (global + local)
+- [ ] Comparaisons de modèles
+- [ ] Explications temporelles pour les séries
+
+== Références
+
+- https://shap.readthedocs.io/en/latest/example_notebooks/overviews/An%20introduction%20to%20explainable%20AI%20with%20Shapley%20values.html[Introduction SHAP]
+- https://github.com/shap/shap[Bibliothèque SHAP Python]
+- https://christophm.github.io/interpretable-ml-book/shap.html[Interpretable ML Book - SHAP]

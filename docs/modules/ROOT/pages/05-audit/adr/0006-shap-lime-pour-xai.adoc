@@ -1,0 +1,75 @@
+= ADR 0006 — SHAP + LIME + LLM comme triple pilier XAI
+
+[cols="1,3"]
+|===
+| Statut | accepted
+| Date | 2025-Q1
+|===
+
+== Contexte & problème
+
+IBIS-X est avant tout une plateforme **XAI**. La sélection des techniques d'explication est une décision structurante : elle détermine les dépendances, les types de modèles supportables, et la pertinence pédagogique.
+
+Exigences :
+
+. Couvrir explication **globale** (quelles features comptent en général) et **locale** (pourquoi cette prédiction).
+. Supporter plusieurs familles de modèles (arbres, linéaires, ensembles).
+. Produire des **narratives compréhensibles** pour des utilisateurs non experts.
+
+== Décision
+
+Nous implémentons **trois approches complémentaires** dans `xai-engine-service`, toutes routées sur la queue `xai_queue` :
+
+. **SHAP** (`shap==0.43.0`) — explication globale et locale basée sur les valeurs de Shapley. `TreeExplainer` pour les modèles arbres, `KernelExplainer` en fallback.
+. **LIME** (`lime==0.2.0.1`) — explication locale par approximation linéaire autour d'une instance.
+. **Narratives LLM** (`openai==1.51.2`) — traduction des résultats SHAP/LIME en explications textuelles, avec un chat contextuel (max 5 questions par session).
+
+Une optimisation : `generate_explanation_with_precalculated_shap` réutilise des valeurs SHAP déjà calculées pour produire une narrative LLM sans recalcul.
+
+== Alternatives envisagées
+
+=== A. SHAP seul
+
+* ✅ Avantages : référence théorique forte (prix Nobel indirect via Shapley), cohérence mathématique.
+* ❌ Rejet : coûteux sur gros datasets, explications « numériques » peu lisibles sans narration.
+
+=== B. LIME seul
+
+* ✅ Avantages : rapide, modèle-agnostique.
+* ❌ Rejet : instabilité (deux runs peuvent diverger), approximation locale uniquement.
+
+=== C. Captum / InterpretML
+
+* ✅ Avantages : plus moderne, gradients-based pour deep learning.
+* ❌ Rejet : pertinent surtout pour réseaux de neurones ; le PoC vise les modèles sklearn classiques.
+
+=== D. Uniquement LLM
+
+* ✅ Avantages : explications textuelles immédiates.
+* ❌ Rejet : pas d'explication fondée sur le modèle réel → risque d'hallucination ; inacceptable pour une plateforme académique d'XAI.
+
+== Conséquences
+
+=== Positives
+
+* Triple approche = robustesse : SHAP donne le squelette mathématique, LIME le complément local, LLM la mise en récit.
+* Pertinence pédagogique (démonstration des trois familles majeures d'XAI).
+* Chat limité (5 questions/session) borne les coûts OpenAI.
+
+=== Négatives / coûts
+
+* Image Docker worker plus lourde (SHAP + LIME + sklearn + openai). Mitigation : `Dockerfile.worker` séparé du service web — voir xref:05-audit/adr/0001-microservices-vs-monolithe.adoc[ADR 0001].
+* Dépendance à OpenAI API (clé `OPENAI_API_KEY` requise).
+* Temps de calcul SHAP sur gros dataset → polling + progress nécessaire côté frontend.
+* WebSHAP côté client pour alléger les cas simples (instance légère, modèle d'arbre) — limite la charge backend.
+
+=== Neutres
+
+* Le PoC n'implémente pas d'autres techniques (DeepLIFT, Integrated Gradients). Extension possible post-PoC.
+
+== Références
+
+* Code : `xai-engine-service/app/tasks.py`, `xai-engine-service/app/services/`.
+* Versions : `xai-engine-service/requirements.txt`.
+* Worker : `xai-engine-service/Dockerfile.worker`.
+* Page : xref:03-technique/services/xai-engine-service.adoc[xai-engine-service].

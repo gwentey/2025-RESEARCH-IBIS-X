@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+fastapi-users[sqlalchemy,oauth]
+asyncpg
+python-dotenv
+alembic
+pydantic-settings
+psycopg2-binary
+httpx-oauth
+httpx

@@ -1,0 +1,59 @@
+= ADR 0000 — Template (format MADR)
+:description: Gabarit pour toute nouvelle décision d'architecture
+
+[cols="1,3"]
+|===
+| Numéro | 0000
+| Titre court | Verbe + complément (ex. "Adopter Celery pour les tâches async")
+| Statut | `proposed` / `accepted` / `deprecated` / `superseded by ADR-XXXX`
+| Date | AAAA-MM-JJ
+| Décideurs | Nom(s)
+| Contexte lié | PR, issue, CHANGELOG
+|===
+
+== Contexte & problème
+
+Décrire le problème à résoudre et les **contraintes** : techniques, budgétaires, temporelles, académiques, réglementaires. 2 à 4 paragraphes. Si pertinent, inclure un diagramme ou une capture.
+
+== Décision
+
+Formuler la décision en **une phrase actionnable**. Puis détailler en quelques lignes comment elle s'implémente.
+
+> _Exemple :_ « Nous adoptons Celery + Redis pour toutes les tâches de plus de 5 secondes. Les queues sont nommées par domaine (`ml_queue`, `ai_queue`, `xai_queue`). »
+
+== Alternatives envisagées
+
+Lister au moins *2 autres options* étudiées, avec pour chacune :
+
+* Description concise.
+* Avantages.
+* Raisons du rejet.
+
+L'absence d'alternatives dans un ADR est un signal d'alarme : toute décision a des contre-exemples.
+
+== Conséquences
+
+=== Positives
+
+* Gains attendus (maintenabilité, performance, sécurité, etc.).
+
+=== Négatives / coûts
+
+* Complexité ajoutée, dépendances externes, coût de migration, dette technique.
+
+=== Neutres / notes d'implémentation
+
+* Points d'attention sans valeur absolue (monitoring à prévoir, documentation à maintenir…).
+
+== Références
+
+* Lien vers la documentation officielle.
+* PR ou commit d'implémentation.
+* ADRs en conflit ou complémentaires.
+
+---
+
+[TIP]
+====
+Format https://adr.github.io/madr/[MADR] simplifié. Un ADR **est immuable** une fois accepté : toute évolution crée un nouvel ADR qui `supersedes` l'ancien. Numérotation séquentielle, pas de trou.
+====

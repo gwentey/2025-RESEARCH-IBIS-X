@@ -1,0 +1,283 @@
+= Correction de l'Erreur 500 avec les Colonnes Booléennes
+:navtitle: Fix Colonnes Booléennes
+:page-tags: fix, ml-pipeline, preprocessing, boolean, outliers
+
+== Problème Résolu
+
+L'analyse de qualité des données échouait avec une erreur 500 lors du traitement de datasets contenant des colonnes booléennes (`true`/`false` en format string) avec des valeurs manquantes.
+
+== Diagnostic du Problème
+
+=== Symptômes Observés
+
+* Erreur 500 lors de l'appel à `/api/v1/ml-pipeline/data-quality/analyze`
+* Message d'erreur : `loop of ufunc does not support argument 0 of type float which has no callable sqrt method`
+* Logs backend : `Column 'sport' detected as object but convertible to numeric -> treating as numeric`
+* L'erreur se produit dans `stats.zscore()` lors de l'analyse d'outliers
+
+=== Cause Racine Identifiée
+
+Le problème venait de la fonction `detect_column_types()` qui classait incorrectement les colonnes booléennes string (`"true"`, `"false"`) comme **numériques** au lieu de **catégorielles**.
+
+.Flux défaillant
+[source,text]
+----
+Dataset avec colonnes booléennes:
+sport: ["true", "false", null, "true", ...]
+collectiveSport: ["true", null, "false", null, ...]
+
+detect_column_types():
+├── pd.to_numeric() réussit à convertir "true"/"false" 
+├── → Classées comme colonnes numériques ❌
+└── Ajoutées à numeric_columns
+
+analyze_dataset_quality():
+├── outliers_analysis pour colonnes numériques
+├── detect_outliers_zscore(numeric_columns)
+└── stats.zscore() échoue sur données booléennes → ERREUR 500
+----
+
+=== Datasets Problématiques
+
+Tout dataset contenant des colonnes avec :
+- Valeurs booléennes en format string : `"true"`, `"false"`, `"True"`, `"FALSE"`, `"1"`, `"0"`
+- Mélangées avec des valeurs manquantes (`null`, `NaN`, `""`)
+- Détectées comme `object` par pandas mais convertibles par `pd.to_numeric()`
+
+== Solution Implémentée
+
+=== 1. Amélioration de la Détection de Types
+
+Modification dans `ml-pipeline-service/app/ml/preprocessing.py`, fonction `detect_column_types()` :
+
+[source,python]
+----
+# Essayer de convertir en numérique pour détecter les colonnes mixtes
+try:
+    # Vérifier d'abord si c'est des booléens (true/false strings)
+    non_null_values = series.dropna()
+    unique_values = non_null_values.unique()
+    
+    # Si toutes les valeurs non-nulles sont des booléens string, traiter comme catégorielle
+    boolean_strings = {'true', 'false', 'True', 'False', 'TRUE', 'FALSE', '1', '0'}
+    if len(unique_values) > 0 and all(str(val).lower() in {'true', 'false', '1', '0'} for val in unique_values):
+        logger.info(f"🔍 Column '{col}' detected as boolean values -> treating as categorical")
+        categorical_cols.append(col)
+        continue
+    
+    # Si moins de 10 valeurs uniques et qu'elles semblent catégorielles, traiter comme catégorielle
+    if len(unique_values) <= 10 and any(isinstance(val, str) and not val.replace('.', '').replace('-', '').isdigit() for val in unique_values):
+        logger.info(f"🔍 Column '{col}' has few unique non-numeric values -> treating as categorical")
+        categorical_cols.append(col)
+        continue
+    
+    pd.to_numeric(non_null_values, errors='raise')
+    # Si la conversion réussit, c'est probablement numérique
+    logger.info(f"🔍 Column '{col}' detected as object but convertible to numeric -> treating as numeric")
+    numeric_cols.append(col)
+except (ValueError, TypeError):
+    # Si la conversion échoue, c'est définitivement catégorielle  
+    categorical_cols.append(col)
+----
+
+=== 2. Protection dans l'Analyse d'Outliers Z-Score
+
+Ajout de protection dans `detect_outliers_zscore()` :
+
+[source,python]
+----
+for column in columns:
+    if column in df.columns:
+        try:
+            # Vérifier que la colonne est vraiment numérique avant de calculer le z-score
+            column_data = df[column].dropna()
+            if len(column_data) == 0:
+                # Colonne entièrement vide, passer
+                continue
+            
+            # S'assurer que les données sont numériques
+            if column_data.dtype == 'object':
+                # Essayer de convertir en numérique
+                column_data = pd.to_numeric(column_data, errors='coerce').dropna()
+                if len(column_data) == 0:
+                    # Pas de données numériques valides
+                    continue
+            
+            z_scores = np.abs(stats.zscore(column_data))
+            outliers_mask = z_scores > threshold
+            outliers_count = outliers_mask.sum()
+        except (ValueError, TypeError, AttributeError) as e:
+            # Si le calcul échoue, ignorer cette colonne pour les outliers
+            logger.warning(f"⚠️ Cannot calculate z-score for column '{column}': {str(e)} -> skipping outlier detection")
+            continue
+----
+
+=== 3. Protection dans l'Analyse d'Outliers IQR
+
+Protection similaire ajoutée dans `detect_outliers_iqr()` :
+
+[source,python]
+----
+for column in columns:
+    if column in df.columns:
+        try:
+            # Vérifier que la colonne contient des données numériques valides
+            column_data = df[column].dropna()
+            if len(column_data) == 0:
+                # Colonne entièrement vide, passer
+                continue
+            
+            # S'assurer que les données sont numériques
+            if column_data.dtype == 'object':
+                # Essayer de convertir en numérique
+                column_data = pd.to_numeric(column_data, errors='coerce').dropna()
+                if len(column_data) == 0:
+                    # Pas de données numériques valides
+                    continue
+            
+            Q1 = column_data.quantile(0.25)
+            Q3 = column_data.quantile(0.75)
+            IQR = Q3 - Q1
+            
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            
+            outliers_mask = (column_data < lower_bound) | (column_data > upper_bound)
+            outliers_count = outliers_mask.sum()
+        except (ValueError, TypeError, AttributeError) as e:
+            # Si le calcul échoue, ignorer cette colonne pour les outliers
+            logger.warning(f"⚠️ Cannot calculate IQR for column '{column}': {str(e)} -> skipping outlier detection")
+            continue
+----
+
+== Logique de Détection Améliorée
+
+=== Types de Colonnes Détectés
+
+1. **Colonnes Booléennes** (maintenant catégorielles) :
+   - Valeurs : `"true"`, `"false"`, `"True"`, `"FALSE"`, `"1"`, `"0"`
+   - Avec ou sans valeurs manquantes
+   - Exemple : colonnes `sport`, `collectiveSport`
+
+2. **Colonnes Catégorielles à Faible Cardinalité** :
+   - ≤ 10 valeurs uniques
+   - Contenant des strings non-numériques
+   - Exemple : `schoolClass` avec `["2nde", "première", "terminale"]`
+
+3. **Colonnes Vraiment Numériques** :
+   - Convertibles par `pd.to_numeric()` sans erreur
+   - Ne correspondent pas aux patterns booléens
+   - Exemple : `age`, `avgGrade`
+
+=== Ordre de Vérification
+
+[source,text]
+----
+1. Datetime → datetime_cols
+2. Numeric (pandas native) → numeric_cols
+3. Object:
+   a. Entièrement NaN → categorical_cols
+   b. Valeurs booléennes → categorical_cols ✨ NOUVEAU
+   c. Faible cardinalité + strings → categorical_cols ✨ NOUVEAU
+   d. Convertible en numeric → numeric_cols
+   e. Sinon → categorical_cols
+----
+
+== Test de la Solution
+
+Un script de test a été créé : `scripts/test_boolean_columns_fix.py`
+
+.Utilisation du script de test
+[source,bash]
+----
+cd /path/to/project
+python scripts/test_boolean_columns_fix.py
+----
+
+Le script teste :
+
+1. **Test 1** : Détection correcte des types de colonnes
+2. **Test 2** : Analyse complète de qualité sans erreur
+
+=== Dataset de Test
+
+[source,python]
+----
+data = {
+    'id': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    'schoolClass': ['2nde', 'première', 'terminale', '2nde', ...],
+    'age': [15, 16, 17, 15, 16, 17, 15, 16, 17, 15],
+    'avgGrade': [12.5, 14.2, 16.8, 11.3, 13.7, 15.9, ...],
+    'sport': ['true', 'false', 'true', None, 'true', 'false', None, ...],  # Booléens avec valeurs manquantes
+    'collectiveSport': ['true', None, 'false', None, 'true', None, None, ...]  # Booléens avec beaucoup de valeurs manquantes
+}
+----
+
+== Résultat Attendu
+
+Après cette correction, l'analyse de qualité des données devrait :
+
+* ✅ **Détecter correctement** les colonnes booléennes comme catégorielles
+* ✅ **Ne plus échouer** sur `stats.zscore()` ou les calculs d'IQR
+* ✅ **Traiter les valeurs manquantes** dans les colonnes booléennes
+* ✅ **Fournir une analyse complète** sans erreur 500
+
+.Exemple de logs corrects
+[source,text]
+----
+🔍 Column 'sport' detected as boolean values -> treating as categorical
+🔍 Column 'collectiveSport' detected as boolean values -> treating as categorical
+📊 Numeric features detected: ['id', 'age', 'avgGrade']
+🔤 Categorical features detected: ['schoolClass', 'sport', 'collectiveSport']
+✅ Analyse de qualité réussie !
+----
+
+== Cas d'Usage Supportés
+
+Cette correction supporte maintenant :
+
+=== Formats Booléens Reconnus
+- `"true"` / `"false"` (minuscules)
+- `"True"` / `"False"` (capitalisées)
+- `"TRUE"` / `"FALSE"` (majuscules)
+- `"1"` / `"0"` (numériques string)
+
+=== Avec Valeurs Manquantes
+- Mélange de booléens et `null`
+- Colonnes majoritairement vides avec quelques booléens
+- Booléens conditionnels (ex: `collectiveSport` rempli seulement si `sport = true`)
+
+=== Datasets Éducatifs Typiques
+- Colonnes de participation : `sport`, `club`, `activity`
+- Colonnes de statut : `passed`, `graduated`, `enrolled`
+- Colonnes de préférences : `likes_math`, `prefers_science`
+
+== Fichiers Modifiés
+
+* `ml-pipeline-service/app/ml/preprocessing.py` - Amélioration de la détection de types et protection des outliers
+* `scripts/test_boolean_columns_fix.py` - Script de test de la solution
+
+== Notes de Déploiement
+
+IMPORTANT: Après avoir appliqué ces modifications, il faut **redémarrer le ML Pipeline Service** :
+
+[source,bash]
+----
+# Redémarrer le ML Pipeline Service
+kubectl rollout restart deployment/ml-pipeline-deployment -n ibis-x
+----
+
+Ou en développement local :
+[source,bash]
+----
+# Redémarrer avec Skaffold
+skaffold dev
+----
+
+== Récapitulatif
+
+**Problème** : Erreur 500 lors de l'analyse de qualité à cause de colonnes booléennes string mal détectées comme numériques, causant un échec dans `stats.zscore()`.
+
+**Solution** : Amélioration de la logique de détection de types pour identifier correctement les colonnes booléennes comme catégorielles, avec protection supplémentaire dans les calculs d'outliers.
+
+**Résultat** : Analyse de qualité robuste qui gère correctement tous les types de données, y compris les booléens avec valeurs manquantes.

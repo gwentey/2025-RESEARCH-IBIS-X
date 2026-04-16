@@ -1,0 +1,52 @@
+= Journal des changements
+:description: Vue publique des évolutions majeures
+
+== Source canonique
+
+Le journal de référence est `CHANGELOG.md` à la racine du dépôt, au format https://keepachangelog.com/en/1.1.0/[Keep a Changelog] et https://semver.org/spec/v2.0.0.html[Semantic Versioning].
+
+link:../../../../../../CHANGELOG.md[📄 Consulter CHANGELOG.md]
+
+== Règle
+
+Toute modification notable (feature, fix, breaking, doc structurelle) **doit** apparaître dans `CHANGELOG.md` sous la section `[Unreleased]` avant merge sur `main`.
+
+Les sections de changelog suivent les catégories Keep a Changelog :
+
+* *Added* — nouvelles fonctionnalités.
+* *Changed* — évolutions de comportements existants.
+* *Deprecated* — fonctionnalités vouées à disparaître.
+* *Removed* — suppressions.
+* *Fixed* — corrections de bugs.
+* *Security* — corrections de vulnérabilités.
+
+== Lien avec la traçabilité
+
+Chaque entrée de CHANGELOG référence idéalement :
+
+* le numéro de finding d'audit si applicable (ex. `FINDING-014`) ;
+* le fichier modifié (chemin relatif) ;
+* le raisonnement ("le *pourquoi*", pas le *quoi*).
+
+== Historique structurel récent (2026-04-14)
+
+* *Design audit* — 5 findings corrigés (i18n ML pipeline, route XAI, heading scale, sidebar duplicate, mobile drawer cleanup).
+* *Lot 1 refonte doc* — 6 piliers Antora, README 3 parcours, CONTRIBUTING/SECURITY/LICENSE, memory-bank simplifié.
+* *Lot 2 refonte doc* — 28 divergences code↔doc corrigées, 5 fichiers memory-bank archivés.
+* *Lot 3 refonte doc* — 13 doublons archivés, 11 pages canoniques (architecture + services + API), 5 diagrammes Mermaid.
+* *Lot 4 refonte doc* — 7 ADRs MADR, checklist RGPD + STRIDE + OWASP, plan de tests, éthique IA, matrice de traçabilité.
+
+== Politique de versions
+
+Le PoC est en version **`0.x`** (non stable) tant que :
+
+* l'API gateway peut introduire des breaking changes sans major bump ;
+* le schéma BDD évolue librement (migrations Alembic acceptées).
+
+Passage à `1.0` : lorsque l'API publique sera figée et documentée formellement pour une utilisation hors cadre académique.
+
+== Références
+
+* `CHANGELOG.md` (racine) — journal canonique.
+* xref:05-audit/tracabilite/exigences-implementation.adoc[Matrice exigences ↔ code].
+* xref:06-contribution/git-workflow.adoc[Git workflow] (Lot 5).

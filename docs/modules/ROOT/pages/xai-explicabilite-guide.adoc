@@ -1,0 +1,197 @@
+= Guide Explicabilité XAI (Explainable AI)
+
+L'explicabilité est une composante essentielle d'IBIS-X qui permet de comprendre et d'interpréter les résultats de vos modèles de machine learning. Cette fonctionnalité utilise des algorithmes de pointe (SHAP et LIME) combinés à l'intelligence artificielle générative pour fournir des explications adaptées à votre niveau d'expertise.
+
+== 🎯 Objectif de l'explicabilité
+
+L'explicabilité vous aide à :
+
+* **Comprendre les décisions** : Pourquoi votre modèle fait-il ces prédictions ?
+* **Identifier les biais** : Quelles variables influencent le plus les résultats ?
+* **Valider la logique** : Le modèle se base-t-il sur les bonnes informations ?
+* **Communiquer les résultats** : Expliquer les insights métier aux parties prenantes
+* **Respecter la réglementation** : Répondre aux exigences de transparence (RGPD, IA Act)
+
+== 🚀 Comment utiliser l'explicabilité
+
+=== Étape 1 : Accéder aux résultats d'expérience
+
+1. Naviguez vers **ML Pipeline** > **Mes Expériences**
+2. Sélectionnez une expérience terminée avec succès
+3. Faites défiler jusqu'à la section **"Explicabilité du Modèle"**
+
+=== Étape 2 : Demander une explication
+
+==== Types d'explication disponibles
+
+[cols="1,3"]
+|===
+|Type |Description
+
+|**Explication Globale**
+|Comprendre le comportement général du modèle sur l'ensemble des données
+
+|**Explication Locale**
+|Analyser une prédiction spécifique sur un échantillon particulier
+|===
+
+==== Méthodes d'explicabilité
+
+[cols="1,3,2"]
+|===
+|Méthode |Description |Recommandé pour
+
+|**SHAP (SHapley Additive exPlanations)**
+|Calcule l'importance de chaque variable de manière équitable
+|Decision Tree, Random Forest
+
+|**LIME (Local Interpretable Model-agnostic Explanations)**
+|Explique localement n'importe quel modèle ML
+|Tous types de modèles
+
+|**Auto (Recommandé)**
+|IBIS-X choisit automatiquement la meilleure méthode
+|Recommandé pour débuter
+|===
+
+=== Étape 3 : Sélectionner votre profil d'audience
+
+Le système adapte automatiquement les explications selon votre profil :
+
+[cols="1,3"]
+|===
+|Profil |Type d'explication
+
+|**Débutant/Novice**
+|Explications simplifiées, métaphores, pas de jargon technique
+
+|**Intermédiaire**
+|Explications équilibrées avec quelques termes techniques
+
+|**Expert/Data Scientist**
+|Explications techniques détaillées, métriques avancées
+|===
+
+TIP: Votre profil est défini lors de l'onboarding selon votre familiarité avec l'IA et votre niveau d'éducation.
+
+=== Étape 4 : Analyser les résultats
+
+Une fois l'explication générée, vous obtenez :
+
+==== Visualisations interactives
+
+* **Graphiques d'importance des variables** : Quelles variables comptent le plus ?
+* **Graphiques en cascade (Waterfall)** : Comment chaque variable contribue à la prédiction
+* **Graphiques de distribution** : Comment les valeurs se répartissent
+* **Matrices de confusion améliorées** : Performance détaillée par classe
+
+==== Explication textuelle intelligente
+
+Une explication générée par IA qui :
+
+* Résume les points clés en langage naturel
+* S'adapte à votre niveau de compréhension
+* Met en avant les insights les plus importants
+* Identifie les patterns intéressants
+
+=== Étape 5 : Poser des questions (Chat IA)
+
+Vous pouvez poser jusqu'à **5 questions** pour approfondir votre compréhension :
+
+==== Exemples de questions utiles
+
+* "Pourquoi cette variable est-elle si importante ?"
+* "Comment améliorer la performance de mon modèle ?"
+* "Y a-t-il des biais dans mes données ?"
+* "Que signifient ces résultats pour mon business ?"
+* "Puis-je faire confiance à ce modèle ?"
+
+==== Questions suggérées intelligentes
+
+Le système propose automatiquement des questions pertinentes basées sur :
+
+* Les caractéristiques de votre dataset
+* Les performances de votre modèle
+* Votre profil utilisateur
+* Les patterns détectés dans les explications
+
+== ⚡ Conseils d'utilisation avancée
+
+=== Optimiser la qualité des explications
+
+1. **Nettoyez vos données** : Des données de qualité donnent de meilleures explications
+2. **Nommez clairement vos variables** : Utilisez des noms explicites et métier
+3. **Équilibrez vos classes** : Des classes déséquilibrées peuvent biaiser les explications
+4. **Validez sur plusieurs échantillons** : Testez les explications locales sur différents exemples
+
+=== Interpréter les résultats
+
+==== Variables importantes positives vs négatives
+
+* **Contribution positive** : La variable augmente la probabilité de la classe prédite
+* **Contribution négative** : La variable diminue cette probabilité
+
+==== Confiance dans l'explication
+
+Le système indique le niveau de confiance de l'explication :
+
+* 🟢 **Haute confiance** : Explication fiable, vous pouvez vous y fier
+* 🟡 **Confiance modérée** : Explication utile mais à valider
+* 🔴 **Faible confiance** : Explication incertaine, creusez davantage
+
+=== Cas d'usage métier
+
+==== Marketing & CRM
+* Comprendre les facteurs de conversion client
+* Identifier les segments à risque de churn
+* Optimiser les campagnes publicitaires
+
+==== Finance & Risque
+* Expliquer les décisions de crédit
+* Analyser les facteurs de fraude
+* Valider les modèles réglementaires
+
+==== Santé & Sciences
+* Interpréter les diagnostics assistés
+* Identifier les biomarqueurs importants
+* Valider la robustesse des analyses
+
+== 🔧 Support technique
+
+=== Résolution de problèmes courants
+
+[cols="2,3"]
+|===
+|Problème |Solution
+
+|L'explication prend trop de temps
+|Les modèles complexes sur de gros datasets peuvent nécessiter plusieurs minutes. Patience !
+
+|Les explications semblent incohérentes
+|Vérifiez la qualité de vos données et l'équilibrage de vos classes
+
+|Le chat ne répond pas correctement
+|Reformulez votre question de manière plus précise et contextuelle
+
+|Les visualisations ne s'affichent pas
+|Actualisez la page ou contactez le support technique
+|===
+
+=== Limitations actuelles
+
+* **Modèles supportés** : Decision Tree, Random Forest, Regression Logistique
+* **Taille des données** : Optimisé pour des datasets < 1M de lignes
+* **Questions chat** : Maximum 5 questions par session d'explication
+* **Langues** : Français et Anglais uniquement
+
+== 📞 Support et formation
+
+Pour aller plus loin :
+
+* **Documentation technique** : xref:xai-technique-reference.adoc[Référence technique XAI]
+* **Formation utilisateur** : Demandez une session de formation personnalisée
+* **Support technique** : Contactez l'équipe IBIS-X pour assistance
+
+---
+
+💡 **Conseil** : L'explicabilité est un outil puissant mais elle ne remplace pas votre expertise métier. Utilisez-la comme un guide pour valider et approfondir vos analyses, pas comme une vérité absolue.

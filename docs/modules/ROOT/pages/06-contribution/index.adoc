@@ -1,0 +1,20 @@
+= Pilier 6 — Contribution
+:description: Onboarding développeur, git flow, conventions, publication doc
+
+Ce pilier décrit **comment contribuer** à IBIS-X : onboarding, workflows Git, conventions, processus de revue, ajout d'un service ou d'une feature, publication de la documentation.
+
+== Contenu
+
+* xref:06-contribution/onboarding-dev.adoc[Onboarding développeur] — parcours du premier `make dev` à la première PR mergée.
+* xref:06-contribution/git-workflow.adoc[Git workflow] — branches, rebase, Conventional Commits.
+* xref:06-contribution/conventions-code.adoc[Conventions de code] — backend (FastAPI, SQLAlchemy) + frontend (Angular, Material).
+* xref:06-contribution/conventions-doc.adoc[Conventions de documentation] — style Asciidoc, placement dans les 6 piliers.
+* xref:06-contribution/processus-pr.adoc[Processus de Pull Request] — template, revue, merge.
+* xref:06-contribution/ajout-service.adoc[Ajouter un nouveau service] — checklist (ADR, skaffold, Kustomize, docs).
+* xref:06-contribution/ajout-feature.adoc[Ajouter une feature] — règle Doc = Code.
+* xref:06-contribution/publication-doc.adoc[Publier la documentation] — build Antora, GitHub Pages.
+
+[TIP]
+====
+Pour l'essentiel, voir directement link:../../../CONTRIBUTING.md[`CONTRIBUTING.md`] à la racine du dépôt.
+====

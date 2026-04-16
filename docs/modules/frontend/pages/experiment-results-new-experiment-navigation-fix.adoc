@@ -1,0 +1,251 @@
+= Correction Navigation "Nouvelle Expérience" - Résultats ML
+:page-title: Fix Bouton Nouvelle Expérience - Résultats ML
+:page-description: Correction de la navigation du bouton "Nouvelle Expérience" pour inclure les informations du dataset
+:page-category: Frontend
+:page-version: 1.0
+:page-tags: frontend,ml-pipeline,experiment-results,navigation,fix
+
+== Problème Résolu
+
+=== Symptômes
+Dans la page des résultats d'expérimentation ML, le bouton "Nouvelle Expérience" ne transmettait que l'ID de l'expérimentation à copier, sans inclure les informations essentielles du dataset.
+
+**URL actuelle (incorrecte) :**
+----
+http://localhost:8080/ml-pipeline-wizard?copyFrom=005f1ab1-384f-40a1-a382-f1f62960cd4d
+----
+
+**URL attendue (correcte) :**
+----
+http://localhost:8080/ml-pipeline-wizard?datasetId=8b371dc4-6950-4d68-bb46-67f89fc4a147&datasetName=Iris&copyFrom=005f1ab1-384f-40a1-a382-f1f62960cd4d
+----
+
+=== Impact
+- L'utilisateur devait re-sélectionner manuellement le dataset dans le wizard
+- Perte de contexte entre l'expérimentation précédente et la nouvelle
+- Expérience utilisateur dégradée pour les itérations d'expérimentations
+
+== Solution Implémentée
+
+=== Modifications Structurelles
+
+**Fichier modifié :** `frontend/src/app/pages/ml-pipeline/experiment-results/experiment-results.component.ts`
+
+==== 1. Ajout d'une propriété dataset
+
+**Avant :**
+[source,typescript]
+----
+export class ExperimentResultsComponent implements OnInit, OnDestroy {
+  experimentId: string = '';
+  projectId: string = '';
+  experiment: ExperimentStatus | null = null;
+  results: ExperimentResults | null = null;
+  isLoading = true;
+  datasetColumns: any[] = [];
+----
+
+**Après :**
+[source,typescript]
+----
+export class ExperimentResultsComponent implements OnInit, OnDestroy {
+  experimentId: string = '';
+  projectId: string = '';
+  experiment: ExperimentStatus | null = null;
+  results: ExperimentResults | null = null;
+  isLoading = true;
+  datasetColumns: any[] = [];
+  dataset: any = null; // Stocker le dataset complet pour accéder aux infos
+----
+
+==== 2. Stockage du dataset complet
+
+**Méthode `loadDatasetColumns` - Avant :**
+[source,typescript]
+----
+this.datasetService.getDataset(datasetId).subscribe({
+  next: (dataset: any) => {
+    console.log('📊 Dataset récupéré:', dataset);
+    
+    // Récupérer les colonnes du premier fichier
+    if (dataset.files && dataset.files.length > 0 && dataset.files[0].columns) {
+      this.datasetColumns = dataset.files[0].columns;
+      console.log('✅ Colonnes chargées:', this.datasetColumns.length, this.datasetColumns.map(c => c.name));
+    } else {
+      console.warn('⚠️ Pas de colonnes trouvées dans le dataset');
+    }
+----
+
+**Méthode `loadDatasetColumns` - Après :**
+[source,typescript]
+----
+this.datasetService.getDataset(datasetId).subscribe({
+  next: (dataset: any) => {
+    console.log('📊 Dataset récupéré:', dataset);
+    
+    // Stocker le dataset complet
+    this.dataset = dataset;
+    
+    // Récupérer les colonnes du premier fichier
+    if (dataset.files && dataset.files.length > 0 && dataset.files[0].columns) {
+      this.datasetColumns = dataset.files[0].columns;
+      console.log('✅ Colonnes chargées:', this.datasetColumns.length, this.datasetColumns.map(c => c.name));
+    } else {
+      console.warn('⚠️ Pas de colonnes trouvées dans le dataset');
+    }
+----
+
+==== 3. Correction de la navigation
+
+**Méthode `runNewExperiment` - Avant :**
+[source,typescript]
+----
+runNewExperiment(): void {
+  const queryParams: any = {
+    copyFrom: this.experimentId
+  };
+  if (this.projectId) {
+    queryParams.projectId = this.projectId;
+  }
+  
+  this.router.navigate(['/ml-pipeline-wizard'], { queryParams });
+}
+----
+
+**Méthode `runNewExperiment` - Après :**
+[source,typescript]
+----
+runNewExperiment(): void {
+  const queryParams: any = {
+    copyFrom: this.experimentId
+  };
+  
+  // Ajouter les informations du dataset si disponibles
+  if (this.dataset) {
+    queryParams.datasetId = this.dataset.id;
+    queryParams.datasetName = this.dataset.display_name || this.dataset.dataset_name || 'Dataset';
+  }
+  
+  if (this.projectId) {
+    queryParams.projectId = this.projectId;
+  }
+  
+  this.router.navigate(['/ml-pipeline-wizard'], { queryParams });
+}
+----
+
+== Détails Techniques
+
+=== Logique de Récupération du Dataset
+
+Le composant utilise plusieurs stratégies pour récupérer l'ID du dataset :
+
+1. **Depuis le status de l'expérimentation :**
+   - `status.dataset_id`
+   - `status.datasetId`
+   - `status.dataset`
+   - `status.datasetID`
+
+2. **Depuis les résultats de l'expérimentation :**
+   - `results.dataset_id`
+   - `results.preprocessing_config.dataset_id`
+
+3. **Fallback depuis le contexte**
+
+Cette approche robuste assure que les informations du dataset sont disponibles même si la structure des données varie.
+
+=== Paramètres Transmis
+
+La nouvelle implémentation transmet maintenant :
+
+- `copyFrom` : ID de l'expérimentation à dupliquer
+- `datasetId` : ID unique du dataset
+- `datasetName` : Nom d'affichage du dataset (avec fallbacks)
+- `projectId` : ID du projet (si disponible)
+
+=== Gestion des Noms de Dataset
+
+La logique de nommage utilise plusieurs sources avec ordre de priorité :
+1. `dataset.display_name` (nom d'affichage préféré)
+2. `dataset.dataset_name` (nom alternatif)
+3. `'Dataset'` (fallback générique)
+
+== Test de la Correction
+
+=== Étapes de Test
+
+1. **Accéder à une expérimentation terminée**
+   - Naviguer vers `/app/projects/{projectId}/ml-pipeline/experiment/{experimentId}`
+
+2. **Vérifier le chargement du dataset**
+   - Confirmer que les informations du dataset sont affichées
+   - Vérifier les logs de la console pour le chargement du dataset
+
+3. **Tester la navigation "Nouvelle Expérience"**
+   - Cliquer sur le bouton "Nouvelle Expérience"
+   - Vérifier l'URL de destination inclut tous les paramètres
+
+4. **Vérifier le pré-remplissage du wizard**
+   - Confirmer que le dataset est pré-sélectionné dans le wizard
+   - Vérifier que les paramètres de l'expérimentation précédente sont chargés
+
+=== Résultat Attendu
+
+L'utilisateur doit être redirigé vers :
+----
+http://localhost:8080/ml-pipeline-wizard?datasetId={datasetId}&datasetName={datasetName}&copyFrom={experimentId}&projectId={projectId}
+----
+
+== Impact Utilisateur
+
+=== Améliorations
+
+- **Continuité d'expérience** : Le dataset reste sélectionné lors de la création d'une nouvelle expérience
+- **Gain de temps** : Plus besoin de re-sélectionner le dataset manuellement
+- **Workflow optimisé** : Itération plus fluide entre les expérimentations
+- **Moins d'erreurs** : Réduction du risque d'erreur lors de la sélection du dataset
+
+=== Cas d'Usage Améliorés
+
+Cette correction bénéficie particulièrement à :
+
+- **Optimisation d'hyperparamètres** : Iterations multiples avec le même dataset
+- **Comparaison d'algorithmes** : Test de différents modèles sur les mêmes données
+- **Amélioration incrémentale** : Ajustements fins basés sur les résultats précédents
+
+== Considérations de Performance
+
+=== Optimisations
+
+- Le dataset complet n'est chargé qu'une seule fois lors du chargement initial
+- Les informations sont réutilisées pour toutes les navigations ultérieures
+- Pas de requêtes supplémentaires pour les navigations
+
+=== Impact Mémoire
+
+L'ajout de `this.dataset` représente un impact minimal sur la mémoire car :
+- Un seul dataset est stocké par composant
+- Les données sont libérées à la destruction du composant
+- La taille des métadonnées de dataset est généralement faible
+
+== Notes de Développement
+
+=== Robustesse
+
+La solution gère plusieurs cas de figure :
+- Dataset non disponible (fallback gracieux)
+- Noms de propriétés variables dans les APIs
+- Données manquantes ou corrompues
+
+=== Extensibilité
+
+La structure permet d'ajouter facilement d'autres informations du dataset :
+- Métadonnées additionnelles
+- Configuration spécifique
+- Paramètres de pré-traitement
+
+== Voir Aussi
+
+- xref:ROOT:ml-pipeline-wizard-guide.adoc[Guide du Wizard ML Pipeline]
+- xref:ROOT:experiment-results-guide.adoc[Guide des Résultats d'Expérimentation]
+- xref:frontend:dataset-ai-guide-navigation-fix.adoc[Fix Navigation Guide IA]

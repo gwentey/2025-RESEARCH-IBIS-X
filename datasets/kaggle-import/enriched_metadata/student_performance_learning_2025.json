@@ -1,0 +1,434 @@
+{
+  "dataset_name": "student_performance_learning_2025",
+  "display_name": "Student Performance and Learning Behavior Dataset",
+  "objective": "Integrate academic, demographic, behavioral, and psychological factors to analyze student performance and learning behavior for predictive modeling and adaptive learning research",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Fusion of publicly available Kaggle datasets by Adil Shamim - anonymized student records with comprehensive behavioral and performance data",
+  "storage_uri": "https://www.kaggle.com/datasets/adilshamim8/student-performance-and-learning-style",
+  "citation_link": "https://www.kaggle.com/datasets/adilshamim8/student-performance-and-learning-style",
+  "documentation_link": "https://www.kaggle.com/datasets/adilshamim8/student-performance-and-learning-style",
+  "instances_number": 14003,
+  "features_number": 16,
+  "features_description": "Comprehensive student analysis dataset integrating study behaviors, engagement patterns, resources usage, motivation, psychological factors, demographics, learning styles, and academic performance metrics",
+  "domain": ["education"],
+  "representativity_description": "14,003 anonymized student records covering diverse behaviors and characteristics across different learning styles and performance levels",
+  "representativity_level": "medium",
+  "sample_balance_description": "Well-balanced distribution across learning styles, age groups (18-30), genders, and performance levels",
+  "sample_balance_level": "balanced",
+  "split": false,
+  "missing_values": {
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "description": "Clean dataset with no missing values - comprehensive data collection",
+    "handling_method": "none"
+  },
+  "temporal_factors": false,
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "task": ["classification", "regression", "clustering"],
+  "year": 2025,
+  "license": "CC BY 4.0",
+  "num_citations": 80,
+  "student_demographics": {
+    "total_students": 14003,
+    "age_range": "18-30 years",
+    "gender_distribution": "Male/Female balanced",
+    "anonymization_level": "full",
+    "learning_styles": [
+      "Visual", "Auditory", "Kinesthetic", "Reading/Writing"
+    ]
+  },
+  "behavioral_analysis_categories": {
+    "study_behaviors": [
+      "StudyHours (per week)",
+      "Attendance (percentage)",
+      "AssignmentCompletion (numeric scale)"
+    ],
+    "engagement_patterns": [
+      "OnlineCourses (participation)",
+      "Discussions (forums/study groups)",
+      "Extracurricular (activities participation)"
+    ],
+    "resource_utilization": [
+      "Resources (library, notes access)",
+      "Internet (study access)",
+      "EduTech (educational technology usage)"
+    ],
+    "psychological_factors": [
+      "Motivation (self-reported scale)",
+      "StressLevel (self-reported scale)"
+    ]
+  },
+  "performance_metrics": {
+    "primary_targets": [
+      "ExamScore (main exam performance)",
+      "FinalGrade (overall course grade)"
+    ],
+    "prediction_applications": [
+      "Performance forecasting",
+      "At-risk student identification",
+      "Learning path optimization",
+      "Intervention timing"
+    ]
+  },
+  "ethics": {
+    "informed_consent": true,
+    "transparency": true,
+    "user_control": true,
+    "equity_non_discrimination": true,
+    "security_measures_in_place": true,
+    "data_quality_documented": true,
+    "anonymization_applied": true,
+    "record_keeping_policy_exists": true,
+    "purpose_limitation_respected": true,
+    "accountability_defined": true
+  },
+  "column_details": [
+    {
+      "column_name": "StudyHours",
+      "position": 0,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Number of study hours per week - key behavioral predictor",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "range": "5-44 hours per week",
+      "category": "study_behavior",
+      "correlation_with_performance": "high_positive"
+    },
+    {
+      "column_name": "Attendance",
+      "position": 1,
+      "data_type_interpreted": "numerical_percentage",
+      "description": "Percentage of classes attended - engagement indicator",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "range": "60-100%",
+      "category": "engagement_behavior",
+      "correlation_with_performance": "high_positive"
+    },
+    {
+      "column_name": "Resources",
+      "position": 2,
+      "data_type_interpreted": "categorical_ordinal",
+      "description": "Availability and use of academic resources (library, notes)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "levels": "0-2 scale",
+      "category": "resource_access",
+      "impact_on_learning": "medium"
+    },
+    {
+      "column_name": "Extracurricular",
+      "position": 3,
+      "data_type_interpreted": "categorical_binary",
+      "description": "Participation in extracurricular activities (Yes/No)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "values": ["Yes", "No"],
+      "category": "engagement_behavior",
+      "balanced_impact": "moderate"
+    },
+    {
+      "column_name": "Motivation",
+      "position": 4,
+      "data_type_interpreted": "numerical_scale",
+      "description": "Self-reported motivation level - psychological factor",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "scale": "0-2 numeric scale",
+      "category": "psychological_factor",
+      "correlation_with_performance": "high_positive"
+    },
+    {
+      "column_name": "Internet",
+      "position": 5,
+      "data_type_interpreted": "categorical_binary",
+      "description": "Access to internet for study purposes (Yes/No)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "values": ["Yes", "No"],
+      "category": "resource_access",
+      "digital_divide_indicator": true
+    },
+    {
+      "column_name": "Gender",
+      "position": 6,
+      "data_type_interpreted": "categorical_binary",
+      "description": "Student gender (Male/Female) - demographic factor",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "values": ["Male", "Female"],
+      "category": "demographic",
+      "analysis_value": "segmentation"
+    },
+    {
+      "column_name": "Age",
+      "position": 7,
+      "data_type_interpreted": "numerical_integer",
+      "description": "Age of student in years (18-30 range)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "range": "18-30 years",
+      "category": "demographic",
+      "learning_maturity_indicator": true
+    },
+    {
+      "column_name": "LearningStyle",
+      "position": 8,
+      "data_type_interpreted": "categorical",
+      "description": "Preferred learning style (Visual, Auditory, Kinesthetic, Reading/Writing)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "categories": ["Visual", "Auditory", "Kinesthetic", "Reading/Writing"],
+      "category": "learning_preference",
+      "adaptive_learning_key": true
+    },
+    {
+      "column_name": "OnlineCourses",
+      "position": 9,
+      "data_type_interpreted": "categorical_binary",
+      "description": "Participation in online courses (Yes/No)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "values": ["Yes", "No"],
+      "category": "digital_engagement",
+      "modern_learning_indicator": true
+    },
+    {
+      "column_name": "Discussions",
+      "position": 10,
+      "data_type_interpreted": "categorical_ordinal",
+      "description": "Engagement in study group discussions or forums",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "scale": "0-3 ordinal scale",
+      "category": "collaborative_learning",
+      "social_learning_indicator": true
+    },
+    {
+      "column_name": "AssignmentCompletion",
+      "position": 11,
+      "data_type_interpreted": "numerical_scale",
+      "description": "Rate of completing assignments on time - behavioral metric",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "scale": "0-20 numeric scale",
+      "category": "academic_discipline",
+      "correlation_with_performance": "very_high_positive"
+    },
+    {
+      "column_name": "ExamScore",
+      "position": 12,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Score obtained in the main exam - primary performance target",
+      "is_target": true,
+      "missing_percentage": 0.0,
+      "category": "performance_metric",
+      "prediction_target": "primary"
+    },
+    {
+      "column_name": "EduTech",
+      "position": 13,
+      "data_type_interpreted": "categorical_ordinal",
+      "description": "Usage of educational technology tools and platforms",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "digital_learning",
+      "technology_adoption_indicator": true
+    },
+    {
+      "column_name": "StressLevel",
+      "position": 14,
+      "data_type_interpreted": "numerical_scale",
+      "description": "Self-reported stress level - psychological wellbeing metric",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "psychological_factor",
+      "correlation_with_performance": "negative",
+      "mental_health_indicator": true
+    },
+    {
+      "column_name": "FinalGrade",
+      "position": 15,
+      "data_type_interpreted": "categorical_ordinal",
+      "description": "Final course grade - overall performance target",
+      "is_target": true,
+      "missing_percentage": 0.0,
+      "category": "performance_metric",
+      "prediction_target": "secondary"
+    }
+  ],
+  "technical_specifications": {
+    "file_format": "CSV",
+    "file_size": "539.61 kB",
+    "encoding": "UTF-8",
+    "separator": "comma",
+    "data_quality": "very_high",
+    "completeness": "100%",
+    "preprocessing_applied": "encoding, normalization, deduplication"
+  },
+  "machine_learning_applications": {
+    "classification_tasks": [
+      "FinalGrade prediction (ordinal classification)",
+      "Learning style classification",
+      "At-risk student identification",
+      "Performance level categorization"
+    ],
+    "regression_tasks": [
+      "ExamScore prediction",
+      "Study hours optimization",
+      "Performance improvement forecasting"
+    ],
+    "clustering_applications": [
+      "Student behavior grouping",
+      "Learning pattern identification", 
+      "Personalized learning clusters",
+      "Intervention group segmentation"
+    ],
+    "feature_engineering_opportunities": [
+      "Study efficiency ratios",
+      "Engagement composite scores",
+      "Resource utilization indices",
+      "Motivation-stress balance metrics"
+    ]
+  },
+  "educational_analytics_capabilities": {
+    "predictive_modeling": [
+      "Early warning systems for student failure",
+      "Performance trajectory forecasting",
+      "Optimal study behavior recommendation",
+      "Resource allocation optimization"
+    ],
+    "descriptive_analytics": [
+      "Learning behavior pattern analysis",
+      "Demographic performance differences",
+      "Resource impact assessment",
+      "Stress-performance correlation analysis"
+    ],
+    "prescriptive_analytics": [
+      "Personalized study plan generation",
+      "Intervention timing optimization",
+      "Learning resource recommendation",
+      "Stress management strategy suggestion"
+    ]
+  },
+  "research_applications": {
+    "learning_sciences": [
+      "Learning style effectiveness research",
+      "Motivation theory validation",
+      "Stress impact on academic performance",
+      "Digital learning engagement patterns"
+    ],
+    "educational_technology": [
+      "EdTech tool effectiveness evaluation",
+      "Online learning engagement optimization",
+      "Adaptive learning system development",
+      "Personalized learning algorithm training"
+    ],
+    "psychology_education": [
+      "Motivation-performance relationship study",
+      "Stress intervention effectiveness",
+      "Learning preference impact analysis",
+      "Behavioral pattern psychology research"
+    ]
+  },
+  "business_applications": {
+    "educational_institutions": [
+      "Student success program development",
+      "Early intervention system implementation",
+      "Resource allocation optimization",
+      "Academic support service design"
+    ],
+    "edtech_companies": [
+      "Adaptive learning platform development",
+      "Personalized recommendation engines",
+      "Student engagement optimization",
+      "Learning analytics dashboard creation"
+    ],
+    "policy_development": [
+      "Educational support policy design",
+      "Resource distribution strategies",
+      "Student welfare program planning",
+      "Academic success framework development"
+    ]
+  },
+  "analytical_insights": [
+    "Strong correlation between StudyHours and performance outcomes",
+    "Attendance emerges as critical predictor of academic success",
+    "AssignmentCompletion shows highest correlation with final performance",
+    "StressLevel negatively impacts performance across all learning styles",
+    "Digital resource access (Internet, EduTech) significantly affects outcomes",
+    "Learning style preferences influence optimal study strategies",
+    "Motivation serves as key mediating factor for all other behaviors",
+    "Age range (18-30) shows interesting maturity-performance relationships"
+  ],
+  "clustering_analysis_ready": {
+    "behavioral_clusters": "Study pattern groups (intensive, moderate, minimal)",
+    "engagement_clusters": "High/medium/low engagement student groups",
+    "resource_utilization_clusters": "Technology-savvy vs traditional learners",
+    "performance_clusters": "High/average/at-risk performance groups",
+    "learning_style_clusters": "Learning preference-based groupings",
+    "intervention_clusters": "Students requiring similar support strategies"
+  },
+  "potential_research_questions": [
+    "What behavioral patterns predict academic success most effectively?",
+    "How do different learning styles respond to various engagement strategies?",
+    "What is the optimal balance between study hours and stress levels?",
+    "How does technology usage correlate with different learning preferences?",
+    "Which early indicators best predict students at risk of failure?",
+    "How do demographic factors interact with behavioral variables?",
+    "What intervention strategies work best for different student clusters?"
+  ],
+  "data_quality_indicators": {
+    "completeness": "100% - no missing values",
+    "consistency": "High - standardized scales and categories",
+    "accuracy": "High - validated through multiple data source fusion",
+    "timeliness": "Current - 2025 dataset reflecting modern learning patterns",
+    "anonymization_quality": "Full - no PII present in dataset"
+  },
+  "limitations": [
+    "Self-reported motivation and stress levels may have subjective bias",
+    "Cross-sectional data - no temporal tracking of individual students",
+    "Limited geographic/cultural diversity information",
+    "Age range restricted to 18-30 (traditional college students)",
+    "No socioeconomic status indicators included",
+    "Learning style categories may oversimplify individual preferences",
+    "Performance metrics limited to academic grades only"
+  ],
+  "recommended_analysis_workflow": [
+    "1. Exploratory Data Analysis - understand distributions and correlations",
+    "2. Feature Engineering - create composite behavioral and engagement scores",
+    "3. Clustering Analysis - identify natural student behavior groups",
+    "4. Predictive Modeling - build performance prediction models",
+    "5. Feature Importance Analysis - identify key success predictors",
+    "6. Segmentation Analysis - develop targeted intervention strategies",
+    "7. Validation - test model performance across different student groups"
+  ],
+  "complementary_datasets_suggestions": [
+    "Socioeconomic status data for equity analysis",
+    "Course difficulty ratings for context",
+    "Long-term career outcome data for ROI analysis",
+    "Mental health screening data for comprehensive stress analysis",
+    "Learning management system interaction logs",
+    "Geographic/cultural background information"
+  ],
+  "visualization_opportunities": [
+    "Student behavior cluster visualization with PCA/t-SNE",
+    "Performance prediction model feature importance charts",
+    "Correlation heatmaps between behavioral and performance variables",
+    "Learning style distribution and performance comparison plots",
+    "Stress level vs performance scatter plots with trend analysis",
+    "Study hours optimization curves for different student types",
+    "Interactive dashboards for educational intervention planning"
+  ],
+  "success_metrics_for_applications": [
+    "Prediction accuracy for at-risk student identification",
+    "Improvement in intervention timing effectiveness",
+    "Increase in overall student satisfaction and performance",
+    "Reduction in student dropout rates through early intervention",
+    "Enhanced personalized learning recommendation accuracy",
+    "Better resource allocation efficiency in educational institutions"
+  ]
+}

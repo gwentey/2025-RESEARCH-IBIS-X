@@ -1,0 +1,50 @@
+# Dockerfile pour les workers Celery XAI Engine
+FROM python:3.11-slim
+
+# Métadonnées
+LABEL maintainer="IBIS-X Team"
+LABEL description="XAI Engine Celery Worker - Workers pour les tâches d'explicabilité"
+LABEL version="1.0.0"
+
+# Variables d'environnement
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PIP_NO_CACHE_DIR=1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Créer un utilisateur non-root
+RUN groupadd -r xaiworker && useradd -r -g xaiworker xaiworker
+
+# Installation des dépendances système
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    libpq-dev \
+    libhdf5-dev \
+    pkg-config \
+    libgomp1 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Répertoire de travail
+WORKDIR /app
+
+# Copier et installer les dépendances Python
+COPY xai-engine-service/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copier le code de l'application
+COPY xai-engine-service/app/ ./app/
+COPY common/ ./common/
+# ✅ CORRECTION: Copier les modules ML nécessaires pour la désérialisation joblib
+COPY ml-pipeline-service/app/ml/ ./app/ml/
+
+# Créer les répertoires nécessaires
+RUN mkdir -p /app/logs /app/tmp /app/data && \
+    chown -R xaiworker:xaiworker /app
+
+# Changer vers l'utilisateur non-root
+USER xaiworker
+
+# Commande par défaut pour le worker XAI
+CMD ["celery", "-A", "app.core.celery_app", "worker", "--loglevel=info", "--queues=xai_queue,llm_queue", "--concurrency=2"]

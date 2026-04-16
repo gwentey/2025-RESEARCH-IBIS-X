@@ -1,0 +1,95 @@
+{
+  "dataset_name": "asap_essay_scoring",
+  "display_name": "ASAP - Essay Scoring",
+  "objective": "Simple essay scoring to help evaluate student writing",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Hewlett Foundation",
+  "storage_uri": "https://www.kaggle.com/datasets/lburleigh/asap-2-0",
+  "citation_link": "https://aclanthology.org/N13-1073/",
+  "documentation_link": "https://www.kaggle.com/datasets/lburleigh/asap-2-0",
+  "instances_number": 24000,
+  "features_number": 2,
+  "features_description": "Essay text and quality score",
+  "year": 2012,
+  "domain": [
+    "education"
+  ],
+  "task": [
+    "regression"
+  ],
+  "target_column": "score",
+  "representativity_description": "Collection of student essays with basic scoring",
+  "representativity_level": "low",
+  "split": "train_test",
+  "missing_values": {
+    "description": "No missing values in the main data",
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "handling_method": "none"
+  },
+  "temporal_factors": false,
+  "metadata_provided": true,
+  "external_documentation": true,
+  "ethical_compliance": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures": false,
+    "data_quality_documented": true,
+    "anonymization_applied": true,
+    "record_keeping_policy": false,
+    "purpose_limitation": false,
+    "accountability_defined": true
+  },
+  "citation_count": 300,
+  "license": "Open Database License",
+  "contact_info": "Hewlett Foundation",
+  "update_frequency": "static",
+  "versioning": "1.0",
+  "data_lineage": "Original dataset from ASAP automated essay scoring competition",
+  "quality_metrics": {
+    "completeness_score": 100,
+    "consistency_score": 75,
+    "ethical_compliance_score": 50
+  },
+  "column_details": [
+    {
+      "column_name": "essay_text",
+      "position": 0,
+      "data_type_original": "object",
+      "data_type_interpreted": "text",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Student essay text",
+      "example_values": [
+        "Essay about...",
+        "My opinion on..."
+      ],
+      "stats": {}
+    },
+    {
+      "column_name": "score",
+      "position": 1,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Simple essay score from 0 to 6",
+      "example_values": [
+        "3",
+        "4",
+        "2"
+      ],
+      "stats": {
+        "min": 0,
+        "max": 6,
+        "mean": 3.5,
+        "median": 4.0,
+        "std": 1.2
+      }
+    }
+  ]
+}

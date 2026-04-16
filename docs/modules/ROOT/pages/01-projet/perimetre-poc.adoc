@@ -1,0 +1,97 @@
+= Périmètre PoC
+:description: Ce qui est dans le scope du Proof of Concept, ce qui ne l'est pas
+
+== Dans le scope
+
+=== Gestion utilisateurs
+
+* Inscription / login email + mot de passe.
+* OAuth Google.
+* Rôles (`user`, `contributor`, `admin`).
+* Droits RGPD (accès, rectification, effacement).
+
+=== Datasets
+
+* Catalogue public + datasets uploadés.
+* Upload CSV / Parquet / JSON, mono ou multi-fichiers.
+* Filtres techniques / éthiques / métier.
+* Import Kaggle batch via Job K8s.
+* Analyse qualité IA (OpenAI) avec cache.
+
+=== Pipeline ML
+
+* Wizard 5 étapes.
+* Preprocessing configurable (imputation, encodage, scaling).
+* Algorithmes sklearn : Decision Tree, Random Forest, Logistic Regression, Gradient Boosting, + équivalents régression.
+* Métriques complètes + visualisations (confusion, ROC, feature importance).
+* Persistance des artefacts (`artifact_uri`).
+
+=== Explications XAI
+
+* SHAP (global + local).
+* LIME.
+* Narratives LLM (OpenAI).
+* Chat contextuel limité à 5 questions/session.
+* WebSHAP côté client pour instances légères.
+
+=== Infrastructure
+
+* Kubernetes local (Minikube) + prod (AKS Azure).
+* Terraform pour provisionning Azure.
+* CI/CD GitHub Actions.
+* MinIO local / Azure Blob en prod.
+
+=== Documentation
+
+* Antora 6 piliers + diagrammes Mermaid.
+* Dossier d'audit complet (sécurité, RGPD, éthique, ADRs, tests, traçabilité).
+
+== Hors scope (reporté post-PoC)
+
+=== Fonctionnel
+
+* ⬜ Prédiction ad-hoc (`POST /experiments/{id}/predict` + UI dédiée).
+* ⬜ Tuning automatique (grid search, optuna, bayesian).
+* ⬜ Ensembles / stacking de modèles.
+* ⬜ Deep learning (PyTorch / TensorFlow).
+* ⬜ Collaboration temps réel (WebSocket).
+* ⬜ Export portabilité consolidé (`GET /users/me/export`).
+* ⬜ Notifications par email.
+
+=== Infrastructure & sécurité
+
+* ⬜ Rate limiting api-gateway.
+* ⬜ NetworkPolicies K8s strictes.
+* ⬜ SAST/DAST automatique en CI (Trivy, Snyk, ZAP).
+* ⬜ External Secrets Operator (ESO) en prod.
+* ⬜ Signature d'images Docker (Cosign).
+* ⬜ Loki/Grafana ou ELK pour logs centralisés.
+
+=== Qualité
+
+* ⬜ Tests E2E Playwright exhaustifs.
+* ⬜ Tests de charge (Locust, k6).
+* ⬜ Mutation testing (mutmut).
+* ⬜ Couverture > 75 %.
+
+=== UX
+
+* ⬜ Storybook frontend.
+* ⬜ Audit d'accessibilité WCAG 2.1 AA.
+* ⬜ Mode sombre complet.
+* ⬜ Application mobile.
+
+== Contraintes assumées
+
+* Équipe réduite (Master 2).
+* Durée limitée (calendrier académique).
+* Pas d'exploitation avec des données personnelles réelles — le PoC ne doit pas être déployé publiquement avec des utilisateurs tiers sans le travail de Tier 1/2 de xref:05-audit/rgpd/checklist-conformite.adoc[checklist RGPD].
+
+== Décision sur les cas limites
+
+| Cas | Décision |
+|-----|----------|
+| Datasets > 1 Go | Supportés via chunks — voir Kaggle import doc |
+| Utilisateurs simultanés > 10 | Non testé charge |
+| Datasets non tabulaires (images, audio) | Hors scope PoC |
+| Modèles propriétaires (GBM avec lib externe) | Hors scope PoC |

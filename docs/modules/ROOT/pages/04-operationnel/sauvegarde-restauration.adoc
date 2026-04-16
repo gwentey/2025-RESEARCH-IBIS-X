@@ -1,0 +1,102 @@
+= Sauvegarde & restauration
+:description: PostgreSQL et stockage objets
+
+== Périmètre
+
+Deux systèmes à sauvegarder :
+
+. *PostgreSQL* (`ibis_x_db`) — comptes, projets, datasets métadonnées, expériences, explications, chats.
+. *Blob Storage / MinIO* — fichiers de datasets, artefacts modèles, visualisations.
+
+== En local (Minikube)
+
+Les données sont éphémères — ne pas compter sur leur persistance.
+
+Backup ad hoc PostgreSQL :
+
+[source,bash]
+----
+kubectl exec -n ibis-x postgresql-0 -- pg_dump -U ibis_x_user ibis_x_db > backup_$(date +%Y%m%d).sql
+----
+
+Restauration :
+
+[source,bash]
+----
+kubectl exec -i -n ibis-x postgresql-0 -- psql -U ibis_x_user ibis_x_db < backup.sql
+----
+
+== En production (AKS + Azure)
+
+=== PostgreSQL Flexible Server
+
+Azure Database for PostgreSQL inclut :
+
+* Backups automatiques quotidiens (rétention 7 jours par défaut, extensible à 35).
+* Point-in-time recovery (PITR) dans la fenêtre de rétention.
+* Geo-redundant backup (option).
+
+Configuration via Terraform (`azurerm_postgresql_flexible_server.backup_retention_days`).
+
+Restauration :
+
+. Portail Azure → Database → Restore (créer un nouveau serveur à partir du backup).
+. Basculer `DATABASE_URL` vers le nouveau serveur.
+. Rollout des services.
+
+=== Blob Storage
+
+Azure Blob Storage :
+
+* **Soft delete** : activer avec rétention 30 jours (Terraform `azurerm_storage_account.blob_properties.delete_retention_policy`).
+* **Versioning** : activer pour conserver l'historique des objets.
+* **Geo-redundant storage (GRS)** : réplication inter-régions.
+
+Restauration d'un fichier supprimé : via Portail Azure ou Azure CLI dans la fenêtre de rétention.
+
+== Politique de rétention suggérée
+
+[cols="1,1,2"]
+|===
+| Type | Rétention | Justification
+| Backup PostgreSQL | 30 jours | Conformité + rollback en cas d'incident
+| Blob soft delete | 30 jours | Récupération accidentelle
+| Blob versioning | Illimité (ou 90 jours) | Historique
+| Logs K8s | 30 jours | Observabilité court terme
+|===
+
+== Test de restauration
+
+**Obligation** : tester la restauration au moins une fois par trimestre sur environnement isolé.
+
+Scénario :
+
+. Créer un environnement de test (RG séparé).
+. Restaurer BDD + Blob depuis backup de prod.
+. Déployer IBIS-X sur ce RG.
+. Vérifier santé + parcours utilisateur.
+. Documenter temps de restauration (RTO effectif).
+
+== RTO / RPO indicatifs
+
+[cols="1,2"]
+|===
+| Métrique | Cible PoC
+| RPO (perte max de données) | 24 h (backup quotidien)
+| RTO (temps de reprise) | 4 h (restauration manuelle)
+|===
+
+Amélioration post-PoC : passer à RPO 1 h + RTO 30 min via réplication synchrone.
+
+== Disaster recovery
+
+Scénario catastrophe (suppression accidentelle du Resource Group) :
+
+. Re-provisionner via Terraform (`terraform apply`).
+. Restaurer BDD depuis backup geo-redundant.
+. Restaurer Blob depuis réplication GRS.
+. Reconfigurer secrets Key Vault.
+. Déployer images Docker (via Container Registry inchangé ou via build).
+. Smoke test.
+
+Durée estimée : ~2 h si secrets bien documentés.

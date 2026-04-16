@@ -1,0 +1,65 @@
+= ADR 0001 — Architecture microservices plutôt que monolithe
+
+[cols="1,3"]
+|===
+| Statut | accepted
+| Date | 2025-Q1
+| Contexte | Démarrage du PoC Master 2 MIAGE
+|===
+
+== Contexte & problème
+
+IBIS-X doit couvrir plusieurs domaines techniquement hétérogènes : authentification, gestion de datasets (I/O intensif), entraînement ML (CPU intensif, dépendances lourdes comme scikit-learn), explications XAI (mémoire intensive, dépendances SHAP/LIME + OpenAI). Une partie du projet est un *exercice pédagogique* : démontrer une maîtrise des architectures distribuées modernes (microservices, orchestration, CI/CD) attendue au niveau Master 2 MIAGE.
+
+Contraintes :
+
+* Équipe réduite (projet académique), donc pas de « microservices pour microservices ».
+* Déploiement reproductible en local (Minikube) et en prod (Azure AKS).
+* Isolation des dépendances lourdes (SHAP, LIME) pour ne pas alourdir les services qui n'en ont pas besoin.
+
+== Décision
+
+Nous adoptons une architecture **microservices à 4 services backend** + 1 frontend, orchestrés par Kubernetes :
+
+* `api-gateway` — auth & routage.
+* `service-selection` — catalogue datasets.
+* `ml-pipeline-service` — preprocessing & training.
+* `xai-engine-service` — explications XAI.
+
+Chaque service a son propre cycle de vie, son image Docker, son worker Celery lorsque nécessaire. La communication est REST synchrone via `api-gateway`, et asynchrone via Celery/Redis pour les tâches longues.
+
+== Alternatives envisagées
+
+=== A. Monolithe FastAPI unique
+
+* ✅ Avantages : simplicité de déploiement, pas de coût réseau inter-services, refactors transverses rapides.
+* ❌ Rejet : toutes les dépendances (SHAP 0.43 + lime + scikit-learn + OpenAI + sqlalchemy + fastapi-users) dans une même image → bloat, couplage des cycles de déploiement, atteinte pédagogique faible (pas de démonstration d'orchestration).
+
+=== B. Serverless (Azure Functions)
+
+* ✅ Avantages : scalabilité auto, facturation à l'usage.
+* ❌ Rejet : cold-start pénalisant pour le training ML, limites mémoire pour SHAP sur gros datasets, dépendance forte au cloud → pas portable en local (contradiction avec l'exigence Minikube).
+
+== Conséquences
+
+=== Positives
+
+* Isolation des dépendances lourdes (xai-engine embarque SHAP/LIME ; ml-pipeline embarque sklearn).
+* Possibilité de scaler indépendamment les workers Celery (ml vs xai).
+* Cadre pédagogique riche : démonstration de Kustomize, Skaffold, Celery multi-queue, reverse-proxy.
+
+=== Négatives / coûts
+
+* Complexité opérationnelle accrue (4 Deployments + 2 workers + migrations Alembic par service).
+* Latence réseau entre services (acceptable en PoC).
+* Duplication de code utilitaire (chaque service a son `core/config.py` Pydantic).
+
+=== Neutres
+
+* Une seule BDD PostgreSQL partagée malgré le découpage — voir xref:05-audit/adr/0003-postgres-partage-version-tables.adoc[ADR 0003].
+
+== Références
+
+* Structure : `api-gateway/`, `service-selection/`, `ml-pipeline-service/`, `xai-engine-service/`, `frontend/`.
+* Orchestration : `skaffold.yaml`, `k8s/base/`, `k8s/overlays/{minikube,azure}/`.
+* Schéma : xref:03-technique/architecture/vue-ensemble.adoc[Vue d'ensemble C4].

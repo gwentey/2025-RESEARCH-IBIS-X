@@ -1,0 +1,219 @@
+= Descriptions Textuelles Contextualisées XAI
+:page-description: Documentation des descriptions textuelles d'explicabilité adaptées par niveau d'utilisateur dans IBIS-X
+:page-keywords: XAI, explicabilité, LLM, descriptions textuelles, niveaux utilisateur
+
+== Vue d'ensemble
+
+Le système d'explicabilité d'IBIS-X génère automatiquement des descriptions textuelles adaptées au niveau de l'utilisateur (débutant, intermédiaire, expert) pour expliquer les résultats des modèles ML de manière accessible et appropriée.
+
+== Fonctionnement
+
+=== Adaptation par Niveau
+
+Le système adapte automatiquement le contenu et le style des explications selon le niveau d'expertise de l'utilisateur :
+
+==== Niveau Débutant 🟢
+* **Style** : Métaphores simples et analogies de la vie quotidienne
+* **Vocabulaire** : Langage très accessible, pas de termes techniques
+* **Approche** : Explique POURQUOI c'est important avant le COMMENT
+* **Exemple** : "Imaginez que vous êtes médecin scolaire avec 500 élèves à surveiller..."
+
+==== Niveau Intermédiaire 🟡  
+* **Style** : Équilibre entre accessibilité et précision technique
+* **Vocabulaire** : Métriques précises avec explications contextuelles
+* **Approche** : Validation croisée, Score OOB, analyse SHAP mentionnés
+* **Exemple** : "Notre modèle Random Forest atteint une performance exceptionnelle de 98% d'accuracy avec un F1-Score macro de 96.2%..."
+
+==== Niveau Expert 🔴
+* **Style** : Analyse technique approfondie avec terminologie spécialisée
+* **Vocabulaire** : Métriques avancées, références méthodologiques
+* **Approche** : Insights algorithmiques, optimisations, références réglementaires
+* **Exemple** : "Le modèle Random Forest démontre une convergence optimale avec un Score OOB de 99.5% suggérant une variance minimale inter-arbres..."
+
+== Architecture Technique
+
+=== Backend (Service LLM)
+
+[source,python]
+----
+def _build_contextual_explanation_prompt(self,
+                                       explanation_data: Dict[str, Any],
+                                       ml_context: Dict[str, Any],
+                                       user_preferences: Dict[str, Any],
+                                       audience_level: str,
+                                       language: str) -> str:
+    """Génère des prompts spécifiques selon le niveau utilisateur"""
+----
+
+**Prompts par niveau** :
+* **Débutant** : Analogies médicales, langage simple, encourageant
+* **Intermédiaire** : Métriques équilibrées, concepts ML expliqués
+* **Expert** : Terminologie technique, références algorithmiques, insights méthodologiques
+
+=== Frontend (Composant Angular)
+
+[source,typescript]
+----
+export class XAIExplanationResultsComponent {
+  getDescriptionTitle(): string {
+    switch (this.explanation.audience_level) {
+      case 'novice': return this.translateService.instant('XAI.TEXTUAL_EXPLANATIONS.NOVICE.TITLE');
+      case 'expert': return this.translateService.instant('XAI.TEXTUAL_EXPLANATIONS.EXPERT.TITLE'); 
+      default: return this.translateService.instant('XAI.TEXTUAL_EXPLANATIONS.INTERMEDIATE.TITLE');
+    }
+  }
+}
+----
+
+=== Styles Différenciés
+
+**CSS par niveau** :
+* **Niveau débutant** : Police grande (1.125rem), couleurs bleues apaisantes
+* **Niveau intermédiaire** : Police standard (1rem), couleurs violettes équilibrées  
+* **Niveau expert** : Police monospace (0.9375rem), couleurs rouges techniques
+
+== Interface Utilisateur
+
+=== Affichage Visuel
+
+Chaque description textuelle est présentée dans une carte distinctive avec :
+
+* **Header coloré** selon le niveau (bleu/violet/rouge)
+* **Badge de niveau** visible (Débutant/Intermédiaire/Expert)
+* **Icônes adaptées** (school/analytics/science)
+* **Formatage contextuel** des métriques et variables importantes
+
+=== Formatage Intelligent
+
+Le texte est automatiquement formaté avec :
+
+[source,typescript]
+----
+formatTextExplanation(textExplanation: string): string {
+  // **texte** → <strong>texte</strong>
+  formatted = textExplanation.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // Styliser les pourcentages
+  formatted = formatted.replace(/(\d+(?:\.\d+)?%)/g, '<span class="metric-highlight">$1</span>');
+  
+  // Styliser les variables importantes
+  formatted = formatted.replace(/\(([^)]+)\)/g, '<span class="feature-highlight">($1</span>');
+}
+----
+
+== Traductions
+
+=== Structure des Traductions
+
+[source,json]
+----
+"XAI": {
+  "TEXTUAL_EXPLANATIONS": {
+    "NOVICE": {
+      "TITLE": "Pourquoi votre intelligence artificielle fonctionne ainsi",
+      "SUBTITLE": "Explication simple avec des analogies de la vie quotidienne",
+      "LEVEL_BADGE": "Débutant"
+    },
+    "INTERMEDIATE": { /* ... */ },
+    "EXPERT": { /* ... */ }
+  }
+}
+----
+
+=== Support Multilingue
+
+* **Français** : Traductions complètes dans `fr.json`
+* **Anglais** : Traductions équivalentes dans `en.json`
+* **Adaptation automatique** selon la langue de l'interface
+
+== Génération LLM
+
+=== Contexte Enrichi
+
+Le service LLM reçoit le contexte ML complet :
+* Nom du dataset et taille
+* Algorithme utilisé et performance exacte  
+* Métriques détaillées (accuracy, F1, precision, recall)
+* Variables importantes et leurs scores
+* Erreurs de classification principales
+
+=== Prompts Structurés
+
+Chaque niveau dispose de prompts optimisés :
+
+**Débutant** : 
+[source,text]
+----
+Génère une description TEXTUELLE d'explicabilité pour un DÉBUTANT, comme l'exemple ci-dessous :
+🟢 EXPLICATIONS TEXTUELLES - NIVEAU DÉBUTANT
+Imaginez que vous êtes médecin scolaire avec {dataset_size} élèves à surveiller...
+----
+
+**Expert** :
+[source,text]
+----
+🔴 EXPLICATIONS TEXTUELLES - NIVEAU EXPERT  
+Le modèle Random Forest (100 estimateurs, max_depth=auto, criterion=gini) démontre une convergence optimale...
+----
+
+== Intégration dans le Pipeline XAI
+
+=== Flux d'Exécution
+
+1. **Demande d'explication** → Création `ExplanationRequest` avec niveau d'audience
+2. **Génération SHAP/LIME** → Calculs d'explicabilité techniques
+3. **Génération LLM** → Description textuelle adaptée au niveau
+4. **Affichage Frontend** → Rendu différencié selon le niveau
+5. **Chat intégré** → Questions/réponses contextualisées
+
+=== Performance
+
+* **Temps de génération** : 2-5 secondes (selon complexité LLM)
+* **Cache intelligent** : Réutilisation des explications pour même contexte
+* **Fallback robuste** : GPT-4o-mini si GPT-5-mini indisponible
+
+== Exemples d'Usage
+
+=== Scénario : Modèle de Classification Éducative
+
+**Débutant** : "Votre assistant IA a analysé 1000 étudiants et peut prédire avec 85% de précision qui risque d'échouer. C'est comme un détecteur de fumée qui se trompe seulement 15 fois sur 100..."
+
+**Intermédiaire** : "Le modèle Random Forest atteint 85% d'accuracy avec un F1-score de 82%, indiquant une performance équilibrée. L'analyse SHAP révèle que 'attendance_rate' (0.45) et 'homework_completion' (0.38) représentent 83% de l'importance cumulée..."
+
+**Expert** : "Convergence optimale avec Score OOB de 86.5% suggérant variance minimale inter-arbres. L'écart F1-macro (82%) vs F1-weighted (85%) indique gestion efficace du déséquilibre sans SMOTE. Interaction synergique attendance×homework avec OR=12.3 pour risk_level='High'..."
+
+== Configuration et Personnalisation
+
+=== Paramètres Utilisateur
+
+Le niveau d'explicabilité est déterminé par :
+* **`ai_familiarity`** : Échelle 1-5 du profil utilisateur
+  * 1-2 → Niveau débutant
+  * 3 → Niveau intermédiaire  
+  * 4-5 → Niveau expert
+
+=== Customisation
+
+Les descriptions peuvent être personnalisées via :
+* **Contexte ML enrichi** dans les user preferences
+* **Langue d'interface** (fr/en)
+* **Suggestions contextuelles** prédéfinies
+* **Historique des interactions** pour adaptation continue
+
+== Bonnes Pratiques
+
+=== Développeurs
+
+* **Toujours passer le contexte ML complet** pour des descriptions précises
+* **Utiliser les traductions** plutôt que du texte codé en dur
+* **Tester les 3 niveaux** lors des modifications d'interface
+* **Vérifier la cohérence** entre prompts LLM et styles CSS
+
+=== Utilisateurs
+
+* **Ajuster votre profil** pour obtenir des explications adaptées
+* **Utiliser le chat intégré** pour approfondir les concepts
+* **Comparer les niveaux** pour progresser dans la compréhension
+* **Sauvegarder les explications** pertinentes pour référence
+
+Cette fonctionnalité transforme l'explicabilité technique en communication accessible, permettant à chaque utilisateur de comprendre les modèles ML selon son niveau d'expertise.

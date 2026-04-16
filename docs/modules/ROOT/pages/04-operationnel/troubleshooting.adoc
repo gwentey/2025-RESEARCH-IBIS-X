@@ -1,0 +1,139 @@
+= Troubleshooting & FAQ
+:description: Problèmes courants et résolutions
+
+== Index rapide
+
+* <<make-dev-failed,`make dev` échoue>>
+* <<pods-crashloop,Pods en CrashLoop>>
+* <<port-forward,Port-forwards bloqués / 502>>
+* <<migrations,Migrations Alembic échouent>>
+* <<celery,Tâche Celery jamais consommée>>
+* <<openai,Appels OpenAI échouent>>
+* <<frontend-blank,Frontend écran blanc>>
+
+[[make-dev-failed]]
+== `make dev` échoue
+
+=== Symptôme : Python script crashe avec UnicodeError
+
+Cause : encodage cp1252 Windows. +
+Solution :
+
+[source,bash]
+----
+export PYTHONIOENCODING=utf-8 PYTHONUTF8=1
+----
+
+Voir xref:04-operationnel/installation/windows-specificites.adoc[Spécificités Windows].
+
+=== Symptôme : Minikube ne démarre pas
+
+[source,bash]
+----
+make restart-minikube
+# ou
+minikube delete && minikube start
+----
+
+=== Symptôme : `docker: command not found`
+
+Docker Desktop n'est pas lancé ou pas dans le `PATH`. Lancer Docker Desktop et attendre qu'il soit "Running".
+
+[[pods-crashloop]]
+== Pods en CrashLoop
+
+[source,bash]
+----
+kubectl get pods -n ibis-x
+kubectl describe pod <pod-name> -n ibis-x
+kubectl logs <pod-name> -n ibis-x --previous
+----
+
+=== Causes fréquentes
+
+* *`exec format error`* → image arm64 sous QEMU. Solution : `export DOCKER_DEFAULT_PLATFORM=linux/amd64` puis rebuild.
+* *`pydantic.ValidationError: field required`* → `.env` incomplet. Remplir les 8 variables.
+* *`could not connect to postgresql-service`* → PostgreSQL pas prêt. Attendre son `Ready` puis rollout.
+* *`migration_job Failed`* → erreur Alembic. Consulter les logs du Job.
+
+[[port-forward]]
+== Port-forwards bloqués / 502
+
+Port-forward Skaffold figé après une interruption réseau :
+
+[source,bash]
+----
+make fix-portforwards
+----
+
+Si le 8080 ou 9000 est occupé par un autre processus :
+
+[source,bash]
+----
+# Windows
+netstat -ano | findstr :8080
+# Linux/Mac
+lsof -i :8080
+----
+
+Tuer le processus ou changer les ports dans le Makefile.
+
+[[migrations]]
+== Migrations Alembic échouent
+
+Voir xref:04-operationnel/runbooks/migration-bdd.adoc[Runbook migration BDD].
+
+Cas fréquent : deux services tentent d'écrire la même table `alembic_version`. Vérifier que chaque `alembic.ini` déclare bien sa `version_table` dédiée.
+
+[[celery]]
+== Tâche Celery jamais consommée
+
+Checklist :
+
+. Le worker tourne-t-il ? `kubectl logs deployment/{ml,xai}-{pipeline,engine}-worker-deployment -n ibis-x`
+. Redis est-il accessible ? `kubectl logs redis-0 -n ibis-x`
+. La queue est-elle correcte ?
+** `ml_queue` → ml-pipeline-worker (+ `ai_queue`)
+** `xai_queue` → xai-engine-worker (seule)
+** *Pas de `llm_queue`.*
+. Le `apply_async(queue='...')` correspond-il à une queue écoutée par un worker ?
+
+[[openai]]
+== Appels OpenAI échouent
+
+* Vérifier `OPENAI_API_KEY` dans le Secret K8s.
+* Vérifier le quota côté OpenAI (console).
+* Logs : `kubectl logs deployment/ml-pipeline-worker-deployment -n ibis-x | grep -i openai`.
+
+[[frontend-blank]]
+== Frontend écran blanc
+
+* Ouvrir la console navigateur (F12).
+* Erreur CORS → vérifier `FRONTEND_URL` dans ConfigMap api-gateway.
+* Erreur 401 → token JWT expiré, se reconnecter.
+* Erreur de build → vérifier `frontend` pod logs (nginx + Angular build).
+
+== FAQ
+
+*Q. Je peux lancer seulement une partie des services ?* +
+*R.* `make dev-no-data` saute l'import datasets. Pour isoler davantage, éditer temporairement les `replicas` dans les overlays.
+
+*Q. Comment accéder à la BDD en local ?* +
+*R.* `kubectl port-forward -n ibis-x svc/postgresql-service 5432:5432` puis psql classique.
+
+*Q. MinIO console accessible ?* +
+*R.* `kubectl port-forward -n ibis-x svc/minio-service 9001:9001` → http://localhost:9001 (identifiants dans le Secret `minio-secrets`).
+
+*Q. Où trouver l'OpenAPI spec ?* +
+*R.* http://localhost:9000/openapi.json (en local, via port-forward gateway).
+
+*Q. Comment reset complet ?* +
+*R.* `make reset` (Minikube + images + volumes). Puis `make dev`.
+
+== Escalader
+
+Si le problème persiste :
+
+. Issue GitHub avec reproduction détaillée + logs.
+. Sécurité/vulnérabilité → `SECURITY.md`.
+. Urgent prod → xref:04-operationnel/runbooks/incident-response.adoc[Incident response].

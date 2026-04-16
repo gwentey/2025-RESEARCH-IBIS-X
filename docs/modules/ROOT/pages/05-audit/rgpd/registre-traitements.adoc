@@ -1,0 +1,87 @@
+= Registre des traitements (art. 30 RGPD)
+:description: Inventaire des traitements de données personnelles
+
+Format inspiré du registre-type CNIL, simplifié pour le contexte PoC académique.
+
+== Traitement 1 — Gestion des comptes utilisateurs
+
+[cols="1,3"]
+|===
+| Nom | Gestion des comptes et authentification
+| Responsable | Équipe IBIS-X (Master 2 MIAGE)
+| Finalité | Permettre à un utilisateur de créer un compte, s'authentifier, utiliser la plateforme
+| Base légale | Exécution du contrat (CGU)
+| Catégories de personnes | Utilisateurs enregistrés (étudiants, chercheurs, testeurs)
+| Catégories de données | Email, mot de passe (haché bcrypt), first/last_name (optionnels), identifiant Google (si OAuth), role, dates création/modif
+| Destinataires | Équipe IBIS-X (admin), Google (si OAuth), Microsoft Azure (hébergement prod)
+| Transfert hors UE | Oui — OpenAI (US) pour analyses ; Google (US) pour OAuth. Clauses contractuelles types.
+| Durée de conservation | Jusqu'à suppression par l'utilisateur (`DELETE /users/me`)
+| Mesures de sécurité | Bcrypt, JWT signé HS256, HTTPS (prod), Kubernetes Secrets, CORS restrictif
+|===
+
+== Traitement 2 — Upload et gestion de datasets
+
+[cols="1,3"]
+|===
+| Nom | Dépôt et catalogage de datasets par les utilisateurs
+| Responsable | Équipe IBIS-X (la plateforme) — **sous-traitant** pour les données contenues dans les datasets eux-mêmes (responsable = uploadeur)
+| Finalité | Permettre à l'utilisateur de stocker ses datasets pour expérimentations ML
+| Base légale | Exécution du contrat (CGU) — l'uploadeur est responsable de la licéité du contenu
+| Catégories de personnes | Uploadeurs. *Les personnes concernées par le contenu des datasets relèvent de la responsabilité de l'uploadeur.*
+| Catégories de données | Fichiers (CSV, Parquet, JSON) + métadonnées (nom, description, scores, colonnes) + flag PII
+| Destinataires | Uploadeur, plateforme (en tant que stockeur), OpenAI (métadonnées uniquement pour l'analyse qualité)
+| Transfert hors UE | Métadonnées → OpenAI (US)
+| Durée de conservation | Jusqu'à suppression par l'uploadeur ou cascade de suppression de compte
+| Mesures de sécurité | Blob Storage (Azure ou MinIO), accès par `user_id`, validation MIME, limite de taille
+|===
+
+== Traitement 3 — Entraînement de modèles ML
+
+[cols="1,3"]
+|===
+| Nom | Pipeline ML (preprocessing, training, métriques)
+| Responsable | Équipe IBIS-X
+| Finalité | Entraîner des modèles scikit-learn sur des datasets utilisateur pour exploration XAI
+| Base légale | Exécution du contrat
+| Catégories de personnes | Utilisateurs exécutant le pipeline. Les données du dataset ne sont jamais personnelles *du côté système* (utilisateur distinct du sujet des datasets).
+| Catégories de données | `experiments.user_id`, hyperparamètres, métriques, `artifact_uri`. Le dataset source reste dans son cadre de traitement 2.
+| Destinataires | Utilisateur, plateforme
+| Transfert hors UE | Non (OpenAI non utilisé dans ce traitement)
+| Durée de conservation | Jusqu'à suppression par l'utilisateur
+| Mesures de sécurité | Isolation K8s, worker Celery non-root
+|===
+
+== Traitement 4 — Explications XAI
+
+[cols="1,3"]
+|===
+| Nom | Génération d'explications SHAP / LIME / LLM
+| Responsable | Équipe IBIS-X
+| Finalité | Fournir des interprétations des modèles entraînés
+| Base légale | Exécution du contrat
+| Catégories de personnes | Utilisateurs demandeurs
+| Catégories de données | `explanation_requests.user_id`, `method`, résultats SHAP/LIME, messages de chat utilisateur
+| Destinataires | Utilisateur, OpenAI (pour narratives LLM)
+| Transfert hors UE | Oui — OpenAI (US). Contexte envoyé : SHAP values agrégées + feature names. *Pas* les échantillons bruts.
+| Durée de conservation | Jusqu'à suppression par l'utilisateur
+| Mesures de sécurité | Template prompt fixe, limite 5 messages/session, validation Pydantic
+|===
+
+== Traitement 5 — Logs applicatifs
+
+[cols="1,3"]
+|===
+| Nom | Journalisation des opérations
+| Responsable | Équipe IBIS-X
+| Finalité | Debugging, suivi des erreurs, sécurité
+| Base légale | Intérêt légitime (maintenance)
+| Catégories de données | `user_id`, timestamps, niveaux de log, messages techniques. *Pas* de payloads bruts.
+| Destinataires | Équipe IBIS-X (admin cluster)
+| Transfert hors UE | Hébergement Azure Europe
+| Durée de conservation | 30 jours (rotation K8s/Azure Monitor)
+| Mesures de sécurité | RBAC K8s, pas d'accès utilisateur
+|===
+
+== Mise à jour
+
+Ce registre est tenu à jour par l'équipe IBIS-X et doit être revu à chaque ajout de nouveau traitement (nouveau service, nouvelle intégration externe).

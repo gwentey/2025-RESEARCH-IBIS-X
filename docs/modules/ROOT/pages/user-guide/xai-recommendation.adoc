@@ -1,0 +1,35 @@
+= 💡 Recommandations XAI
+
+IBIS-X vous aide à comprendre vos modèles avec des explications adaptées à vos besoins.
+
+== Méthodes XAI Disponibles
+
+=== LIME (Local Interpretable Model-agnostic Explanations)
+* Explique les prédictions individuelles
+* Fonctionne avec tout type de modèle
+* Crée un modèle simplifié localement interprétable
+
+=== SHAP (SHapley Additive exPlanations)
+* Attribue une valeur d'importance à chaque variable
+* Basé sur la théorie des jeux
+* Explications cohérentes et précises
+
+=== PDP (Partial Dependence Plots)
+* Montre l'effet d'une variable sur la prédiction
+* Visualisation intuitive des relations
+* Comprend les interactions entre variables
+
+== Sélection Automatique
+
+IBIS-X recommande la méthode XAI la plus adaptée selon:
+* Type de modèle (boîte noire/blanche)
+* Nature des données (tabular/image/texte)
+* Niveau d'expertise de l'utilisateur
+* Objectif de l'explication
+
+== Interprétation des Résultats
+
+* Visualisations interactives
+* Recommandations contextualisées
+* Documentation sur chaque méthode XAI
+* Conseils d'interprétation basés sur les meilleures pratiques 

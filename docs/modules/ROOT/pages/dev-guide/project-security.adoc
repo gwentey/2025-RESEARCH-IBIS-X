@@ -1,0 +1,282 @@
+= Sécurité des Projets Utilisateur
+:description: Documentation sur la sécurisation des projets par utilisateur
+:keywords: sécurité, authentification, autorisation, projets, user_id
+:page-navtitle: Sécurité Projets
+
+== Vue d'ensemble
+
+Cette page documente la mise en place de la sécurisation des projets utilisateur dans l'architecture IBIS-X, garantissant que chaque utilisateur ne peut accéder qu'à ses propres projets.
+
+IMPORTANT: Cette fonctionnalité corrige un **trou de sécurité critique** où tous les projets étaient accessibles à tous les utilisateurs.
+
+== Problème de sécurité identifié (2025-01-25)
+
+=== Description du problème
+
+**Vulnérabilité critique :**
+- ❌ Tous les projets étaient accessibles à tous les utilisateurs connectés
+- ❌ Les endpoints de projets n'avaient aucune vérification d'appartenance
+- ❌ L'`user_id` était généré aléatoirement au lieu d'utiliser l'utilisateur connecté
+- ❌ Possible accès aux projets d'autres utilisateurs en devinant les IDs
+
+**Endpoints vulnérables :**
+- `GET /projects` - Listait TOUS les projets
+- `POST /projects` - Créait des projets avec `user_id` aléatoire
+- `GET /projects/{id}` - Accès à n'importe quel projet
+- `PUT /projects/{id}` - Modification de n'importe quel projet  
+- `DELETE /projects/{id}` - Suppression de n'importe quel projet
+- `GET /projects/{id}/recommendations` - Recommandations de n'importe quel projet
+
+=== Impact de la vulnérabilité
+
+- **🔴 Confidentialité :** Accès aux projets privés d'autres utilisateurs
+- **🔴 Intégrité :** Possibilité de modifier/supprimer les projets d'autrui
+- **🔴 Disponibilité :** Risque de suppression accidentelle ou malveillante
+- **🔴 Conformité RGPD :** Violation des données personnelles
+
+== Solution mise en place
+
+=== Architecture de sécurité
+
+[source,mermaid]
+----
+graph TD
+    A[Frontend Angular] -->|JWT Token| B[API Gateway]
+    B -->|Authentification| C{Utilisateur valide?}
+    C -->|Non| D[Erreur 401]
+    C -->|Oui| E[Extraction user_id]
+    E -->|Header X-User-ID| F[Service Selection]
+    F -->|Filtrage par user_id| G[Base de données]
+    G -->|Projets de l'utilisateur uniquement| H[Réponse sécurisée]
+----
+
+=== Mécanisme d'authentification
+
+==== 1. API Gateway (Transmission de l'user_id)
+
+**Fichier :** `api-gateway/app/main.py`
+
+```python
+# Fonction proxy_request modifiée
+headers = {
+    "Content-Type": "application/json",
+    "User-Agent": "API-Gateway-Proxy/1.0",
+    "X-User-ID": str(current_user.id),      # ✅ ID utilisateur transmis
+    "X-User-Email": current_user.email      # ✅ Email pour debug
+}
+```
+
+**Mécanisme :**
+- L'API Gateway extrait l'utilisateur connecté via `current_active_user`
+- L'`user_id` est transmis au service-selection via le header `X-User-ID`
+- Tous les endpoints de projets nécessitent une authentification
+
+==== 2. Service Selection (Vérification de l'user_id)
+
+**Fichier :** `service-selection/app/main.py`
+
+```python
+# Dépendance d'authentification
+def get_current_user_id(x_user_id: str = Header(..., alias="X-User-ID")) -> UUID4:
+    try:
+        user_id = uuid.UUID(x_user_id)
+        return user_id
+    except ValueError:
+        raise HTTPException(status_code=401, detail="ID utilisateur invalide")
+```
+
+**Fonctionnement :**
+- Extraction automatique de l'`user_id` depuis les headers
+- Validation du format UUID
+- Erreur 401 si header manquant ou invalide
+
+=== Endpoints sécurisés
+
+==== GET /projects - Liste des projets
+
+**Avant (vulnérable) :**
+```python
+# ❌ Tous les projets de tous les utilisateurs
+query = db.query(models.Project)
+```
+
+**Après (sécurisé) :**
+```python
+# ✅ Seulement les projets de l'utilisateur connecté
+current_user_id: UUID4 = Depends(get_current_user_id)
+query = db.query(models.Project).filter(models.Project.user_id == current_user_id)
+```
+
+==== POST /projects - Création de projet
+
+**Avant (vulnérable) :**
+```python
+# ❌ user_id généré aléatoirement
+user_id = uuid.uuid4()  # Temporaire
+```
+
+**Après (sécurisé) :**
+```python
+# ✅ user_id de l'utilisateur connecté
+current_user_id: UUID4 = Depends(get_current_user_id)
+db_project = models.Project(user_id=current_user_id, ...)
+```
+
+==== GET/PUT/DELETE /projects/{id} - Opérations sur projet
+
+**Avant (vulnérable) :**
+```python
+# ❌ N'importe quel projet accessible
+project = db.query(models.Project).filter(models.Project.id == project_id).first()
+```
+
+**Après (sécurisé) :**
+```python
+# ✅ Seulement les projets de l'utilisateur connecté
+project = db.query(models.Project).filter(
+    models.Project.id == project_id,
+    models.Project.user_id == current_user_id  # ✅ Vérification obligatoire
+).first()
+```
+
+==== Gestion des erreurs de sécurité
+
+```python
+if not project:
+    # ✅ Ne pas révéler l'existence du projet à d'autres utilisateurs
+    raise HTTPException(status_code=404, detail="Projet non trouvé")
+```
+
+**Principe :** Retourner 404 (non trouvé) plutôt que 403 (interdit) pour ne pas révéler l'existence de projets d'autres utilisateurs.
+
+=== Logging de sécurité
+
+Tous les endpoints incluent maintenant des logs de sécurité :
+
+```python
+logger.info(f"✅ Utilisateur {current_user_id} - Action sur projet: {project_id}")
+```
+
+**Types de logs :**
+- Création de projet
+- Accès à un projet  
+- Modification de projet
+- Suppression de projet
+- Génération de recommandations
+
+== Tests de sécurité
+
+=== Scénarios de test
+
+==== Test 1 : Isolation des projets par utilisateur
+
+1. **Utilisateur A** se connecte et crée un projet
+2. **Utilisateur B** se connecte 
+3. **Utilisateur B** tente d'accéder au projet de A
+4. **Résultat attendu :** Erreur 404 "Projet non trouvé"
+
+==== Test 2 : Authentification requise
+
+1. Requête vers `/projects` sans token JWT
+2. **Résultat attendu :** Erreur 401 "Non autorisé"
+
+==== Test 3 : Header X-User-ID requis
+
+1. Requête avec token JWT valide mais sans header `X-User-ID`
+2. **Résultat attendu :** Erreur 401 "ID utilisateur invalide"
+
+=== Validation en logs
+
+```
+✅ Utilisateur 123e4567-e89b-12d3-a456-426614174000 - Liste de 3 projets sur 3
+✅ Utilisateur 123e4567-e89b-12d3-a456-426614174000 - Nouveau projet créé: proj-456 'Mon Projet'
+✅ Utilisateur 123e4567-e89b-12d3-a456-426614174000 - Accès au projet: proj-456
+```
+
+== Considérations de performance
+
+=== Impact des filtres de sécurité
+
+- **Index recommandé :** `CREATE INDEX idx_projects_user_id ON projects(user_id);`
+- **Requêtes optimisées :** Filtrage au niveau SQL plutôt qu'application
+- **Cache utilisateur :** Possibilité de mise en cache des projets par utilisateur
+
+=== Monitoring
+
+Surveiller dans les logs :
+- Tentatives d'accès avec headers invalides
+- Pics de requêtes 404 (tentatives d'accès non autorisé)
+- Performance des requêtes filtrées par user_id
+
+== Conformité et audit
+
+=== Conformité RGPD
+
+- ✅ **Minimisation des données :** Chaque utilisateur ne voit que ses données
+- ✅ **Confidentialité :** Isolation stricte entre utilisateurs
+- ✅ **Traçabilité :** Logs détaillés de tous les accès
+
+=== Audit de sécurité
+
+- ✅ Tous les endpoints de projets sécurisés
+- ✅ Validation des entrées utilisateur (UUID)
+- ✅ Gestion des erreurs sécurisée (pas de fuite d'information)
+- ✅ Logging complet des opérations
+
+== Migration et déploiement
+
+=== Données existantes
+
+Si des projets existaient avant la correction :
+
+```sql
+-- Identifier les projets avec user_id incorrect
+SELECT id, name, user_id FROM projects WHERE user_id NOT IN (SELECT id FROM users);
+
+-- Option 1: Supprimer les projets orphelins
+DELETE FROM projects WHERE user_id NOT IN (SELECT id FROM users);
+
+-- Option 2: Réassigner à un utilisateur administrateur
+UPDATE projects SET user_id = 'admin-uuid' WHERE user_id NOT IN (SELECT id FROM users);
+```
+
+=== Déploiement sans interruption
+
+1. Déployer l'API Gateway modifiée (transmission headers)
+2. Déployer le service-selection sécurisé
+3. Vérifier les logs de sécurité
+4. Nettoyer les données existantes si nécessaire
+
+== Fichiers modifiés
+
+=== API Gateway
+
+- `api-gateway/app/main.py` : Transmission user_id via headers
+
+=== Service Selection
+
+- `service-selection/app/main.py` : 
+  - Ajout dépendance `get_current_user_id()`
+  - Sécurisation de tous les endpoints de projets
+  - Ajout logs de sécurité
+
+=== Documentation
+
+- `docs/dev-guide/project-security.adoc` : Cette documentation
+- `memory-bank/architecture.md` : Mise à jour architecture
+
+== Prochaines étapes
+
+=== Améliorations possibles
+
+1. **Rate limiting** par utilisateur pour éviter les abus
+2. **Audit trail** détaillé avec horodatage précis  
+3. **Chiffrement** des données sensibles dans les projets
+4. **Permissions granulaires** (lecture/écriture/partage)
+5. **Partage de projets** entre utilisateurs autorisés
+
+=== Monitoring recommandé
+
+- Alertes sur tentatives d'accès non autorisé
+- Métriques de performance des requêtes filtrées
+- Tableau de bord de sécurité en temps réel 

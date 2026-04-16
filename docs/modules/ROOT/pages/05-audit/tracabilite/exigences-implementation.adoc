@@ -1,0 +1,90 @@
+= Matrice de traçabilité — exigences ↔ code
+:description: Mapping entre les exigences fonctionnelles du PoC et leur implémentation
+
+== Objectif
+
+Permettre à un auditeur ou à un jury de vérifier **en un coup d'œil** qu'une exigence est implémentée, où, et comment la tester.
+
+Source d'exigences : `memory-bank/ARCHIVE/prd_ibis_x_poc_v2.md` (archivé) + spécifications fonctionnelles dans les pages `02-fonctionnel/`.
+
+== Matrice
+
+[cols="1,3,2,2,1"]
+|===
+| Réf | Exigence | Implémentation (fichier / table) | Test | Statut
+
+5+|*1. Gestion des utilisateurs*
+| E1.1 | Création de compte email+password | `api-gateway/app/routes/users.py`, table `users` | xref:05-audit/qualite/plan-tests.adoc[Plan tests §api-gateway] | ✅
+| E1.2 | OAuth Google | `api-gateway/app/routes/oauth.py` + `oauth_accounts` | idem | ✅
+| E1.3 | Rôles (user / contributor / admin) | `users.role`, `is_superuser` calculé | idem | ✅
+| E1.4 | Suppression compte (RGPD) | `DELETE /users/me` + cascade | xref:05-audit/rgpd/droits-utilisateurs.adoc[Droits utilisateurs] | ✅
+
+5+|*2. Sélection de datasets*
+| E2.1 | Catalogue avec filtres combinés | `service-selection/app/crud.py::list_datasets` | Plan tests §service-selection | ✅
+| E2.2 | Filtres techniques / éthiques / métier | `datasets.metadata`, `datasets.ethical_scores` | idem | ✅
+| E2.3 | Upload avec manifest | `POST /datasets` (multipart) | idem | ✅
+| E2.4 | Multi-fichiers | `dataset_files`, `file_columns` | idem | ✅
+| E2.5 | Import Kaggle batch | `datasets/kaggle-import/` + Job K8s | — | ✅
+| E2.6 | Vue détaillée | `GET /datasets/{id}` | idem | ✅
+| E2.7 | Preview avec pagination | `GET /datasets/{id}/preview` | idem | ✅
+
+5+|*3. Pipeline ML*
+| E3.1 | Wizard 5 étapes | `frontend/src/app/pages/ml-pipeline/` | E2E | ✅
+| E3.2 | Preprocessing configurable | `ml-pipeline-service/app/services/preprocessing.py` | unit | ✅
+| E3.3 | Training async Celery | `tasks.py::train_model` sur `ml_queue` | integration | ✅
+| E3.4 | Algorithmes classif / régression | `app/services/training.py` | unit (par algo) | ✅
+| E3.5 | Métriques complètes | `app/services/metrics.py` | unit | ✅
+| E3.6 | Persistance `artifact_uri` | `experiments.artifact_uri` + Blob | integration | ✅
+| E3.7 | Visualisations (confusion, ROC, FI) | `app/services/visualizations.py` | — | ✅
+| E3.8 | Polling statut frontend | service + component Angular | E2E | ✅
+| E3.9 | Prédiction ad-hoc | *Non implémentée* | — | ⬜
+
+5+|*4. Explications XAI*
+| E4.1 | SHAP globale + locale | `xai-engine-service/app/tasks.py::process_shap_explanation` | unit + Iris | ✅
+| E4.2 | LIME | `process_lime_explanation` | unit + Iris | ✅
+| E4.3 | Narratives LLM | `generate_llm_explanation` | mock unit | ✅
+| E4.4 | Chat contextuel | `process_chat_question` + `chat_messages` | integration | ✅
+| E4.5 | Limite 5 questions/session | Check `COUNT(*) FROM chat_messages` | unit | ✅
+| E4.6 | Optimisation SHAP pré-calculé | `generate_explanation_with_precalculated_shap` | integration | ✅
+| E4.7 | WebSHAP client | `frontend/src/.../webshap/` | — | ✅
+| E4.8 | 3 queues Celery actives, aucune `llm_queue` | `celery_app.py::task_routes` | unit | ✅
+
+5+|*5. Analyse qualité dataset*
+| E5.1 | Analyse IA via OpenAI | `analyze_dataset_with_ai` sur `ai_queue` | mock unit | ✅
+| E5.2 | Cache `DataQualityAnalysis` | `data_quality_analyses` | integration | ✅
+| E5.3 | Invalidation par `dataset_version` | Logique dans `crud.py` | integration | ✅
+
+5+|*6. Éthique & RGPD*
+| E6.1 | Évaluation éthique à l'upload | `datasets.ethical_evaluation` + templates | unit | ✅
+| E6.2 | Flag PII | `datasets.metadata.contains_pii` | — | ✅
+| E6.3 | Cartographie données | xref:05-audit/rgpd/cartographie-donnees.adoc[] | doc | ✅
+| E6.4 | Registre traitements | xref:05-audit/rgpd/registre-traitements.adoc[] | doc | ✅
+| E6.5 | Droits utilisateurs (accès/rectif/effacement) | Endpoints api-gateway | E2E | ✅
+
+5+|*7. Infrastructure & déploiement*
+| E7.1 | K8s Minikube local | `k8s/overlays/minikube/` | `make dev` | ✅
+| E7.2 | K8s AKS Azure + Terraform | `k8s/overlays/azure/` + `terraform/` | déploiement manuel | ✅
+| E7.3 | CI/CD GitHub Actions | `.github/workflows/` | — | ✅
+| E7.4 | Migrations Alembic par service | 4 `version_table` | integration | ✅
+| E7.5 | Secrets K8s | `k8s/base/secrets/` | — | ✅
+
+5+|*8. Frontend*
+| E8.1 | Angular 19 standalone + Material | `frontend/package.json`, composants | unit + E2E | ✅
+| E8.2 | i18n FR + EN | `@ngx-translate`, `fr.json`, `en.json` | E2E bascule | ✅
+| E8.3 | Lazy loading features | `app.routes.ts` | — | ✅
+| E8.4 | Guards auth + onboarding | `authGuard`, `onboardingGuard` | unit | ✅
+|===
+
+== Légende
+
+* ✅ — exigence implémentée & testable
+* 🟡 — implémentée partiellement
+* ⬜ — non implémentée (reportée post-PoC)
+
+== Maintenance
+
+Cette matrice **doit être mise à jour** :
+
+* à chaque nouvelle feature (ajouter une ligne avec référence code + test) ;
+* à chaque refactor touchant un fichier cité ;
+* à chaque release candidate (re-vérification complète).

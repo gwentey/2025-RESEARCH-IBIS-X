@@ -1,0 +1,114 @@
+// Navigation IBIS-X — 6 piliers documentaires (refonte 2026-04)
+// Les piliers détaillés seront remplis dans les Lots 3-5 du plan de refonte.
+
+* xref:index.adoc[Accueil — 3 parcours]
+
+* 1. Projet
+** xref:01-projet/index.adoc[Vue d'ensemble du projet]
+** xref:01-projet/vision.adoc[Vision & objectifs]
+** xref:01-projet/perimetre-poc.adoc[Périmètre PoC]
+** xref:01-projet/roadmap.adoc[Roadmap]
+** xref:01-projet/glossaire.adoc[Glossaire]
+
+* 2. Fonctionnel
+** xref:02-fonctionnel/index.adoc[Guide utilisateur]
+** xref:02-fonctionnel/personas-acteurs.adoc[Personas & acteurs]
+** xref:02-fonctionnel/parcours-utilisateur.adoc[Parcours utilisateur]
+** xref:02-fonctionnel/modules/selection-datasets.adoc[Sélection de datasets]
+** xref:02-fonctionnel/modules/gestion-projets.adoc[Gestion de projets]
+** xref:02-fonctionnel/modules/pipeline-ml.adoc[Pipeline ML]
+** xref:02-fonctionnel/modules/explications-xai.adoc[Explications XAI]
+** xref:02-fonctionnel/modules/collaboration.adoc[Collaboration]
+** xref:02-fonctionnel/modules/compte-utilisateur.adoc[Compte utilisateur]
+** xref:02-fonctionnel/user-stories.adoc[User stories]
+** xref:02-fonctionnel/criteres-acceptation.adoc[Critères d'acceptation]
+
+* 3. Technique
+** xref:03-technique/index.adoc[Guide développeur]
+*** Architecture
+**** xref:03-technique/architecture/vue-ensemble.adoc[Vue d'ensemble (C4)]
+**** xref:03-technique/architecture/microservices.adoc[Microservices & responsabilités]
+**** xref:03-technique/architecture/flux-communication.adoc[Flux de communication]
+**** xref:03-technique/architecture/modele-donnees.adoc[Modèle de données (ERD)]
+**** xref:03-technique/architecture/deploiement.adoc[Topologie de déploiement]
+*** Services
+**** xref:03-technique/services/api-gateway.adoc[api-gateway]
+**** xref:03-technique/services/service-selection.adoc[service-selection]
+**** xref:03-technique/services/ml-pipeline-service.adoc[ml-pipeline-service]
+**** xref:03-technique/services/xai-engine-service.adoc[xai-engine-service]
+*** Frontend
+**** xref:03-technique/frontend/architecture-angular.adoc[Architecture Angular]
+**** xref:03-technique/frontend/i18n.adoc[i18n FR/EN]
+**** xref:03-technique/frontend/composants-cles.adoc[Composants clés]
+**** xref:03-technique/frontend/design-system.adoc[Design system Sorbonne]
+*** Références
+**** xref:03-technique/api-reference.adoc[Référence API]
+**** xref:03-technique/base-de-donnees.adoc[Base de données & migrations]
+**** xref:03-technique/celery-taches-async.adoc[Tâches Celery (3 queues)]
+**** xref:03-technique/stockage-objets.adoc[Stockage objets (MinIO/Azure)]
+**** xref:03-technique/stack-technique.adoc[Stack technique raisonnée]
+
+* 4. Opérationnel
+** xref:04-operationnel/index.adoc[Exploitation & déploiement]
+*** Installation
+**** xref:04-operationnel/installation/prerequis.adoc[Prérequis]
+**** xref:04-operationnel/installation/local-minikube.adoc[Démarrage local (Minikube)]
+**** xref:04-operationnel/installation/windows-specificites.adoc[Spécificités Windows]
+**** xref:04-operationnel/installation/dev-containers.adoc[Dev containers]
+*** Déploiement
+**** xref:04-operationnel/deploiement/azure-terraform.adoc[Azure + Terraform]
+**** xref:04-operationnel/deploiement/cicd-github-actions.adoc[CI/CD GitHub Actions]
+**** xref:04-operationnel/deploiement/secrets-config.adoc[Secrets & configuration]
+*** Runbooks
+**** xref:04-operationnel/runbooks/migration-bdd.adoc[Migration base de données]
+**** xref:04-operationnel/runbooks/rotation-secrets.adoc[Rotation de secrets]
+**** xref:04-operationnel/runbooks/rollback-deploiement.adoc[Rollback déploiement]
+**** xref:04-operationnel/runbooks/incident-response.adoc[Réponse à incident]
+**** xref:04-operationnel/runbooks/import-datasets-prod.adoc[Import datasets en prod]
+*** Observabilité & support
+**** xref:04-operationnel/monitoring-logs.adoc[Monitoring & logs]
+**** xref:04-operationnel/sauvegarde-restauration.adoc[Sauvegarde & restauration]
+**** xref:04-operationnel/troubleshooting.adoc[Troubleshooting & FAQ]
+
+* 5. Audit & conformité
+** xref:05-audit/dossier-audit.adoc[Dossier d'audit — entrée jury]
+*** Sécurité
+**** xref:05-audit/securite/politique.adoc[Politique de sécurité]
+**** xref:05-audit/securite/modele-menaces.adoc[Modèle de menaces (STRIDE)]
+**** xref:05-audit/securite/owasp-top10.adoc[OWASP Top 10]
+**** xref:05-audit/securite/gestion-secrets.adoc[Gestion des secrets]
+*** RGPD
+**** xref:05-audit/rgpd/cartographie-donnees.adoc[Cartographie des données]
+**** xref:05-audit/rgpd/checklist-conformite.adoc[Checklist de conformité]
+**** xref:05-audit/rgpd/droits-utilisateurs.adoc[Droits des utilisateurs]
+**** xref:05-audit/rgpd/registre-traitements.adoc[Registre des traitements]
+*** Éthique IA
+**** xref:05-audit/ethique-ia/principes.adoc[Principes éthiques]
+**** xref:05-audit/ethique-ia/evaluation-datasets.adoc[Évaluation éthique des datasets]
+*** ADR (Architecture Decision Records)
+**** xref:05-audit/adr/template-adr.adoc[Template ADR (MADR)]
+**** xref:05-audit/adr/0001-microservices-vs-monolithe.adoc[ADR 0001 — Microservices vs monolithe]
+**** xref:05-audit/adr/0002-celery-vs-alternatives.adoc[ADR 0002 — Celery pour les tâches async]
+**** xref:05-audit/adr/0003-postgres-partage-version-tables.adoc[ADR 0003 — PostgreSQL partagé + version_table]
+**** xref:05-audit/adr/0004-angular-material-sans-tailwind.adoc[ADR 0004 — Angular Material sans Tailwind]
+**** xref:05-audit/adr/0005-kubernetes-minikube-azure.adoc[ADR 0005 — Kubernetes Minikube + AKS]
+**** xref:05-audit/adr/0006-shap-lime-pour-xai.adoc[ADR 0006 — SHAP + LIME pour XAI]
+*** Qualité
+**** xref:05-audit/qualite/strategie-tests.adoc[Stratégie de tests]
+**** xref:05-audit/qualite/plan-tests.adoc[Plan de tests (matrice)]
+**** xref:05-audit/qualite/couverture-objectifs.adoc[Objectifs de couverture]
+**** xref:05-audit/qualite/validation-iris.adoc[Validation scientifique Iris]
+*** Traçabilité
+**** xref:05-audit/tracabilite/exigences-implementation.adoc[Matrice exigences ↔ code]
+**** xref:05-audit/tracabilite/journal-changements.adoc[Journal des changements]
+
+* 6. Contribution
+** xref:06-contribution/index.adoc[Contribuer au projet]
+** xref:06-contribution/onboarding-dev.adoc[Onboarding développeur]
+** xref:06-contribution/git-workflow.adoc[Git workflow]
+** xref:06-contribution/conventions-code.adoc[Conventions de code]
+** xref:06-contribution/conventions-doc.adoc[Conventions de documentation]
+** xref:06-contribution/processus-pr.adoc[Processus de Pull Request]
+** xref:06-contribution/ajout-service.adoc[Ajouter un service]
+** xref:06-contribution/ajout-feature.adoc[Ajouter une feature]
+** xref:06-contribution/publication-doc.adoc[Publier la documentation]

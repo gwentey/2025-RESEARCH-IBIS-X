@@ -1,0 +1,303 @@
+= Améliorations Page Résultats d'Expérimentation: Classification + Decision Tree
+:navtitle: Résultats Classification DT
+:description: Améliorations spécifiques pour la page des résultats d'expérimentation pour le cas Classification avec Decision Tree
+
+== Vue d'ensemble
+
+Cette documentation présente les améliorations apportées à la page des résultats d'expérimentation, spécifiquement pour le cas **Classification + Decision Tree**, suite aux retours d'analyse et critiques d'utilisation.
+
+=== Contexte
+L'utilisateur a testé la combinaison Classification + Decision Tree et identifié plusieurs améliorations nécessaires :
+
+* **KPIs** : Mettre F1-macro comme métrique principale au lieu de F1-Score global
+* **Graphiques** : Ajouter courbes ROC/PR pour classification binaire
+* **Explications** : Ajouter explications locales avec chemin de décision
+
+== Améliorations Implémentées
+
+=== 1. Système de Métriques Amélioré
+
+==== F1-macro comme Métrique Principale
+[source,typescript]
+----
+// Nouvelle méthode pour détection classification binaire/multi-classes
+getClassificationType(): 'binary' | 'multiclass' | 'unknown' {
+  // Logique de détection basée sur métadonnées et métriques
+}
+
+// KPI principal amélioré avec contexte spécifique
+getPrimaryKPI(): {key: string, value: number, displayName: string, description: string, isImproved?: boolean}
+----
+
+**Points clés :**
+
+* F1-macro prioritaire pour Classification + Decision Tree
+* Descriptions adaptées selon le contexte (binaire vs multi-classes)
+* Marquage des améliorations (`isImproved` flag)
+
+==== Détection Classification Binaire vs Multi-classes
+
+La page détecte maintenant automatiquement le type de classification :
+
+. **Sources de détection :**
+* Métadonnées des résultats (`n_classes`)
+* Matrice de confusion
+* Présence de métriques ROC-AUC/PR-AUC
+
+. **Impact sur l'affichage :**
+* Descriptions adaptées des métriques
+* Visualisations spécifiques (ROC/PR curves)
+* Conseils d'interprétation contextuels
+
+=== 2. Visualisations Améliorées
+
+==== Support Courbes ROC/PR pour Classification Binaire
+
+Nouvelles méthodes ajoutées :
+[source,typescript]
+----
+shouldShowROCPRCurves(): boolean
+hasPRCurve(): boolean  
+getPRCurveImage(): string
+----
+
+**Fonctionnalités :**
+
+* Détection automatique si ROC/PR curves doivent être affichées
+* Support URL pour courbe Precision-Recall
+* Messages informatifs pour visualisations manquantes mais attendues
+
+==== Visualisations Priorisées
+
+Les visualisations sont maintenant classées par priorité :
+
+1. **Arbre de décision** (priorité 1)
+2. **Matrice de confusion** (priorité 2) 
+3. **Courbe ROC** (priorité 3)
+4. **Courbe PR** pour binaire (priorité 4)
+5. **Importance variables** (priorité 5)
+
+==== Tags Contextuels
+
+* **Classification Binaire** : tag informatif sur courbe ROC
+* **Classes déséquilibrées** : tag spécialisé sur courbe PR
+
+=== 3. Section Explications Locales (NOUVEAU)
+
+Une nouvelle section dédiée aux explications locales pour les arbres de décision :
+
+==== Composants de la Section
+
+. **Introduction explicative**
+* Description du concept d'explications locales
+* Variables disponibles dans le dataset
+* Différenciation classification vs régression
+
+. **Exemple de chemin de décision**
+* Simulation d'un chemin dans l'arbre
+* Visualisation étape par étape
+* Résultat final avec confiance
+
+. **Appel à l'action XAI**
+* Lien vers analyses plus poussées
+* Fonctionnalités disponibles avec SHAP
+
+==== Interface Utilisateur
+
+[source,html]
+----
+<!-- Nouvelle section conditionnelle -->
+<section class="local-explanations-section" *ngIf="canShowLocalExplanations()">
+  <div class="local-explanation-intro">...</div>
+  <div class="local-explanation-example">...</div>
+  <div class="local-explanation-cta">...</div>
+</section>
+----
+
+**Styles associés :**
+* Design cohérent avec le reste de l'interface
+* Couleurs vertes pour différenciation
+* Animation de chemin de décision
+* Responsive design
+
+=== 4. Conseils d'Interprétation Enrichis
+
+==== Conseils Spécifiques par Type
+
+Les conseils d'interprétation s'adaptent maintenant au contexte :
+
+* **Matrice de confusion** : différent pour binaire (2×2) vs multi-classes
+* **Courbe ROC** : explication spécifique binaire vs one-vs-rest
+* **Courbe PR** : mise en avant pour classes déséquilibrées
+* **Explications locales** : nouveau conseil pour arbres de décision
+
+==== Interface Améliorée
+
+[source,html]
+----
+<!-- Nouveaux conseils -->
+<div class="tip-card" *ngIf="tips.pr">
+  <div class="tip-icon">⚖️</div>
+  <div class="tip-content">
+    <h4>Courbe Precision-Recall</h4>
+    <p>{{tips.pr}}</p>
+  </div>
+</div>
+
+<div class="tip-card" *ngIf="tips.local">
+  <div class="tip-icon">🔍</div>
+  <div class="tip-content">
+    <h4>Explications Locales</h4>
+    <p>{{tips.local}}</p>
+  </div>
+</div>
+----
+
+=== 5. Descriptions Pédagogiques Contextuelles
+
+==== Métriques Adaptées
+
+Les descriptions des métriques s'adaptent au contexte :
+
+[source,typescript]
+----
+// Exemple F1-macro avec contexte
+'f1_macro': `F1-Score macro : moyenne des performances sur toutes les classes, 
+${classificationType === 'multiclass' ? 'idéal pour classification multi-classes' : 'équilibré pour classification binaire'}. 
+${algorithm === 'decision_tree' ? 'Particulièrement approprié pour évaluer la logique de décision des arbres.' : '...'}`
+----
+
+==== Explications Algorithmiques
+
+Descriptions spécifiques pour Decision Tree :
+
+* Logique de décision étape par étape
+* Conditions dans les nœuds
+* Prédictions dans les feuilles
+* Risques de sur-ajustement
+
+== Architecture Technique
+
+=== Nouvelles Méthodes TypeScript
+
+[source,typescript]
+----
+// Détection type classification
+getClassificationType(): 'binary' | 'multiclass' | 'unknown'
+
+// Explications locales
+canShowLocalExplanations(): boolean
+getLocalExplanationInfo(): {title: string, description: string, features: string[]}
+getExampleLocalExplanation(): {path: string[], prediction: string, confidence: number}
+
+// Visualisations améliorées  
+shouldShowROCPRCurves(): boolean
+hasPRCurve(): boolean
+getPRCurveImage(): string
+----
+
+=== Structure CSS
+
+[source,scss]
+----
+// Nouvelle section explications locales
+.local-explanations-section {
+  .local-explanation-intro { ... }
+  .local-explanation-example { 
+    .decision-path { ... }
+    .final-prediction { ... }
+  }
+  .local-explanation-cta { ... }
+}
+
+// Améliorations visualisations
+.viz-context { 
+  .context-tag { ... }
+}
+.missing-viz-alert { ... }
+----
+
+== Impact Utilisateur
+
+=== Avant vs Après
+
+[cols="1,1"]
+|===
+|Avant |Après
+
+|F1-Score global comme principal
+|**F1-macro prioritaire** avec contexte
+
+|Pas de distinction binaire/multi-classes  
+|**Détection automatique** avec adaptations
+
+|Absence courbes ROC/PR binaires
+|**Support complet** avec messages informatifs
+
+|Pas d'explications locales
+|**Section dédiée** avec exemples visuels
+
+|Conseils génériques
+|**Conseils contextuels** par type/algorithme
+|===
+
+=== Valeur Ajoutée
+
+1. **Précision métrique** : F1-macro mieux adapté au contexte
+2. **Clarté visuelle** : Visualisations binaires explicites
+3. **Compréhension** : Explications locales accessibles
+4. **Guidage** : Conseils spécifiques selon le cas d'usage
+5. **Professionnalisme** : Interface plus riche et informative
+
+== Tests et Validation
+
+=== Cas de Test
+
+* **Classification binaire** : Iris avec 2 classes
+* **Classification multi-classes** : Iris avec 3 classes  
+* **Dataset déséquilibré** : Validation courbes PR
+* **Arbre peu profond** : Explications locales lisibles
+
+=== Vérifications
+
+* ✅ F1-macro affiché comme principal
+* ✅ Détection binaire/multi-classes fonctionnelle  
+* ✅ Courbes ROC/PR conditionnelles
+* ✅ Section explications locales visible
+* ✅ Conseils adaptatifs affichés
+* ✅ Responsive design maintenu
+
+== Évolutions Futures
+
+=== Intégration Backend
+
+* API pour explications locales réelles
+* Calcul de chemins de décision dynamiques
+* Métriques ROC/PR-AUC automatiques
+
+=== Fonctionnalités Avancées
+
+* Sélection d'observations pour explications locales
+* Comparaison entre chemins de décision
+* Export des explications en PDF
+
+=== Autres Algorithmes
+
+Extension des améliorations à :
+
+* **Classification + Random Forest**
+* **Régression + Decision Tree** 
+* **Régression + Random Forest**
+
+== Conclusion
+
+Ces améliorations transforment la page des résultats d'expérimentation en un outil d'analyse spécialisé qui s'adapte automatiquement au contexte **Classification + Decision Tree**. 
+
+L'interface guide maintenant l'utilisateur avec :
+
+* Des métriques appropriées (F1-macro)
+* Des visualisations contextuelles (ROC/PR binaires)
+* Des explications accessibles (chemins de décision)  
+* Des conseils pédagogiques adaptés
+
+La page devient ainsi un véritable assistant d'analyse qui aide à comprendre et interpréter les résultats selon les meilleures pratiques du domaine.

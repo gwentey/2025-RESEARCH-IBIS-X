@@ -1,0 +1,38 @@
+= Pilier 4 — Opérationnel
+:description: Installation, déploiement, runbooks, observabilité
+
+Ce pilier couvre **l'installation locale**, **le déploiement en production** (Azure) et les **runbooks** pour les opérations récurrentes ou exceptionnelles.
+
+== Installation
+
+* xref:04-operationnel/installation/prerequis.adoc[Prérequis système]
+* xref:04-operationnel/installation/local-minikube.adoc[Démarrage local avec Minikube]
+* xref:04-operationnel/installation/windows-specificites.adoc[Spécificités Windows] — miroir de `memory-bank/windows-gotchas.md`.
+* xref:04-operationnel/installation/dev-containers.adoc[Dev containers]
+
+== Déploiement
+
+* xref:04-operationnel/deploiement/azure-terraform.adoc[Azure + Terraform]
+* xref:04-operationnel/deploiement/cicd-github-actions.adoc[CI/CD GitHub Actions]
+* xref:04-operationnel/deploiement/secrets-config.adoc[Secrets & configuration]
+
+== Runbooks
+
+Procédures opérationnelles reproductibles :
+
+* xref:04-operationnel/runbooks/migration-bdd.adoc[Migration base de données]
+* xref:04-operationnel/runbooks/rotation-secrets.adoc[Rotation de secrets]
+* xref:04-operationnel/runbooks/rollback-deploiement.adoc[Rollback d'un déploiement]
+* xref:04-operationnel/runbooks/incident-response.adoc[Réponse à incident]
+* xref:04-operationnel/runbooks/import-datasets-prod.adoc[Import de datasets en production]
+
+== Observabilité & support
+
+* xref:04-operationnel/monitoring-logs.adoc[Monitoring & logs]
+* xref:04-operationnel/sauvegarde-restauration.adoc[Sauvegarde & restauration]
+* xref:04-operationnel/troubleshooting.adoc[Troubleshooting & FAQ]
+
+[NOTE]
+====
+Les runbooks sont rédigés au **Lot 5** du plan de refonte documentaire.
+====

@@ -1,0 +1,74 @@
+= Roadmap
+:description: Phases passées, en cours, à venir
+
+== Phase 0 — Fondations (réalisée)
+
+* Infrastructure Kubernetes (Minikube + AKS).
+* Skaffold + Kustomize.
+* Authentification JWT + OAuth.
+* Base PostgreSQL partagée avec version_tables.
+
+== Phase 1 — Sélection de datasets (réalisée)
+
+* Modèle multi-fichiers (`storage_path`, `dataset_files`, `file_columns`).
+* Catalogue avec filtres.
+* Upload + manifest.
+* Import Kaggle batch.
+
+== Phase 2 — Pipeline ML (réalisée)
+
+* Wizard 5 étapes frontend.
+* Preprocessing configurable.
+* Training async Celery (`ml_queue`).
+* Métriques + visualisations complètes.
+* Renommage `model_uri` → `artifact_uri` (migration 002).
+
+== Phase 3 — Analyse qualité IA (réalisée)
+
+* Intégration OpenAI sur `ai_queue`.
+* Table de cache `data_quality_analyses`.
+* Invalidation par `dataset_version`.
+
+== Phase 4 — Moteur XAI (réalisée)
+
+* Worker séparé (`Dockerfile.worker`, image `ibis-x-xai-engine-worker`).
+* SHAP + LIME + LLM.
+* Chat contextuel (5 questions max).
+* Optimisation `generate_explanation_with_precalculated_shap`.
+* Toutes les tâches sur `xai_queue`.
+
+== Phase 5 — Documentation & conformité (réalisée — 2026-04)
+
+* Refonte documentaire en 6 piliers.
+* Diagrammes Mermaid (C4, séquences, ERD, K8s).
+* Dossier d'audit (sécurité, RGPD, éthique, 6 ADRs, plan de tests, traçabilité).
+* CHANGELOG structuré.
+* CONTRIBUTING, SECURITY, LICENSE.
+
+== Phase 6 — Consolidation (à venir)
+
+* Tests : passage de ~30 % à ≥ 60 % de couverture sur tous les services.
+* Tests E2E Playwright.
+* Rate limiting api-gateway.
+* Export portabilité consolidé (`GET /users/me/export`).
+
+== Phase 7 — Durcissement (post-PoC)
+
+* NetworkPolicies K8s.
+* ESO + signature d'images.
+* Stack de logs centralisée.
+* Audit d'accessibilité.
+
+== Phase 8 — Extensions fonctionnelles (vision long terme)
+
+* Prédiction ad-hoc (UI + API).
+* Tuning automatique (optuna).
+* Deep learning (via PyTorch / TensorFlow).
+* Collaboration temps réel.
+* Mode API public documenté.
+
+== Suivi
+
+* *Réalisé* : voir `CHANGELOG.md` à la racine.
+* *En cours* : issues GitHub avec label `in-progress`.
+* *Futur* : issues GitHub avec label `roadmap-phase-6` / `-7` / `-8`.

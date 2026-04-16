@@ -1,0 +1,329 @@
+// ===============================================
+// SMART FILTER CTA - BOUTON PRINCIPAL ULTRA ATTRACTIF
+// ===============================================
+
+.smart-filter-cta {
+  .filter-cta-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    min-width: 250px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    outline: none;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    overflow: hidden;
+
+    // Effet de brillance
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    // État normal avec hover
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+
+      &::before {
+        left: 100%;
+      }
+
+      .main-icon {
+        transform: rotate(360deg) scale(1.1);
+      }
+
+      .arrow-icon {
+        transform: translateX(4px);
+      }
+    }
+
+    // État avec focus
+    &:focus {
+      box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5), 0 0 0 4px rgba(102, 126, 234, 0.2);
+    }
+
+    // État actif (pressé)
+    &:active {
+      transform: translateY(0px);
+    }
+
+    // État avec filtres actifs
+    &.has-filters {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+      box-shadow: 0 8px 32px rgba(255, 107, 107, 0.3);
+
+      &:hover {
+        box-shadow: 0 12px 40px rgba(255, 107, 107, 0.4);
+      }
+
+      &:focus {
+        box-shadow: 0 12px 40px rgba(255, 107, 107, 0.5), 0 0 0 4px rgba(255, 107, 107, 0.2);
+      }
+    }
+
+    .btn-main-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .icon-wrapper {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+
+        .main-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+          color: #ffffff;
+          transition: all 0.4s ease;
+          z-index: 2;
+        }
+
+        .secondary-icon {
+          position: absolute;
+          font-size: 12px;
+          width: 12px;
+          height: 12px;
+          color: rgba(255, 255, 255, 0.7);
+          top: 4px;
+          right: 4px;
+          z-index: 1;
+        }
+      }
+
+      .text-content {
+        .primary-text {
+          font-size: 14px;
+          font-weight: 700;
+          color: #ffffff;
+          line-height: 1.2;
+        }
+
+        .secondary-text {
+          font-size: 11px;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.85);
+          line-height: 1.1;
+        }
+      }
+    }
+
+    .action-indicator {
+      .arrow-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        transition: transform 0.3s ease;
+      }
+    }
+
+    .filters-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 8px;
+      background: #ffffff;
+      color: #667eea;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      animation: pulse-cta 2s infinite;
+    }
+
+    // Animation pour le badge améliorée
+    @keyframes pulse-cta {
+      0% { transform: scale(1); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+      50% { transform: scale(1.1); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25); }
+      100% { transform: scale(1); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+    }
+
+    // État désactivé
+    &:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+      box-shadow: none;
+
+      &:hover {
+        transform: none;
+        box-shadow: none;
+
+        &::before {
+          left: -100%;
+        }
+
+        .main-icon {
+          transform: none;
+        }
+
+        .arrow-icon {
+          transform: none;
+        }
+      }
+    }
+  }
+}
+
+// RESPONSIVE POUR SMART FILTER CTA
+@media (max-width: 768px) {
+  .smart-filter-cta {
+    .filter-cta-btn {
+      height: 44px;
+      min-width: 220px;
+      padding: 0 18px;
+
+      .btn-main-content {
+        gap: 12px;
+
+        .icon-wrapper {
+          width: 36px;
+          height: 36px;
+
+          .main-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+          }
+
+          .secondary-icon {
+            font-size: 12px;
+            width: 12px;
+            height: 12px;
+            top: 5px;
+            right: 5px;
+          }
+        }
+
+        .text-content {
+          .primary-text {
+            font-size: 14px;
+          }
+
+          .secondary-text {
+            font-size: 11px;
+          }
+        }
+      }
+
+      .action-indicator {
+        .arrow-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      .filters-badge {
+        min-width: 20px;
+        height: 20px;
+        font-size: 11px;
+        border-radius: 10px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .smart-filter-cta {
+    .filter-cta-btn {
+      height: 40px;
+      min-width: 180px;
+      padding: 0 14px;
+
+      .btn-main-content {
+        gap: 8px;
+
+        .icon-wrapper {
+          width: 32px;
+          height: 32px;
+
+          .main-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+          }
+
+          .secondary-icon {
+            font-size: 10px;
+            width: 10px;
+            height: 10px;
+            top: 4px;
+            right: 4px;
+          }
+        }
+
+        .text-content {
+          .primary-text {
+            font-size: 13px;
+          }
+
+          .secondary-text {
+            font-size: 10px;
+          }
+        }
+      }
+
+      .action-indicator {
+        .arrow-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      .filters-badge {
+        min-width: 18px;
+        height: 18px;
+        font-size: 10px;
+        border-radius: 9px;
+      }
+    }
+  }
+
+  // Version compacte pour très petits écrans
+  @media (max-width: 360px) {
+    .smart-filter-cta {
+      .filter-cta-btn {
+        min-width: 140px;
+        padding: 0 10px;
+
+        .btn-main-content {
+          .text-content {
+            .secondary-text {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

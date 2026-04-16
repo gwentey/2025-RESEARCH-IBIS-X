@@ -1,0 +1,646 @@
+= Référence Technique XAI Engine
+
+Cette documentation technique détaille l'architecture, les API et l'implémentation du moteur d'explicabilité XAI d'IBIS-X.
+
+== 🏗️ Architecture du système
+
+=== Vue d'ensemble
+
+Le XAI Engine est un microservice indépendant qui s'intègre dans l'écosystème IBIS-X :
+
+[source,mermaid]
+----
+graph TB
+    Frontend[Frontend Angular] --> Gateway[API Gateway]
+    Gateway --> XAI[XAI Engine Service]
+    XAI --> Redis[Redis/Celery]
+    XAI --> DB[(PostgreSQL)]
+    XAI --> Storage[MinIO/Azure Storage]
+    XAI --> OpenAI[OpenAI API]
+    
+    Redis --> Workers[XAI Celery Workers]
+    Workers --> ML[Modèles ML]
+    Workers --> Explainers[SHAP/LIME]
+----
+
+=== Composants principaux
+
+==== XAI Engine Service (FastAPI)
+* **Responsabilité** : API REST pour les demandes d'explication
+* **Port** : 8083
+* **Technologies** : FastAPI, SQLAlchemy, Pydantic
+
+==== XAI Celery Workers
+* **Responsabilité** : Traitement asynchrone des explications
+* **Queue** : `xai_queue`
+* **Technologies** : Celery, SHAP, LIME, scikit-learn
+
+==== Base de données
+* **Tables principales** : `explanation_requests`, `chat_sessions`, `chat_messages`, `explanation_artifacts`
+* **Relations** : Liens avec `experiments` (ML Pipeline) et `users` (API Gateway)
+
+== 📊 Modèles de données
+
+=== ExplanationRequest
+
+[source,sql]
+----
+CREATE TABLE explanation_requests (
+    id                   UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    experiment_id        UUID NOT NULL,
+    user_id             UUID NOT NULL,
+    dataset_id          UUID NOT NULL,
+    explanation_type    VARCHAR(50) NOT NULL,  -- 'global', 'local'
+    instance_ref        JSONB,                 -- Données pour explication locale
+    method_requested    VARCHAR(50),           -- 'SHAP', 'LIME', 'Auto'
+    method_used         VARCHAR(50),           -- Méthode effectivement utilisée
+    audience            VARCHAR(50) NOT NULL,  -- 'novice', 'intermediate', 'expert'
+    status              VARCHAR(20) NOT NULL DEFAULT 'pending',
+    progress            INTEGER DEFAULT 0,
+    task_id             VARCHAR(100),          -- ID de la tâche Celery
+    error_message       TEXT,
+    results_reference   JSONB,                 -- Chemins vers les artefacts
+    llm_explanation     TEXT,                  -- Explication textuelle générée
+    llm_questions       JSONB,                 -- Questions suggérées
+    created_at          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+----
+
+=== ChatSession
+
+[source,sql]
+----
+CREATE TABLE chat_sessions (
+    id                      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    explanation_request_id  UUID NOT NULL REFERENCES explanation_requests(id) ON DELETE CASCADE,
+    user_id                UUID NOT NULL,
+    language               VARCHAR(10) NOT NULL DEFAULT 'fr',
+    questions_count        INTEGER NOT NULL DEFAULT 0,
+    max_questions          INTEGER NOT NULL DEFAULT 5,
+    is_active              BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at             TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at             TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+----
+
+== 🔌 API Reference
+
+=== Endpoints principaux
+
+==== POST /explanations
+
+Crée une nouvelle demande d'explication.
+
+[source,http]
+----
+POST /explanations
+Content-Type: application/json
+
+{
+    "experiment_id": "550e8400-e29b-41d4-a716-446655440000",
+    "dataset_id": "550e8400-e29b-41d4-a716-446655440001",
+    "explanation_type": "global",
+    "method_requested": "Auto",
+    "audience": "intermediate",
+    "instance_ref": null
+}
+----
+
+**Réponse** :
+[source,json]
+----
+{
+    "success": true,
+    "request_id": "550e8400-e29b-41d4-a716-446655440002",
+    "status": "pending",
+    "estimated_duration_minutes": 5
+}
+----
+
+==== GET /explanations/{request_id}
+
+Récupère le statut et les résultats d'une demande d'explication.
+
+[source,http]
+----
+GET /explanations/550e8400-e29b-41d4-a716-446655440002
+----
+
+**Réponse** :
+[source,json]
+----
+{
+    "id": "550e8400-e29b-41d4-a716-446655440002",
+    "status": "completed",
+    "progress": 100,
+    "method_used": "SHAP",
+    "results_reference": {
+        "feature_importance_plot": "/artifacts/shap_feature_importance.png",
+        "waterfall_plot": "/artifacts/shap_waterfall.png",
+        "summary_data": "/artifacts/explanation_summary.json"
+    },
+    "llm_explanation": "Votre modèle Random Forest montre que...",
+    "llm_questions": [
+        "Pourquoi la variable 'age' est-elle si importante ?",
+        "Comment améliorer la précision du modèle ?",
+        "Y a-t-il des biais dans les prédictions ?"
+    ],
+    "created_at": "2025-01-07T14:30:00Z",
+    "updated_at": "2025-01-07T14:35:00Z"
+}
+----
+
+==== POST /explanations/{request_id}/chat
+
+Envoie une question au chatbot IA.
+
+[source,http]
+----
+POST /explanations/550e8400-e29b-41d4-a716-446655440002/chat
+Content-Type: application/json
+
+{
+    "question": "Pourquoi la variable 'age' est-elle si importante ?",
+    "language": "fr"
+}
+----
+
+**Réponse** :
+[source,json]
+----
+{
+    "response": "La variable 'age' est importante car elle présente une forte corrélation avec la variable cible...",
+    "questions_remaining": 4,
+    "response_time_ms": 1250
+}
+----
+
+=== Codes de statut
+
+[cols="1,2,3"]
+|===
+|Statut |Description |Actions possibles
+
+|`pending`
+|Demande créée, en attente de traitement
+|Attendre ou annuler
+
+|`running`
+|Traitement en cours
+|Surveiller le progrès
+
+|`completed`
+|Explication générée avec succès
+|Consulter les résultats, poser des questions
+
+|`failed`
+|Erreur lors du traitement
+|Consulter error_message, relancer
+|===
+
+== ⚙️ Configuration technique
+
+=== Variables d'environnement
+
+[source,bash]
+----
+# Base de données
+DATABASE_URL=postgresql://user:pass@postgres:5432/ibis_x_xai
+
+# Celery/Redis
+CELERY_BROKER_URL=redis://redis:6379/0
+CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+# Stockage d'objets
+STORAGE_TYPE=minio  # ou 'azure_blob'
+MINIO_ENDPOINT=http://minio-service:80
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+
+# OpenAI
+OPENAI_API_KEY=sk-your_openai_api_key
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_MAX_TOKENS=2000
+
+# Services externes
+API_GATEWAY_URL=http://api-gateway-service.ibis-x.svc.cluster.local
+ML_PIPELINE_URL=http://ml-pipeline-service.ibis-x.svc.cluster.local
+----
+
+=== Déploiement Kubernetes
+
+[source,yaml]
+----
+# Service principal
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xai-engine
+  namespace: ibis-x
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xai-engine
+  template:
+    spec:
+      containers:
+      - name: xai-engine
+        image: ibis-x-xai-engine:latest
+        ports:
+        - containerPort: 8083
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+
+---
+# Workers Celery
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xai-engine-celery-worker
+  namespace: ibis-x
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: celery-worker
+        image: ibis-x-xai-engine-worker:latest
+        command: ["celery", "-A", "app.core.celery_app", "worker", 
+                  "--loglevel=info", "--queues=xai_queue"]
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+----
+
+== 🧠 Algorithmes d'explicabilité
+
+=== SHAP (SHapley Additive exPlanations)
+
+==== Principe
+SHAP utilise la théorie des jeux pour attribuer équitablement l'importance de chaque feature dans une prédiction.
+
+==== Implémentation
+[source,python]
+----
+import shap
+from sklearn.ensemble import RandomForestClassifier
+
+def generate_shap_explanation(model, X_train, X_test, feature_names):
+    if isinstance(model, (RandomForestClassifier, DecisionTreeClassifier)):
+        # TreeExplainer pour les modèles basés sur les arbres
+        explainer = shap.TreeExplainer(model)
+    else:
+        # KernelExplainer pour les autres modèles
+        explainer = shap.KernelExplainer(model.predict_proba, X_train.sample(100))
+    
+    shap_values = explainer.shap_values(X_test)
+    
+    # Génération des visualisations
+    shap.summary_plot(shap_values, X_test, feature_names=feature_names, show=False)
+    plt.savefig('shap_summary.png', bbox_inches='tight', dpi=300)
+    
+    return {
+        "shap_values": shap_values,
+        "base_values": explainer.expected_value,
+        "feature_importance": dict(zip(feature_names, shap_values.mean(0)))
+    }
+----
+
+==== Avantages
+* Garanties théoriques solides
+* Très efficace pour les modèles en arbres
+* Visualisations riches et interprétables
+
+==== Limitations
+* Peut être lent sur de gros datasets
+* Nécessite des données d'entraînement pour certains explainers
+
+=== LIME (Local Interpretable Model-agnostic Explanations)
+
+==== Principe
+LIME explique localement n'importe quel modèle en ajustant un modèle simple (linéaire) autour de l'instance à expliquer.
+
+==== Implémentation
+[source,python]
+----
+import lime
+import lime.lime_tabular
+
+def generate_lime_explanation(model, X_train, X_test, feature_names, instance_idx=0):
+    explainer = lime.lime_tabular.LimeTabularExplainer(
+        X_train,
+        feature_names=feature_names,
+        class_names=['Class 0', 'Class 1'],
+        mode='classification'
+    )
+    
+    explanation = explainer.explain_instance(
+        X_test[instance_idx], 
+        model.predict_proba,
+        num_features=len(feature_names)
+    )
+    
+    return {
+        "explanation": explanation,
+        "feature_importance": dict(explanation.as_list()),
+        "score": explanation.score
+    }
+----
+
+==== Avantages
+* Agnostic au modèle (fonctionne avec n'importe quel ML)
+* Explications locales très précises
+* Implémentation simple et rapide
+
+==== Limitations
+* Seulement local (pas d'explication globale)
+* Sensible au choix des perturbations
+* Peut être instable sur des données bruitées
+
+=== Sélection automatique de l'algorithme
+
+[source,python]
+----
+def select_best_explainer(model, dataset_size, model_type):
+    """Sélectionne automatiquement le meilleur explainer selon le contexte."""
+    
+    if model_type in ['RandomForest', 'DecisionTree', 'GradientBoosting']:
+        if dataset_size < 10000:
+            return 'SHAP_Tree'  # Optimal pour les arbres sur petites données
+        else:
+            return 'SHAP_Sampling'  # SHAP avec échantillonnage
+    
+    elif model_type in ['LogisticRegression', 'SVM']:
+        return 'SHAP_Linear'  # Explainer linéaire optimisé
+    
+    else:
+        if dataset_size < 5000:
+            return 'LIME'  # LIME pour les petits datasets, modèles complexes
+        else:
+            return 'SHAP_Kernel'  # SHAP généraliste avec échantillonnage
+----
+
+== 🤖 Intégration LLM
+
+=== Adaptation au profil utilisateur
+
+Le service LLM adapte ses explications selon trois profils :
+
+[cols="1,3,3"]
+|===
+|Profil |Prompt utilisé |Exemple de sortie
+
+|**Novice**
+|"Explique de manière très simple, sans jargon technique, avec des métaphores"
+|"Votre modèle fonctionne comme un médecin expérimenté qui regarde plusieurs symptômes..."
+
+|**Intermédiaire**  
+|"Explique avec un niveau technique modéré, quelques termes spécialisés acceptés"
+|"Le modèle Random Forest utilise la variable 'age' comme critère principal de décision..."
+
+|**Expert**
+|"Explique de manière technique détaillée avec métriques et concepts avancés"
+|"L'importance SHAP de 'age' (0.34) indique une contribution significative au log-odds..."
+|===
+
+=== Génération de questions contextuelles
+
+[source,python]
+----
+def generate_contextual_questions(explanation_results, user_profile, model_performance):
+    """Génère des questions pertinentes selon le contexte."""
+    
+    questions = []
+    
+    # Questions basées sur l'importance des features
+    top_features = get_top_features(explanation_results, n=3)
+    questions.extend([
+        f"Pourquoi la variable '{feature}' est-elle si importante ?",
+        f"Comment interpréter l'impact de '{feature}' sur les prédictions ?"
+        for feature in top_features
+    ])
+    
+    # Questions selon les performances
+    if model_performance['accuracy'] < 0.8:
+        questions.append("Comment améliorer la performance de mon modèle ?")
+    
+    if detect_potential_bias(explanation_results):
+        questions.append("Y a-t-il des biais dans mes prédictions ?")
+    
+    # Questions selon le profil utilisateur
+    if user_profile == 'business':
+        questions.append("Que signifient ces résultats pour mon business ?")
+    elif user_profile == 'technical':
+        questions.append("Quels sont les hyperparamètres à optimiser ?")
+    
+    return questions[:5]  # Maximum 5 questions
+----
+
+== 🔍 Monitoring et observabilité
+
+=== Métriques clés
+
+[cols="1,2,1"]
+|===
+|Métrique |Description |Seuil d'alerte
+
+|`explanation_duration_avg`
+|Temps moyen de génération d'explication
+|> 5 minutes
+
+|`explanation_success_rate`
+|Taux de succès des explications
+|< 95%
+
+|`chat_response_time`
+|Temps de réponse du chatbot
+|> 10 secondes
+
+|`openai_api_errors`
+|Erreurs API OpenAI
+|> 5%
+
+|`celery_queue_length`
+|Longueur de la queue XAI
+|> 50 tâches
+|===
+
+=== Logs structurés
+
+[source,python]
+----
+import structlog
+
+logger = structlog.get_logger()
+
+# Log d'une demande d'explication
+logger.info("explanation_requested", 
+            request_id=request_id,
+            user_id=user_id,
+            experiment_id=experiment_id,
+            method=method_requested,
+            duration_estimate=estimated_duration)
+
+# Log de completion
+logger.info("explanation_completed",
+            request_id=request_id,
+            method_used=method_used,
+            duration_actual=actual_duration,
+            artifacts_generated=len(artifacts))
+----
+
+== 🚀 Optimisations de performance
+
+=== Mise en cache intelligente
+
+[source,python]
+----
+@lru_cache(maxsize=128)
+def get_cached_explanation(model_hash: str, data_hash: str, method: str):
+    """Cache les explications pour des modèles/données identiques."""
+    # Implémentation du cache
+    pass
+
+def should_use_cache(experiment_id: str) -> bool:
+    """Détermine si le cache peut être utilisé."""
+    # Vérifier si le modèle/données ont changé
+    return not model_or_data_changed(experiment_id)
+----
+
+=== Parallélisation des calculs
+
+[source,python]
+----
+from concurrent.futures import ThreadPoolExecutor
+
+def parallel_explanation_generation(model, X_test, methods=['SHAP', 'LIME']):
+    """Génère plusieurs explications en parallèle."""
+    
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        futures = []
+        
+        if 'SHAP' in methods:
+            futures.append(executor.submit(generate_shap_explanation, model, X_test))
+        
+        if 'LIME' in methods:
+            futures.append(executor.submit(generate_lime_explanation, model, X_test))
+        
+        results = [future.result() for future in futures]
+    
+    return combine_explanations(results)
+----
+
+=== Échantillonnage intelligent
+
+[source,python]
+----
+def smart_sampling_for_explanation(X_data, max_samples=1000):
+    """Échantillonne intelligemment les données pour l'explication."""
+    
+    if len(X_data) <= max_samples:
+        return X_data
+    
+    # Stratégies d'échantillonnage
+    strategies = {
+        'random': X_data.sample(max_samples),
+        'stratified': stratified_sample(X_data, max_samples),
+        'representative': get_representative_sample(X_data, max_samples)
+    }
+    
+    # Choisir la meilleure stratégie selon les données
+    return choose_best_strategy(X_data, strategies)
+----
+
+== 🛠️ Développement et maintenance
+
+=== Tests automatisés
+
+[source,python]
+----
+# Test d'explication SHAP
+def test_shap_explanation_generation():
+    model, X_train, X_test = setup_test_model()
+    
+    result = generate_shap_explanation(model, X_train, X_test)
+    
+    assert 'shap_values' in result
+    assert 'feature_importance' in result
+    assert len(result['feature_importance']) == X_test.shape[1]
+
+# Test d'intégration API
+def test_explanation_api_workflow():
+    # Créer une demande
+    response = client.post("/explanations", json=test_request_data)
+    assert response.status_code == 201
+    
+    request_id = response.json()['request_id']
+    
+    # Attendre la completion (avec timeout)
+    wait_for_completion(request_id, timeout=300)
+    
+    # Vérifier les résultats
+    result = client.get(f"/explanations/{request_id}")
+    assert result.json()['status'] == 'completed'
+----
+
+=== Déploiement continu
+
+[source,yaml]
+----
+# Pipeline CI/CD (exemple GitHub Actions)
+name: XAI Engine CI/CD
+
+on:
+  push:
+    paths: ['xai-engine-service/**']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: |
+          cd xai-engine-service
+          python -m pytest tests/ -v --cov=app
+  
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to staging
+        run: |
+          kubectl apply -k k8s/overlays/staging
+          kubectl rollout status deployment/xai-engine -n ibis-x-staging
+----
+
+== 📚 Références et ressources
+
+=== Documentation externe
+
+* link:https://shap.readthedocs.io/[Documentation SHAP officielle]
+* link:https://lime-ml.readthedocs.io/[Documentation LIME officielle]  
+* link:https://scikit-learn.org/stable/modules/inspection.html[Inspection de modèles scikit-learn]
+* link:https://platform.openai.com/docs/[API OpenAI Documentation]
+
+=== Publications académiques
+
+* Lundberg, S. M., & Lee, S. I. (2017). A unified approach to interpreting model predictions. NIPS.
+* Ribeiro, M. T., Singh, S., & Guestrin, C. (2016). "Why should I trust you?" Explaining the predictions of any classifier. KDD.
+
+=== Ressources internes
+
+* xref:xai-explicabilite-guide.adoc[Guide utilisateur XAI]
+* xref:ml-pipeline-integration.adoc[Intégration ML Pipeline]
+* xref:architecture.adoc[Architecture générale IBIS-X]

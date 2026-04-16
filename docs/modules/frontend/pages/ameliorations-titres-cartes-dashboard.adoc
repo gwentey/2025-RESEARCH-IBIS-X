@@ -1,0 +1,177 @@
+= Améliorations Design des Titres de Cartes du Dashboard
+:navtitle: Titres Cartes Dashboard
+:description: Améliorations visuelles des en-têtes de cartes pour un design moderne et attractif
+
+== Vue d'ensemble
+
+Cette documentation détaille les améliorations apportées au design des en-têtes de cartes du dashboard principal d'IBIS-X, visant à créer une interface plus moderne, professionnelle et visuellement attrayante.
+
+== Problématique Identifiée
+
+=== Problèmes Initiaux
+* Titres des sections mal positionnés (collés en haut à gauche)
+* Design basique sans éléments visuels attractifs
+* Manque de hiérarchie visuelle claire
+* Absence de sous-titres descriptifs pour certaines sections
+
+== Solutions Implémentées
+
+=== 1. Redesign Complet des En-têtes
+
+==== Nouvelle Structure CSS
+[source,scss]
+----
+.card-header-custom {
+  padding: 28px 28px 20px 28px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.08) 100%);
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, var(--mat-primary-100), transparent) 1;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: linear-gradient(135deg, var(--mat-primary-500), var(--mat-primary-700));
+    border-radius: 0 2px 2px 0;
+  }
+}
+----
+
+==== Améliorations Visuelles
+* **Padding optimisé** : `28px 28px 20px 28px` pour un meilleur espacement
+* **Arrière-plan subtil** : Gradient léger pour la profondeur
+* **Barre décorative latérale** : Element `::before` avec gradient de marque
+* **Bordure dégradée** : `border-image` avec gradient personnalisé
+
+=== 2. Typography Moderne des Titres
+
+[source,scss]
+----
+.card-title-modern {
+  font-size: 1.375rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--mat-primary-600), var(--mat-primary-800));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  position: relative;
+  display: flex;
+  align-items: center;
+  
+  &::after {
+    content: '';
+    margin-left: 12px;
+    width: 24px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--mat-primary-400), transparent);
+    border-radius: 1px;
+  }
+}
+----
+
+==== Caractéristiques Typographiques
+* **Taille augmentée** : `1.375rem` pour plus d'impact
+* **Texte en gradient** : Utilisation de `background-clip: text` pour un effet moderne
+* **Espacement optimisé** : `letter-spacing: -0.02em` pour une meilleure lisibilité
+* **Élément décoratif** : Ligne dégradée après le titre (`::after`)
+
+=== 3. Sous-titres Descriptifs
+
+[source,scss]
+----
+.card-subtitle {
+  font-size: 0.875rem;
+  color: var(--mat-text-secondary);
+  margin: 6px 0 0 0;
+  opacity: 0.8;
+  font-style: italic;
+}
+----
+
+==== Sections avec Sous-titres
+* **Tutoriels vidéo** : "Maîtrisez l'IA explicable avec nos guides experts"
+* **Actions rapides** : "Commencer une nouvelle tâche en un clic"
+
+== Intégration Templates
+
+=== Structure HTML Type
+[source,html]
+----
+<div class="card-header-custom">
+  <h2 class="card-title-modern">{{ 'DASHBOARD.SECTION.TITLE' | translate }}</h2>
+  <p class="card-subtitle">{{ 'DASHBOARD.SECTION.SUBTITLE' | translate }}</p>
+</div>
+----
+
+=== Sections Concernées
+* Actions rapides
+* Tutoriels vidéo  
+* Activités récentes
+* Projets récents
+* État du système
+
+== Internationalisation
+
+=== Ajouts de Traductions
+
+==== Français (`fr.json`)
+[source,json]
+----
+"QUICK_ACTIONS": {
+  "TITLE": "Actions rapides",
+  "SUBTITLE": "Commencer une nouvelle tâche en un clic"
+}
+----
+
+==== Anglais (`en.json`)  
+[source,json]
+----
+"QUICK_ACTIONS": {
+  "TITLE": "Quick actions", 
+  "SUBTITLE": "Start a new task with one click"
+}
+----
+
+== Compatibilité et Performances
+
+=== Support Navigateurs
+* **Chrome/Edge** : Support complet des gradients CSS
+* **Firefox** : Compatible avec `-webkit-background-clip`
+* **Safari** : Support natif des propriétés webkit
+
+=== Optimisations CSS
+* Utilisation de `transform` pour les animations (GPU)
+* Gradients optimisés pour la performance
+* Propriétés CSS3 modernes avec fallbacks
+
+== Résultats Visuels
+
+=== Améliorations Obtenues
+* ✅ Hiérarchie visuelle claire et moderne
+* ✅ Éléments décoratifs cohérents avec la charte graphique
+* ✅ Meilleure lisibilité et attractivité
+* ✅ Design responsive et accessible
+* ✅ Cohérence avec le style "Linear/Stripe" d'IBIS-X
+
+=== Impact UX/UI
+* **Professionnalisme** : Design plus raffiné et moderne
+* **Clarté** : Meilleure distinction entre les sections
+* **Engagement** : Éléments visuels attractifs
+* **Cohérence** : Style unifié sur tout le dashboard
+
+== Maintenance et Évolutions
+
+=== Variables CSS Réutilisables
+Utilisation des variables Material Design pour faciliter les mises à jour futures :
+* `--mat-primary-500`, `--mat-primary-600`, `--mat-primary-700`
+* `--mat-text-primary`, `--mat-text-secondary`
+
+=== Extensibilité
+La classe `.card-header-custom` peut être appliquée à toutes les nouvelles cartes du dashboard pour maintenir la cohérence visuelle.

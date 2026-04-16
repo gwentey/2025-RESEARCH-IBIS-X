@@ -1,0 +1,172 @@
+= Résolution : Entraînement ML bloqué en statut "pending"
+:description: Guide de dépannage pour résoudre les problèmes d'entraînement ML qui restent bloqués en statut "pending"
+:keywords: ml-pipeline, celery, troubleshooting, pending, training
+
+== Symptômes du problème
+
+Lorsqu'un utilisateur lance un entraînement ML depuis l'interface, l'expérience reste bloquée indéfiniment en statut "pending" avec un progrès de 0%, malgré des requêtes de polling répétitives.
+
+=== Signes observés dans l'interface
+
+* Status affiché : `pending`
+* Progrès : `0%` 
+* Polling continu toutes les quelques secondes
+* Aucune progression visible même après plusieurs minutes
+
+=== Logs côté frontend
+
+[source,javascript]
+----
+📊 Status received: {
+  id: '4ec96651-7e2e-4671-94af-52759a52fd5d',
+  dataset_id: '6e1677b0-4b42-48f9-b21e-7b22425d1d75', 
+  status: 'pending',
+  progress: 0,
+  algorithm: 'random_forest'
+}
+🔄 Training in progress: 0%
+----
+
+== Diagnostic technique
+
+=== Étape 1 : Vérifier l'état des pods
+
+[source,bash]
+----
+kubectl get pods -n ibis-x
+----
+
+**Résultat attendu :** Tous les pods, y compris `ml-pipeline-celery-worker`, doivent être en état `Running`.
+
+=== Étape 2 : Vérifier les logs du service ML Pipeline
+
+[source,bash]
+----
+kubectl logs -n ibis-x deployment/ml-pipeline --tail=50
+----
+
+**Signe de problème :** Seulement des logs de polling répétitifs sans logs de création d'expérience.
+
+=== Étape 3 : Vérifier la queue Redis
+
+[source,bash]
+----
+kubectl exec -n ibis-x -it redis-0 -- redis-cli LLEN ml_queue
+----
+
+**Interprétation :**
+* `(integer) 0` : Aucune tâche en attente (normal si tout fonctionne)
+* `(integer) 1+` : Tâches bloquées (problème identifié)
+
+=== Étape 4 : Vérifier les logs des workers Celery
+
+[source,bash]
+----
+kubectl logs -n ibis-x deployment/ml-pipeline-celery-worker --tail=100
+----
+
+**Signe de problème :** Workers connectés mais aucun log de traitement de tâche `[CELERY WORKER] Starting training for experiment`.
+
+== Cause racine identifiée
+
+Les **workers Celery perdent parfois la connexion** avec la queue Redis et cessent de consommer les tâches, même s'ils apparaissent comme connectés dans les logs.
+
+Cette situation peut survenir lors de :
+
+* Redémarrages de pods Redis
+* Problèmes réseau temporaires dans le cluster
+* Mise à jour des services sans restart des workers
+* Surcharge temporaire du système
+
+== Solution recommandée
+
+=== Redémarrage des workers Celery
+
+La solution la plus efficace et la plus rapide :
+
+[source,bash]
+----
+kubectl rollout restart deployment/ml-pipeline-celery-worker -n ibis-x
+----
+
+=== Vérification du traitement
+
+Après le redémarrage, vérifier que la tâche est consommée :
+
+[source,bash]
+----
+# Attendre quelques secondes puis vérifier
+kubectl exec -n ibis-x -it redis-0 -- redis-cli LLEN ml_queue
+----
+
+**Résultat attendu :** `(integer) 0` (tâche consommée)
+
+=== Vérification des logs de traitement
+
+[source,bash]
+----
+kubectl logs -n ibis-x deployment/ml-pipeline-celery-worker --tail=100
+----
+
+**Logs de succès attendus :**
+[source,log]
+----
+[CELERY WORKER] Starting training for experiment [UUID]
+[CELERY WORKER] Task ID: [TASK_ID]
+Loading dataset [DATASET_ID]
+Dataset loaded: X rows, Y columns
+...
+🎉 Training completed successfully for experiment [UUID]
+Task train_model[TASK_ID] succeeded in Xs
+----
+
+== Surveillance et prévention
+
+=== Monitoring des queues
+
+Mettre en place une surveillance automatique des queues :
+
+[source,bash]
+----
+# Script de monitoring à exécuter périodiquement
+kubectl exec -n ibis-x -it redis-0 -- redis-cli INFO | grep ml_queue
+----
+
+=== Alertes recommandées
+
+* **Alerte critique :** Queue `ml_queue` > 0 pendant plus de 5 minutes
+* **Alerte warning :** Absence de logs de workers pendant plus de 2 minutes
+
+=== Health checks améliorés
+
+Envisager l'ajout de health checks plus robustes pour les workers Celery qui vérifient la capacité de consommation des tâches.
+
+== Validation de la solution
+
+Une fois la solution appliquée, l'interface utilisateur doit montrer :
+
+1. **Statut progressif :** `pending` → `running` → `completed`
+2. **Progrès incrémental :** 0% → 10% → 30% → ... → 100%
+3. **Résultats finaux :** Métriques d'évaluation, modèle sauvegardé
+4. **Durée normale :** Quelques secondes à quelques minutes selon la taille des données
+
+== Cas d'usage testé
+
+**Dataset :** Iris (150 échantillons)  
+**Algorithme :** Random Forest  
+**Résultat :** 90% d'accuracy en 8.58 secondes  
+**Solution :** Redémarrage workers → traitement immédiat ✅
+
+== Points d'attention
+
+[WARNING]
+====
+Ne pas redémarrer les workers pendant qu'un entraînement est en cours (`status: running`) car cela interromprait le processus.
+
+Toujours vérifier le statut des expériences avant d'appliquer cette solution.
+====
+
+[TIP]
+====
+Cette solution peut également résoudre d'autres problèmes liés aux tâches Celery bloquées dans d'autres services (XAI Engine par exemple).
+====

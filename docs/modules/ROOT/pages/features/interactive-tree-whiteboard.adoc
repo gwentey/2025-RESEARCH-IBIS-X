@@ -1,0 +1,211 @@
+= Tableau Blanc Interactif pour Visualisation d'Arbre
+:description: Guide d'utilisation du tableau blanc interactif pour explorer les arbres de décision
+:keywords: arbre de décision, visualisation, tableau blanc, zoom, pan, export
+
+== Vue d'ensemble
+
+Le *Tableau Blanc Interactif* est une fonctionnalité révolutionnaire qui transforme la visualisation des arbres de décision en une expérience interactive complète. Conçu spécifiquement pour les chercheurs et data scientists, il permet d'explorer en détail des arbres de toute taille.
+
+== Fonctionnalités principales
+
+=== 🖱️ Navigation intuitive
+
+[cols="1,3"]
+|===
+| Fonctionnalité | Description
+
+| *Pan (Déplacement)*
+| Cliquez et glissez pour déplacer l'arbre dans toutes les directions
+
+| *Zoom fluide*
+| Utilisez la molette de la souris pour zoomer/dézoomer de manière fluide
+
+| *Zoom centré*
+| Le zoom s'effectue automatiquement sur la position de votre curseur
+|===
+
+=== 🎛️ Contrôles avancés
+
+==== Barre d'outils supérieure
+
+image::tree-whiteboard-toolbar.png[Barre d'outils du tableau blanc]
+
+. *Indicateurs en temps réel*
+  - *Niveau de zoom* : Affiche le pourcentage de zoom actuel (10% - 500%)
+  - *Position X/Y* : Coordonnées actuelles de la vue
+
+. *Contrôles de zoom*
+  - Boutons `-` / `+` pour zoom rapide
+  - Slider pour ajustement précis
+  - Bouton reset pour revenir à 100%
+
+. *Ajustement de l'espacement*
+  - Boutons pour augmenter/diminuer l'espacement horizontal
+  - Indicateur du pourcentage d'espacement actuel
+
+. *Actions rapides*
+  - *Centrer* : Recentre la vue à la position initiale
+  - *Ajuster à l'écran* : Adapte automatiquement le zoom pour voir tout l'arbre
+  - *Exporter* : Télécharge l'arbre en format SVG haute qualité
+
+=== ⌨️ Raccourcis clavier
+
+[cols="1,2"]
+|===
+| Touche | Action
+
+| `R`
+| Réinitialiser la vue (zoom 100%, position centrée)
+
+| `+` / `=`
+| Zoom avant
+
+| `-` / `_`
+| Zoom arrière
+
+| `↑` / `W`
+| Déplacer vers le haut
+
+| `↓` / `S`
+| Déplacer vers le bas
+
+| `←` / `A`
+| Déplacer vers la gauche
+
+| `→` / `D`
+| Déplacer vers la droite
+
+| `Échap`
+| Fermer le tableau blanc
+|===
+
+=== 📱 Support tactile (À venir)
+
+- *Pinch-to-zoom* : Écartez/rapprochez deux doigts pour zoomer
+- *Swipe* : Glissez avec un doigt pour déplacer
+- *Double-tap* : Double touche pour zoom rapide
+
+== Utilisation
+
+=== Ouvrir le tableau blanc
+
+. Dans la page de résultats d'expérience, localisez la section *Visualisation de l'arbre*
+. Cliquez sur le bouton flottant *"Arbre Plein Écran"* (en bas à gauche de l'arbre)
+. Le tableau blanc s'ouvre en plein écran
+
+=== Explorer l'arbre
+
+. *Navigation de base*
++
+[source,text]
+----
+• Cliquez et maintenez pour "attraper" l'arbre
+• Déplacez la souris en maintenant le clic pour déplacer
+• Relâchez pour arrêter le déplacement
+----
+
+. *Zoom intelligent*
++
+[source,text]
+----
+• Placez votre curseur sur la zone d'intérêt
+• Utilisez la molette pour zoomer sur cette zone
+• Le zoom garde automatiquement le point sous le curseur fixe
+----
+
+. *Ajuster l'espacement*
++
+Pour les arbres avec beaucoup de nœuds :
++
+- Cliquez sur le bouton `-` d'espacement pour réduire l'écart
+- Cliquez sur le bouton `+` pour augmenter l'écart
+- L'arbre se réorganise en temps réel
+
+=== Exporter l'arbre
+
+. Ajustez la vue selon vos besoins
+. Cliquez sur le bouton *Export* (icône de téléchargement)
+. L'arbre est téléchargé en format SVG vectoriel
+. Le fichier peut être ouvert dans n'importe quel éditeur graphique
+
+== Cas d'usage avancés
+
+=== Analyse détaillée des branches
+
+Pour examiner une branche spécifique :
+
+. Zoomez à 200-300% sur la zone d'intérêt
+. Utilisez l'espacement à 150% pour mieux voir les connexions
+. Naviguez avec les touches directionnelles pour un contrôle précis
+
+=== Présentation d'arbre complexe
+
+Pour présenter un arbre avec >100 nœuds :
+
+. Commencez avec "Ajuster à l'écran" pour la vue d'ensemble
+. Zoomez progressivement sur les zones importantes
+. Utilisez les raccourcis clavier pour une navigation fluide
+
+=== Export pour publication
+
+. Ajustez l'arbre à la taille souhaitée
+. Réglez l'espacement pour une lisibilité optimale
+. Exportez en SVG pour une qualité maximale
+. Convertissez en PNG/PDF dans votre éditeur préféré
+
+== Caractéristiques techniques
+
+=== Performance
+
+- *Rendu natif SVG* : Pas de dépendance externe
+- *Transformations CSS3* : Animations fluides via GPU
+- *Event throttling* : Gestion optimisée des événements souris
+- *Lazy rendering* : Seuls les éléments visibles sont rendus
+
+=== Limites actuelles
+
+- Arbres jusqu'à ~1000 nœuds (au-delà, performances dégradées)
+- Export limité au format SVG (PNG/PDF prévu)
+- Minimap non encore implémentée
+- Support tactile en développement
+
+== Évolutions futures
+
+=== Version 2.0 (Prévue)
+
+- [ ] Minimap interactive pour navigation rapide
+- [ ] Support tactile complet (tablettes/smartphones)
+- [ ] Export PNG haute résolution avec options
+- [ ] Sauvegarde/restauration de la vue
+
+=== Version 3.0 (Roadmap)
+
+- [ ] Mode collaboration temps réel
+- [ ] Annotations sur l'arbre
+- [ ] Comparaison côte-à-côte de plusieurs arbres
+- [ ] Virtualisation pour arbres >5000 nœuds
+
+== Dépannage
+
+[cols="2,3"]
+|===
+| Problème | Solution
+
+| L'arbre ne s'affiche pas
+| Rafraîchissez la page et attendez le chargement complet
+
+| Zoom trop sensible
+| Utilisez le slider plutôt que la molette
+
+| Performance lente
+| Réduisez le niveau de zoom ou l'espacement
+
+| Export échoue
+| Vérifiez l'espace disque disponible
+|===
+
+== Conclusion
+
+Le Tableau Blanc Interactif représente une avancée majeure dans la visualisation d'arbres de décision. Il transforme une visualisation statique en un outil d'exploration dynamique, essentiel pour l'analyse approfondie des modèles de machine learning.
+
+Pour toute question ou suggestion d'amélioration, n'hésitez pas à contacter l'équipe de développement IBIS-X.

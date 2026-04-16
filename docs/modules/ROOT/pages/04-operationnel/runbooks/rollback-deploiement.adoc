@@ -1,0 +1,75 @@
+= Runbook — Rollback d'un déploiement
+:description: Revenir à la version précédente en production
+
+== Critères de déclenchement
+
+* Taux d'erreur > 5 % sur les endpoints api-gateway après un déploiement.
+* CrashLoopBackOff d'un ou plusieurs pods.
+* Régression fonctionnelle critique détectée par QA/utilisateur.
+* Incident sécurité (voir xref:04-operationnel/runbooks/incident-response.adoc[Incident response]).
+
+== Décision — en moins de 15 minutes
+
+. Qui est impacté ? Combien d'utilisateurs ?
+. Le problème est-il *certainement* causé par le dernier déploiement ? (corrélation temporelle, changelog)
+. Rollback vs hotfix : rollback si le délai pour un fix > 30 min.
+
+== Procédure — rollback Kubernetes
+
+=== Cas A — service applicatif (api-gateway, service-selection, ml-pipeline, xai-engine, frontend)
+
+[source,bash]
+----
+# Voir l'historique
+kubectl rollout history deployment/{service}-deployment -n ibis-x
+
+# Rollback au précédent
+kubectl rollout undo deployment/{service}-deployment -n ibis-x
+
+# Ou vers une révision précise
+kubectl rollout undo deployment/{service}-deployment --to-revision=<N> -n ibis-x
+
+# Vérifier
+kubectl rollout status deployment/{service}-deployment -n ibis-x
+----
+
+=== Cas B — worker Celery (ml-pipeline-worker, xai-engine-worker)
+
+Même commande qu'un service ; attention à drainer les tâches en cours si critiques (éviter de perdre un training en cours).
+
+=== Cas C — migration Alembic + image incompatibles
+
+Si le nouveau code dépend d'un schéma modifié et que le rollback ramène un ancien code incompatible avec la nouvelle BDD :
+
+. *Downgrade* la migration Alembic :
++
+[source,bash]
+----
+kubectl exec -n ibis-x deployment/{service}-deployment -- \
+  alembic -x version_table=alembic_version_{service} downgrade -1
+----
+. Puis rollback du Deployment.
+
+Voir xref:04-operationnel/runbooks/migration-bdd.adoc[Runbook migration BDD].
+
+== Validation post-rollback
+
+* [ ] Pods en `Running` + `Ready`.
+* [ ] Smoke test : login + création projet + upload petit dataset.
+* [ ] Métriques API : taux d'erreur revenu sous le seuil.
+* [ ] Logs : pas de stack trace répétée.
+
+== Communication
+
+* Poster dans le canal d'équipe : *« Rollback effectué de {service} vers révision N-1. Cause : {description}. »*
+* Ouvrir une issue GitHub pour tracer l'incident et la root cause analysis à faire.
+
+== Post-mortem (léger pour PoC)
+
+Après l'incident, rédiger en 1 page :
+
+. Timeline : T0 push, T+X détection, T+Y rollback, T+Z retour nominal.
+. Cause racine (5 whys).
+. Actions de prévention (test manquant à ajouter, check CI, etc.).
+
+Classer dans GitHub Discussions (onglet "post-mortems") ou issue dédiée.

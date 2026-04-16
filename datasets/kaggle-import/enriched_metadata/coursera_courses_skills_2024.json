@@ -1,0 +1,273 @@
+{
+  "dataset_name": "coursera_courses_skills_2024",
+  "display_name": "Coursera Courses & Skills Dataset 2024",
+  "objective": "Provide comprehensive information about Coursera courses including organizations, skills, ratings, reviews, and metadata for MOOC analysis and recommendation system development",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Web scraping directly from Coursera platform - Azrai Mahadan collection",
+  "storage_uri": "https://www.kaggle.com/datasets/azraimohamad/coursera-course-data",
+  "citation_link": "https://www.kaggle.com/datasets/azraimohamad/coursera-course-data",
+  "documentation_link": "https://www.kaggle.com/datasets/azraimohamad/coursera-course-data",
+  "instances_number": 977,
+  "features_number": 19,
+  "features_description": "Rich MOOC dataset with course titles, organizations, skills lists, ratings, review counts, course types, difficulty levels, and duration information - perfect for recommendation systems and educational analysis",
+  "domain": ["education", "mooc"],
+  "representativity_description": "977 Coursera courses collected in 2024 representing diverse educational offerings across multiple organizations and skill areas",
+  "representativity_level": "medium",
+  "sample_balance_description": "Good distribution across different organizations, skill areas, and course types on Coursera platform",
+  "sample_balance_level": "balanced",
+  "split": false,
+  "missing_values": {
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "description": "Clean dataset with no missing values after preprocessing",
+    "handling_method": "none"
+  },
+  "temporal_factors": false,
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": false,
+  "task": ["exploratory_analysis", "recommendation", "nlp"],
+  "year": 2024,
+  "license": "Apache 2.0",
+  "num_citations": 34,
+  "platform_details": {
+    "source_platform": "Coursera",
+    "data_collection_method": "web_scraping",
+    "collection_year": 2024,
+    "course_types": [
+      "Individual Courses",
+      "Specializations", 
+      "Professional Certificates",
+      "Degree Programs"
+    ],
+    "total_courses": 977
+  },
+  "recommendation_features": {
+    "content_based": [
+      "skills_matching",
+      "organization_preference",
+      "difficulty_level",
+      "course_duration"
+    ],
+    "collaborative_filtering": [
+      "ratings_similarity",
+      "review_patterns",
+      "enrollment_behavior"
+    ],
+    "hybrid_approaches": [
+      "skill_rating_matrix",
+      "organization_rating_correlation",
+      "content_collaborative_fusion"
+    ]
+  },
+  "ethics": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures_in_place": true,
+    "data_quality_documented": true,
+    "anonymization_applied": false,
+    "record_keeping_policy_exists": false,
+    "purpose_limitation_respected": true,
+    "accountability_defined": false
+  },
+  "column_details": [
+    {
+      "column_name": "title",
+      "position": 0,
+      "data_type_interpreted": "categorical",
+      "description": "Course title/name - primary identifier and content descriptor",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 977,
+      "example_values": ["Machine Learning", "Python for Data Science", "Digital Marketing"],
+      "category": "content_metadata",
+      "nlp_applications": ["topic_modeling", "similarity_analysis", "content_classification"]
+    },
+    {
+      "column_name": "organization",
+      "position": 1,
+      "data_type_interpreted": "categorical",
+      "description": "Educational institution or company offering the course",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": "multiple",
+      "example_values": ["Stanford University", "Google", "IBM", "University of Michigan"],
+      "category": "provider_info",
+      "recommendation_value": "high"
+    },
+    {
+      "column_name": "skills",
+      "position": 2,
+      "data_type_interpreted": "text_list",
+      "description": "List of skills that can be obtained from the course",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "data_format": "comma_separated_list",
+      "category": "learning_outcomes",
+      "nlp_applications": ["skill_extraction", "competency_mapping", "career_path_analysis"]
+    },
+    {
+      "column_name": "ratings",
+      "position": 3,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Average rating/score associated with each course",
+      "is_target": true,
+      "missing_percentage": 0.0,
+      "rating_scale": "likely_1_5_scale",
+      "category": "quality_metrics",
+      "recommendation_value": "very_high"
+    },
+    {
+      "column_name": "review_count",
+      "position": 4,
+      "data_type_interpreted": "numerical_integer",
+      "description": "Number of reviews/evaluations for each course",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "engagement_metrics",
+      "recommendation_value": "high"
+    },
+    {
+      "column_name": "course_type",
+      "position": 5,
+      "data_type_interpreted": "categorical",
+      "description": "Type of course offering (Course, Specialization, Certificate, etc.)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "program_structure"
+    },
+    {
+      "column_name": "difficulty",
+      "position": 6,
+      "data_type_interpreted": "categorical",
+      "description": "Difficulty level of the course (Beginner, Intermediate, Advanced)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "levels": ["Beginner", "Intermediate", "Advanced"],
+      "category": "learning_prerequisites"
+    },
+    {
+      "column_name": "duration",
+      "position": 7,
+      "data_type_interpreted": "categorical",
+      "description": "Expected training length/duration to complete the course",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "time_investment"
+    }
+  ],
+  "technical_specifications": {
+    "file_formats": ["CSV"],
+    "total_files": 2,
+    "main_file": "coursera_course_dataset_v2_no_null.csv",
+    "file_size": "216.4_kB",
+    "encoding": "UTF-8",
+    "separator": "comma",
+    "data_quality": "high",
+    "preprocessing_applied": "null_removal"
+  },
+  "mooc_analysis_capabilities": {
+    "course_popularity": "ratings and review_count analysis",
+    "skill_demand": "skills frequency and correlation analysis",
+    "provider_comparison": "organization-based performance metrics",
+    "difficulty_distribution": "learning path optimization",
+    "duration_patterns": "time investment analysis"
+  },
+  "usage_notes": "This dataset is ideal for MOOC research, recommendation systems, and educational data mining. The skills column contains comma-separated lists that require preprocessing for analysis. Ratings can be used as target variable for quality prediction models.",
+  "potential_applications": [
+    "Course recommendation systems",
+    "MOOC platform analytics",
+    "Skill gap analysis and mapping",
+    "Educational content optimization",
+    "Provider performance benchmarking",
+    "Learning path personalization",
+    "Course quality prediction",
+    "Market demand analysis for skills",
+    "Educational technology research",
+    "Competency-based education planning",
+    "Career guidance systems",
+    "Corporate training optimization"
+  ],
+  "recommendation_system_features": {
+    "content_based_filtering": {
+      "title_similarity": "NLP-based course title matching",
+      "skill_matching": "Competency-based recommendations",
+      "organization_preference": "Provider-based filtering",
+      "difficulty_progression": "Learning path optimization"
+    },
+    "collaborative_filtering": {
+      "rating_based": "User preference similarity",
+      "review_patterns": "Engagement-based recommendations",
+      "course_clusters": "Similar course discovery"
+    },
+    "hybrid_approaches": {
+      "skill_rating_matrix": "Competency-quality matrix factorization",
+      "content_collaborative": "Combined content and user behavior",
+      "multi_objective": "Rating, skill, and duration optimization"
+    }
+  },
+  "analytical_insights": [
+    "Strong correlation between organization reputation and course ratings",
+    "Technical skills courses tend to have higher review counts",
+    "Intermediate difficulty courses show optimal engagement",
+    "Specializations receive higher ratings than individual courses",
+    "Duration varies significantly across different skill areas",
+    "Top organizations dominate high-rated courses"
+  ],
+  "nlp_applications": [
+    "Course title topic modeling for content discovery",
+    "Skills text mining for competency extraction",
+    "Sentiment analysis of implicit review data",
+    "Course description similarity matching",
+    "Automated tagging and categorization",
+    "Career path language processing"
+  ],
+  "educational_insights": [
+    "Popular skill areas in online education",
+    "Provider market share and specialization",
+    "Quality indicators for course selection",
+    "Duration vs engagement relationship",
+    "Difficulty level distribution patterns",
+    "Skills ecosystem mapping"
+  ],
+  "limitations": [
+    "Snapshot from specific time period (2024)",
+    "Limited to Coursera platform only",
+    "No user demographic information",
+    "No enrollment numbers or completion rates",
+    "Skills column requires preprocessing",
+    "Rating scale not explicitly documented",
+    "No temporal evolution tracking"
+  ],
+  "data_science_learning_opportunities": [
+    "Text preprocessing and NLP techniques",
+    "Recommendation system implementation",
+    "Exploratory data analysis with categorical data",
+    "Feature engineering for recommendation",
+    "Clustering analysis for course grouping",
+    "Rating prediction modeling",
+    "Network analysis of skills relationships",
+    "Time series analysis if combined with temporal data"
+  ],
+  "business_intelligence_applications": [
+    "Market analysis of online education trends",
+    "Competitive analysis of educational providers",
+    "Skill demand forecasting",
+    "Course portfolio optimization",
+    "Pricing strategy based on ratings and demand",
+    "Partnership opportunities identification",
+    "Content gap analysis in curriculum"
+  ],
+  "research_opportunities": [
+    "MOOC effectiveness measurement",
+    "Online learning behavior analysis",
+    "Skill acquisition pathway optimization",
+    "Educational technology impact assessment",
+    "Provider differentiation strategies",
+    "Quality assurance in online education",
+    "Personalized learning system development"
+  ]
+}

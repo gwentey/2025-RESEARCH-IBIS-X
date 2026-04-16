@@ -1,0 +1,65 @@
+= ADR 0004 — Angular Material, pas de Tailwind
+
+[cols="1,3"]
+|===
+| Statut | accepted
+| Date | 2025-Q1
+|===
+
+== Contexte & problème
+
+Le frontend IBIS-X doit offrir une UX mature (wizards multi-étapes, dashboards, visualisations interactives) et être rapidement développable par une équipe réduite. Deux grandes familles de solutions UI :
+
+* Bibliothèque de composants opinionée (Angular Material, PrimeNG).
+* Framework utility-first (Tailwind CSS) laissant construire ses composants.
+
+Risques d'un mix des deux : double système de spacing/colors, incohérence visuelle, doublons (style Material override + classes utilitaires Tailwind).
+
+== Décision
+
+Nous adoptons **Angular Material 19 exclusivement** comme système de composants UI, avec **SCSS personnalisé** pour les overrides (thème Sorbonne). **Pas de Tailwind CSS.**
+
+Règle dure documentée dans `CLAUDE.md` et `memory-bank/conventions.md` :
+
+> Angular Material obligatoire pour tous composants UI. Pas de Bootstrap, pas de Tailwind.
+
+== Alternatives envisagées
+
+=== A. Tailwind CSS seul
+
+* ✅ Avantages : flexibilité, bundle CSS petit en prod, écosystème important.
+* ❌ Rejet : nécessite de construire tous les composants (table avec tri, autocomplete, date picker…) — trop long pour un PoC.
+
+=== B. Mix Angular Material + Tailwind
+
+* ✅ Avantages : composants Material pour les cas complexes, utilitaires Tailwind pour le layout.
+* ❌ Rejet : divergence de systèmes (spacing Material ≠ spacing Tailwind, couleurs incohérentes), overhead de maintenance, source fréquente de bugs visuels.
+
+=== C. PrimeNG
+
+* ✅ Avantages : riche, composants avancés (charts, treetable).
+* ❌ Rejet : moins standard, communauté Material plus forte, thème Material déjà abordé en cours.
+
+== Conséquences
+
+=== Positives
+
+* Cohérence visuelle garantie (thème unique, tokens SCSS centralisés).
+* Onboarding frontend rapide (un seul système à apprendre).
+* Accessibilité baseline assurée par Material.
+
+=== Négatives / coûts
+
+* Overrides SCSS complexes pour certains écrans (animation de login, page hero ML pipeline).
+* Bundle CSS plus lourd que du Tailwind-pur.
+* Flexibilité moindre pour les designs très custom (on contourne plutôt qu'on compose).
+
+=== Neutres
+
+* Les composants visuels complexes (visualisations d'explications XAI, heatmaps de projets) utilisent **ECharts** et **WebSHAP** en plus de Material.
+
+== Références
+
+* Thème : `frontend/src/assets/scss/_sorbonne-modern-overrides.scss`.
+* Conventions : `CLAUDE.md` (section frontend), `memory-bank/conventions.md` §4.
+* Page : xref:03-technique/frontend/design-system.adoc[Design system Sorbonne].

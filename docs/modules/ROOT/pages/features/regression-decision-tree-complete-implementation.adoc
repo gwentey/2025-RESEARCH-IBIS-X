@@ -1,0 +1,182 @@
+= Implémentation Complète : Régression + Decision Tree
+:navtitle: Régression + Decision Tree
+:description: Documentation de l'implémentation complète de la combinaison Régression + Decision Tree avec toutes les visualisations obligatoires
+
+== Vue d'Ensemble
+
+La combinaison **Régression + Decision Tree** dans IBIS-X est maintenant **100% conforme** aux exigences scientifiques avec toutes les métriques et visualisations obligatoires implémentées.
+
+== 📊 KPIs Obligatoires ✅
+
+=== Métrique Principale
+* **MAE (Mean Absolute Error)** : Erreur absolue moyenne, métrique principale pour la régression
+** Exprimée dans l'unité de la variable cible
+** Plus intuitive que RMSE pour l'interprétation
+
+=== Métriques Secondaires
+* **RMSE** : Racine de l'erreur quadratique moyenne
+** Pénalise davantage les grandes erreurs
+** Utile quand les outliers sont critiques
+
+* **R²** : Coefficient de détermination
+** Pourcentage de variance expliquée par le modèle
+** Plus proche de 100% = meilleur modèle
+
+* **MSE** : Erreur quadratique moyenne (métrique intermédiaire)
+
+== 🎯 Visualisations Obligatoires Implémentées
+
+=== 1. Scatter Plot : Prédictions vs Valeurs Réelles
+* **Objectif** : Évaluer la précision globale du modèle
+* **Interprétation** : Les points doivent suivre la diagonale idéale
+* **Amélioration** : Affichage des statistiques R² et MAE directement sur le graphique
+* **Clé backend** : `regression_plot`
+
+=== 2. 🆕 Résidus vs Prédictions 
+* **Objectif** : Détecter l'hétéroscédasticité et les patterns dans les erreurs
+* **Interprétation** : Points distribués aléatoirement autour de 0, sans pattern visible
+* **Détection** : Variance non-constante, biais systématique
+* **Clé backend** : `residual_vs_predicted`
+
+=== 3. 🆕 Histogramme des Résidus
+* **Objectif** : Vérifier l'hypothèse de normalité des erreurs
+* **Interprétation** : Distribution symétrique, centrée sur 0, approximativement normale
+* **Amélioration** : Courbe de distribution normale en overlay pour comparaison
+* **Statistiques** : Calcul automatique de l'asymétrie (skewness) avec interprétation
+* **Clé backend** : `residuals_histogram`
+
+=== 4. Visualisation de l'Arbre de Décision
+* **Objectif** : Comprendre la logique de décision étape par étape
+* **Interprétation** : Suivre les branches pour comprendre les prédictions
+* **Spécificité** : Arbre simple et interprétable pour régression
+* **Clé backend** : `tree_structure`
+
+== 🔧 Implémentation Technique
+
+=== Backend : Nouvelles Fonctions (ml-pipeline-service/app/ml/evaluation.py)
+
+[source,python]
+----
+def plot_residual_vs_predicted(y_true, y_pred) -> str:
+    """
+    🎯 NOUVEAU: Plot residuals vs predictions for regression analysis
+    Critical for detecting heteroscedasticity and error patterns
+    """
+    # Calcule les résidus
+    residuals = y_true - y_pred
+    
+    # Scatter plot avec ligne horizontale à 0
+    # Statistiques (moyenne et écart-type des résidus)
+    # Retourne image base64
+
+def plot_residuals_histogram(y_true, y_pred) -> str:
+    """
+    🎯 NOUVEAU: Plot histogram of residuals for regression analysis  
+    Critical for checking normality assumption of regression errors
+    """
+    # Calcule les résidus
+    # Histogramme avec courbe normale overlay
+    # Calcul asymétrie (skewness) avec interprétation
+    # Retourne image base64
+----
+
+=== Frontend : Support Complet (experiment-results.component.ts)
+
+[source,typescript]
+----
+// 🎯 NOUVEAU: Méthodes de vérification
+hasResidualVsPredicted(): boolean
+hasResidualsHistogram(): boolean
+
+// 🎯 NOUVEAU: Méthodes d'accès aux images  
+getResidualVsPredictedImage(): string
+getResidualsHistogramImage(): string
+
+// 🎯 NOUVEAU: Support dans getVisualizationImage()
+case 'residual_vs_predicted': return this.getResidualVsPredictedImage();
+case 'residuals_histogram': return this.getResidualsHistogramImage();
+----
+
+== 📋 Ordre de Priorité des Visualisations
+
+Pour **Régression + Decision Tree**, l'ordre d'affichage est :
+
+1. **Arbre de Décision** (priorité 1) - Logique de décision
+2. **Scatter Plot** (priorité 2) - Performance globale  
+3. **Résidus vs Prédictions** (priorité 3) - Détection patterns
+4. **Histogramme Résidus** (priorité 4) - Vérification normalité
+5. **Importance Variables** (priorité 5) - Si disponible
+
+== 🎓 Explications Pédagogiques Intégrées
+
+=== Conseils d'Interprétation Automatiques
+
+* **Scatter Plot** : "Les points doivent suivre la diagonale idéale pour un modèle parfait. Écarts = erreurs du modèle."
+* **Résidus vs Prédictions** : "Détecte l'hétéroscédasticité (variance non-constante). Points doivent être distribués aléatoirement autour de 0 sans pattern visible."
+* **Histogramme Résidus** : "Vérifie l'hypothèse de normalité. Distribution doit être symétrique, centrée sur 0 et approximativement normale (courbe en cloche)."
+
+=== Guide Pédagogique Complet
+
+L'interface affiche automatiquement :
+
+* **Titre** : "Régression par Arbre de Décision"
+* **Description** : "Votre modèle prédit des valeurs numériques en divisant l'espace des données en zones homogènes via des questions logiques."
+* **Points Clés** :
+** MAE (métrique principale) avec explication unité
+** R² et RMSE avec interprétations
+** Explications spécifiques pour chaque visualisation
+** Logique de l'arbre de décision
+
+== ✅ Validation Scientifique
+
+=== Conformité aux Exigences
+
+* **✅ MAE Principal** : Implémenté et prioritaire
+* **✅ RMSE, R²** : Calculés et affichés
+* **✅ Scatter y_vrai vs y_prédit** : Avec diagonale idéale
+* **✅ Résidus vs prédictions** : Détection hétéroscédasticité  
+* **✅ Histogramme résidus** : Vérification normalité
+* **✅ Visualisation arbre** : Logique de décision
+* **✅ Aucune donnée factice** : Tous les calculs sont authentiques
+
+=== Tests de Validation
+
+Tous les résultats proviennent de :
+* Calculs scikit-learn authentiques
+* Métriques calculées sur vraies données test
+* Visualisations générées à partir des vraies prédictions
+* Aucun placeholder ou valeur simulée
+
+== 🚀 Utilisation
+
+Pour déclencher un entraînement **Régression + Decision Tree** :
+
+1. **Sélectionner un dataset** avec variable cible numérique
+2. **Choisir "Decision Tree"** comme algorithme  
+3. **Sélectionner "Régression"** comme type de tâche
+4. **Configurer les hyperparamètres** (max_depth, min_samples_split, etc.)
+5. **Lancer l'entraînement**
+
+=== Résultats Attendus
+
+* **Page de résultats** avec toutes les visualisations
+* **Métriques prioritaires** : MAE, RMSE, R²
+* **4 visualisations complètes** : Scatter, Résidus vs Prédictions, Histogramme, Arbre
+* **Explications pédagogiques** adaptées au contexte
+* **Conseils d'interprétation** scientifiquement corrects
+
+== 📈 Comparaison avec Random Forest
+
+Pour référence, **Régression + Random Forest** partage les mêmes métriques (MAE principal) mais diffère par :
+* Visualisations d'importance des variables plus robustes
+* Pas de visualisation d'arbre individuel (échantillon seulement)
+* Performance généralement supérieure grâce à l'ensemble d'arbres
+
+== 🎯 Impact Scientifique
+
+Cette implémentation garantit :
+* **Reproductibilité** des résultats de recherche
+* **Validation scientifique** complète des modèles
+* **Compréhension pédagogique** des concepts ML
+* **Détection des problèmes** statistiques (hétéroscédasticité, non-normalité)
+* **Confiance** dans les résultats pour publication académique

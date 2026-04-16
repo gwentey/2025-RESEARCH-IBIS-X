@@ -1,0 +1,272 @@
+{
+  "metadata_version": "1.0",
+  "dataset_info": {
+    "name": "titanic_survival_prediction",
+    "source": "kaggle",
+    "kaggle_ref": "yasserh/titanic-dataset"
+  },
+  "enriched_metadata": {
+    "dataset_name": "titanic_survival_prediction",
+    "display_name": "Titanic Survival Prediction Dataset",
+    "objective": "Predict survival of Titanic passengers based on demographic, socioeconomic, and travel information from the infamous 1912 maritime disaster",
+    "access": "public",
+    "availability": "online",
+    "storage_path": "",
+    "sources": "Historical Titanic passenger records - Original competition dataset from Kaggle Titanic competition",
+    "storage_uri": "https://www.kaggle.com/datasets/yasserh/titanic-dataset",
+    "citation_link": "https://www.kaggle.com/datasets/yasserh/titanic-dataset",
+    "documentation_link": "https://www.kaggle.com/datasets/yasserh/titanic-dataset",
+    "instances_number": 891,
+    "features_number": 10,
+    "features_description": "Passenger demographic and travel information: class, name, sex, age, siblings/spouses aboard, parents/children aboard, ticket number, fare, cabin, port of embarkation",
+    "domain": ["social", "research"],
+    "representativity_description": "Training set with 891 passengers from the Titanic's maiden voyage; represents a subset of the 2,224 people aboard with focus on passengers with complete survival records",
+    "representativity_level": "medium",
+    "sample_balance_description": "Imbalanced dataset with approximately 38% survivors (342) and 62% fatalities (549), reflecting the tragic reality of insufficient lifeboats",
+    "sample_balance_level": "imbalanced",
+    "split": true,
+    "missing_values_description": "Missing values primarily in Age (~20% missing) and Cabin (~77% missing) columns due to incomplete historical record keeping",
+    "has_missing_values": true,
+    "global_missing_percentage": 20.0,
+    "missing_values_handling_method": "impute",
+    "temporal_factors": false,
+    "metadata_provided_with_dataset": true,
+    "external_documentation_available": true,
+    "task": ["classification"],
+    "year": 2012,
+    "license": "CC0: Public Domain",
+    "num_citations": null,
+    "historical_significance": {
+      "disaster_date": "1912-04-15",
+      "ship_name": "RMS Titanic",
+      "disaster_type": "Maritime collision with iceberg",
+      "total_aboard": 2224,
+      "total_survivors": 710,
+      "total_fatalities": 1514,
+      "significance": "One of the most famous maritime disasters in history, widely studied for social class disparities in survival rates",
+      "cultural_impact": "The 'Women and children first' protocol and class-based survival differences make this a compelling case study",
+      "educational_legacy": "Most popular beginner dataset in machine learning for binary classification problems"
+    },
+    "passenger_demographics": {
+      "classes": [
+        {
+          "class": 1,
+          "description": "First class - Upper class passengers",
+          "typical_fare_range": "30-500+ pounds",
+          "survival_rate": "~62%"
+        },
+        {
+          "class": 2,
+          "description": "Second class - Middle class passengers", 
+          "typical_fare_range": "10-30 pounds",
+          "survival_rate": "~47%"
+        },
+        {
+          "class": 3,
+          "description": "Third class - Lower class passengers and immigrants",
+          "typical_fare_range": "3-15 pounds", 
+          "survival_rate": "~24%"
+        }
+      ],
+      "gender_distribution": {
+        "male": "65%",
+        "female": "35%"
+      },
+      "age_distribution": {
+        "min_age": 0.42,
+        "max_age": 80,
+        "mean_age": "~29 years",
+        "children_under_18": "~20%"
+      },
+      "embarkation_ports": [
+        {
+          "port": "S",
+          "name": "Southampton",
+          "description": "Primary departure port in England",
+          "percentage": "~72%"
+        },
+        {
+          "port": "C", 
+          "name": "Cherbourg",
+          "description": "French port, mainly first-class passengers",
+          "percentage": "~19%"
+        },
+        {
+          "port": "Q",
+          "name": "Queenstown",
+          "description": "Irish port, mainly third-class passengers", 
+          "percentage": "~9%"
+        }
+      ]
+    },
+    "feature_details": [
+      {
+        "name": "PassengerId",
+        "type": "numerical",
+        "description": "Unique identifier for each passenger"
+      },
+      {
+        "name": "Survived", 
+        "type": "categorical",
+        "description": "Target variable - survival outcome (0 = No, 1 = Yes)",
+        "values": ["0", "1"]
+      },
+      {
+        "name": "Pclass",
+        "type": "categorical", 
+        "description": "Ticket class as proxy for socioeconomic status (1 = 1st, 2 = 2nd, 3 = 3rd)",
+        "values": ["1", "2", "3"]
+      },
+      {
+        "name": "Name",
+        "type": "text",
+        "description": "Passenger name (contains titles that can be extracted)"
+      },
+      {
+        "name": "Sex",
+        "type": "categorical",
+        "description": "Gender of the passenger", 
+        "values": ["male", "female"]
+      },
+      {
+        "name": "Age",
+        "type": "numerical",
+        "description": "Age in years (missing for ~20% of passengers)"
+      },
+      {
+        "name": "SibSp",
+        "type": "numerical", 
+        "description": "Number of siblings/spouses aboard the Titanic"
+      },
+      {
+        "name": "Parch",
+        "type": "numerical",
+        "description": "Number of parents/children aboard the Titanic"
+      },
+      {
+        "name": "Ticket",
+        "type": "text",
+        "description": "Ticket number (can indicate group bookings)"
+      },
+      {
+        "name": "Fare",
+        "type": "numerical",
+        "description": "Passenger fare paid"
+      },
+      {
+        "name": "Cabin",
+        "type": "text", 
+        "description": "Cabin number (missing for ~77% of passengers)"
+      },
+      {
+        "name": "Embarked",
+        "type": "categorical",
+        "description": "Port of embarkation",
+        "values": ["C", "Q", "S"]
+      }
+    ],
+    "data_characteristics": {
+      "data_type": "mixed",
+      "numerical_features": 4,
+      "categorical_features": 4,
+      "text_features": 2,
+      "target_variable": "Survived",
+      "binary_classification": true,
+      "multi_class": false,
+      "missing_values": true,
+      "balanced_dataset": false,
+      "small_dataset": true,
+      "medium_dataset": false,
+      "large_dataset": false
+    },
+    "ml_applications": {
+      "primary_task": "Binary Classification",
+      "suitable_algorithms": [
+        "Logistic Regression",
+        "Decision Trees",
+        "Random Forest",
+        "SVM",
+        "Naive Bayes", 
+        "Neural Networks",
+        "Gradient Boosting"
+      ],
+      "learning_objectives": [
+        "Binary classification fundamentals",
+        "Handling missing data",
+        "Feature engineering (titles, family size)",
+        "Data preprocessing",
+        "Model evaluation metrics",
+        "Cross-validation"
+      ],
+      "evaluation_metrics": ["Accuracy", "Precision", "Recall", "F1-Score", "ROC-AUC"],
+      "typical_results": "Accuracy around 80-85% achievable with proper feature engineering"
+    },
+    "educational_value": {
+      "difficulty_level": "beginner",
+      "learning_concepts": [
+        "Binary classification",
+        "Missing data imputation",
+        "Categorical encoding",
+        "Feature engineering",
+        "Data visualization",
+        "Statistical analysis",
+        "Ethics in data science"
+      ],
+      "common_exercises": [
+        "Explore survival rates by passenger class and gender",
+        "Handle missing Age and Cabin data",
+        "Extract titles from passenger names",
+        "Create family size features",
+        "Build and compare multiple classification models",
+        "Analyze feature importance and model interpretability"
+      ]
+    },
+    "social_implications": {
+      "ethical_considerations": [
+        "Historical dataset reflecting social inequalities of early 20th century",
+        "Class-based survival disparities raise questions about social justice",
+        "Gender and age biases in survival protocols",
+        "Use of human tragedy data requires respectful treatment"
+      ],
+      "historical_context": {
+        "era": "Edwardian period (early 1900s)",
+        "social_structure": "Rigid class hierarchy reflected in ship accommodation",
+        "maritime_law": "Insufficient lifeboat regulation leading to disaster",
+        "cultural_norms": "Women and children first protocol, class-based privileges"
+      },
+      "lessons_learned": [
+        "Importance of adequate safety measures regardless of class",
+        "Maritime safety regulations were revolutionized post-Titanic", 
+        "Social inequality can be literally life-or-death in crisis situations"
+      ]
+    },
+    "research_applications": {
+      "academic_fields": ["Machine Learning", "Social Science", "History", "Maritime Studies"],
+      "research_questions": [
+        "What factors most influenced survival probability?", 
+        "How did social class affect life-or-death outcomes?",
+        "Can we identify optimal evacuation strategies?",
+        "What does survival data tell us about Edwardian society?"
+      ],
+      "statistical_insights": [
+        "Clear correlation between passenger class and survival",
+        "Women and children had significantly higher survival rates",
+        "Family groups showed complex survival patterns",
+        "Fare paid strongly correlated with class and survival"
+      ]
+    },
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": false,
+    "security_measures_in_place": true,
+    "data_quality_documented": true,
+    "data_errors_description": "Historical records have natural inconsistencies; missing values in age and cabin assignments due to incomplete record keeping",
+    "anonymization_applied": false,
+    "record_keeping_policy_exists": false,
+    "purpose_limitation_respected": true,
+    "accountability_defined": true,
+    "created_at": "2025-09-21T16:11:30",
+    "updated_at": "2025-09-21T16:11:30"
+  }
+}

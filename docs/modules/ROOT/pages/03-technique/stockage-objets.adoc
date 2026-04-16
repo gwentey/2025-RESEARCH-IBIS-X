@@ -1,0 +1,107 @@
+= Stockage objets — MinIO / Azure Blob
+:description: Persistance des fichiers volumineux
+
+== Principe
+
+Les fichiers lourds ne vont **jamais** en BDD. Ils sont stockés dans un **stockage objets** et référencés en BDD par leur URI (`storage_path`, `artifact_uri`).
+
+== Environnements
+
+[cols="1,2,2"]
+|===
+| Env | Backend | Variable pivot
+| Local | MinIO (StatefulSet K8s) | `STORAGE_BACKEND=minio`
+| Prod | Azure Blob Storage | `STORAGE_BACKEND=azure`
+|===
+
+Un seul module applicatif abstrait les deux : choix via `settings.STORAGE_BACKEND`.
+
+== Buckets / Containers
+
+[cols="1,2"]
+|===
+| Nom | Contenu
+| `ibis-x-datasets` | Fichiers uploadés (CSV, Parquet, JSON) + manifests
+| `ibis-x-models` | Artefacts (modèles joblib) + visualisations (PNG, JSON)
+| `ibis-x-exports` (post-PoC) | Exports utilisateur (RGPD portabilité)
+|===
+
+== Conventions de chemin
+
+=== Datasets
+
+`ibis-x-datasets/{dataset_id}/{file_name}`
+
+Exemples :
+
+* `ibis-x-datasets/550e8400-e29b-41d4-a716-446655440000/iris.parquet`
+* `ibis-x-datasets/.../train.parquet`, `.../test.parquet` (multi-fichiers)
+
+Le champ `datasets.storage_path` stocke le **préfixe** (`ibis-x-datasets/{dataset_id}/`), et chaque entrée `dataset_files.file_path` stocke le chemin complet.
+
+=== Artefacts ML
+
+`ibis-x-models/{project_id}/{experiment_id}/{artifact}`
+
+Exemples :
+
+* `ibis-x-models/.../.../model.joblib` ← référencé par `experiments.artifact_uri`
+* `ibis-x-models/.../.../preprocessing_pipeline.joblib`
+* `ibis-x-models/.../.../confusion_matrix.png`
+* `ibis-x-models/.../.../roc_curve.png`
+* `ibis-x-models/.../.../feature_importance.json`
+
+== Configuration MinIO local
+
+Provisionné via `k8s/base/minio/minio-statefulset.yaml` (PVC 50 Gi).
+
+Secret `minio-secrets` : `accesskey`, `secretkey`.
+
+Console admin : `kubectl port-forward -n ibis-x svc/minio-service 9001:9001` → http://localhost:9001.
+
+== Configuration Azure Blob
+
+Provisionné via Terraform (`azurerm_storage_account` + `azurerm_storage_container`).
+
+Secret K8s : `azure-storage-secret` contient `AZURE_STORAGE_CONNECTION_STRING`.
+
+Options activées en prod :
+
+* Soft delete 30 jours.
+* Versioning.
+* Geo-redundant storage (GRS).
+
+== Accès par les services
+
+Client commun (ex. `app/services/storage.py`) :
+
+[source,python]
+----
+class StorageClient:
+    def upload(self, key: str, data: bytes) -> str:
+        # → MinIO ou Azure selon settings
+    def download(self, key: str) -> bytes:
+        ...
+    def delete(self, key: str) -> None:
+        ...
+----
+
+Chaque service instancie ce client et l'utilise uniformément.
+
+== Règles
+
+. *Jamais* de clé de stockage en dur dans les tables BDD sans passer par le préfixe conventionnel.
+. *Jamais* de fichier uploadé sans validation MIME + limite de taille.
+. *Toujours* supprimer les fichiers associés lors d'un `DELETE` d'entité (cascade applicative).
+. *Toujours* préfixer les uploads d'un UUID pour éviter les collisions de noms.
+
+== Sécurité
+
+* Accès par credentials applicatifs (pas par signed URLs pour le PoC).
+* CORS restrictif sur MinIO/Azure.
+* Chiffrement au repos : SSE par défaut côté Azure.
+
+== Observabilité
+
+* MinIO : UI console, logs dans `kubectl logs minio-0`.
+* Azure Blob : métriques via Azure Monitor.

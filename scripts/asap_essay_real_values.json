@@ -1,0 +1,23 @@
+{
+  "quality_metrics": {
+    "overall_score": 0.7999999999999999,
+    "completeness": 1.0,
+    "consistency": 0.75,
+    "ethical_score": 0.5,
+    "accuracy": 0.85
+  },
+  "ethical_details": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures": false,
+    "data_quality_documented": true,
+    "anonymization_applied": true,
+    "record_keeping_policy": false,
+    "purpose_limitation": false,
+    "accountability_defined": true
+  },
+  "dataset_name": "asap_essay_scoring",
+  "display_name": "ASAP - Essay Scoring"
+}

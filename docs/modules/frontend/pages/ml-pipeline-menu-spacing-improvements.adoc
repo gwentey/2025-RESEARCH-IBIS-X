@@ -1,0 +1,93 @@
+= Améliorations de l'espacement du menu ML Pipeline
+:navtitle: Espacement Menu ML Pipeline
+:description: Guide des améliorations apportées à l'espacement entre les étapes du menu de navigation ML Pipeline
+
+== Contexte
+
+Le menu de navigation de la ML Pipeline affiche 9 étapes sous forme de sidebar sur la gauche de l'interface. L'espacement entre ces étapes a été optimisé pour améliorer l'expérience utilisateur et réduire l'espace blanc en bas du menu.
+
+== Améliorations Apportées
+
+=== Espacement Principal
+
+L'espacement entre les étapes de navigation a été ajusté pour créer un design plus équilibré :
+
+* **Espacement normal** : Augmenté de `6px` à `10px`
+* **Écrans de hauteur réduite (≤900px)** : Ajusté de `4px` à `7px` 
+* **Très petits écrans (≤800px)** : Minimal maintenu à `4px` (au lieu de `2px`)
+
+=== Design Responsive
+
+Le système d'espacement s'adapte automatiquement selon la hauteur de l'écran :
+
+[source,scss]
+----
+// Configuration normale
+.nav-step {
+  margin-bottom: 10px; // Espacement optimal
+}
+
+// Écrans de hauteur réduite (≤900px)
+@media (max-height: 900px) {
+  .nav-step {
+    margin-bottom: 7px; // Espacement ajusté
+  }
+}
+
+// Très petits écrans (≤800px)
+@media (max-height: 800px) {
+  .nav-step {
+    margin-bottom: 4px; // Espacement minimal
+  }
+}
+----
+
+== Bénéfices Utilisateur
+
+=== Interface Améliorée
+
+* **Meilleure répartition** : Les étapes sont mieux espacées, créant un design plus aéré
+* **Réduction de l'espace blanc** : L'espace en bas du menu est mieux utilisé
+* **Lisibilité améliorée** : Les étapes sont plus facilement distinguables
+
+=== Compatibilité Multi-écrans
+
+* **Écrans standards** : Espacement optimal pour une navigation confortable
+* **Laptops compacts** : Ajustement automatique pour maintenir l'utilisabilité
+* **Très petits écrans** : Espacement minimal mais fonctionnel
+
+== Accès à la Fonctionnalité
+
+Le menu amélioré est accessible via l'URL :
+`http://localhost:8080/ml-pipeline-wizard?datasetId={ID}&datasetName={NOM}`
+
+== Implémentation Technique
+
+=== Fichiers Modifiés
+
+* `frontend/src/app/pages/ml-pipeline/wizard/ml-pipeline-wizard.component.scss`
+
+=== Classes CSS Affectées
+
+* `.nav-steps .nav-step` - Espacement principal entre les étapes
+* Media queries responsive pour différentes hauteurs d'écran
+
+== Tests et Validation
+
+=== Scénarios Testés
+
+* ✅ Affichage sur écrans standards (>900px hauteur)
+* ✅ Adaptation pour écrans moyens (≤900px hauteur)
+* ✅ Comportement sur très petits écrans (≤800px hauteur)
+* ✅ Navigation fluide entre les étapes
+* ✅ Maintien de la cohérence visuelle
+
+=== Compatibilité
+
+* Compatible avec tous les navigateurs modernes
+* Design responsive maintenu
+* Performance d'affichage préservée
+
+== Notes Techniques
+
+L'ajustement de l'espacement améliore significativement l'expérience utilisateur sans compromettre la densité d'information ou la performance de l'interface.

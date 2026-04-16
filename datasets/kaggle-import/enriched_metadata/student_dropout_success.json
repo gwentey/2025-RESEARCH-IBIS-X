@@ -1,0 +1,211 @@
+{
+  "dataset_name": "student_dropout_success",
+  "display_name": "Student Dropout and Academic Success (Portugal)",
+  "objective": "Predict student dropout and academic success in Portuguese higher education institutions",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Portuguese university",
+  "storage_uri": "https://www.kaggle.com/datasets/adilshamim8/predict-students-dropout-and-academic-success",
+  "citation_link": "https://www.sciencedirect.com/science/article/pii/S2352340919306988",
+  "documentation_link": "https://www.kaggle.com/datasets/adilshamim8/predict-students-dropout-and-academic-success",
+  "instances_number": 4424,
+  "features_number": 36,
+  "features_description": "Sociodemographic and academic performance indicators",
+  "year": 2019,
+  "domain": ["education"],
+  "task": ["classification"],
+  "target_column": "Target",
+  "representativity_description": "Portuguese undergraduate students across 8 degree programs",
+  "representativity_level": "medium",
+  "split": "train_test",
+  "missing_values": {
+    "description": "No missing values in the dataset",
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "handling_method": "none"
+  },
+  "temporal_factors": false,
+  "metadata_provided": true,
+  "external_documentation": true,
+  "ethical_compliance": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": false,
+    "security_measures": true,
+    "data_quality_documented": false,
+    "anonymization_applied": true,
+    "record_keeping_policy": false,
+    "purpose_limitation": false,
+    "accountability_defined": false
+  },
+  "citation_count": 90,
+  "license": "Attribution 4.0 International (CC BY 4.0)",
+  "contact_info": "Portuguese higher education institution",
+  "update_frequency": "static",
+  "versioning": "1.0",
+  "data_lineage": "SATDAP project funded by POCI-05-5762-FSE-000191 (Portugal)",
+  "quality_metrics": {
+    "completeness_score": 100,
+    "consistency_score": 92,
+    "ethical_compliance_score": 90
+  },
+  "column_details": [
+    {
+      "column_name": "Marital_status",
+      "position": 0,
+      "data_type_original": "int64",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Student's marital status at enrollment",
+      "example_values": ["1", "2", "3"],
+      "stats": {
+        "unique_count": 6
+      }
+    },
+    {
+      "column_name": "Application_mode",
+      "position": 1,
+      "data_type_original": "int64",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Method/channel of student's application",
+      "example_values": ["1", "5", "7"],
+      "stats": {
+        "unique_count": 18
+      }
+    },
+    {
+      "column_name": "Course",
+      "position": 3,
+      "data_type_original": "int64",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Enrolled undergraduate program",
+      "example_values": ["33", "171", "8014"],
+      "stats": {
+        "unique_count": 17
+      }
+    },
+    {
+      "column_name": "Previous_qualification_grade",
+      "position": 6,
+      "data_type_original": "float64",
+      "data_type_interpreted": "numerical_float",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Grade/score from previous education",
+      "example_values": ["122.0", "160.0", "133.1"],
+      "stats": {
+        "min": 95.0,
+        "max": 190.0,
+        "mean": 133.5,
+        "median": 133.0,
+        "std": 18.2
+      }
+    },
+    {
+      "column_name": "Admission_grade",
+      "position": 12,
+      "data_type_original": "float64",
+      "data_type_interpreted": "numerical_float",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Entry grade into the university",
+      "example_values": ["122.0", "160.0", "133.1"],
+      "stats": {
+        "min": 95.0,
+        "max": 190.0,
+        "mean": 133.5,
+        "median": 133.0,
+        "std": 18.2
+      }
+    },
+    {
+      "column_name": "Age_at_enrollment",
+      "position": 19,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Age (in years) at the time of enrollment",
+      "example_values": ["19", "37", "38"],
+      "stats": {
+        "min": 17,
+        "max": 70,
+        "mean": 22.4,
+        "median": 20.0,
+        "std": 7.1
+      }
+    },
+    {
+      "column_name": "Curricular_units_1st_sem_grade",
+      "position": 25,
+      "data_type_original": "float64",
+      "data_type_interpreted": "numerical_float",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Average grade for semester 1",
+      "example_values": ["0.0", "11.67", "13.25"],
+      "stats": {
+        "min": 0.0,
+        "max": 18.75,
+        "mean": 11.2,
+        "median": 12.0,
+        "std": 4.8
+      }
+    },
+    {
+      "column_name": "Curricular_units_2nd_sem_grade", 
+      "position": 32,
+      "data_type_original": "float64",
+      "data_type_interpreted": "numerical_float",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Average grade for semester 2",
+      "example_values": ["0.0", "10.5", "12.75"],
+      "stats": {
+        "min": 0.0,
+        "max": 18.0,
+        "mean": 10.8,
+        "median": 11.5,
+        "std": 5.2
+      }
+    },
+    {
+      "column_name": "GDP",
+      "position": 35,
+      "data_type_original": "float64",
+      "data_type_interpreted": "numerical_float",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "National economic indicator at enrollment",
+      "example_values": ["-4.06", "-0.92", "0.79"],
+      "stats": {
+        "min": -4.06,
+        "max": 0.79,
+        "mean": -1.88,
+        "median": -1.92,
+        "std": 1.98
+      }
+    },
+    {
+      "column_name": "Target",
+      "position": 36,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Final academic status: Dropout, Enrolled, or Graduate",
+      "example_values": ["Graduate", "Dropout", "Enrolled"],
+      "stats": {
+        "unique_count": 3,
+        "most_frequent": "Graduate"
+      }
+    }
+  ]
+}

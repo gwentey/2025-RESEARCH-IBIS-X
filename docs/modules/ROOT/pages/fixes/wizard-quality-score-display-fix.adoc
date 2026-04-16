@@ -1,0 +1,96 @@
+= Correction de l'Affichage du Score de Qualité dans le Wizard ML Pipeline
+:page-description: Correction du problème d'affichage "Qualité: N/A" dans la première étape du wizard ML Pipeline
+:page-tags: fix, frontend, wizard, qualité, dataset
+
+== Problème Identifié
+
+Sur la première étape du wizard ML Pipeline (`/ml-pipeline-wizard`), le score de qualité du dataset s'affichait constamment comme "Qualité: N/A" au lieu d'afficher la vraie valeur du score de qualité.
+
+== Analyse du Problème
+
+Le problème était dans la méthode `getQualityScore()` du composant `ml-pipeline-wizard.component.ts` qui utilisait une source de données incorrecte :
+
+=== Code Problématique (Avant)
+
+[source,typescript]
+----
+getQualityScore(): string {
+  if (!this.dataQualityRecommendations?.qualityScore) return 'N/A';
+  return this.dataQualityRecommendations.qualityScore + '%';
+}
+----
+
+=== Sources de Données Disponibles
+
+Plusieurs sources de données étaient disponibles pour le score de qualité :
+
+1. `this.dataQualityAnalysis.data_quality_score` (utilisé dans d'autres parties du wizard)
+2. `this.dataQualityRecommendations?.qualityScore` (pas toujours disponible)
+3. `this.dataset?.quality_metrics?.overall_score` (depuis l'API du dataset)
+
+== Solution Implémentée (Version Finale)
+
+=== Problème Découvert en Test
+
+Après la première correction, le score s'affichait comme "0.7034388657147674/100" au lieu de "100/100" comme sur la page du dataset. Le problème était que j'utilisais une source de données différente de celle utilisée par la page du dataset.
+
+=== Analyse de la Page du Dataset
+
+La page de détail du dataset (`dataset-detail.component.ts`) utilise :
+- **Source** : `this.dataset.quality_metrics.overall_score`
+- **Transformation** : `Math.round(qualityMetrics.overall_score * 100)`
+
+=== Code Corrigé (Version Finale)
+
+[source,typescript]
+----
+getQualityScore(): string {
+  // Utiliser la même source de données que la page du dataset: dataset.quality_metrics.overall_score
+  if (this.dataset?.quality_metrics?.overall_score !== undefined) {
+    // Appliquer la même transformation que la page du dataset: Math.round(score * 100)
+    return Math.round(this.dataset.quality_metrics.overall_score * 100) + '/100';
+  }
+  
+  // Fallback vers dataQualityAnalysis si disponible (mais appliquer la bonne transformation si c'est déjà sur 100)
+  if (this.dataQualityAnalysis?.data_quality_score !== undefined) {
+    const score = this.dataQualityAnalysis.data_quality_score;
+    // Si le score semble être déjà entre 0 et 100, on l'utilise tel quel
+    if (score > 1) {
+      return Math.round(score) + '/100';
+    } else {
+      // Si le score est entre 0 et 1, on le multiplie par 100
+      return Math.round(score * 100) + '/100';
+    }
+  }
+  
+  // Fallback vers dataQualityRecommendations si disponible
+  if (this.dataQualityRecommendations?.qualityScore) {
+    return this.dataQualityRecommendations.qualityScore + '/100';
+  }
+  
+  return 'N/A';
+}
+----
+
+=== Changements Finaux
+
+1. **Source principale identique** : Utilisation de `dataset.quality_metrics.overall_score` (même source que la page du dataset)
+2. **Transformation identique** : Application de `Math.round(score * 100)` (même logique que la page du dataset)
+3. **Fallbacks intelligents** : Gestion des différents formats de scores selon leur échelle
+4. **Cohérence totale** : Affichage maintenant identique entre wizard et page du dataset
+
+== Résultat
+
+Après cette correction, le score de qualité s'affiche correctement dans la première étape du wizard ML Pipeline, permettant aux utilisateurs de voir immédiatement la qualité de leur dataset avant de commencer la configuration du pipeline.
+
+== Fichiers Modifiés
+
+- `frontend/src/app/pages/ml-pipeline/wizard/ml-pipeline-wizard.component.ts` (méthode `getQualityScore()`)
+
+== Types Concernés
+
+- `DatasetDetailView.quality_metrics.overall_score`
+- `DataQualityAnalysis.data_quality_score`
+- Interface d'affichage dans l'étape 1 du wizard
+
+Cette correction assure que les utilisateurs voient immédiatement la qualité de leur dataset, ce qui les aide à prendre des décisions éclairées sur les étapes suivantes du processus de machine learning.

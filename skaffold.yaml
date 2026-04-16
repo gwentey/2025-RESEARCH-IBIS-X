@@ -1,0 +1,173 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: research-ibis-x
+build:
+  # Configuration optimisée pour cache Docker
+  tagPolicy:
+    inputDigest: {}  # Checksum basé sur le contenu des fichiers
+  local:
+    push: false
+    tryImportMissing: false    # Sécurisé
+    useDockerCLI: true
+    useBuildkit: true          # BuildKit pour cache avancé
+    concurrency: 4             # Plus de builds parallèles
+  platforms: ["linux/amd64"] # Plateforme cible par défaut. Override sur macOS M1/M2 via `skaffold build --platform=linux/arm64`. Sur Windows x86_64, laisser amd64 sinon QEMU émule et les pods CrashLoop (cf. memory-bank/windows-gotchas.md Piège 1).
+  artifacts:
+    # Frontend : TOUJOURS rebuild (tu modifies souvent)
+    - image: frontend
+      context: frontend
+      docker:
+        dockerfile: Dockerfile
+        noCache: true           # TOUJOURS rebuild frontend
+        pullParent: false
+
+    
+    # Backend : Checksum intelligent (rebuild seulement si changement)
+    - image: ibis-x-api-gateway
+      context: api-gateway
+      docker:
+        dockerfile: Dockerfile
+        noCache: false          # Cache autorisé si pas de changement
+        pullParent: false
+    - image: service-selection
+      context: .
+      docker:
+        dockerfile: service-selection/Dockerfile
+        noCache: false          # Cache autorisé si pas de changement
+        pullParent: false
+    - image: ibis-x-ml-pipeline
+      context: .
+      docker:
+        dockerfile: ml-pipeline-service/Dockerfile
+        noCache: false          # Cache activé pour performance
+        pullParent: false
+    - image: ibis-x-xai-engine
+      context: .
+      docker:
+        dockerfile: xai-engine-service/Dockerfile
+        noCache: false          # Cache activé pour performance
+        pullParent: false
+    - image: ibis-x-xai-engine-worker
+      context: .
+      docker:
+        dockerfile: xai-engine-service/Dockerfile.worker
+        noCache: false          # Cache autorisé si pas de changement
+        pullParent: false
+
+deploy:
+  kubectl:
+    hooks:
+      before: []
+      after: []
+  logs:
+    prefix: container
+  statusCheckDeadlineSeconds: 300  # Réduire le timeout d'attente
+profiles:
+  - name: local
+    # Profil complet pour déploiement local avec tous les composants
+    build:
+      tagPolicy:
+        envTemplate:
+          template: "latest"
+    manifests:
+      kustomize:
+        buildArgs:
+          - --load-restrictor=LoadRestrictionsNone
+        paths:
+          - k8s/overlays/minikube
+    # Configuration des Port Forwards
+    portForward:
+      # Frontend sur localhost:8080
+      - resourceType: service
+        resourceName: frontend
+        namespace: ibis-x
+        port: 80
+        localPort: 8080
+      # API Gateway sur localhost:9000
+      - resourceType: service
+        resourceName: api-gateway-service
+        namespace: ibis-x
+        port: 80
+        localPort: 9000
+      - resourceType: service
+        resourceName: minio-service
+        namespace: ibis-x
+        port: 6700
+        localPort: 6700
+      - resourceType: service
+        resourceName: minio-service
+        namespace: ibis-x
+        port: 6701
+        localPort: 6701
+  - name: local-services
+    # Profil pour déployer uniquement les services (sans jobs) - déploiement initial
+    build:
+      tagPolicy:
+        envTemplate:
+          template: "latest"
+    manifests:
+      kustomize:
+        buildArgs:
+          - --load-restrictor=LoadRestrictionsNone
+        paths:
+          - k8s/overlays/minikube-no-jobs
+    # Même configuration des Port Forwards
+    portForward:
+      # Frontend sur localhost:8080
+      - resourceType: service
+        resourceName: frontend
+        namespace: ibis-x
+        port: 80
+        localPort: 8080
+      # API Gateway sur localhost:9000
+      - resourceType: service
+        resourceName: api-gateway-service
+        namespace: ibis-x
+        port: 80
+        localPort: 9000
+      - resourceType: service
+        resourceName: minio-service
+        namespace: ibis-x
+        port: 6700
+        localPort: 6700
+      - resourceType: service
+        resourceName: minio-service
+        namespace: ibis-x
+        port: 6701
+        localPort: 6701
+  - name: azure
+    # Utiliser des patches pour modifier les noms d'images ET les buildArgs pour ce profil
+    patches:
+      - op: replace
+        path: /build/artifacts/0/image
+        value: ibisprodacr.azurecr.io/ibis-x-api-gateway
+      - op: replace
+        path: /build/artifacts/1/image
+        value: ibisprodacr.azurecr.io/service-selection
+      - op: replace
+        path: /build/artifacts/2/image
+        value: ibisprodacr.azurecr.io/ibis-x-ml-pipeline
+      - op: replace
+        path: /build/artifacts/3/image
+        value: ibisprodacr.azurecr.io/ibis-x-xai-engine
+      - op: replace
+        path: /build/artifacts/4/image
+        value: ibisprodacr.azurecr.io/ibis-x-xai-engine-worker
+      - op: replace
+        path: /build/artifacts/5/image
+        value: ibisprodacr.azurecr.io/frontend
+      # Ajouter un patch pour surcharger les buildArgs du frontend pour Azure
+      - op: add # Ou 'replace' si buildArgs existe déjà au path exact
+        path: /build/artifacts/5/docker/buildArgs # Index 5 pour l'artefact frontend
+        value:
+          ANGULAR_ENV: production
+    manifests:
+      kustomize:
+        # Changer le chemin pour exécuter Kustomize depuis le dossier k8s
+        # en ciblant l'overlay azure.
+        buildArgs:
+          - --load-restrictor=LoadRestrictionsNone # Autorise explicitement la lecture en dehors du répertoire racine de Kustomize
+        paths:
+          - k8s/overlays/azure
+    # Utilise le deploy kubectl global

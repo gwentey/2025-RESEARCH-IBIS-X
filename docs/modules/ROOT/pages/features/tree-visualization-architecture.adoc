@@ -1,0 +1,326 @@
+= Architecture de Visualisation d'Arbres - Solution Complète
+:description: Documentation technique de la solution de visualisation d'arbres interactifs
+:keywords: arbre de décision, visualisation, architecture, backend, frontend
+
+== Vue d'ensemble
+
+Cette documentation décrit l'architecture complète de la visualisation d'arbres de décision, depuis la génération des données au backend jusqu'à l'affichage interactif dans le tableau blanc.
+
+== Architecture de la solution
+
+=== 🔄 Flux de données complet
+
+[source,text]
+----
+1. Backend (ML Pipeline)
+   ├── Entraînement du modèle
+   ├── Extraction de la structure (get_tree_structure)
+   └── Stockage dans visualizations['tree_structure']
+
+2. API Gateway
+   └── Transmission des données JSON
+
+3. Frontend (Angular)
+   ├── Récupération via getTreeData()
+   ├── Conversion en nœuds interactifs
+   └── Affichage dans tableau blanc
+----
+
+== Backend - Génération des données
+
+=== 1. Wrappers de modèles
+
+Les modèles sklearn sont enveloppés dans des classes custom qui exposent `get_tree_structure()`:
+
+[source,python]
+----
+# ml-pipeline-service/app/ml/algorithms.py
+
+class DecisionTreeWrapper(BaseModelWrapper):
+    def get_tree_structure(self, feature_names=None, class_names=None):
+        """Extrait la structure d'arbre pour visualisation"""
+        tree = self.model.tree_
+        
+        def build_tree_node(node_id):
+            is_leaf = tree.children_left[node_id] == tree.children_right[node_id]
+            
+            if is_leaf:
+                return {
+                    "name": class_name or f"Valeur: {value}",
+                    "condition": f"n={samples}",
+                    "samples": samples,
+                    "is_leaf": True,
+                    "value": value,
+                    "class_name": class_name
+                }
+            else:
+                return {
+                    "name": feature_name,
+                    "condition": f"≤ {threshold:.3f}",
+                    "samples": samples,
+                    "is_leaf": False,
+                    "feature": feature_name,
+                    "threshold": threshold,
+                    "children": [left_child, right_child]
+                }
+        
+        return {
+            "tree_data": build_tree_node(0),
+            "metadata": {
+                "max_depth": tree.max_depth,
+                "n_nodes": tree.node_count,
+                "n_features": tree.n_features
+            }
+        }
+----
+
+=== 2. Génération des visualisations
+
+La fonction `generate_visualizations` a été modifiée pour inclure la structure de l'arbre:
+
+[source,python]
+----
+# ml-pipeline-service/app/ml/evaluation.py
+
+def generate_visualizations(model, X_test, y_test, feature_names=None, 
+                          task_type='classification', class_names=None):
+    visualizations = {}
+    
+    # ... autres visualisations ...
+    
+    # 🌲 NOUVEAU: Structure de l'arbre
+    if hasattr(model, 'get_tree_structure'):
+        tree_structure = model.get_tree_structure(
+            feature_names=feature_names,
+            class_names=class_names
+        )
+        if tree_structure:
+            visualizations['tree_structure'] = tree_structure
+    
+    return visualizations
+----
+
+=== 3. Format des données JSON
+
+Structure retournée par le backend:
+
+[source,json]
+----
+{
+  "tree_structure": {
+    "tree_data": {
+      "name": "feature_name",
+      "condition": "≤ 0.5",
+      "samples": 100,
+      "is_leaf": false,
+      "feature": "full_feature_name",
+      "threshold": 0.5,
+      "children": [
+        {
+          "name": "Classe A",
+          "condition": "n=60",
+          "samples": 60,
+          "is_leaf": true,
+          "value": 0,
+          "class_name": "Classe A"
+        },
+        {
+          "name": "Classe B",
+          "condition": "n=40",
+          "samples": 40,
+          "is_leaf": true,
+          "value": 1,
+          "class_name": "Classe B"
+        }
+      ]
+    },
+    "metadata": {
+      "max_depth": 3,
+      "n_nodes": 7,
+      "n_features": 4
+    }
+  }
+}
+----
+
+== Frontend - Visualisation interactive
+
+=== 1. Récupération des données
+
+[source,typescript]
+----
+// experiment-results.component.ts
+
+getTreeData(): any {
+  const treeStructure = this.results?.visualizations?.['tree_structure'];
+  
+  if (treeStructure && 'tree_data' in treeStructure) {
+    return treeStructure.tree_data;
+  }
+  
+  return null;
+}
+----
+
+=== 2. Conversion en nœuds interactifs
+
+[source,typescript]
+----
+private convertBackendTreeToWhiteboard(treeData: any): any {
+  const nodes: any[] = [];
+  const links: any[] = [];
+  const nodeConnections: Map<number, number[]> = new Map();
+  
+  const processNode = (node: any, x: number, y: number, parentIndex: number = -1) => {
+    const currentIndex = nodeIndex++;
+    
+    // Créer le nœud
+    const nodeData = {
+      id: `node-${currentIndex}`,
+      x: x,
+      y: y,
+      width: 140,
+      height: 60,
+      isLeaf: node.is_leaf,
+      name: node.name,
+      condition: node.condition,
+      samples: `n=${node.samples}`
+    };
+    
+    nodes.push(nodeData);
+    
+    // Traiter les enfants récursivement
+    if (node.children) {
+      node.children.forEach((child, i) => {
+        processNode(child, childX, childY, currentIndex);
+      });
+    }
+  };
+  
+  processNode(treeData, 1000, 200);
+  return { nodes, links };
+}
+----
+
+=== 3. Création des nœuds HTML draggables
+
+[source,typescript]
+----
+private createInteractiveNode(nodeData: any): HTMLElement {
+  const node = document.createElement('div');
+  node.className = `interactive-tree-node ${nodeData.isLeaf ? 'leaf-node' : 'internal-node'}`;
+  
+  // Styles et contenu
+  node.style.cssText = `
+    position: absolute;
+    left: ${nodeData.x - nodeData.width/2}px;
+    top: ${nodeData.y - nodeData.height/2}px;
+    cursor: move;
+  `;
+  
+  // Rendre draggable
+  node.addEventListener('mousedown', (e) => {
+    // Logique de drag & drop
+  });
+  
+  return node;
+}
+----
+
+=== 4. Gestion des liens dynamiques
+
+[source,typescript]
+----
+private updateTreeLinks(): void {
+  const svg = document.getElementById('tree-links-svg');
+  
+  this.nodeConnections.forEach((children, parentIndex) => {
+    children.forEach(childIndex => {
+      // Créer courbe de Bézier
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      const d = `M ${x1} ${y1} Q ${x1} ${midY}, ${x2} ${y2}`;
+      path.setAttribute('d', d);
+    });
+  });
+}
+----
+
+== Gestion des cas d'erreur
+
+=== Données manquantes
+
+Si le backend ne fournit pas de structure d'arbre (modèles anciens, erreur de génération), un arbre de démonstration est affiché:
+
+[source,typescript]
+----
+if (!treeDataFromBackend) {
+  // Arbre de démonstration avec avertissement
+  treeDataFromBackend = {
+    name: "feature_demo",
+    condition: "≤ 0.5",
+    children: [...]
+  };
+  
+  // Afficher avertissement
+  const warning = document.createElement('div');
+  warning.innerHTML = `
+    <mat-icon>warning</mat-icon>
+    Données de démonstration - Réentraînez le modèle
+  `;
+}
+----
+
+== Points clés de l'implémentation
+
+=== Avantages de cette architecture
+
+1. **Séparation des responsabilités**
+   - Backend: Extraction pure des données
+   - Frontend: Rendu et interaction
+
+2. **Flexibilité**
+   - Nœuds HTML individuels vs SVG monolithique
+   - Chaque nœud peut être stylé/animé indépendamment
+
+3. **Performance**
+   - SVG séparé pour les liens (moins de reflow)
+   - Event delegation pour les interactions
+
+4. **Extensibilité**
+   - Facile d'ajouter de nouvelles interactions
+   - Support pour différents types d'arbres
+
+=== Défis résolus
+
+1. **Synchronisation liens-nœuds**
+   - Map de connexions parent-enfant maintenue
+   - Recalcul des liens à chaque mouvement
+
+2. **Compatibilité données anciennes**
+   - Fallback vers arbre de démonstration
+   - Message d'avertissement clair
+
+3. **Transition SVG → HTML**
+   - Abandon du parsing SVG existant
+   - Construction directe depuis JSON
+
+== Prochaines étapes
+
+=== Court terme
+- [ ] Cache des positions de nœuds
+- [ ] Animation de transition entre layouts
+- [ ] Support tactile pour mobile
+
+=== Moyen terme
+- [ ] Export avec positions personnalisées
+- [ ] Minimap fonctionnelle
+- [ ] Sélection multiple de nœuds
+
+=== Long terme
+- [ ] Édition de l'arbre (pruning interactif)
+- [ ] Comparaison côte à côte d'arbres
+- [ ] Intégration avec XAI pour explications par nœud
+
+== Conclusion
+
+Cette architecture permet une visualisation d'arbres complètement interactive tout en maintenant la compatibilité avec les données backend existantes. La séparation claire entre extraction de données (backend) et rendu (frontend) facilite l'évolution indépendante des deux parties du système.

@@ -1,0 +1,355 @@
+{
+  "dataset_name": "xapi_edu_data",
+  "display_name": "Students' Academic Performance Dataset (xAPI-Edu-Data)",
+  "objective": "Predict students academic performance using demographic, academic background and behavioral features from LMS",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Kalboard 360 Learning Management System",
+  "storage_uri": "https://www.kaggle.com/datasets/aljarah/xAPI-Edu-Data",
+  "citation_link": "https://educationaldatamining.org/files/conferences/EDM2015/papers/paper_30.pdf",
+  "documentation_link": "https://www.kaggle.com/datasets/aljarah/xAPI-Edu-Data",
+  "instances_number": 480,
+  "features_number": 16,
+  "features_description": "Demographic features (gender, nationality), academic background (stage, grade, topic), behavioral features (raised hands, resources visited, discussion participation) and parental involvement",
+  "year": 2015,
+  "domain": ["education"],
+  "task": ["classification"],
+  "target_column": "Class",
+  "representativity_description": "Small dataset from Kalboard 360 LMS with students from Middle East countries (Kuwait, Jordan, Palestine, etc.)",
+  "representativity_level": "low",
+  "split": "single_file",
+  "missing_values": {
+    "description": "No missing values in the dataset",
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "handling_method": "none"
+  },
+  "temporal_factors": true,
+  "metadata_provided": true,
+  "external_documentation": true,
+  "ethical_compliance": {
+    "informed_consent": false,
+    "transparency": false,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures": false,
+    "data_quality_documented": true,
+    "anonymization_applied": false,
+    "record_keeping_policy": true,
+    "purpose_limitation": true,
+    "accountability_defined": true
+  },
+  "citation_count": 120,
+  "license": "CC BY-SA 4.0",
+  "contact_info": "Ibrahim Aljarah - University of Jordan",
+  "update_frequency": "static",
+  "versioning": "2016",
+  "data_lineage": "Collected from Kalboard 360 multi-agent LMS using xAPI (Experience API) learner activity tracker",
+  "quality_metrics": {
+    "completeness_score": 100,
+    "consistency_score": 90,
+    "ethical_compliance_score": 60
+  },
+  "column_details": [
+    {
+      "column_name": "gender",
+      "position": 0,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Student's gender (Male or Female)",
+      "example_values": ["M", "F"],
+      "stats": {
+        "unique_count": 2,
+        "most_frequent": "M",
+        "class_distribution": {
+          "M": 64,
+          "F": 36
+        }
+      }
+    },
+    {
+      "column_name": "NationalITy",
+      "position": 1,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Student's nationality",
+      "example_values": ["KW", "Jordan", "Egypt", "SaudiArabia", "Palestine"],
+      "stats": {
+        "unique_count": 14,
+        "most_frequent": "KW",
+        "class_distribution": {
+          "KW": 37,
+          "Jordan": 36,
+          "Other": 27
+        }
+      }
+    },
+    {
+      "column_name": "PlaceofBirth",
+      "position": 2,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Student's place of birth",
+      "example_values": ["KuwaIT", "Jordan", "Egypt", "SaudiArabia"],
+      "stats": {
+        "unique_count": 14,
+        "most_frequent": "KuwaIT"
+      }
+    },
+    {
+      "column_name": "StageID",
+      "position": 3,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Educational level (lowerlevel, MiddleSchool, HighSchool)",
+      "example_values": ["lowerlevel", "MiddleSchool", "HighSchool"],
+      "stats": {
+        "unique_count": 3,
+        "most_frequent": "MiddleSchool",
+        "class_distribution": {
+          "MiddleSchool": 52,
+          "lowerlevel": 41,
+          "HighSchool": 7
+        }
+      }
+    },
+    {
+      "column_name": "GradeID",
+      "position": 4,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Grade level (G-01 to G-12)",
+      "example_values": ["G-04", "G-07", "G-08", "G-02"],
+      "stats": {
+        "unique_count": 12,
+        "most_frequent": "G-02"
+      }
+    },
+    {
+      "column_name": "SectionID",
+      "position": 5,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Classroom section (A, B, C)",
+      "example_values": ["A", "B", "C"],
+      "stats": {
+        "unique_count": 3,
+        "most_frequent": "A",
+        "class_distribution": {
+          "A": 59,
+          "B": 35,
+          "C": 6
+        }
+      }
+    },
+    {
+      "column_name": "Topic",
+      "position": 6,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Course subject (IT, Math, Arabic, English, Science, etc.)",
+      "example_values": ["IT", "Math", "Arabic", "English", "Science", "French"],
+      "stats": {
+        "unique_count": 12,
+        "most_frequent": "IT",
+        "class_distribution": {
+          "IT": 20,
+          "French": 14,
+          "Other": 66
+        }
+      }
+    },
+    {
+      "column_name": "Semester",
+      "position": 7,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "School semester (First or Second)",
+      "example_values": ["F", "S"],
+      "stats": {
+        "unique_count": 2,
+        "most_frequent": "F",
+        "class_distribution": {
+          "F": 51,
+          "S": 49
+        }
+      }
+    },
+    {
+      "column_name": "Relation",
+      "position": 8,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Parent responsible for student (Father or Mum)",
+      "example_values": ["Father", "Mum"],
+      "stats": {
+        "unique_count": 2,
+        "most_frequent": "Father",
+        "class_distribution": {
+          "Father": 59,
+          "Mum": 41
+        }
+      }
+    },
+    {
+      "column_name": "raisedhands",
+      "position": 9,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Number of times student raises hand in classroom (0-100)",
+      "example_values": ["15", "20", "42", "35"],
+      "stats": {
+        "min": 0,
+        "max": 100,
+        "mean": 46.8,
+        "median": 50,
+        "std": 30.7
+      }
+    },
+    {
+      "column_name": "VisITedResources",
+      "position": 10,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Number of times student visits course content (0-100)",
+      "example_values": ["16", "20", "7", "78"],
+      "stats": {
+        "min": 0,
+        "max": 100,
+        "mean": 54.8,
+        "median": 65,
+        "std": 33.1
+      }
+    },
+    {
+      "column_name": "AnnouncementsView",
+      "position": 11,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Number of times student checks new announcements (0-100)",
+      "example_values": ["2", "3", "4", "5"],
+      "stats": {
+        "min": 0,
+        "max": 100,
+        "mean": 37.9,
+        "median": 33,
+        "std": 26.6
+      }
+    },
+    {
+      "column_name": "Discussion",
+      "position": 12,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Number of times student participates in discussion groups (0-100)",
+      "example_values": ["20", "25", "30", "43"],
+      "stats": {
+        "min": 0,
+        "max": 100,
+        "mean": 43.3,
+        "median": 39,
+        "std": 27.6
+      }
+    },
+    {
+      "column_name": "ParentAnsweringSurvey",
+      "position": 13,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Whether parent answered school surveys (Yes or No)",
+      "example_values": ["Yes", "No"],
+      "stats": {
+        "unique_count": 2,
+        "most_frequent": "Yes",
+        "class_distribution": {
+          "Yes": 56.25,
+          "No": 43.75
+        }
+      }
+    },
+    {
+      "column_name": "ParentschoolSatisfaction",
+      "position": 14,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Level of parent satisfaction with school (Good or Bad)",
+      "example_values": ["Good", "Bad"],
+      "stats": {
+        "unique_count": 2,
+        "most_frequent": "Good",
+        "class_distribution": {
+          "Good": 60.8,
+          "Bad": 39.2
+        }
+      }
+    },
+    {
+      "column_name": "StudentAbsenceDays",
+      "position": 15,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Student absence days classification (Under-7 or Above-7)",
+      "example_values": ["Under-7", "Above-7"],
+      "stats": {
+        "unique_count": 2,
+        "most_frequent": "Under-7",
+        "class_distribution": {
+          "Under-7": 60.2,
+          "Above-7": 39.8
+        }
+      }
+    },
+    {
+      "column_name": "Class",
+      "position": 16,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Target variable - Student performance level (L: Low 0-69, M: Middle 70-89, H: High 90-100)",
+      "example_values": ["L", "M", "H"],
+      "stats": {
+        "unique_count": 3,
+        "most_frequent": "M",
+        "class_distribution": {
+          "L": 39.2,
+          "M": 33.3,
+          "H": 27.5
+        }
+      }
+    }
+  ]
+}

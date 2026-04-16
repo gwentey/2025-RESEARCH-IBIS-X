@@ -1,0 +1,107 @@
+= Runbook — Réponse à incident
+:description: Procédure de gestion d'un incident (sécurité, disponibilité, données)
+
+== Classification des incidents
+
+[cols="1,2,2,1"]
+|===
+| Niveau | Exemple | Délai cible détection→mitigation | Qui alerter
+
+| *P1 — Critique* | Fuite de données, service down > 30 min, compromission | < 1h | Mainteneur + équipe
+| *P2 — Majeur* | Service down < 30 min, régression critique | < 4h | Mainteneur
+| *P3 — Mineur* | Bug gênant, dégradation partielle | < 24h | Issue GitHub
+| *P4 — Cosmétique* | Texte erroné, lien cassé | best-effort | Issue GitHub
+|===
+
+== Procédure générale (DRAIN)
+
+**D**étecter → **R**apporter → **A**ssumer → **I**solér → **N**otifier
+
+. *Détecter* — symptôme identifié (alerte, report utilisateur, log).
+. *Rapporter* — ouvrir une issue GitHub avec le label `incident` + niveau. Ou canal privé si sécurité (voir `SECURITY.md`).
+. *Assumer* la responsabilité — un seul "incident commander" (IC) désigné explicitement.
+. *Isoler* — empêcher la propagation :
+** Mettre en maintenance le service impacté si possible.
+** Révoquer les tokens/secrets compromis.
+** Rollback si régression récente (xref:04-operationnel/runbooks/rollback-deploiement.adoc[Rollback]).
+. *Notifier* — utilisateurs (si impact visible) + stakeholders.
+
+== Playbooks spécifiques
+
+=== Fuite potentielle de données personnelles
+
+. *Isoler* : désactiver le compte / endpoint / bucket compromis.
+. *Préserver les logs* (copie hors du cluster) — preuves pour analyse.
+. *Évaluer* : quelles données ? combien de personnes ?
+. *Notifier* CNIL **dans les 72 h** si atteinte probable aux droits (art. 33 RGPD).
+. *Notifier* les personnes concernées si risque élevé (art. 34).
+. *Rotation secrets* potentiellement compromis (xref:04-operationnel/runbooks/rotation-secrets.adoc[Rotation]).
+
+=== Compromission d'un secret
+
+. Révoquer immédiatement (Google/OpenAI/Kaggle/Azure console).
+. Rotation du secret (xref:04-operationnel/runbooks/rotation-secrets.adoc[Runbook]).
+. Revue des logs pour détecter utilisation malicieuse (période d'exposition).
+. Post-mortem.
+
+=== Service down (panne totale d'api-gateway)
+
+. Vérifier Pods : `kubectl get pods -n ibis-x`.
+. Vérifier Ingress : `kubectl describe ingress -n ibis-x`.
+. Vérifier Azure : status.azure.com pour AKS / PostgreSQL / Blob.
+. Si cause récente déploiement → rollback.
+. Si cause infra Azure → patience + communication utilisateurs.
+
+=== Perte de données
+
+. Arrêter les écritures.
+. Évaluer l'étendue (quel service, quelles tables).
+. Restaurer depuis backup (xref:04-operationnel/sauvegarde-restauration.adoc[Sauvegarde & restauration]).
+. Reconcilier les données inter-services si nécessaire (via user_id).
+
+== Contacts & canaux
+
+* *Mainteneur projet* : profil GitHub du dépôt.
+* *CNIL* (France) — autorité de contrôle RGPD : www.cnil.fr, 72h pour notifier.
+* *Azure support* — via portail Azure (si contrat support actif).
+* *OpenAI* — console + support@openai.com.
+* *Google Cloud* — console Google Cloud (OAuth incidents).
+
+== Post-mortem obligatoire pour P1/P2
+
+Template :
+
+[source,markdown]
+----
+# Post-mortem — {date} {titre court}
+
+## Résumé (3 lignes)
+...
+
+## Impact
+- Utilisateurs impactés :
+- Durée :
+- Données affectées :
+
+## Timeline
+T0 HH:MM — début incident
+T+N min — détection
+T+N min — mitigation
+T+N min — résolution
+
+## Cause racine
+(5 whys)
+
+## Ce qui a bien marché
+...
+
+## Ce qui a mal marché
+...
+
+## Actions de prévention
+- [ ] Test à ajouter
+- [ ] Alerte à configurer
+- [ ] Documentation à mettre à jour
+----
+
+Classer dans `docs/ARCHIVE/post-mortems/` (ou GitHub Discussions).

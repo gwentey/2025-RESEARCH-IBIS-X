@@ -1,0 +1,135 @@
+= Modèle de données (ERD)
+:description: Schéma PostgreSQL — tables principales et relations
+
+Base unique *`ibis_x_db`* partagée par les 4 services. Chaque service gère ses propres migrations via une `version_table` Alembic dédiée : `alembic_version_gateway`, `alembic_version_selection`, `alembic_version_ml_pipeline`, `alembic_version_xai`.
+
+== Vue d'ensemble (ERD simplifié)
+
+[mermaid]
+----
+erDiagram
+    USERS ||--o{ PROJECTS : "owns"
+    USERS ||--o{ DATASETS : "uploads"
+    USERS {
+        uuid id PK
+        string email UK
+        string hashed_password
+        string role "user|contributor|admin"
+        bool is_active
+        timestamptz created_at
+    }
+
+    PROJECTS ||--o{ EXPERIMENTS : "contains"
+    PROJECTS {
+        uuid id PK
+        uuid user_id FK
+        string name
+        jsonb criteria
+        timestamptz created_at
+    }
+
+    DATASETS ||--o{ DATASET_FILES : "has"
+    DATASET_FILES ||--o{ FILE_COLUMNS : "has"
+    DATASETS ||--o{ DATA_QUALITY_ANALYSES : "cached-as"
+    DATASETS ||--o{ EXPERIMENTS : "used-by"
+    DATASETS {
+        uuid id PK
+        uuid uploaded_by_id FK
+        string name
+        string storage_path
+        jsonb metadata
+        jsonb ethical_scores
+        timestamptz created_at
+    }
+    DATASET_FILES {
+        uuid id PK
+        uuid dataset_id FK
+        string file_name
+        string file_path
+        string file_type "csv|parquet|json"
+        bigint row_count
+    }
+    FILE_COLUMNS {
+        uuid id PK
+        uuid dataset_file_id FK
+        string column_name
+        string data_type
+        jsonb statistics
+    }
+    DATA_QUALITY_ANALYSES {
+        uuid id PK
+        uuid dataset_id FK
+        string dataset_version
+        jsonb analysis_data
+        jsonb column_strategies
+        float quality_score
+        timestamptz expires_at
+    }
+
+    EXPERIMENTS ||--o{ EXPLANATION_REQUESTS : "explained-by"
+    EXPERIMENTS {
+        uuid id PK
+        uuid user_id FK
+        uuid project_id FK
+        uuid dataset_id FK
+        string algorithm
+        jsonb hyperparameters
+        jsonb preprocessing_config
+        string status "pending|running|completed|failed"
+        int progress
+        string task_id
+        jsonb metrics
+        string artifact_uri
+        timestamptz created_at
+    }
+
+    EXPLANATION_REQUESTS ||--o{ CHAT_MESSAGES : "conversation"
+    EXPLANATION_REQUESTS {
+        uuid id PK
+        uuid experiment_id FK
+        string method "shap|lime|llm"
+        string status
+        jsonb results
+        timestamptz created_at
+    }
+    CHAT_MESSAGES {
+        uuid id PK
+        uuid explanation_request_id FK
+        string role "user|assistant"
+        text content
+        timestamptz created_at
+    }
+----
+
+== Invariants du schéma
+
+* *`artifact_uri`* est la colonne des expériences pointant vers le modèle sérialisé (renommage depuis `model_uri` via migration `002_rename_model_to_artifact`).
+* *Dataset multi-fichiers* : un dataset peut contenir plusieurs fichiers (train/test/validation). L'accès se fait via `storage_path` (préfixe) + table `dataset_files` + `file_columns`.
+* *`data_quality_analyses`* est un **cache** des analyses IA OpenAI pour éviter de recalculer à chaque consultation (clé d'invalidation : `dataset_version`).
+* *`users.is_superuser`* n'est **pas** une colonne : c'est une **propriété calculée** (`role == 'admin'`).
+* *Chat XAI* : limité à 5 messages utilisateur par `explanation_request` (contrôle applicatif, pas SQL).
+
+== Migrations par service
+
+[cols="1,2,3"]
+|===
+| Service | version_table | Dernière migration
+
+| api-gateway
+| `alembic_version_gateway`
+| `sync_role_is_superuser_permanent`
+
+| service-selection
+| `alembic_version_selection`
+| `add_storage_path_to_datasets`
+
+| ml-pipeline-service
+| `alembic_version_ml_pipeline`
+| `add_data_quality_analysis_table`
+
+| xai-engine-service
+| `alembic_version_xai`
+| `001_initial_xai_migration`
+|===
+
+Voir xref:03-technique/base-de-donnees.adoc[Base de données & migrations] pour le workflow Alembic.

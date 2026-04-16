@@ -1,0 +1,35 @@
+# service-selection-migration-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: service-selection-migration-job
+  namespace: ibis-x
+spec:
+  # Supprime automatiquement le job après 5 minutes
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 3 # Nombre de tentatives avant d'échouer
+  template:
+    metadata:
+      labels:
+        job: service-selection-migration
+    spec:
+      containers:
+      - name: migration
+        # IMAGE LOCALE pour développement minikube
+        image: service-selection:latest
+        imagePullPolicy: IfNotPresent
+        command: ["sh", "-c"]
+        args:
+          - |
+            echo "Début de la migration Service Selection..."
+            cd /app
+            alembic upgrade head
+            echo "Migration Service Selection terminée avec succès"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: database-url
+        workingDir: /app
+      restartPolicy: OnFailure 

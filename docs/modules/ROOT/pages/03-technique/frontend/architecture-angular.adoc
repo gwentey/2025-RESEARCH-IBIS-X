@@ -1,0 +1,89 @@
+= Frontend — architecture Angular
+:description: Modules, routing, patterns
+
+== Stack
+
+* Angular 19 standalone components.
+* Angular Material 19.
+* `@ngx-translate/core` + `@ngx-translate/http-loader`.
+* ECharts 5.6 pour visualisations ML.
+* WebSHAP pour SHAP client-side.
+* angular-tabler-icons 2.7.
+
+== Structure
+
+[source,text]
+----
+frontend/
+├── src/
+│   ├── app/
+│   │   ├── core/            # Singletons (services globaux, guards, interceptors)
+│   │   ├── shared/          # Composants, pipes, directives réutilisables
+│   │   ├── layouts/         # Shells (full, blank, auth)
+│   │   ├── pages/           # Feature modules lazy-loaded
+│   │   │   ├── authentication/
+│   │   │   ├── onboarding/
+│   │   │   ├── datasets/
+│   │   │   ├── projects/
+│   │   │   ├── ml-pipeline/
+│   │   │   ├── xai-explanation/
+│   │   │   ├── admin/
+│   │   │   ├── analytics/
+│   │   │   └── profile/
+│   │   ├── app.routes.ts    # Routing racine
+│   │   └── app.config.ts
+│   ├── assets/
+│   │   ├── i18n/{fr,en}.json
+│   │   └── scss/
+│   └── environments/
+├── angular.json
+├── package.json
+└── tsconfig.json
+----
+
+== Patterns
+
+=== Smart / Dumb components
+
+* *Smart (container)* : logique métier, appels services, gestion d'état. Ex. `dataset-list-page.component.ts`.
+* *Dumb (présentationnel)* : inputs/outputs, pas de dépendance service. Ex. `dataset-card.component.ts`.
+
+=== Reactive Forms
+
+Uniquement `FormBuilder` / `FormGroup` / `Validators`. Jamais de template-driven (`ngModel` sur formulaire métier).
+
+=== Services HTTP
+
+* Un service par domaine (`DatasetService`, `ProjectService`, `ExperimentService`, `ExplanationService`).
+* Retour `Observable<T>`.
+* Base URL via `environment.ts` (`http://localhost:9000` en dev).
+* Authentification par intercepteur JWT (`core/interceptors/jwt.interceptor.ts`).
+
+=== Guards
+
+* `authGuard` — redirige vers `/login` si pas de JWT valide.
+* `onboardingGuard` — redirige vers `/onboarding` tant qu'il n'est pas complété.
+* `adminGuard` — refuse l'accès aux routes `/app/admin/*` pour non-admins.
+
+== Routing
+
+* Lazy loading systématique pour les feature modules.
+* Routes organisées par domaine.
+* Route typos surveillés (ex. FINDING-004 corrigé : `/app/xai-explanations` → `/app/xai-explanation`).
+
+== State management
+
+* *Pas* de NgRx en PoC — overkill.
+* État local via signals (Angular 19) pour les écrans isolés.
+* État partagé via services singletons (`CoreModule` équivalent via `providedIn: 'root'`).
+
+== Tests
+
+* Unit : Jasmine + Karma.
+* E2E : Playwright recommandé (voir xref:05-audit/qualite/strategie-tests.adoc[Stratégie]).
+
+== Build & déploiement
+
+* Build prod : `ng build --configuration production` → `dist/frontend/`.
+* Image Docker nginx multi-stage.
+* Conteneur sur port 80 interne, exposé 8080 via port-forward local.

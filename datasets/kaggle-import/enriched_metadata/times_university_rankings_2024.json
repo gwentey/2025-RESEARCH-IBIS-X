@@ -1,0 +1,262 @@
+{
+  "dataset_name": "times_university_rankings_2024",
+  "display_name": "Times World University Rankings 2024",
+  "objective": "Provide comprehensive ranking of 1904 universities across 108 countries based on 18 carefully calibrated performance indicators measuring teaching, research environment, research quality, industry connections, and international outlook",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Times Higher Education - WUR 3.0 methodology",
+  "storage_uri": "https://www.kaggle.com/datasets/ddosad/timesworlduniversityrankings2024",
+  "citation_link": "https://www.kaggle.com/datasets/ddosad/timesworlduniversityrankings2024",
+  "documentation_link": "https://www.timeshighereducation.com/world-university-rankings",
+  "instances_number": 1904,
+  "features_number": 29,
+  "features_description": "Comprehensive ranking data including overall rank, university name, country, and detailed performance scores across 5 key areas: teaching, research environment, research quality, industry engagement, and international outlook",
+  "representativity_description": "Global coverage of 1904 ranked universities from 108 countries and regions, plus 769 additional universities with reporter status, representing the most comprehensive international university assessment",
+  "representativity_level": "high",
+  "split": false,
+  "missing_values": {
+    "has_missing_values": true,
+    "global_missing_percentage": 10.0,
+    "description": "Some universities have reporter status without complete scoring, and certain performance indicators may be missing for specific institutions",
+    "handling_method": "none"
+  },
+  "temporal_factors": false,
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "task": ["ranking", "regression", "exploratory_analysis"],
+  "domain": ["education"],
+  "year": 2024,
+  "license": "Other (specified in description)",
+  "num_citations": 85,
+  "ranking_methodology": "WUR 3.0",
+  "data_collection": {
+    "citations_analyzed": 134000000,
+    "research_publications": 16500000,
+    "survey_responses": 68402,
+    "global_scholars": true,
+    "total_datapoints": 411789,
+    "institutions_submitted": 2673
+  },
+  "ethics": {
+    "informed_consent": false,
+    "transparency": false,
+    "user_control": false,
+    "equity_non_discrimination": false,
+    "security_measures_in_place": false,
+    "data_quality_documented": false,
+    "anonymization_applied": false,
+    "record_keeping_policy_exists": false,
+    "purpose_limitation_respected": false,
+    "accountability_defined": false
+  },
+  "performance_areas": {
+    "teaching": {
+      "description": "Teaching environment and learning quality",
+      "weight_percentage": 30,
+      "score_range": "0-100"
+    },
+    "research_environment": {
+      "description": "Research volume, income, and reputation",
+      "weight_percentage": 29,
+      "score_range": "0-100"
+    },
+    "research_quality": {
+      "description": "Citation impact and research influence",
+      "weight_percentage": 30,
+      "score_range": "0-100"
+    },
+    "industry": {
+      "description": "Knowledge transfer and industry collaboration",
+      "weight_percentage": 4,
+      "score_range": "0-100"
+    },
+    "international_outlook": {
+      "description": "International students, staff, and collaboration",
+      "weight_percentage": 7,
+      "score_range": "0-100"
+    }
+  },
+  "column_details": [
+    {
+      "column_name": "rank",
+      "data_type": "categorical",
+      "description": "University ranking position (1-1904 or Reporter status)",
+      "is_target": true,
+      "missing_percentage": 0.0,
+      "unique_values": 1905,
+      "example_values": ["1", "2", "3", "1501+", "Reporter"],
+      "category": "ranking"
+    },
+    {
+      "column_name": "name",
+      "data_type": "string",
+      "description": "Official name of the university",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 1904,
+      "example_values": ["University of Oxford", "Stanford University", "MIT"],
+      "category": "identification"
+    },
+    {
+      "column_name": "location",
+      "data_type": "string",
+      "description": "Country/region of the university",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 108,
+      "example_values": ["United Kingdom", "United States", "Switzerland"],
+      "category": "identification"
+    },
+    {
+      "column_name": "scores_overall",
+      "data_type": "numeric",
+      "description": "Overall performance score (0-100)",
+      "is_target": false,
+      "missing_percentage": 29.0,
+      "min_value": 9.4,
+      "max_value": 99.0,
+      "category": "performance"
+    },
+    {
+      "column_name": "scores_overall_rank",
+      "data_type": "numeric",
+      "description": "Rank position based on overall score",
+      "is_target": false,
+      "missing_percentage": 29.0,
+      "min_value": 1,
+      "max_value": 1904,
+      "category": "performance"
+    },
+    {
+      "column_name": "scores_teaching",
+      "data_type": "numeric",
+      "description": "Teaching environment score (0-100)",
+      "is_target": false,
+      "missing_percentage": 29.0,
+      "min_value": 4.6,
+      "max_value": 100.0,
+      "category": "performance"
+    },
+    {
+      "column_name": "scores_teaching_rank",
+      "data_type": "numeric",
+      "description": "Rank position based on teaching score",
+      "is_target": false,
+      "missing_percentage": 29.0,
+      "min_value": 1,
+      "max_value": 1904,
+      "category": "performance"
+    },
+    {
+      "column_name": "scores_research",
+      "data_type": "numeric",
+      "description": "Research environment score (0-100)",
+      "is_target": false,
+      "missing_percentage": 29.0,
+      "min_value": 3.4,
+      "max_value": 99.7,
+      "category": "performance"
+    },
+    {
+      "column_name": "scores_research_rank",
+      "data_type": "numeric",
+      "description": "Rank position based on research score",
+      "is_target": false,
+      "missing_percentage": 29.0,
+      "min_value": 1,
+      "max_value": 1904,
+      "category": "performance"
+    },
+    {
+      "column_name": "scores_citations",
+      "data_type": "numeric",
+      "description": "Research influence/citation impact score (0-100)",
+      "is_target": false,
+      "missing_percentage": 29.0,
+      "min_value": 8.2,
+      "max_value": 100.0,
+      "category": "performance"
+    },
+    {
+      "column_name": "scores_citations_rank",
+      "data_type": "numeric",
+      "description": "Rank position based on citations score",
+      "is_target": false,
+      "missing_percentage": 29.0,
+      "min_value": 1,
+      "max_value": 1904,
+      "category": "performance"
+    },
+    {
+      "column_name": "scores_industry_income",
+      "data_type": "numeric",
+      "description": "Industry collaboration and knowledge transfer score",
+      "is_target": false,
+      "missing_percentage": 29.0,
+      "min_value": 25.0,
+      "max_value": 100.0,
+      "category": "performance"
+    },
+    {
+      "column_name": "scores_international_outlook",
+      "data_type": "numeric",
+      "description": "International diversity and collaboration score",
+      "is_target": false,
+      "missing_percentage": 29.0,
+      "min_value": 16.0,
+      "max_value": 100.0,
+      "category": "performance"
+    }
+  ],
+  "top_performers": {
+    "rank_1": "University of Oxford (8th consecutive year)",
+    "rank_2": "Stanford University (moved up)",
+    "rank_3": "Massachusetts Institute of Technology",
+    "rank_4": "Harvard University (dropped from 2nd)",
+    "rank_5": "University of Cambridge"
+  },
+  "regional_insights": {
+    "total_countries": 108,
+    "total_ranked_universities": 1904,
+    "reporter_status_universities": 769,
+    "dominant_regions": ["North America", "Europe", "Asia-Pacific"],
+    "emerging_regions": ["Asia", "Middle East"]
+  },
+  "usage_notes": "This dataset represents the most comprehensive global university ranking available. The 'Reporter' status indicates universities that provided data but didn't meet eligibility criteria for ranking. Missing values typically occur for Reporter status institutions.",
+  "potential_applications": [
+    "Global university performance benchmarking",
+    "Higher education policy analysis",
+    "Student mobility and choice modeling",
+    "Research collaboration network analysis",
+    "Regional education competitiveness studies",
+    "University strategic planning and positioning",
+    "Academic excellence factor identification",
+    "International education investment analysis",
+    "Predictive modeling for future rankings",
+    "Correlation analysis between different performance dimensions"
+  ],
+  "analytical_insights": [
+    "Strong correlation between teaching and research scores",
+    "International outlook varies significantly by region",
+    "Industry collaboration scores show high variance",
+    "Citation impact heavily influenced by field of study",
+    "Geographic clustering in top rankings",
+    "Emerging markets showing improvement in rankings"
+  ],
+  "methodology_strengths": [
+    "Rigorous WUR 3.0 methodology",
+    "Multiple performance dimensions",
+    "Large-scale data collection (134M citations)",
+    "Global scholar survey input",
+    "Transparent ranking criteria",
+    "Annual consistency for trend analysis"
+  ],
+  "limitations": [
+    "English-language publication bias",
+    "Varying data availability by region",
+    "Field-specific citation patterns",
+    "Reporter status creates missing data",
+    "Methodology changes over time limit historical comparison"
+  ]
+}

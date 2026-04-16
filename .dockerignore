@@ -1,0 +1,70 @@
+# === OPTIMISATION CACHE DOCKER ===
+
+# Git et contrôle de version
+.git/
+.gitignore
+.npm-cache/
+
+# Documentation (inutile pour les images)
+docs/
+README*.md
+*.md
+
+# Fichiers de configuration développeur
+.vscode/
+.cursor/
+.idea/
+
+# Environnements virtuels et cache Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.tox/
+.coverage
+.pytest_cache/
+
+# Node.js (inutile pour backend Python)
+node_modules/
+package*.json
+angular.json
+tsconfig*.json
+
+# Fichiers temporaires
+*.tmp
+*.log
+*.swp
+*.swo
+*~
+
+# Kubernetes et déploiement (inutile dans images)
+k8s/
+skaffold.yaml
+Makefile
+
+# Terraform et scripts
+terraform/
+scripts/
+
+# Datasets volumineux (sauf scripts d'import nécessaires)
+datasets/*.csv
+datasets/*.parquet
+datasets/*.xlsx
+datasets/*/cache/
+datasets/*/enriched_metadata/
+# CONSERVER datasets/kaggle-import/ pour service-selection
+
+# Build artifacts
+build/
+built.json
+
+# Tests
+*test*
+*spec*
+
+# OS files
+.DS_Store
+Thumbs.db

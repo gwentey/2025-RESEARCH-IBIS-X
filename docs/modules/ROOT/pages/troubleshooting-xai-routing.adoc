@@ -1,0 +1,86 @@
+= Guide de Dépannage : Routage XAI
+:toc:
+:icons: font
+
+== Problème : Erreur HTTP 307 lors des Requêtes XAI
+
+=== Symptômes
+
+* Erreur `HTTP 307 Temporary Redirect` lors de la création de demandes d'explication XAI
+* Message frontend : "Erreur lors de la création de la demande d'explication" 
+* Logs montrent requête vers `/api/v1/xai/explanations` non résolue
+
+=== Cause Racine
+
+Mauvaise configuration du routage dans l'API Gateway causée par :
+
+* **Commentaire incorrect** dans le code suggérant un double préfixe
+* **Routage mal configuré** entre API Gateway et Service XAI  
+* **Structure réelle** :
+  - API Gateway: `/api/v1/xai/{path}`
+  - Service XAI: routeur avec `prefix="/explanations"`
+
+=== Solution
+
+==== 1. Corriger le Routage API Gateway
+
+Dans `api-gateway/app/main.py`, ligne ~1190 :
+
+[source,python]
+----
+# AVANT (incorrect)
+# Le service XAI a déjà le préfixe /api/v1/xai dans son routeur
+return await proxy_request(request, settings.XAI_ENGINE_URL, path, current_user)
+
+# APRÈS (correct)  
+# Le service XAI a seulement le prefix "/explanations" dans son routeur
+# On doit donc envoyer directement le path sans transformation
+return await proxy_request(request, settings.XAI_ENGINE_URL, path, current_user)
+----
+
+==== 2. Redéployer l'API Gateway
+
+[source,bash]
+----
+kubectl rollout restart deployment/api-gateway -n ibis-x
+kubectl rollout status deployment/api-gateway -n ibis-x --timeout=60s
+----
+
+==== 3. Tester la Correction
+
+[source,bash]
+----
+# Test sans authentification (doit retourner 401, pas 307)
+curl -X POST http://localhost:9000/api/v1/xai/explanations \
+  -H "Content-Type: application/json" \
+  -d '{"test": "data"}' -v
+
+# Résultat attendu: HTTP/1.1 401 Unauthorized (pas 307 Redirect)
+----
+
+=== Prévention
+
+* **Documenter clairement** la structure des routeurs dans chaque service
+* **Tester systématiquement** les endpoints après modification
+* **Éviter les commentaires incorrects** qui peuvent induire en erreur
+
+=== Architecture de Routage Correcte
+
+[source]
+----
+Frontend (Angular)
+↓ POST /api/v1/xai/explanations
+API Gateway 
+├─ Route: /api/v1/xai/{path:path}
+├─ Proxy vers: http://xai-engine-service:80
+└─ Path transmis: "explanations"
+↓
+XAI Engine Service
+└─ Router: prefix="/explanations" → endpoint "/"
+----
+
+=== Liens Connexes
+
+* link:xai-explicabilite-guide.adoc[Guide Utilisateur XAI]
+* link:dev-guide/xai-engine-implementation.adoc[Référence Technique XAI]
+* link:api-gateway-proxy-configuration.adoc[Configuration Proxy API Gateway]

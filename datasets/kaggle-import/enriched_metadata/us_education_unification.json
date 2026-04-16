@@ -1,0 +1,157 @@
+{
+  "dataset_name": "us_education_unification",
+  "display_name": "U.S. Education Datasets: Unification Project",
+  "objective": "Unify K-12 financial, enrollment, and achievement data from multiple US education sources into comprehensive state-level datasets spanning 1986-2019",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Urban Institute, National Center for Education Statistics (NCES), US Census Bureau",
+  "storage_uri": "https://www.kaggle.com/datasets/noriuk/us-education-datasets-unification-project",
+  "citation_link": "https://www.kaggle.com/datasets/noriuk/us-education-datasets-unification-project",
+  "documentation_link": "https://www.kaggle.com/datasets/noriuk/us-education-datasets-unification-project",
+  "instances_number": 1715,
+  "features_number": 6697,
+  "features_description": "Comprehensive state-level indicators including financial metrics (revenue, expenditure by source and category), enrollment statistics (by grade, race, gender), academic achievement scores (NAEP math and reading), demographic breakdowns, and temporal trends across 33 years",
+  "representativity_description": "Complete coverage of all 50 US states plus DC across 33 years (1986-2019), providing the most comprehensive longitudinal view of American K-12 education system",
+  "representativity_level": "high",
+  "split": false,
+  "missing_values": {
+    "has_missing_values": true,
+    "global_missing_percentage": 10.0,
+    "description": "Some indicators missing depending on states and years due to data collection variations across different survey years",
+    "handling_method": "none"
+  },
+  "temporal_factors": true,
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "task": ["exploratory_analysis", "time_series_forecasting"],
+  "domain": ["education", "finance"],
+  "year": 2019,
+  "license": "Other (specified in description)",
+  "num_citations": 492,
+  "time_range": "1986-2019",
+  "geographic_scope": "US_states",
+  "ethics": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures_in_place": true,
+    "data_quality_documented": true,
+    "anonymization_applied": false,
+    "record_keeping_policy_exists": true,
+    "purpose_limitation_respected": true,
+    "accountability_defined": true
+  },
+  "data_categories": {
+    "identification": ["PRIMARY_KEY", "YEAR", "STATE"],
+    "enrollment": ["GRADES_PK", "GRADES_4", "GRADES_8", "GRADES_12", "GRADES_1_8", "GRADES_9_12", "GRADES_ALL"],
+    "demographics": ["Race and gender breakdowns by grade (AM, AS, HI, BL, WH, HP, TR)", "Male/Female distributions"],
+    "financials": ["TOTAL_REVENUE", "FEDERAL_REVENUE", "STATE_REVENUE", "LOCAL_REVENUE", "TOTAL_EXPENDITURE", "INSTRUCTION_EXPENDITURE", "SUPPORT_SERVICES_EXPENDITURE", "CAPITAL_OUTLAY_EXPENDITURE"],
+    "achievement": ["AVG_MATH_4_SCORE", "AVG_MATH_8_SCORE", "AVG_READING_4_SCORE", "AVG_READING_8_SCORE"]
+  },
+  "file_structure": {
+    "states_all.csv": {
+      "description": "Primary data file with aggregated state-level data",
+      "size": "294.37 kB",
+      "columns": 25,
+      "focus": "Core financial, enrollment, and achievement indicators"
+    },
+    "states_all_extended.csv": {
+      "description": "Extended version with detailed race and gender breakdowns",
+      "size": "Estimated 200+ MB",
+      "columns": 6697,
+      "focus": "Granular demographic analysis with all possible combinations"
+    }
+  },
+  "column_details": [
+    {
+      "column_name": "PRIMARY_KEY",
+      "data_type": "string",
+      "description": "Combination of year and state name (e.g., '1992_ALABAMA')",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 1715,
+      "example_values": ["1992_ALABAMA", "1992_ALASKA", "1992_ARIZONA"]
+    },
+    {
+      "column_name": "STATE",
+      "data_type": "categorical",
+      "description": "US State name",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 51,
+      "example_values": ["ALABAMA", "ALASKA", "ARIZONA", "ARKANSAS", "CALIFORNIA"]
+    },
+    {
+      "column_name": "YEAR",
+      "data_type": "temporal",
+      "description": "Academic year",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 1986,
+      "max_value": 2019,
+      "time_span": "33 years"
+    },
+    {
+      "column_name": "ENROLL",
+      "data_type": "numeric",
+      "description": "US Census Bureau count of students in the state",
+      "is_target": false,
+      "missing_percentage": 5.0,
+      "min_value": 43866,
+      "max_value": 6307022
+    },
+    {
+      "column_name": "TOTAL_REVENUE",
+      "data_type": "numeric",
+      "description": "Total revenue for the state education system",
+      "is_target": false,
+      "missing_percentage": 2.0,
+      "min_value": 465650,
+      "max_value": 89217262
+    },
+    {
+      "column_name": "TOTAL_EXPENDITURE",
+      "data_type": "numeric",
+      "description": "Total expenditure for the state education system",
+      "is_target": false,
+      "missing_percentage": 2.0,
+      "min_value": 481665,
+      "max_value": 85320133
+    },
+    {
+      "column_name": "AVG_MATH_4_SCORE",
+      "data_type": "numeric",
+      "description": "State average score for 4th graders taking NAEP math exam",
+      "is_target": false,
+      "missing_percentage": 15.0,
+      "min_value": 180,
+      "max_value": 260
+    },
+    {
+      "column_name": "AVG_READING_4_SCORE",
+      "data_type": "numeric",
+      "description": "State average score for 4th graders taking NAEP reading exam",
+      "is_target": false,
+      "missing_percentage": 15.0,
+      "min_value": 180,
+      "max_value": 240
+    }
+  ],
+  "usage_notes": "This is the most comprehensive longitudinal dataset of US K-12 education available. Perfect for policy analysis, state comparisons, trend identification, and predictive modeling. The extended version with 6697 columns provides unparalleled granularity for demographic analysis.",
+  "potential_applications": [
+    "State-by-state education policy impact analysis",
+    "Longitudinal trends in education funding and outcomes",
+    "Predictive modeling of student achievement based on financial inputs",
+    "Demographic achievement gap analysis across race and gender",
+    "Time series forecasting of education metrics",
+    "Federal vs state vs local funding impact studies",
+    "Correlation analysis between spending categories and outcomes",
+    "Geographic clustering of education performance patterns",
+    "Policy effectiveness evaluation across different states",
+    "Resource allocation optimization modeling"
+  ],
+  "research_value": "This dataset enables unprecedented research into American education policy effectiveness, funding mechanisms, demographic equity, and longitudinal trends. The 33-year timespan covers major education reforms and policy changes, making it invaluable for causal inference studies.",
+  "processing_notes": "Due to the massive size (6697 columns), this dataset requires careful memory management and chunked processing. The extended file may exceed typical memory limits and require distributed processing approaches."
+}

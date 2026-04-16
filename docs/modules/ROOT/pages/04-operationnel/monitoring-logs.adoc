@@ -1,0 +1,87 @@
+= Monitoring & logs
+:description: Observabilité — état actuel et gaps
+
+== Statut PoC
+
+Monitoring minimal : logs applicatifs stdout → `kubectl logs`. Pas de stack de monitoring centralisée. C'est le gap A09 OWASP (voir xref:05-audit/securite/owasp-top10.adoc[OWASP Top 10]).
+
+== Logs applicatifs
+
+Chaque service FastAPI log vers `stdout`. Consultation :
+
+[source,bash]
+----
+# Service web
+kubectl logs -f deployment/api-gateway-deployment -n ibis-x
+
+# Worker Celery ML
+kubectl logs -f deployment/ml-pipeline-worker-deployment -n ibis-x
+
+# Worker Celery XAI
+kubectl logs -f deployment/xai-engine-worker-deployment -n ibis-x
+
+# Frontend (nginx)
+kubectl logs -f deployment/frontend-deployment -n ibis-x
+----
+
+Raccourcis Makefile :
+
+[source,bash]
+----
+make logs        # tous les services en parallèle
+make quick-logs  # compact
+----
+
+== Niveaux de log
+
+* `DEBUG` — uniquement local.
+* `INFO` — opérations normales (démarrage, endpoints).
+* `WARNING` — anomalies non bloquantes.
+* `ERROR` — erreurs nécessitant attention.
+* `CRITICAL` — échec système, intervention requise.
+
+En prod : niveau par défaut `INFO`, ajustable via ConfigMap.
+
+== Ce qui **ne doit pas** apparaître dans les logs
+
+* Valeurs de secrets (`settings.dict()` en prod, clés API, tokens).
+* Payloads bruts d'utilisateur (contenu de datasets, messages de chat).
+* Données personnelles au-delà du `user_id`.
+
+== Métriques
+
+*En local* : pas de collecte systématique. Observation via pod metrics :
+
+[source,bash]
+----
+kubectl top pods -n ibis-x
+----
+
+*En prod Azure* : Azure Monitor + Container Insights peuvent être activés sur AKS (non automatique au provisionning PoC).
+
+== Traces distribuées
+
+Non implémentées. Possible évolution post-PoC avec OpenTelemetry + Jaeger.
+
+== Alerting
+
+Non implémenté. Incident response passe par la surveillance manuelle et les rapports utilisateurs.
+
+Voir xref:04-operationnel/runbooks/incident-response.adoc[Runbook incident response] pour la réaction.
+
+== Santé des services
+
+[source,bash]
+----
+make healthcheck
+----
+
+Vérifie pods + endpoints `/health` de chaque service FastAPI.
+
+== Gaps prioritaires post-PoC
+
+. Stack Loki + Promtail + Grafana (ou Azure Monitor) pour logs centralisés.
+. Prometheus + métriques FastAPI (via `prometheus-fastapi-instrumentator`).
+. Alertes sur : taux d'erreur > seuil, pod down, latence p95 dégradée.
+. Traces distribuées (OpenTelemetry → Tempo / Jaeger).
+. Dashboards Grafana par service.

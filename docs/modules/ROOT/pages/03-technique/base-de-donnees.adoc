@@ -1,0 +1,87 @@
+= Base de données & migrations
+:description: PostgreSQL partagée + Alembic par service
+
+== Base unique `ibis_x_db`
+
+Choix documenté dans xref:05-audit/adr/0003-postgres-partage-version-tables.adoc[ADR 0003].
+
+* PostgreSQL 15.
+* Un seul StatefulSet en K8s (`postgresql-statefulset`, PVC 10 Gi).
+* Un utilisateur `ibis_x_user` avec droits complets sur la base.
+* En prod : Azure Database for PostgreSQL Flexible Server.
+
+== Isolation par service — `version_table`
+
+Chaque service déclare sa `version_table` dans son `alembic.ini` :
+
+[cols="1,2"]
+|===
+| Service | version_table
+| api-gateway | `alembic_version_gateway`
+| service-selection | `alembic_version_selection`
+| ml-pipeline-service | `alembic_version_ml_pipeline`
+| xai-engine-service | `alembic_version_xai`
+|===
+
+Configuration type :
+
+[source,ini]
+----
+[alembic]
+script_location = alembic
+version_table = alembic_version_<service>
+sqlalchemy.url = ${DATABASE_URL}
+----
+
+== Tables par service
+
+Schéma complet : xref:03-technique/architecture/modele-donnees.adoc[ERD].
+
+=== api-gateway
+`users`, `oauth_accounts`.
+
+=== service-selection
+`datasets`, `dataset_files`, `file_columns`, `dataset_relationships`, `ethical_templates`.
+
+=== ml-pipeline-service
+`experiments`, `data_quality_analyses`.
+
+=== xai-engine-service
+`explanation_requests`, `chat_messages`.
+
+=== projects
+Table `projects` (owner: api-gateway historiquement).
+
+== Workflow de migration
+
+Voir xref:04-operationnel/runbooks/migration-bdd.adoc[Runbook migration BDD].
+
+[source,bash]
+----
+cd {service}
+# Modifier models.py
+alembic revision --autogenerate -m "description"
+# Relire la migration générée
+alembic upgrade head        # local test
+# Commit + PR
+# En prod : initContainer Migration Job exécuté avant rollout
+----
+
+== Index
+
+Index principaux déclarés dans les `models.py` de chaque service :
+
+* `experiments` : `ix_experiments_user_id`, `ix_experiments_project_id`, `ix_experiments_dataset_id`, `ix_experiments_status`, `ix_experiments_created_at`.
+* `datasets` : `ix_datasets_uploaded_by_id`, index sur flags éthiques si filtres fréquents.
+* `explanation_requests` : `ix_explanation_requests_experiment_id`.
+
+== Règles dures
+
+. Un service ne modifie **que** ses propres tables.
+. Jamais de `TRUNCATE` sans raison exceptionnelle + backup.
+. Jamais de SQL brut dans le code applicatif (sauf optimisation justifiée commentée).
+. Migration = un fichier Alembic + tests d'intégration.
+
+== Backup & restauration
+
+Voir xref:04-operationnel/sauvegarde-restauration.adoc[Sauvegarde & restauration].

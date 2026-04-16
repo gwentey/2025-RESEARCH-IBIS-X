@@ -1,0 +1,43 @@
+= Refonte Page Résultats - Design Linear/Stripe
+:description: Résumé des améliorations apportées à la page Résultats d'Expérience
+
+== Améliorations Principales
+
+=== ✨ Design Linear/Stripe Moderne
+* Palette de couleurs cohérente (#5b57f7, #00a96e)
+* Typographie Inter optimisée
+* Cards avec ombres modernes et hover effects
+* Layout CSS Grid responsive
+* Animations fluides avec cubic-bezier
+
+=== 🎯 KPIs Adaptatifs
+* **Classification + Decision Tree:** F1-macro principal
+* **Classification + Random Forest:** F1-macro + ROC-AUC + Score OOB
+* **Régression + Decision Tree:** MAE principal + RMSE + R²
+* **Régression + Random Forest:** MAE principal + RMSE + R²
+
+=== 📊 Visualisations Intelligentes
+* Détection automatique des visualisations disponibles
+* Placeholder élégant pour visualisations manquantes
+* Conseils d'interprétation contextuels
+* Gestion d'erreur robuste
+
+=== 🧠 Explications Pédagogiques
+* Descriptions adaptées au contexte tâche/modèle
+* Conseils d'interprétation pour chaque visualisation
+* Comparaisons automatiques avec baseline
+* Support multilingue FR/EN
+
+=== 📈 Nouvelle Structure
+1. **Header** - Navigation moderne sticky
+2. **Hero** - Status et score performance
+3. **Métriques** - Grid adaptative avec explications
+4. **Visualisations** - Grid avec guides d'interprétation
+5. **Comparaison** - Baseline automatique
+6. **XAI** - Intégration harmonieuse
+7. **Recommandations** - Suggestions intelligentes
+8. **Actions** - Footer avec boutons d'export
+
+== Résultat
+
+Interface **premium** qui guide les novices tout en gardant la sophistication technique ! 🚀

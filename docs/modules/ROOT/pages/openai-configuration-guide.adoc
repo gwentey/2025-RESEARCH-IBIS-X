@@ -1,0 +1,528 @@
+= Guide Configuration OpenAI pour XAI Engine
+:toc:
+:toclevels: 3
+:sectnums:
+:imagesdir: ../images
+
+== 🎯 Vue d'ensemble
+
+Ce guide vous explique comment configurer l'intégration OpenAI pour le module XAI Engine d'IBIS-X, permettant de générer des explications textuelles intelligentes et adaptées au niveau de chaque utilisateur.
+
+== 📋 Todo Liste Configuration OpenAI
+
+=== ✅ Étape 1 : Créer une Clé API OpenAI
+
+==== 1.1 Créer un Compte OpenAI Platform
+
+. Allez sur https://platform.openai.com[OpenAI Platform^]
+. Cliquez sur **"Sign up"** ou **"Log in"** si vous avez déjà un compte
+. Vérifiez votre email et complétez l'inscription
+
+==== 1.2 Configurer les Crédits (IMPORTANT)
+
+⚠️ **OpenAI n'est plus gratuit** - vous devez ajouter une méthode de paiement :
+
+. Dans le dashboard OpenAI, allez dans **"Settings" → "Billing"**
+. Cliquez **"Add payment method"**
+. Ajoutez votre carte de crédit/débit
+. **Recommandé** : Définissez une limite mensuelle (ex: $20/mois) dans **"Usage limits"**
+
+==== 1.3 Créer une Clé API
+
+. Dans le dashboard, allez dans **"API Keys"** (section de gauche)
+. Cliquez **"+ Create new secret key"**
+. Nom suggéré : `IBIS-X-XAI-Engine-Production` ou `IBIS-X-XAI-Engine-Dev`
+. **COPIEZ IMMÉDIATEMENT** la clé (elle ne sera plus affichée)
+. Format : `sk-proj-ABC123...` (environ 50-60 caractères)
+
+=== ✅ Étape 2 : Configuration Variables d'Environnement
+
+==== 2.1 Mettre à Jour le Fichier .env Local
+
+Ajoutez ces variables dans votre fichier `.env` :
+
+[source,bash]
+----
+# === OPENAI CONFIGURATION ===
+OPENAI_API_KEY=sk-proj-VOTRE_CLE_ICI_ABC123DEF456GHI789...
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_MAX_TOKENS=2000
+OPENAI_TEMPERATURE=0.7
+----
+
+⚡ **Modèle Recommandé** : `gpt-4o-mini`
+- **Plus intelligent** que gpt-3.5-turbo
+- **Moins cher** que gpt-4
+- **Optimal** pour les explications XAI
+
+==== 2.2 Variables Complètes Disponibles
+
+[source,bash]
+----
+# Configuration OpenAI Complète (optionnelles)
+OPENAI_API_KEY=sk-proj-votre_cle           # OBLIGATOIRE
+OPENAI_MODEL=gpt-4o-mini                   # Modèle LLM (défaut: gpt-3.5-turbo)
+OPENAI_MAX_TOKENS=2000                     # Longueur max réponse (défaut: 1000)  
+OPENAI_TEMPERATURE=0.7                     # Créativité 0-1 (défaut: 0.7)
+MAX_CHAT_QUESTIONS=5                       # Questions max par session (défaut: 5)
+CHAT_SESSION_TIMEOUT_HOURS=24              # Timeout session chat (défaut: 24h)
+MAX_TOKENS_PER_QUESTION=200                # Tokens max par question (défaut: 200)
+----
+
+=== ✅ Étape 3 : Déploiement avec OpenAI
+
+==== 3.1 Redéployer IBIS-X
+
+[source,bash]
+----
+cd /Applications/XAMPP/xamppfiles/htdocs/2025-research-exai
+
+# Le script va automatiquement lire .env et configurer les secrets K8s
+make dev
+----
+
+Le déploiement va :
+- Lire les variables `.env`
+- Encoder la clé OpenAI en base64
+- Créer/mettre à jour `k8s/base/xai-engine/secrets.yaml`
+- Injecter `OPENAI_API_KEY` dans les pods XAI Engine
+
+==== 3.2 Vérifier le Déploiement
+
+[source,bash]
+----
+# Vérifier que les pods XAI sont en marche
+kubectl get pods -n ibis-x | grep xai-engine
+
+# Vérifier les logs du service XAI
+kubectl logs -f deployment/xai-engine -n ibis-x
+
+# Vérifier les logs des workers
+kubectl logs -f deployment/xai-engine-celery-worker -n ibis-x
+
+# Test de santé
+curl http://localhost:8083/health
+----
+
+== 🤖 Modèles OpenAI Recommandés
+
+=== Comparaison des Modèles
+
+[cols="1,1,1,1,1", options="header"]
+|===
+|Modèle |Intelligence |Vitesse |Coût |Usage Recommandé
+
+|`gpt-4o-mini` |⭐⭐⭐⭐ |⭐⭐⭐⭐⭐ |⭐⭐⭐⭐⭐ |**Production recommandée**
+|`gpt-3.5-turbo` |⭐⭐⭐ |⭐⭐⭐⭐⭐ |⭐⭐⭐⭐⭐ |Développement/tests
+|`gpt-4` |⭐⭐⭐⭐⭐ |⭐⭐ |⭐⭐ |Cas complexes uniquement
+|`gpt-4o` |⭐⭐⭐⭐⭐ |⭐⭐⭐ |⭐⭐⭐ |Alternative premium
+|===
+
+**💡 Recommandation** : Utilisez `gpt-4o-mini` - le meilleur rapport qualité/prix pour les explications XAI.
+
+=== Estimation des Coûts
+
+**Coût par explication** (gpt-4o-mini) :
+- **Explication initiale** : ~2000 tokens → ~$0.003 USD
+- **Question de chat** : ~500 tokens → ~$0.0008 USD
+- **Session complète** (1 explication + 5 questions) : ~$0.007 USD
+
+**Volume mensuel estimé** :
+- 100 explications/mois → ~$0.70 USD
+- 1000 explications/mois → ~$7 USD
+
+== 💬 Réponses Utilisateur Détaillées
+
+=== Format de Réponse selon le Niveau
+
+==== Niveau Débutant (Novice)
+[source,text]
+----
+🧠 **Explication Simple de votre Modèle IA**
+
+Votre modèle d'intelligence artificielle a appris à faire des prédictions en regardant les données d'entraînement. Voici ce qu'il a découvert :
+
+**📊 Variables les Plus Importantes :**
+• **age (0.234)** : L'âge de la personne influence beaucoup la prédiction
+• **income (0.187)** : Le revenu est également très important
+• **education_level (0.156)** : Le niveau d'éducation joue un rôle
+
+**🎯 Ce que cela signifie :**
+Imaginez que votre IA est comme un détective qui examine des indices. Les variables avec des valeurs élevées sont comme des "indices importants" que l'IA utilise pour prendre sa décision.
+
+**✅ Puis-je faire confiance à ce modèle ?**
+Oui, avec une précision de 94.2%, votre modèle est très fiable. C'est comme avoir un expert qui se trompe seulement 6 fois sur 100.
+
+**💡 À retenir :**
+• Votre IA s'appuie principalement sur l'âge et le revenu
+• Les prédictions sont très précises
+• Vous pouvez utiliser ce modèle en toute confiance
+----
+
+==== Niveau Intermédiaire
+[source,text]
+----
+🔍 **Analyse d'Explicabilité de votre Modèle ML**
+
+Votre modèle Random Forest a été analysé avec la méthode SHAP (SHapley Additive exPlanations) pour comprendre ses décisions.
+
+**📈 Feature Importance (Valeurs SHAP moyennes) :**
+• **age: 0.234** - Variable la plus influente sur les prédictions
+• **income: 0.187** - Deuxième facteur de décision
+• **education_level: 0.156** - Impact modéré mais significatif
+• **work_experience: 0.098** - Contribution plus faible
+
+**🧮 Interprétation des Valeurs SHAP :**
+- Les valeurs positives augmentent la probabilité de prédiction positive
+- Les valeurs négatives la diminuent
+- Plus la valeur absolue est élevée, plus l'impact est important
+
+**📊 Performance du Modèle :**
+• **Accuracy: 94.2%** - Très bonne performance
+• **Precision: 92.8%** - Faible taux de faux positifs
+• **Recall: 95.6%** - Excellente détection des cas positifs
+
+**🎯 Insights Clés :**
+Votre modèle se base principalement sur l'âge et le revenu pour ses prédictions. Cette dépendance est cohérente avec le domaine d'application et indique que le modèle a bien appris les patterns pertinents.
+----
+
+==== Niveau Expert
+[source,text]
+----
+🔬 **Analyse Technique XAI - Modèle Random Forest**
+
+**Méthode d'Explicabilité :** SHAP TreeExplainer
+**Performance Globale :** Accuracy=94.2%, F1-Score=93.9%
+
+**📊 SHAP Feature Importance (Valeurs moyennes) :**
+```
+age:              0.234 ± 0.067  (CV: 28.4%)
+income:           0.187 ± 0.043  (CV: 23.0%)  
+education_level:  0.156 ± 0.034  (CV: 21.8%)
+work_experience:  0.098 ± 0.029  (CV: 29.6%)
+location:         0.067 ± 0.051  (CV: 76.1%)
+```
+
+**🔍 Analyse Technique :**
+
+*Stabilité des Explications :*
+- CV < 30% pour les top features → explications stables
+- Location présente une forte variabilité (CV=76.1%) → possibles interactions complexes
+
+*Distribution des Valeurs SHAP :*
+- Base value: 0.423
+- Range global: [-0.89, +1.34]
+- Asymétrie positive (skewness: 0.23) → biais vers classes positives
+
+**⚠️ Considérations Méthodologiques :**
+- TreeExplainer garantit des explications exactes pour Random Forest
+- Pas de biais d'échantillonnage (vs KernelExplainer)
+- Addititivité vérifiée : Σ(SHAP) + base_value = prediction
+
+**🎯 Recommandations :**
+1. Investiguer les interactions age×income (corrélation Spearman: 0.67)
+2. Analyser la forte variabilité de 'location' 
+3. Considérer feature engineering pour stabiliser les explications
+4. Valider sur holdout set pour robustesse
+----
+
+=== Types de Questions Chat Supportées
+
+Le système OpenAI peut répondre à :
+
+. **Questions générales** : "Comment ce modèle fonctionne-t-il ?"
+. **Feature importance** : "Pourquoi l'âge est-il si important ?"
+. **Prédictions spécifiques** : "Pourquoi cette personne a-t-elle été classée comme positive ?"
+. **Améliorations** : "Comment puis-je améliorer ce modèle ?"
+. **Biais et éthique** : "Y a-t-il des biais dans ce modèle ?"
+
+== 🔧 Configuration Technique
+
+=== Variables d'Environnement Requises
+
+==== Dans le fichier `.env` du projet :
+
+[source,bash]
+----
+# === OBLIGATOIRE ===
+OPENAI_API_KEY=sk-proj-VOTRE_CLE_COMPLETE_ICI
+
+# === OPTIONNEL (avec valeurs par défaut) ===
+OPENAI_MODEL=gpt-4o-mini              # Modèle recommandé
+OPENAI_MAX_TOKENS=2000                # Longueur max des réponses
+OPENAI_TEMPERATURE=0.7                # Créativité (0.0-1.0)
+
+# Configuration chat
+MAX_CHAT_QUESTIONS=5                  # Max questions par session
+CHAT_SESSION_TIMEOUT_HOURS=24         # Durée session en heures
+MAX_TOKENS_PER_QUESTION=200           # Tokens max par question
+----
+
+==== Configuration Automatique dans Kubernetes
+
+Le Makefile lit automatiquement le `.env` et configure :
+
+[source,yaml]
+----
+# k8s/base/xai-engine/secrets.yaml (généré automatiquement)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: xai-engine-secrets
+  namespace: ibis-x
+data:
+  openai-api-key: c2stdC1wcm9qLVZPVFJFX0NMRV9JQ0k=  # Base64 encodé
+----
+
+=== Injection dans les Pods
+
+[source,yaml]
+----
+# k8s/base/xai-engine/deployment.yaml
+env:
+- name: OPENAI_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: xai-engine-secrets
+      key: openai-api-key
+----
+
+== 🚀 Procédure de Déploiement
+
+=== Commandes Complètes
+
+[source,bash]
+----
+# 1. Ajouter la clé dans .env
+echo "OPENAI_API_KEY=sk-proj-VOTRE_CLE" >> .env
+
+# 2. Déployer (lit automatiquement .env)
+make dev
+
+# 3. Vérifier le déploiement
+kubectl get pods -n ibis-x | grep xai-engine
+kubectl logs -f deployment/xai-engine -n ibis-x
+
+# 4. Test API
+curl -X POST http://localhost:9000/api/v1/explanations \
+  -H "Content-Type: application/json" \
+  -d '{
+    "experiment_id": "uuid-experiment",
+    "explanation_type": "global",
+    "audience_level": "intermediate"
+  }'
+----
+
+== 📱 Test Complet de l'Intégration
+
+=== Test Manuel via Interface
+
+. Accédez à http://localhost:8080
+. Connectez-vous à IBIS-X
+. Allez dans **ML Pipeline** → Créez une expérience
+. Une fois terminée, cliquez **"Explicabilité du Modèle"**
+. Configurez :
+   - Type : **Explication Globale**
+   - Audience : **Intermédiaire**
+   - Méthode : **Automatique**
+. Cliquez **"Générer l'Explication"**
+
+=== Réponse Attendue
+
+Vous devriez voir :
+. **Loading** : Animation cerveau qui pulse (2-5 minutes)
+. **Résultats** : Texte explicatif + visualisations SHAP/LIME
+. **Chat** : Interface pour poser 5 questions maximum
+
+=== Test API Direct
+
+[source,bash]
+----
+# Test health check XAI
+curl http://localhost:8083/health
+
+# Test création explication
+curl -X POST http://localhost:9000/api/v1/explanations \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "experiment_id": "test-uuid",
+    "explanation_type": "global",
+    "method_requested": "shap",
+    "audience_level": "intermediate",
+    "language": "fr",
+    "include_text_explanation": true
+  }'
+----
+
+== 💰 Gestion des Coûts OpenAI
+
+=== Estimation des Coûts (gpt-4o-mini)
+
+[cols="1,1,1", options="header"]
+|===
+|Action |Tokens Moyens |Coût Estimé
+
+|Explication Globale |~2000 tokens |$0.003 USD
+|Explication Locale |~1500 tokens |$0.002 USD
+|Question Chat |~500 tokens |$0.0008 USD
+|Session Complète |~4500 tokens |$0.007 USD
+|===
+
+=== Optimisations Coût
+
+. **Utiliser gpt-4o-mini** (16x moins cher que gpt-4)
+. **Limiter MAX_TOKENS** à 2000 (vs 4000)
+. **Cache des explications** : Éviter les regénérations
+. **Batch processing** : Traiter plusieurs explications ensemble
+
+=== Monitoring des Coûts
+
+. Dashboard OpenAI : https://platform.openai.com/usage[Usage^]
+. Alertes configurables par email
+. Limites mensuelles recommandées : $20-50/mois
+
+== 🔍 Exemple de Réponse Utilisateur Complète
+
+=== Scénario : Modèle de Classification d'Étudiants
+
+**Input utilisateur :**
+- Modèle : Random Forest
+- Dataset : EdNet (données éducationnelles)
+- Type : Explication Globale
+- Audience : Intermédiaire
+
+**Réponse OpenAI générée :**
+
+[source,text]
+----
+🎓 **Analyse d'Explicabilité - Modèle de Prédiction de Réussite Étudiante**
+
+Votre modèle Random Forest a analysé les données éducationnelles pour prédire la réussite des étudiants. L'analyse SHAP révèle les facteurs les plus déterminants :
+
+**📊 Variables d'Impact Principal :**
+
+• **study_time_hours (0.342)** - Le temps d'étude quotidien est le facteur #1
+  → Les étudiants étudiant >3h/jour ont 78% plus de chances de réussir
+
+• **previous_grades (0.278)** - Les notes antérieures sont très prédictives  
+  → Une moyenne >14/20 augmente les chances de réussite de 65%
+
+• **participation_rate (0.189)** - La participation en classe compte beaucoup
+  → >80% de participation = +45% de chances de réussite
+
+• **age (0.134)** - L'âge influence modérément les résultats
+  → Les étudiants de 18-20 ans performent mieux
+
+**🎯 Insights Éducationnels :**
+
+Votre modèle a identifié que **l'effort personnel** (temps d'étude, participation) est plus important que les **facteurs externes** (âge, situation familiale). Cela suggère que l'engagement étudiant est le principal levier de réussite.
+
+**📈 Fiabilité du Modèle :**
+Avec 94.2% de précision, ce modèle peut identifier avec confiance les étudiants à risque, permettant des interventions précoces ciblées.
+
+**💡 Applications Pratiques :**
+- Identifier les étudiants nécessitant un accompagnement renforcé
+- Personnaliser les recommandations d'étude
+- Optimiser l'allocation des ressources pédagogiques
+----
+
+=== Questions Chat Typiques et Réponses
+
+**Q: "Pourquoi le temps d'étude est-il si important ?"**
+
+**R:** Le modèle a découvert une forte corrélation entre le temps d'étude et la réussite parce que dans vos données d'entraînement, les étudiants qui consacrent plus de temps à l'étude obtiennent systématiquement de meilleurs résultats. C'est logique : plus de pratique = meilleure maîtrise des concepts. Le modèle a quantifié cette relation intuitive.
+
+**Q: "Ce modèle peut-il être biaisé ?"**
+
+**R:** Excellente question ! Analysons les biais potentiels :
+- **Biais socio-économique** : Si les étudiants aisés ont plus de temps pour étudier
+- **Biais temporel** : Les données reflètent-elles différentes époques ?
+- **Biais de sélection** : Tous types d'étudiants représentés ?
+
+Je recommande d'analyser la distribution de vos variables par groupes démographiques pour identifier d'éventuels déséquilibres.
+
+== 🔐 Sécurité et Bonnes Pratiques
+
+=== Protection de la Clé API
+
+⚠️ **CRITIQUE** : Ne jamais exposer votre clé OpenAI
+
+**✅ Bonne pratique :**
+[source,bash]
+----
+# Dans .env (non versionné)
+OPENAI_API_KEY=sk-proj-...
+
+# Dans .gitignore
+.env
+.env.*
+----
+
+**❌ JAMAIS :**
+[source,bash]
+----
+# Dans le code source
+OPENAI_API_KEY = "sk-proj-abc123..."  # ❌ DANGER
+
+# Dans les logs
+logger.info(f"Using key: {api_key}")  # ❌ EXPOSITION
+----
+
+=== Rotation des Clés
+
+. **Créez une nouvelle clé** tous les 3-6 mois
+. **Testez la nouvelle clé** en développement
+. **Mettez à jour** `.env` et redéployez
+. **Révoquez l'ancienne clé** sur OpenAI Platform
+
+== 🐛 Dépannage
+
+=== Erreurs Communes
+
+**"Invalid API Key"**
+[source,bash]
+----
+# Vérifier la clé dans les secrets
+kubectl get secret xai-engine-secrets -n ibis-x -o yaml
+
+# Décoder la clé
+echo "ENCODED_KEY" | base64 -d
+----
+
+**"Rate limit exceeded"**
+- Augmentez les limites sur OpenAI Platform
+- Implémentez un retry avec backoff exponential
+- Considérez un modèle moins cher
+
+**"Model not found"**
+- Vérifiez que `OPENAI_MODEL` existe
+- Models disponibles : gpt-3.5-turbo, gpt-4o-mini, gpt-4
+
+=== Logs de Debug
+
+[source,bash]
+----
+# Logs détaillés XAI Engine
+kubectl logs -f deployment/xai-engine -n ibis-x | grep -i openai
+
+# Logs des workers Celery
+kubectl logs -f deployment/xai-engine-celery-worker -n ibis-x
+
+# Logs avec timestamps
+kubectl logs --timestamps=true deployment/xai-engine -n ibis-x
+----
+
+== ✅ Checklist Finale
+
+- [ ] Compte OpenAI créé avec méthode de paiement
+- [ ] Clé API créée et copiée
+- [ ] Variable `OPENAI_API_KEY` ajoutée dans `.env`
+- [ ] Modèle configuré (`gpt-4o-mini` recommandé)
+- [ ] Application redéployée avec `make dev`
+- [ ] Pods XAI Engine en cours d'exécution
+- [ ] Test d'explication réussi via interface
+- [ ] Chat fonctionnel (5 questions max)
+- [ ] Monitoring des coûts activé sur OpenAI Platform
+
+**🎉 Une fois cette checklist complète, votre XAI Engine sera pleinement opérationnel avec des explications IA intelligentes et adaptatives !**

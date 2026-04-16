@@ -1,0 +1,62 @@
+= Personas & acteurs
+:description: Qui utilise IBIS-X
+
+== Personas principaux
+
+=== 👩‍🎓 Léa — Étudiante en data science
+
+* **Niveau ML** : intermédiaire. Connaît les bases sklearn mais pas SHAP/LIME.
+* **Besoin** : comprendre comment un modèle prend ses décisions pour un mémoire.
+* **Parcours** : upload dataset éducation, training Random Forest, explications SHAP + chat LLM.
+
+=== 👨‍🏫 Marc — Chercheur confirmé
+
+* **Niveau ML** : expert.
+* **Besoin** : comparer plusieurs techniques XAI sur un même modèle.
+* **Parcours** : entraîne plusieurs algorithmes, enchaîne SHAP + LIME + WebSHAP, exporte les résultats pour publication.
+
+=== 👩‍💼 Fatou — Responsable conformité
+
+* **Niveau ML** : débutant.
+* **Besoin** : vérifier qu'un modèle ne discrimine pas sur des critères sensibles.
+* **Parcours** : consulte un modèle existant partagé, génère explications SHAP, identifie les features sensibles, lit les évaluations éthiques des datasets.
+
+=== 🧑‍💻 Samir — Développeur contributeur
+
+* **Niveau ML** : faible mais technique solide.
+* **Besoin** : ajouter une feature ou corriger un bug.
+* **Parcours** : clone, `make dev`, lit la doc Antora pilier 03-technique, ouvre une PR.
+
+== Rôles système
+
+[cols="1,2,3"]
+|===
+| Rôle | `role` en BDD | Permissions
+
+| Utilisateur standard
+| `user`
+| Crée projets, lance pipelines, consulte ses explications, demande suppression de son compte
+
+| Contributeur
+| `contributor`
+| + Upload de datasets publics
+
+| Administrateur
+| `admin` (→ `is_superuser == true`)
+| + Accès back-office (`/app/admin/*`), modification rôles, gestion templates éthiques, import Kaggle en prod
+|===
+
+== Acteurs externes (non utilisateurs)
+
+[cols="1,2"]
+|===
+| Acteur | Rôle
+| Google | Authentification OAuth
+| OpenAI | Analyses qualité + explications LLM
+| Kaggle | Source de datasets (batch import)
+| Microsoft Azure | Hébergement prod
+|===
+
+== Jury / auditeur (visiteur de la documentation)
+
+Ne crée pas de compte : consulte la documentation et éventuellement une démo. Parcours recommandé : xref:05-audit/dossier-audit.adoc[Dossier d'audit].

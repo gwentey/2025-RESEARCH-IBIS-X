@@ -1,0 +1,686 @@
+// 📊 Analytics Dashboard - Modern Design
+:host {
+  --primary-blue: #3b82f6;
+  --success-green: #10b981;
+  --warning-orange: #1e3a8a;
+  --danger-red: #ef4444;
+  --neutral-gray: #6b7280;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --border-light: #e5e7eb;
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.analytics-dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+// 📋 Dashboard Header
+.dashboard-header {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  
+  .header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-title {
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 8px 0;
+    }
+    
+    p {
+      color: var(--text-secondary);
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    .period-selector {
+      min-width: 150px;
+    }
+  }
+}
+
+// 📊 Dashboard Content
+.dashboard-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+// 📈 Key Metrics Section
+.key-metrics {
+  margin-bottom: 40px;
+  
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+  }
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.metric-tile {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  .metric-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+      color: white;
+    }
+  }
+  
+  .metric-content {
+    flex: 1;
+    
+    .metric-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .metric-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    
+    .metric-change {
+      font-size: 12px;
+      font-weight: 600;
+      
+      &.positive {
+        color: var(--success-green);
+      }
+      
+      &.negative {
+        color: var(--danger-red);
+      }
+      
+      &.neutral {
+        color: var(--neutral-gray);
+      }
+      
+      &.info {
+        color: var(--primary-blue);
+      }
+    }
+  }
+  
+  // Couleurs spécifiques par type de métrique
+  &.experiments .metric-icon {
+    background: linear-gradient(135deg, var(--primary-blue), #2563eb);
+  }
+  
+  &.success-rate .metric-icon {
+    background: linear-gradient(135deg, var(--success-green), #059669);
+  }
+  
+  &.training-time .metric-icon {
+    background: linear-gradient(135deg, var(--warning-orange), #d97706);
+  }
+  
+  &.algorithms .metric-icon {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  }
+}
+
+// 📊 Performance Charts Section
+.performance-charts {
+  margin-bottom: 40px;
+  
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+  }
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.chart-card {
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  
+  &:hover {
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  .mat-mdc-card-header {
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    
+    .mat-mdc-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .mat-mdc-card-subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+  }
+}
+
+// 🎯 Algorithm Performance
+.algorithm-performance {
+  .algorithm-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    
+    .algorithm-info {
+      min-width: 120px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .algorithm-name {
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      
+      .algorithm-score {
+        font-weight: 700;
+        color: var(--primary-blue);
+      }
+    }
+    
+    .progress-bar {
+      flex: 1;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+      
+      .progress-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.6s ease;
+        
+        &.excellent {
+          background: linear-gradient(90deg, var(--success-green), #059669);
+        }
+        
+        &.good {
+          background: linear-gradient(90deg, var(--primary-blue), #2563eb);
+        }
+        
+        &.average {
+          background: linear-gradient(90deg, var(--warning-orange), #d97706);
+        }
+        
+        &.poor {
+          background: linear-gradient(90deg, var(--danger-red), #dc2626);
+        }
+      }
+    }
+    
+    .algorithm-count {
+      min-width: 80px;
+      text-align: right;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+  }
+}
+
+// 🎨 Task Distribution
+.task-distribution {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
+    
+    &.classification {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      
+      .task-icon {
+        background: var(--primary-blue);
+        color: white;
+      }
+    }
+    
+    &.regression {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      
+      .task-icon {
+        background: var(--success-green);
+        color: white;
+      }
+    }
+    
+    .task-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+    
+    .task-info {
+      flex: 1;
+      
+      .task-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+      }
+      
+      .task-percentage {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--primary-blue);
+        margin-bottom: 4px;
+      }
+      
+      .task-count {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+    }
+  }
+}
+
+// ⚙️ System Metrics
+.system-metrics {
+  .system-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    
+    .system-metric {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      
+      mat-icon {
+        color: var(--primary-blue);
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+      
+      .metric-name {
+        font-weight: 600;
+        color: var(--text-primary);
+        min-width: 60px;
+      }
+      
+      .metric-bar {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        mat-progress-bar {
+          flex: 1;
+          height: 6px;
+        }
+        
+        .metric-value {
+          font-weight: 600;
+          color: var(--text-primary);
+          min-width: 50px;
+          text-align: right;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+// 🎯 Insights Section
+.insights-section {
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+  }
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.insight-card {
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  
+  &:hover {
+    box-shadow: var(--shadow-elevated);
+    transform: translateY(-2px);
+  }
+  
+  .mat-mdc-card-header {
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  }
+}
+
+// 🏆 Top Performers
+.top-performers {
+  .performer-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .performer-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary-blue);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      mat-icon {
+        color: white;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+    
+    .performer-info {
+      flex: 1;
+      
+      .performer-name {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+      }
+      
+      .performer-metric {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+    }
+    
+    .performer-score {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--success-green);
+    }
+  }
+}
+
+// 📈 Trends
+.trends-list {
+  .trend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      
+      &.positive {
+        color: var(--success-green);
+      }
+      
+      &.negative {
+        color: var(--danger-red);
+      }
+      
+      &.info {
+        color: var(--primary-blue);
+      }
+    }
+    
+    .trend-text {
+      flex: 1;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    
+    .trend-change {
+      font-weight: 600;
+      font-size: 12px;
+      
+      &.positive {
+        color: var(--success-green);
+      }
+      
+      &.negative {
+        color: var(--danger-red);
+      }
+      
+      &.neutral {
+        color: var(--neutral-gray);
+      }
+    }
+  }
+}
+
+// 💡 Recommendations
+.recommendations-list {
+  .recommendation-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-light);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .rec-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      &.high {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-red);
+      }
+      
+      &.medium {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning-orange);
+      }
+      
+      &.low {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--primary-blue);
+      }
+      
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+    
+    .rec-content {
+      flex: 1;
+      
+      .rec-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+      }
+      
+      .rec-description {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.4;
+      }
+    }
+  }
+}
+
+// 🎭 Loading State
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-light);
+    border-top: 3px solid var(--primary-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  p {
+    color: var(--text-secondary);
+    margin-top: 16px;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// 📱 Responsive Design
+@media (max-width: 1200px) {
+  .dashboard-content {
+    padding: 24px 16px;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header .header-content {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metric-tile {
+    padding: 20px;
+    
+    .metric-icon {
+      width: 48px;
+      height: 48px;
+    }
+    
+    .metric-content .metric-value {
+      font-size: 24px;
+    }
+  }
+}

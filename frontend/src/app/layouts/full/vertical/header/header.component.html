@@ -1,0 +1,334 @@
+<mat-toolbar class="topbar gap-8">
+  <!-- --------------------------------------------------------------- -->
+  <!-- Desktop Menu -->
+  @if(showToggle) {
+  <button
+    mat-icon-button
+    (click)="toggleCollapsed.emit()"
+    class="d-flex justify-content-center"
+  >
+    <i-tabler name="align-left" class="icon-20 d-flex"></i-tabler>
+  </button>
+  }
+
+  <!-- Mobile Menu -->
+  @if(!showToggle) {
+  <button
+    mat-icon-button
+    (click)="toggleMobileNav.emit()"
+    class="d-flex justify-content-center"
+  >
+    <i-tabler name="align-left" class="icon-20 d-flex"></i-tabler>
+  </button>
+  }
+
+  <span class="flex-1-auto"></span>
+
+  <!-- Mobile Menu -->
+  <button
+    mat-icon-button
+    (click)="toggleMobileFilterNav.emit()"
+    class="d-flex d-lg-none justify-content-center"
+  >
+    <i-tabler name="grid-dots" class="icon-20 d-flex"></i-tabler>
+  </button>
+
+  <!-- --------------------------------------------------------------- -->
+  <!--  Recherche IBIS-X Élargie et Améliorée -->
+  <!-- --------------------------------------------------------------- -->
+  <div class="search-container d-none d-lg-flex max-width-400 m-r-16 m-l-16 flex-grow-1">
+    <button
+      mat-stroked-button
+      class="w-100 custom-outline-btn search-btn-expanded"
+      (click)="openSearchDialog()"
+      [attr.aria-label]="'HEADER.SEARCH_ARIA_LABEL' | translate"
+      matTooltip="{{ 'HEADER.SEARCH_TOOLTIP' | translate }}"
+      matTooltipPosition="below"
+    >
+      <div class="d-flex align-items-center w-100 justify-content-start">
+        <i-tabler name="search" class="icon-26 d-flex m-r-14"></i-tabler> 
+        <span class="text-muted flex-grow-1 text-start">{{ 'HEADER.SEARCH_PLACEHOLDER' | translate }}</span>
+        <div class="d-flex align-items-center text-muted opacity-75">
+          <span class="f-s-12 d-none d-xl-inline m-r-4">Ctrl</span>
+          <span class="f-s-12 d-none d-xl-inline">K</span>
+        </div>
+      </div>
+    </button>
+  </div>
+
+  <!-- --------------------------------------------------------------- -->
+  <!-- langugage Dropdown -->
+  <!-- --------------------------------------------------------------- -->
+  <button
+    [matMenuTriggerFor]="flags"
+    mat-icon-button
+    class="m-l-10 d-none d-lg-flex align-items-center justify-content-center"
+  >
+    <img
+      [src]="selectedLanguage.icon"
+      class="rounded-circle object-cover icon-20"
+    />
+  </button>
+  <mat-menu #flags="matMenu" class="cardWithShadow">
+    @for(lang of languages; track lang) {
+    <button mat-menu-item (click)="changeLanguage(lang)">
+      <div class="d-flex align-items-center">
+        <img
+          [src]="lang.icon"
+          class="rounded-circle object-cover m-r-8 icon-20"
+        />
+        <span class="f-s-14">{{ lang.language }}</span>
+      </div>
+    </button>
+    }
+  </mat-menu>
+
+
+
+  <!-- --------------------------------------------------------------- -->
+  <!-- Collpase bar -->
+  <!-- --------------------------------------------------------------- -->
+  <button
+    mat-icon-button
+    (click)="toggleCollpase()"
+    class="d-flex d-lg-none justify-content-center"
+  >
+    <i-tabler name="dots" class="icon-20 d-flex"></i-tabler>
+  </button>
+  @if(isCollapse){
+  <div class="header-collpase p-y-10 p-x-15">
+    <div class="d-flex align-items-center justify-content-center gap-10">
+      <!-- --------------------------------------------------------------- -->
+      <!-- langugage Dropdown -->
+      <!-- --------------------------------------------------------------- -->
+      <button [matMenuTriggerFor]="flags" mat-icon-button>
+        <img
+          [src]="selectedLanguage.icon"
+          class="rounded-circle object-cover icon-20"
+        />
+      </button>
+
+      <!-- --------------------------------------------------------------- -->
+      <!-- Notifications IBIS-X -->
+      <!-- --------------------------------------------------------------- -->
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="notificationMenu"
+        aria-label="Notifications"
+      >
+        <i-tabler class="d-flex" name="bell"></i-tabler>
+        <div class="pulse">
+          <span class="heartbit border-success"></span>
+          <span class="point bg-success"></span>
+        </div>
+      </button>
+
+      <!-- --------------------------------------------------------------- -->
+      <!-- Profile Dropdown -->
+      <!-- --------------------------------------------------------------- -->
+      <button
+        mat-fab
+        extended
+        color="inherit"
+        [matMenuTriggerFor]="profileMenu"
+        class="profile-btn"
+        aria-label="Profile"
+      >
+        <div class="d-flex align-items-center gap-12">
+          <img
+            [src]="userProfileImage"
+            class="rounded-circle object-cover"
+            width="40"
+            referrerpolicy="no-referrer" onerror="this.src='/assets/images/profile/user5.jpg';"
+          />
+          <div class="d-none d-lg-flex text-left flex-col">
+            <h5 class="f-s-16 f-w-600">{{ userDisplayName }}</h5>
+            <span class="f-s-14">{{ userRole }}</span>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- --------------------------------------------------------------- -->
+  <!-- Notifications IBIS-X Desktop -->
+  <!-- --------------------------------------------------------------- -->
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="notificationMenu"
+    aria-label="Notifications"
+    class="d-none d-lg-block align-items-center justify-content-center"
+  >
+    <i-tabler class="d-flex" name="bell"></i-tabler>
+    <div class="pulse">
+      <span class="heartbit border-success"></span>
+      <span class="point bg-success"></span>
+    </div>
+  </button>
+  <mat-menu
+    #notificationMenu="matMenu"
+    xPosition="before"
+    class="topbar-dd cardWithShadow"
+  >
+    <div class="d-flex align-items-center p-x-32 p-y-16">
+      <h6 class="f-s-16 f-w-600 m-0">{{ 'HEADER.SHORTCUTS' | translate }}</h6>
+    </div>
+    <div class="row m-x-0">
+      <div class="col-6 p-x-0">
+        <a
+          class="bg-light-primary-hover d-flex justify-content-center flex-col gap-8 text-decoration-none p-x-20 p-y-12 text-center b-t-1 b-b-1 b-r-1"
+          [routerLink]="['/app/datasets']"
+        >
+          <div
+            class="icon-45 bg-light-primary rounded-circle m-auto round d-flex align-items-center justify-content-center"
+          >
+            <i-tabler name="database" class="icon-20 text-primary"></i-tabler>
+          </div>
+          <h6 class="f-s-16 f-w-600 m-0 text-body">{{ 'HEADER.DATASETS' | translate }}</h6>
+          <p class="d-block m-0 text-body f-w-500">{{ 'HEADER.DATASETS_EXPLORE' | translate }}</p>
+        </a>
+      </div>
+      <div class="col-6 p-x-0">
+        <a
+          class="bg-light-primary-hover d-flex justify-content-center flex-col gap-8 text-decoration-none p-x-20 p-y-12 text-center b-t-1 b-b-1"
+          [routerLink]="['/app/ml-pipeline']"
+        >
+          <div
+            class="icon-45 bg-light-warning rounded-circle m-auto round d-flex align-items-center justify-content-center"
+          >
+            <i-tabler name="chart-dots" class="icon-20 text-warning"></i-tabler>
+          </div>
+          <h6 class="f-s-16 f-w-600 m-0 text-body">{{ 'MENU.ML_PIPELINE' | translate }}</h6>
+          <p class="d-block m-0 text-body f-w-500">{{ 'DASHBOARD.QUICK_ACTIONS.NEW_PROJECT.DESCRIPTION' | translate }}</p>
+        </a>
+      </div>
+      <div class="col-6 p-x-0">
+        <a
+          class="bg-light-primary-hover d-flex justify-content-center flex-col gap-8 text-decoration-none p-x-20 p-y-12 text-center b-b-1 b-r-1"
+          [routerLink]="['/app/xai-explanation']"
+        >
+          <div
+            class="icon-45 bg-light-success rounded-circle m-auto round d-flex align-items-center justify-content-center"
+          >
+            <i-tabler name="bulb" class="icon-20 text-success"></i-tabler>
+          </div>
+          <h6 class="f-s-16 f-w-600 m-0 text-body">{{ 'MENU.XAI_EXPLANATIONS' | translate }}</h6>
+          <p class="d-block m-0 text-body f-w-500">{{ 'DASHBOARD.QUICK_ACTIONS.VIEW_EXPLANATIONS.DESCRIPTION' | translate }}</p>
+        </a>
+      </div>
+      <div class="col-6 p-x-0">
+        <a
+          class="bg-light-primary-hover d-flex justify-content-center flex-col gap-8 text-decoration-none p-x-20 p-y-12 text-center b-b-1"
+          [routerLink]="['/app/starter']"
+        >
+          <div
+            class="icon-45 bg-light-secondary rounded-circle m-auto round d-flex align-items-center justify-content-center"
+          >
+            <i-tabler name="dashboard" class="icon-20 text-secondary"></i-tabler>
+          </div>
+          <h6 class="f-s-16 f-w-600 m-0 text-body">{{ 'MENU.DASHBOARD' | translate }}</h6>
+          <p class="d-block m-0 text-body f-w-500">{{ 'DASHBOARD.QUICK_ACTIONS.SUBTITLE' | translate }}</p>
+        </a>
+      </div>
+    </div>
+  </mat-menu>
+
+  <!-- --------------------------------------------------------------- -->
+  <!-- profile Dropdown -->
+  <!-- --------------------------------------------------------------- -->
+  <button
+    mat-fab
+    extended
+    color="inherit"
+    [matMenuTriggerFor]="profileMenu"
+    aria-label="Profile"
+    class="profile-btn d-none d-lg-flex align-items-center justify-content-center"
+  >
+    <div class="d-flex align-items-center gap-12">
+      <img
+        [src]="userProfileImage"
+        class="rounded-circle object-cover"
+        width="40"
+        referrerpolicy="no-referrer" onerror="this.src='/assets/images/profile/user5.jpg';"
+      />
+      <div class="d-none d-lg-flex text-left flex-col">
+        <app-user-name-display 
+          [displayName]="userDisplayName"
+          [maxWidth]="150"
+          baseClass="f-s-16 f-w-600">
+        </app-user-name-display>
+        <span class="f-s-14">{{ userRole }}</span>
+      </div>
+    </div>
+  </button>
+  <mat-menu
+    #profileMenu="matMenu"
+    xPosition="before"
+    class="topbar-dd cardWithShadow"
+  >
+    <ng-scrollbar class="position-relative" style="height: 495px">
+      <div class="p-x-32 p-y-16">
+        <h6 class="f-s-16 f-w-600 m-0">{{ 'HEADER.USER_PROFILE' | translate }}</h6>
+
+        <div class="d-flex align-items-center p-b-24 b-b-1 m-t-16">
+          <img
+            [src]="userProfileImage"
+            class="rounded-circle"
+            width="95"
+            referrerpolicy="no-referrer" onerror="this.src='/assets/images/profile/user5.jpg';"
+          />
+          <div class="m-l-16">
+            <h6 class="f-s-16 f-w-600 m-0">{{ userDisplayName }}</h6>
+            <span class="f-s-14 text-body d-block m-b-4">{{ userRole }}</span>
+            <span class="d-flex align-items-center" *ngIf="shouldShowEmail()">
+              <i-tabler name="mail" class="icon-15 m-r-4"></i-tabler>
+              <app-user-name-display 
+                [displayName]="userEmail"
+                [maxWidth]="165"
+                baseClass="f-s-14 f-w-400"
+                referenceText="admin@example.com">
+              </app-user-name-display>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="p-x-32">
+        @for(profile of profiledd; track profile.title) {
+        <a
+          class="p-y-16 text-decoration-none d-block text-hover-primary"
+          [routerLink]="[profile.link]"
+        >
+          <div class="d-flex align-items-center gap-12">
+            <span
+              class="text-{{ profile.color }} bg-light-{{
+                profile.color
+              }} icon-50 d-flex align-items-center justify-content-center shadow-none rounded"
+            >
+              <i-tabler [name]="profile.img" class="icon-20" />
+            </span>
+
+            <div>
+              <h5 class="f-s-14 f-w-600 m-0 textprimary hover-text">
+                {{ profile.title }}
+              </h5>
+              <span class="text-body">{{ profile.subtitle }}</span>
+            </div>
+          </div>
+        </a>
+        }
+      </div>
+
+      <div class="p-y-12 p-x-32">
+        <button
+          mat-flat-button
+          color="primary"
+          class="w-100"
+          (click)="logout()"
+        >
+          {{ 'HEADER.LOGOUT' | translate }}
+        </button>
+      </div>
+    </ng-scrollbar>
+  </mat-menu>
+</mat-toolbar>

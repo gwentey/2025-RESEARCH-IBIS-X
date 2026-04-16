@@ -1,0 +1,72 @@
+= Mise à jour du système de couleurs - Remplacement du gradient bleu-doré
+:page-nav-title: Système de couleurs amélioré
+
+== Contexte
+
+L'ancien gradient utilisé pour les boutons, tags et badges combinait un bleu clair (`#60a5fa`) avec de l'ambre doré (`#e8b464`), créant un contraste peu harmonieux qui ne respectait pas l'identité visuelle Sorbonne.
+
+== Solution implémentée
+
+=== Nouveau gradient Bleu Sorbonne Moderne
+
+Le gradient a été remplacé par une combinaison harmonieuse de deux teintes de bleu Sorbonne :
+
+[source,scss]
+----
+background: linear-gradient(135deg, 
+    var(--accent-coral) 0%,     /* #1e3a8a - Bleu Sorbonne profond */
+    var(--accent-sunset) 100%   /* #2563eb - Bleu Sorbonne moderne */
+) !important;
+----
+
+=== Éléments concernés
+
+* **Chips Material Design** (`.mat-mdc-chip`, `.mat-chip`)
+* **Tags génériques** (`.tag`)
+* **Badges** (`.badge`) 
+* **Tags modernes** (`.modern-tag`)
+
+=== Box-shadow mise à jour
+
+L'ombre portée a également été adaptée pour s'harmoniser avec les nouvelles couleurs :
+
+[source,scss]
+----
+box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3) !important;
+----
+
+== Avantages
+
+* **Cohérence visuelle** : Respecte parfaitement l'identité Sorbonne
+* **Harmonie chromatique** : Gradient monochrome élégant
+* **Modernité** : Maintient un aspect contemporain et professionnel
+* **Lisibilité** : Améliore le contraste avec le texte blanc
+
+== Fichiers modifiés
+
+[cols="1,3"]
+|===
+|Fichier |Modifications
+
+|`_sorbonne-modern-overrides.scss`
+|Mise à jour du gradient et de la box-shadow pour les chips, tags et badges Material Design
+
+|`_sorbonne-modern-palette.scss`  
+|Mise à jour de la classe `.modern-tag` avec le nouveau gradient et l'ombre adaptée
+|===
+
+== Impact sur l'interface
+
+Cette modification améliore l'esthétique générale de l'application en :
+
+* Éliminant le contraste discordant bleu-doré
+* Renforçant l'identité visuelle Sorbonne
+* Créant une cohérence dans tous les éléments UI concernés
+* Maintenant une excellente lisibilité du texte blanc
+
+== Validation
+
+✅ Aucun conflit avec le linter CSS +
+✅ Compatibilité avec Material Design préservée +
+✅ Variables CSS Sorbonne respectées +
+✅ Impact visuel vérifié sur les éléments concernés

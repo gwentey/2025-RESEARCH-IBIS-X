@@ -1,0 +1,80 @@
+<!-- Panel de Filtres SaaS Moderne -->
+<div class="modern-filters-panel"
+     [class.expanded]="isExpanded"
+     [class.loading]="isLoading">
+
+  <!-- Header principal modernisé style Stripe/Linear -->
+  <div class="panel-header">
+    <div class="header-content">
+      <div class="header-main">
+        <div class="header-icon-wrapper">
+          <mat-icon class="header-icon">tune</mat-icon>
+        </div>
+        <div class="header-text">
+          <h2 class="panel-title">{{ 'DATASETS.FILTERS.MODERN.TITLE' | translate }}</h2>
+          <p class="panel-subtitle">{{ 'DATASETS.FILTERS.MODERN.SUBTITLE' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button mat-icon-button
+                class="reset-btn"
+                (click)="resetAllFilters()"
+                [disabled]="!hasActiveFilters()"
+                matTooltip="Réinitialiser tous les filtres">
+          <mat-icon>refresh</mat-icon>
+        </button>
+
+        <button mat-icon-button
+                class="close-btn"
+                (click)="closePanel()"
+                matTooltip="Fermer">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Chips des filtres actifs - clean et organisé -->
+    <div class="active-filters-section" *ngIf="hasActiveFilters()">
+      <app-filter-chip-bar
+        [activeFilters]="getActiveFiltersForChips()"
+        (removeFilter)="removeFilter($event)"
+        (clearAll)="resetAllFilters()"
+        class="modern-chip-bar">
+      </app-filter-chip-bar>
+    </div>
+  </div>
+
+  <!-- Contenu des formulaires -->
+  <div class="panel-content" *ngIf="isExpanded">
+    <form [formGroup]="filterForm" class="filters-form">
+
+      <!-- Groupes de filtres -->
+      <div class="filter-groups">
+        <app-filter-group
+          *ngFor="let group of filterGroups; trackBy: trackByGroupId"
+          [groupConfig]="group"
+          [formGroup]="filterForm"
+          [expanded]="group.expanded"
+          [hasActiveFilters]="hasActiveFiltersInGroup(group.id)"
+          (toggleExpansion)="toggleGroupExpansion(group.id)"
+          (resetGroup)="resetFilterGroup(group.id)">
+        </app-filter-group>
+      </div>
+
+
+
+    </form>
+  </div>
+
+
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="loading-content">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span class="loading-text">Chargement...</span>
+    </div>
+  </div>
+
+</div>

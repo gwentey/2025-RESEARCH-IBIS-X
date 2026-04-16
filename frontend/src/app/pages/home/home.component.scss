@@ -1,0 +1,655 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+// Background wrapper pour remplacer le body
+.home-wrapper {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #4ecdc4 100%);
+    min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+    color: white !important; // Assurer que tous les textes sont blancs par défaut
+
+    // Force tous les éléments de texte à être blancs
+    *, *::before, *::after {
+        color: white !important;
+    }
+
+    // Exceptions pour les éléments qui ne doivent pas être blancs (comme le bouton)
+    .get-started-btn {
+        color: #c44569 !important;
+    }
+
+}
+
+.container {
+  max-width: 1200px;
+    margin: 0 auto;
+      padding: 0 20px;
+}
+
+/* Header */
+.header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+    padding: 20px 0;
+    margin-bottom: 60px;
+}
+
+.logo {
+            display: flex;
+            align-items: center;
+    gap: 12px;
+              font-size: 18px;
+                  font-weight: 600;
+              color: white !important;
+}
+
+.logo-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+              display: flex;
+              align-items: center;
+        justify-content: center;
+    backdrop-filter: blur(10px);
+              color: white;
+}
+
+.logo-icon svg {
+    width: 20px;
+    height: 20px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.logo-icon img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.nav {
+            display: flex;
+    gap: 40px;
+}
+
+.nav a {
+    color: white !important;
+    text-decoration: none;
+    font-weight: 500;
+                font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.nav a:hover {
+        color: white;
+}
+
+.get-started-btn {
+    background: white;
+    color: #c44569;
+    padding: 12px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+                    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+    border: none;
+    cursor: pointer;
+}
+
+.get-started-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+}
+
+/* Main Content */
+.main-content {
+    text-align: center;
+    margin-bottom: 80px;
+}
+    
+.main-title {
+    font-size: 96px;
+      font-weight: 700;
+    color: white !important;
+    margin-bottom: 20px;
+    line-height: 0.9;
+    letter-spacing: -2px;
+}
+
+.main-subtitle {
+    font-size: 28px;
+    color: white !important;
+    font-weight: 400;
+    margin-bottom: 60px;
+}
+
+/* Tablet-style YouTube Card Container */
+.card-container {
+        display: flex;
+        justify-content: center;
+    position: relative;
+    margin: 0 auto;
+}
+
+/* YouTube Card Styles - Tablet Size - Format 16:9 */
+.youtube-card-wrapper {
+    position: relative;
+    width: 800px;
+    height: 450px; /* 800px / 16 * 9 = 450px pour respecter le format 16:9 */
+    padding: 3px;
+    border-radius: 40px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4));
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+}
+
+.youtube-card-outer {
+    position: relative;
+    padding: 2px;
+    border-radius: 38px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3));
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.1),
+        inset 0 0 20px rgba(255, 255, 255, 0.5);
+    height: 100%;
+}
+
+.youtube-card-inner {
+  position: relative;
+      width: 100%;
+      height: 100%;
+    border-radius: 36px;
+    background: linear-gradient(135deg, 
+        rgba(255, 235, 220, 0.95) 0%, 
+        rgba(255, 225, 210, 0.9) 50%, 
+        rgba(255, 215, 200, 0.85) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow: hidden;
+    box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+.youtube-content {
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Video Container - FULLSCREEN inside the card */
+.youtube-video-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+    width: 100%;
+        height: 100%;
+  overflow: hidden;
+    border-radius: 36px;
+}
+
+.youtube-video-container iframe {
+      position: absolute;
+    top: 0;
+      left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #000;
+    border-radius: 36px;
+}
+
+/* Decorative elements around the card */
+.youtube-decorative-stars {
+    position: absolute;
+    color: rgba(255, 220, 180, 0.8);
+    font-size: 24px;
+    animation: sparkle 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 25;
+    text-shadow: 0 0 10px rgba(255, 220, 180, 0.5);
+}
+
+.youtube-decorative-element {
+    position: absolute;
+                    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    animation: float 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 25;
+}
+
+/* Loading overlay */
+.youtube-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    z-index: 30;
+    animation: fadeOut 2s forwards;
+    animation-delay: 1s;
+    pointer-events: none;
+    border-radius: 36px;
+}
+
+.youtube-loader {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 180, 160, 0.3);
+    border-top-color: #ff8a65;
+              border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Decorative Elements outside card */
+.decorative-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.star-1, .star-2, .plus-1 {
+          position: absolute;
+    color: rgba(255, 255, 255, 0.9);
+          font-size: 20px;
+    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+}
+
+.star-1 {
+    top: 20%;
+    right: 10%;
+    animation: float 3s ease-in-out infinite;
+}
+
+.star-2 {
+    bottom: 25%;
+    left: 15%;
+        font-size: 16px;
+    animation: float 4s ease-in-out infinite reverse;
+}
+
+.plus-1 {
+    bottom: 30%;
+    right: 15%;
+                    font-size: 18px;
+    animation: float 3.5s ease-in-out infinite;
+}
+
+/* Floating particles */
+.particle {
+        position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+                    border-radius: 50%;
+    pointer-events: none;
+}
+
+.particle-1 {
+    width: 6px;
+                  height: 6px;
+    top: 30%;
+    left: 10%;
+    animation: float 2s ease-in-out infinite;
+}
+
+.particle-2 {
+              width: 8px;
+              height: 8px;
+    top: 60%;
+    right: 20%;
+    animation: float 3s ease-in-out infinite reverse;
+}
+
+.particle-3 {
+    width: 4px;
+                height: 4px;
+    top: 70%;
+    left: 20%;
+    animation: float 2.5s ease-in-out infinite;
+}
+
+/* Person photo background */
+.person-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600"><defs><radialGradient id="face" cx="70%" cy="40%" r="40%"><stop offset="0%" stop-color="%23ffeaa7"/><stop offset="30%" stop-color="%23fab1a0"/><stop offset="60%" stop-color="%23e17055"/><stop offset="100%" stop-color="%23d63031"/></radialGradient><radialGradient id="hair" cx="60%" cy="20%" r="50%"><stop offset="0%" stop-color="%23a0522d"/><stop offset="50%" stop-color="%23654321"/><stop offset="100%" stop-color="%233d2914"/></radialGradient></defs><ellipse cx="300" cy="200" rx="80" ry="120" fill="url(%23hair)"/><ellipse cx="280" cy="280" rx="70" ry="90" fill="url(%23face)"/><circle cx="260" cy="260" r="3" fill="%23333"/><circle cx="300" cy="260" r="3" fill="%23333"/><path d="M 250 320 Q 280 340 310 320" stroke="%23333" stroke-width="2" fill="none"/></svg>') no-repeat;
+    background-size: cover;
+    background-position: center right;
+    z-index: 1;
+  }
+  
+/* Interface overlay */
+.interface-overlay {
+  position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 25px;
+}
+
+/* Glossy highlight effect */
+.phone-highlight {
+    position: absolute;
+    top: 8%;
+    left: 8%;
+    right: 8%;
+    height: 35%;
+    background: linear-gradient(165deg, 
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0.1) 30%,
+        rgba(255, 255, 255, 0.05) 60%,
+        transparent 100%);
+    border-radius: 35px 35px 60px 60px;
+    pointer-events: none;
+    z-index: 4;
+    filter: blur(1px);
+}
+
+/* Phone Header */
+.phone-header {
+      display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.close-btn {
+    width: 14px;
+    height: 14px;
+          border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+        border: none;
+    cursor: pointer;
+}
+
+.window-title {
+    color: rgba(0, 0, 0, 0.7);
+        font-size: 16px;
+    font-weight: 500;
+}
+
+.expand-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 8px 16px;
+      border-radius: 20px;
+    font-size: 13px;
+    color: #666;
+              display: flex;
+      align-items: center;
+      gap: 8px;
+    cursor: pointer;
+      font-weight: 500;
+}
+
+/* Advanced Options */
+.advanced-section {
+    margin-bottom: 25px;
+}
+
+.advanced-title {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 13px;
+    margin-bottom: 15px;
+    font-weight: 400;
+}
+
+.toggle-container {
+        display: flex;
+        align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toggle-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.9);
+          border-radius: 50%;
+            display: flex;
+            align-items: center;
+          justify-content: center;
+    font-size: 16px;
+    color: #9b59b6;
+}
+
+.toggle-label {
+    color: rgba(0, 0, 0, 0.8);
+              font-size: 16px;
+    font-weight: 500;
+}
+
+.toggle-switch {
+    width: 50px;
+      height: 28px;
+    background: #4CAF50;
+    border-radius: 14px;
+          position: relative;
+              cursor: pointer;
+              transition: all 0.3s ease;
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    top: 2px;
+    right: 2px;
+      transition: all 0.3s ease;
+}
+
+.color-indicators {
+                display: flex;
+                gap: 8px;
+    margin-left: 10px;
+}
+
+.color-dot {
+    width: 20px;
+    height: 20px;
+                    border-radius: 50%;
+}
+
+.dot-blue {
+    background: #3498db;
+}
+
+.dot-pink {
+    background: #e91e63;
+}
+
+/* Features Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 25px 20px;
+                  text-align: center;
+          transition: all 0.3s ease;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.feature-card:hover {
+            transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+          width: 40px;
+          height: 40px;
+    margin: 0 auto 15px;
+    border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+    font-size: 20px;
+}
+
+.writing-icon {
+    background: linear-gradient(135deg, #e8d5ff 0%, #d1c4e9 100%);
+    color: #7b1fa2;
+}
+
+.design-icon {
+    background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+    color: #1976d2;
+}
+
+.feature-title {
+    color: #333;
+              font-size: 16px;
+      font-weight: 600;
+}
+
+/* Bottom Features */
+.bottom-features {
+      display: flex;
+    gap: 15px;
+}
+
+.bottom-feature {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 15px;
+    text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+    color: #666;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      gap: 8px;
+}
+
+.aoricoe-feature {
+    background: rgba(147, 112, 219, 0.9);
+        color: white;
+}
+
+.coding-feature {
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+    50% { transform: translateY(-8px) rotate(5deg); opacity: 1; }
+}
+
+/* Responsive - Format 16:9 maintenu */
+@media (max-width: 900px) {
+    .youtube-card-wrapper {
+        width: 90vw;
+        max-width: 700px;
+        height: calc(90vw * 9 / 16); /* Calcule automatiquement la hauteur 16:9 */
+        max-height: 394px; /* 700px * 9/16 = 394px */
+        min-height: 300px;
+    }
+    
+    .main-title {
+        font-size: 64px;
+    }
+    
+    .main-subtitle {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .youtube-card-wrapper {
+        width: 95vw;
+        height: calc(95vw * 9 / 16); /* Maintient le format 16:9 */
+        min-height: 250px;
+        max-height: 350px;
+    }
+    
+    .nav {
+          display: none;
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% { 
+        opacity: 0.6;
+        transform: scale(1) rotate(0deg);
+    }
+    50% { 
+        opacity: 1;
+        transform: scale(1.2) rotate(180deg);
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+}
+
+// ================================
+// MASQUAGE DES ÉLÉMENTS YOUTUBE INDÉSIRABLES
+// ================================
+  
+// Plus besoin de masques - utilisation des paramètres YouTube natifs
+
+// YouTube container propre sans masques visibles
+.youtube-video-container {
+    position: relative;
+    overflow: hidden;
+    
+    iframe {
+        border: none;
+    width: 100%;
+        height: 100%;
+    }
+}
+
+// Configuration YouTube propre - utilisation des paramètres d'URL pour minimiser le branding
+// Les paramètres suivants sont utilisés dans l'iframe :
+// - modestbranding=1 : Réduit l'affichage du logo YouTube
+// - rel=0 : Limite les vidéos suggérées 
+// - showinfo=0 : Masque les informations de la vidéo
+// - iv_load_policy=3 : Masque les annotations
+// - disablekb=1 : Désactive les raccourcis clavier
+// - cc_load_policy=0 : Désactive les sous-titres par défaut

@@ -1,0 +1,191 @@
+<!-- Interface de Chat XAI -->
+<div class="xai-chat-container" [class.compact-mode]="compactMode">
+  
+  <!-- État d'initialisation -->
+  <div class="chat-loading" *ngIf="isInitializingChat">
+    <div class="loading-content">
+      <div class="loading-animation">
+        <mat-spinner diameter="32"></mat-spinner>
+        <mat-icon class="chat-icon">chat</mat-icon>
+      </div>
+      <h3>{{ 'XAI.CHAT.INITIALIZING' | translate }}</h3>
+      <p>{{ 'XAI.CHAT.PREPARING_SESSION' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- État d'erreur -->
+  <div class="chat-error" *ngIf="hasError && !isInitializingChat">
+    <div class="error-content">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h3>{{ 'XAI.CHAT.ERROR_TITLE' | translate }}</h3>
+      <p>{{ errorMessage }}</p>
+      <button mat-flat-button color="primary" (click)="retryInitialization()">
+        <mat-icon>refresh</mat-icon>
+        {{ 'XAI.CHAT.RETRY' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Interface principale du chat -->
+  <div class="chat-interface" *ngIf="chatSession && !isInitializingChat && !hasError">
+    
+    <!-- En-tête du chat -->
+    <div class="chat-header">
+      <div class="header-info">
+        <div class="chat-title">
+          <mat-icon class="title-icon">psychology</mat-icon>
+          <div class="title-text">
+            <h3>{{ 'XAI.CHAT.TITLE' | translate }}</h3>
+            <p>{{ 'XAI.CHAT.SUBTITLE' | translate }}</p>
+          </div>
+        </div>
+        <div class="chat-stats">
+          <div class="stat-item" [matTooltip]="'XAI.CHAT.QUESTIONS_REMAINING_TOOLTIP' | translate">
+            <mat-icon [matBadge]="getRemainingQuestions()" matBadgeColor="accent">help_outline</mat-icon>
+            <span>{{ getRemainingQuestions() }}/{{ maxQuestions }}</span>
+          </div>
+          <!-- ✅ NOUVEAU : Bouton pour réafficher les questions suggérées -->
+          <button mat-icon-button 
+                  [matTooltip]="'XAI.CHAT.SHOW_SUGGESTIONS' | translate"
+                  (click)="toggleSuggestedQuestions()"
+                  class="refresh-suggestions-btn">
+            <mat-icon>quiz</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone des messages -->
+    <div class="chat-messages" #messagesContainer>
+      <div *ngFor="let message of messages; trackBy: trackByMessage" 
+           class="message-wrapper" 
+           [ngClass]="getMessageClass(message.message_type)">
+        
+        <div class="message-container">
+          <div class="message-header">
+            <div class="message-avatar">
+              <mat-icon>{{ getMessageIcon(message.message_type) }}</mat-icon>
+            </div>
+            <div class="message-meta">
+              <span class="message-type">
+                {{ message.message_type === MessageType.USER_QUESTION ? ('XAI.CHAT.YOU' | translate) : 
+                   message.message_type === MessageType.AI_RESPONSE ? ('XAI.CHAT.AI_ASSISTANT' | translate) : 
+                   ('XAI.CHAT.SYSTEM' | translate) }}
+              </span>
+              <span class="message-time">{{ getMessageTime(message) }}</span>
+            </div>
+          </div>
+          
+          <div class="message-content" [innerHTML]="formatMessageContent(message.content)"></div>
+          
+          <!-- Méta-informations pour les réponses IA -->
+          <div class="message-footer" *ngIf="message.message_type === MessageType.AI_RESPONSE && message.tokens_used">
+            <div class="response-stats">
+              <span class="stat" *ngIf="message.model_used" [matTooltip]="'XAI.CHAT.MODEL_USED_TOOLTIP' | translate">
+                <mat-icon>memory</mat-icon>
+                {{ message.model_used }}
+              </span>
+              <span class="stat" *ngIf="message.response_time_seconds" [matTooltip]="'XAI.CHAT.RESPONSE_TIME_TOOLTIP' | translate">
+                <mat-icon>schedule</mat-icon>
+                {{ message.response_time_seconds }}s
+              </span>
+              <span class="stat" *ngIf="message.tokens_used" [matTooltip]="'XAI.CHAT.TOKENS_USED_TOOLTIP' | translate">
+                <mat-icon>token</mat-icon>
+                {{ message.tokens_used }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indicateur de frappe -->
+      <div class="typing-indicator" *ngIf="isAskingQuestion">
+        <div class="message-wrapper ai-message">
+          <div class="message-container">
+            <div class="message-header">
+              <div class="message-avatar">
+                <mat-icon>smart_toy</mat-icon>
+              </div>
+              <div class="message-meta">
+                <span class="message-type">{{ 'XAI.CHAT.AI_ASSISTANT' | translate }}</span>
+              </div>
+            </div>
+            <div class="message-content typing-animation">
+              <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <span class="typing-text">{{ 'XAI.CHAT.TYPING' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ✅ Questions suggérées (masquées pendant que l'IA répond) -->
+    <div class="suggested-questions" *ngIf="((messages.length <= 1 && showSuggestedQuestions !== false) || showSuggestedQuestions === true) && canAskQuestions() && !isAskingQuestion">
+      <div class="suggestions-header">
+        <h4>{{ 'XAI.CHAT.SUGGESTED_QUESTIONS' | translate }}</h4>
+      </div>
+      <div class="questions-grid">
+        <button *ngFor="let question of suggestedQuestions; trackBy: trackByQuestion" 
+                mat-stroked-button 
+                class="suggestion-button"
+                (click)="askSuggestedQuestion(question)"
+                [disabled]="isAskingQuestion">
+          <mat-icon>lightbulb</mat-icon>
+          {{ question }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Zone de saisie -->
+    <div class="chat-input-area">
+      <mat-divider></mat-divider>
+      
+      <div class="input-container">
+        <div class="input-wrapper">
+          <mat-form-field appearance="outline" class="question-input">
+            <mat-label>{{ 'XAI.CHAT.ASK_QUESTION_PLACEHOLDER' | translate }}</mat-label>
+            <textarea matInput 
+                      #questionInput
+                      [formControl]="questionControl"
+                      [placeholder]="'XAI.CHAT.ASK_QUESTION_HINT' | translate"
+                      rows="2"
+                      maxlength="500"
+                      (keydown)="onQuestionInputKeyDown($event)">
+            </textarea>
+            <mat-hint align="end">{{ questionControl.value?.length || 0 }}/500</mat-hint>
+            <mat-error *ngIf="questionControl.hasError('required')">
+              {{ 'XAI.CHAT.QUESTION_REQUIRED' | translate }}
+            </mat-error>
+            <mat-error *ngIf="questionControl.hasError('minlength')">
+              {{ 'XAI.CHAT.QUESTION_TOO_SHORT' | translate }}
+            </mat-error>
+          </mat-form-field>
+          
+          <div class="input-actions">
+            <button mat-fab 
+                    color="primary" 
+                    class="send-button"
+                    [disabled]="!canAskQuestions() || isAskingQuestion || !questionControl.valid"
+                    (click)="askQuestion()"
+                    [matTooltip]="canAskQuestions() ? ('XAI.CHAT.SEND_QUESTION' | translate) : ('XAI.CHAT.NO_QUESTIONS_LEFT' | translate)">
+              <mat-icon *ngIf="!isAskingQuestion">send</mat-icon>
+              <mat-spinner diameter="24" *ngIf="isAskingQuestion"></mat-spinner>
+            </button>
+          </div>
+        </div>
+
+        <!-- Aide uniquement -->
+        <div class="input-footer">
+          <div class="input-help">
+            <span class="help-text">{{ 'XAI.CHAT.INPUT_HELP' | translate }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,161 @@
+= Référence API
+:description: Consolidation des endpoints exposés par les 4 services
+
+== Source canonique — OpenAPI
+
+Chaque service FastAPI expose sa spécification OpenAPI 3.1 à `/openapi.json` et un Swagger UI à `/docs`.
+
+En local après `make dev` :
+
+[cols="1,2,2"]
+|===
+| Service | Swagger UI | OpenAPI JSON
+
+| api-gateway (vue agrégée via reverse-proxy)
+| http://localhost:9000/docs
+| http://localhost:9000/openapi.json
+
+| service-selection (accès interne K8s)
+| cluster only
+| cluster only
+
+| ml-pipeline-service
+| cluster only
+| cluster only
+
+| xai-engine-service
+| cluster only
+| cluster only
+|===
+
+[TIP]
+====
+Toutes les routes publiques passent par `api-gateway` (port-forward 9000). C'est l'unique URL à utiliser côté client.
+====
+
+== Vue par domaine
+
+=== Authentification & utilisateurs (api-gateway)
+
+[cols="1,2,3"]
+|===
+| Méthode | Route | Description
+
+| POST | `/auth/jwt/login` | Login email + password → JWT
+| POST | `/auth/jwt/logout` | Invalidation du token
+| POST | `/auth/register` | Création d'un compte (rôle `user`)
+| GET | `/auth/google/authorize` | Démarrer OAuth Google
+| GET | `/auth/google/callback` | Callback OAuth
+| GET | `/users/me` | Profil courant
+| PATCH | `/users/me` | Mise à jour profil
+| DELETE | `/users/me` | Suppression compte (RGPD droit à l'effacement)
+|===
+
+=== Datasets (service-selection)
+
+[cols="1,2,3"]
+|===
+| Méthode | Route | Description
+
+| GET | `/datasets` | Listing paginé + filtres
+| GET | `/datasets/{id}` | Détail (multi-fichiers + colonnes + scores)
+| POST | `/datasets` | Upload (multipart + manifest)
+| PUT | `/datasets/{id}` | Mise à jour métadonnées
+| DELETE | `/datasets/{id}` | Suppression (BDD + stockage)
+| GET | `/datasets/{id}/preview` | Échantillon de lignes
+| GET | `/datasets/{id}/columns` | Colonnes avec statistiques
+| POST | `/datasets/{id}/analyze` | Déclenche `analyze_dataset_with_ai` (queue `ai_queue`)
+| GET | `/datasets/{id}/analysis` | Récupère le cache `data_quality_analyses`
+| GET | `/ethical-templates` | Templates d'évaluation éthique
+|===
+
+=== Projets (api-gateway)
+
+[cols="1,2,3"]
+|===
+| Méthode | Route | Description
+
+| GET | `/projects` | Listing des projets de l'utilisateur
+| GET | `/projects/{id}` | Détail projet
+| POST | `/projects` | Création
+| PUT | `/projects/{id}` | Mise à jour
+| DELETE | `/projects/{id}` | Suppression
+| GET | `/projects/{id}/recommendations` | Recommandation de datasets (heatmap)
+|===
+
+=== Expériences ML (ml-pipeline-service)
+
+[cols="1,2,3"]
+|===
+| Méthode | Route | Description
+
+| POST | `/experiments` | Créer une expérience (déclenche `train_model` sur `ml_queue`)
+| GET | `/experiments/{id}` | Statut + métriques (polling)
+| GET | `/experiments?project_id=...` | Listing par projet
+| DELETE | `/experiments/{id}` | Suppression (BDD + artefact)
+| GET | `/experiments/{id}/artifact` | Téléchargement du modèle `.joblib`
+|===
+
+[NOTE]
+====
+`POST /experiments/{id}/predict` est *planifié mais non implémenté* au PoC — voir `docs/modules/ROOT/pages/features/model-prediction-interface.md`.
+====
+
+=== Explications XAI (xai-engine-service)
+
+[cols="1,2,3"]
+|===
+| Méthode | Route | Description
+
+| POST | `/explanations` | Créer demande (déclenche `generate_explanation_task` sur `xai_queue`)
+| GET | `/explanations/{id}` | Statut + résultats
+| POST | `/explanations/{id}/chat` | Poser une question (max 5/session)
+| GET | `/explanations/{id}/chat` | Historique de la conversation
+| GET | `/experiments/{id}/explanations` | Toutes explications d'une expérience
+|===
+
+== Codes d'erreur
+
+[cols="1,3"]
+|===
+| Code | Signification
+
+| 400 | Validation Pydantic échouée (voir `detail` pour les champs)
+| 401 | JWT manquant ou invalide
+| 403 | Rôle insuffisant (`admin` requis sur certaines routes)
+| 404 | Ressource absente ou non possédée par l'utilisateur
+| 422 | Erreur de schéma multipart
+| 429 | Rate limit atteint (si activé)
+| 500 | Erreur serveur — consulter logs du service concerné
+| 503 | Dépendance externe indisponible (Redis, OpenAI)
+|===
+
+== Authentification côté client
+
+Toutes les routes `/api/*` (sauf `/auth/*` publiques) requièrent :
+
+[source,http]
+----
+Authorization: Bearer <JWT>
+----
+
+Le token est obtenu via `POST /auth/jwt/login` ou le callback OAuth Google. Durée de vie par défaut : 1h.
+
+== Génération & export OpenAPI
+
+Pour exporter la spec à partir d'un déploiement en cours :
+
+[source,bash]
+----
+curl http://localhost:9000/openapi.json > openapi-gateway.json
+----
+
+Pour les services internes (accès via port-forward temporaire) :
+
+[source,bash]
+----
+kubectl port-forward -n ibis-x deployment/ml-pipeline-deployment 8082:8082 &
+curl http://localhost:8082/openapi.json > openapi-ml.json
+----
+
+Futures améliorations (Lot 5 ou post-PoC) : agrégation automatique des 4 OpenAPI via un script CI, publication d'une ReDoc unifiée.

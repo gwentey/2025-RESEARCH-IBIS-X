@@ -1,0 +1,124 @@
+= Correction du Centrage du Loader - Page Détails des Datasets
+:page-description: Documentation technique sur la correction du problème de centrage du loader sur la page de détails des datasets
+:page-keywords: frontend, Angular, CSS, loader, centrage, UX
+
+== Vue d'ensemble
+
+Cette documentation décrit la correction appliquée au problème de centrage du loader (spinner de chargement) sur la page de détails des datasets, accessible via l'URL `/app/datasets/[id]`.
+
+== Problème Identifié
+
+=== Description du Bug
+* Le loader de chargement apparaissait décentré vers la gauche au lieu d'être parfaitement centré
+* L'utilisateur rapportait que le "loader est calé à gauche et pas au centre"
+* La page concernée : `http://localhost:8080/app/datasets/[dataset-id]`
+
+=== Impact Utilisateur
+* Expérience utilisateur dégradée pendant le chargement des données
+* Perception d'un manque de polish de l'interface
+* Incohérence visuelle par rapport aux autres loaders de l'application
+
+== Solution Implémentée
+
+=== Fichier Modifié
+`frontend/src/app/pages/datasets/dataset-detail.component.scss`
+
+=== Changements CSS Appliqués
+
+==== 1. Amélioration du Conteneur Principal
+[source,scss]
+----
+.loading-container, .error-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem; // ← Ajouté pour éviter le collage aux bords
+}
+----
+
+==== 2. Centrage Parfait du Contenu
+[source,scss]
+----
+.loading-content, .error-content {
+  display: flex;           // ← Changé de text-align: center
+  flex-direction: column;  // ← Ajouté
+  align-items: center;     // ← Ajouté
+  justify-content: center; // ← Ajouté
+  text-align: center;
+  padding: 2rem;
+}
+----
+
+==== 3. Optimisation du Spinner
+[source,scss]
+----
+.mat-mdc-spinner {
+  display: block;        // ← Ajouté pour assurer le comportement
+  margin: 0 auto 1rem auto;
+}
+----
+
+=== Techniques de Centrage Utilisées
+
+. **Flexbox Principal** : Le conteneur utilise `display: flex` avec `align-items: center` et `justify-content: center`
+. **Flexbox Secondaire** : Le contenu utilise également flexbox en colonne pour un centrage vertical et horizontal parfait
+. **Padding de Sécurité** : Ajout d'un padding pour éviter le collage aux bords de l'écran
+. **Display Block** : Force le spinner à se comporter comme un élément de bloc pour un meilleur centrage
+
+== Résultat
+
+=== Avant la Correction
+* Loader décalé vers la gauche
+* Centrage imparfait
+* Expérience utilisateur moins fluide
+
+=== Après la Correction
+* Loader parfaitement centré horizontalement et verticalement
+* Alignement cohérent avec le design système
+* Expérience utilisateur améliorée
+
+== Tests et Validation
+
+=== Cas de Test
+. Naviguer vers `/app/datasets/[dataset-id]`
+. Observer le loader pendant le chargement des données
+. Vérifier le centrage sur différentes tailles d'écran
+. S'assurer que le loader n'entre pas en collision avec les bords de l'écran
+
+=== Compatibilité
+* ✅ Desktop (1920x1080 et plus)
+* ✅ Tablet (768px - 1024px)
+* ✅ Mobile (320px - 767px)
+* ✅ Tous les navigateurs modernes supportant Flexbox
+
+== Notes Techniques
+
+=== Pourquoi cette Approche
+* **Flexbox** : Plus robuste que `text-align: center` seul pour le centrage complexe
+* **Double Centrage** : Conteneur + contenu pour assurer un positionnement parfait
+* **Responsive** : Solution qui s'adapte à toutes les tailles d'écran
+* **Maintainability** : Code CSS lisible et maintenable
+
+=== Bonnes Pratiques Appliquées
+* Utilisation des unités relatives (`rem`) pour l'espacement
+* Préservation des styles existants (gradient, ombres, etc.)
+* Approche non-intrusive (pas de refactoring majeur)
+* Compatibilité avec le système de design existant
+
+== Maintenance Future
+
+=== Points d'Attention
+* Vérifier le centrage lors de modifications du composant parent
+* Tester sur de nouveaux devices/résolutions
+* S'assurer de la cohérence avec les autres loaders de l'application
+
+=== Évolutions Possibles
+* Ajout d'animations de transition
+* Personnalisation du loader selon le contexte
+* Implémentation d'un système de loader centralisé pour l'application
+
+== Conclusion
+
+Cette correction résout complètement le problème de centrage du loader sur la page de détails des datasets. La solution utilise les meilleures pratiques CSS modernes (Flexbox) pour assurer un centrage parfait et responsive, améliorant significativement l'expérience utilisateur pendant les phases de chargement.

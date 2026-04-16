@@ -1,0 +1,79 @@
+= Amélioration du Logo sur les Pages d'Authentification
+
+Cette amélioration concerne l'affichage adaptatif du logo de l'application selon le contexte d'usage.
+
+== Objectif
+
+Améliorer l'expérience utilisateur sur les pages d'authentification en utilisant le logo complet avec slogan et en l'agrandissant pour une meilleure visibilité et reconnaissance de la marque.
+
+== Fonctionnalité Implémentée
+
+=== Détection Automatique du Contexte
+
+Le composant `BrandingComponent` détecte automatiquement si l'utilisateur se trouve sur une page d'authentification grâce à l'URL courante.
+
+=== Logo Adaptatif
+
+* **Pages d'authentification** (`/authentication/*`) : 
+  - Logo utilisé : `dark-logo-full.svg` (avec slogan)
+  - Taille : 400px de largeur (agrandi pour une meilleure visibilité)
+  
+* **Autres pages** (sidebar, header, etc.) :
+  - Logo utilisé : `dark-logo.svg` (version simple)
+  - Taille : 200px de largeur
+
+== Implémentation Technique
+
+=== Composant Branding
+
+Le composant `BrandingComponent` utilise trois propriétés calculées :
+
+[source,typescript]
+----
+get isAuthPage(): boolean {
+  const url = this.router.url;
+  return url.includes('/authentication/');
+}
+
+get logoSrc(): string {
+  return this.isAuthPage
+    ? './assets/images/logos/dark-logo-full.svg'
+    : './assets/images/logos/dark-logo.svg';
+}
+
+get logoWidth(): string {
+  return this.isAuthPage ? '400px' : '200px';
+}
+----
+
+=== Template Adaptatif
+
+Le template utilise la liaison de propriété pour adapter dynamiquement le logo :
+
+[source,html]
+----
+<img
+  [src]="logoSrc"
+  class="align-middle m-2"
+  [style.width]="logoWidth"
+  alt="logo"
+/>
+----
+
+== Avantages
+
+* **Cohérence visuelle** : Le logo s'adapte automatiquement au contexte
+* **Meilleure visibilité** : Logo plus grand et avec slogan sur les pages d'authentification
+* **Maintenabilité** : Un seul composant gère tous les cas d'usage
+* **Performance** : Pas de duplication de composants, logique centralisée
+
+== Pages Impactées
+
+Cette amélioration s'applique automatiquement à toutes les pages d'authentification :
+
+* Page de connexion (`/authentication/login`)
+* Page d'inscription (`/authentication/register`) 
+* Page d'onboarding (`/authentication/onboarding`)
+* Autres pages sous `/authentication/`
+
+Les autres usages du logo (sidebar, header, etc.) conservent leur apparence normale.

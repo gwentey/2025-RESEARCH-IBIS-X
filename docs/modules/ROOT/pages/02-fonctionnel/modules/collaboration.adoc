@@ -1,0 +1,51 @@
+= Module fonctionnel — Collaboration
+:description: Partage et collaboration autour d'un projet
+
+== Statut PoC
+
+Collaboration *en lecture* implémentée partiellement. Collaboration *en écriture* (co-édition) hors scope PoC.
+
+== Modes de partage
+
+=== Partage d'un projet
+
+* Le propriétaire peut rendre un projet visible à d'autres utilisateurs explicitement ajoutés.
+* Les collaborateurs peuvent :
+** Consulter le projet, ses expériences et explications.
+** Commenter (post-PoC).
+* Les collaborateurs **ne peuvent pas** :
+** Lancer de nouvelles expériences (propriétaire uniquement).
+** Modifier la configuration du projet.
+** Supprimer.
+
+=== Partage d'un dataset
+
+* Les datasets publics sont visibles par tous.
+* Les datasets privés restent limités à l'uploadeur (partage via mécanisme dataset-level post-PoC).
+
+== UI
+
+* Onglet "Collaborateurs" dans la vue détaillée d'un projet.
+* Ajout par email (doit correspondre à un compte existant).
+* Retrait à tout moment par le propriétaire.
+
+== Modèle de données
+
+Table `project_collaborators` (post-PoC) :
+
+* `project_id` (FK)
+* `user_id` (FK)
+* `role` (`reader`, `commenter`)
+* `added_at`
+
+== Endpoints (post-PoC)
+
+* `POST /projects/{id}/collaborators` — ajouter par email
+* `GET /projects/{id}/collaborators` — lister
+* `DELETE /projects/{id}/collaborators/{user_id}` — retirer
+
+== Évolutions prévues
+
+* Commentaires sur explications.
+* Notifications in-app lors d'un ajout comme collaborateur.
+* Export consolidé d'un projet pour partage hors plateforme.

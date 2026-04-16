@@ -1,0 +1,103 @@
+= Ajouter un nouveau service
+:description: Checklist — du design à la mise en production
+
+Un nouveau service = un vrai événement. Suivre **toute** la checklist pour ne rien oublier.
+
+== 1. Design
+
+* [ ] Rédiger un **ADR** dans `docs/modules/ROOT/pages/05-audit/adr/000N-*.adoc` avec alternatives envisagées.
+* [ ] Identifier les frontières (quelle responsabilité vs services existants).
+* [ ] Décider : synchrone (REST) ou asynchrone (Celery) ?
+* [ ] Définir le modèle de données (nouvelles tables vs réutilisation).
+
+== 2. Structure du code
+
+[source,text]
+----
+nouveau-service/
+├── app/
+│   ├── __init__.py
+│   ├── models.py        # SQLAlchemy
+│   ├── schemas.py       # Pydantic
+│   ├── crud.py
+│   ├── services/
+│   ├── tasks.py         # si Celery
+│   ├── core/
+│   │   ├── config.py    # BaseSettings
+│   │   └── celery_app.py  # si worker
+│   └── main.py          # FastAPI
+├── alembic/
+│   ├── env.py
+│   └── versions/
+├── alembic.ini          # version_table = alembic_version_<nom>
+├── requirements.txt
+└── Dockerfile
+----
+
+== 3. Base de données
+
+* [ ] Nouvelle `version_table = alembic_version_<service>` dans `alembic.ini`.
+* [ ] Migration initiale `001_initial_migration.py`.
+* [ ] Tables préfixées si besoin (pour lisibilité du schéma partagé).
+
+== 4. Kubernetes
+
+* [ ] `k8s/base/<service>/deployment.yaml`.
+* [ ] `k8s/base/<service>/service.yaml`.
+* [ ] `k8s/base/<service>/migration-job.yaml` (Alembic).
+* [ ] Si worker : `celery-worker-deployment.yaml` séparé.
+* [ ] ConfigMap + Secrets si variables spécifiques.
+* [ ] Overlays `minikube/` + `azure/` mis à jour.
+* [ ] Port interne : suivre la convention (808X).
+
+== 5. Skaffold
+
+Ajouter l'artifact dans `skaffold.yaml` :
+
+[source,yaml]
+----
+artifacts:
+  - image: ibis-x-<service>
+    context: <service>
+    docker:
+      dockerfile: Dockerfile
+----
+
+== 6. API Gateway
+
+* [ ] Ajouter le routage reverse-proxy dans `api-gateway` si exposé à l'extérieur.
+* [ ] Mettre à jour `docs/modules/ROOT/pages/03-technique/services/api-gateway.adoc`.
+
+== 7. Documentation
+
+* [ ] Page xref:03-technique/services/api-gateway.adoc[03-technique/services/<service>.adoc] (rôle, endpoints, dépendances).
+* [ ] Mise à jour `docs/modules/ROOT/pages/03-technique/architecture/vue-ensemble.adoc` (diagramme C4 L2).
+* [ ] Mise à jour `docs/modules/ROOT/pages/03-technique/architecture/microservices.adoc` (matrice responsabilités).
+* [ ] Mise à jour link:../../../../memory-bank/architecture.md[architecture.md].
+* [ ] Mise à jour link:../../../../CLAUDE.md[CLAUDE.md] (mention dans la liste des services).
+* [ ] Mise à jour `docs/modules/ROOT/nav.adoc`.
+
+== 8. Tests
+
+* [ ] Tests unitaires (`pytest`) dans `<service>/tests/`.
+* [ ] Tests d'intégration (endpoints + BDD de test).
+* [ ] Ajouter la colonne dans xref:05-audit/qualite/plan-tests.adoc[Plan de tests].
+* [ ] Mettre à jour xref:05-audit/qualite/couverture-objectifs.adoc[Objectifs de couverture].
+
+== 9. Audit
+
+* [ ] Mettre à jour xref:05-audit/securite/modele-menaces.adoc[Modèle de menaces STRIDE] avec une section dédiée au service.
+* [ ] Mettre à jour xref:05-audit/rgpd/cartographie-donnees.adoc[Cartographie des données] si le service manipule des données personnelles.
+* [ ] Mettre à jour xref:05-audit/tracabilite/exigences-implementation.adoc[Matrice de traçabilité].
+
+== 10. CI/CD
+
+* [ ] Ajouter le service aux workflows GitHub Actions (build, test, push image).
+* [ ] Vérifier le déploiement auto sur merge.
+
+== Validation finale
+
+* [ ] `make dev` local : le nouveau service démarre et répond.
+* [ ] Tests passent en CI.
+* [ ] Documentation Antora se build sans warning.
+* [ ] PR avec **tous** les éléments ci-dessus cochés.

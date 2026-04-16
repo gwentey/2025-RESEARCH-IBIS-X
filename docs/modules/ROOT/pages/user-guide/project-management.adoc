@@ -1,0 +1,229 @@
+= Gestion des Projets
+
+La gestion des projets dans IBIS-X vous permet de créer, configurer et analyser vos projets d'apprentissage automatique de manière structurée. Chaque projet peut être personnalisé avec des critères spécifiques et des poids de scoring pour obtenir des recommandations de datasets optimales.
+
+== Vue d'ensemble
+
+Un projet IBIS-X est une entité qui regroupe :
+
+* **Configuration personnalisée** : Critères de sélection spécifiques à votre cas d'usage
+* **Poids de scoring** : Pondération des différents critères selon vos priorités  
+* **Recommandations temps réel** : Datasets suggérés avec mise à jour automatique
+* **Visualisation intégrée** : Heat map des scores par critère directement dans l'interface
+
+== Accéder aux Projets
+
+. Connectez-vous à l'interface IBIS-X
+. Dans le menu de navigation de gauche, cliquez sur *Projets* 📁
+. Vous accédez à la liste de vos projets existants
+
+== Créer un Nouveau Projet
+
+=== Interface Améliorée
+
+Le formulaire de création a été repensé pour une expérience utilisateur optimale :
+
+* **Sections organisées** : Critères regroupés par thématique
+* **Prévisualisation automatique** : Mise à jour des recommandations en temps réel
+* **Interface responsive** : Adaptation automatique à votre écran
+* **Validation intelligente** : Feedback immédiat sur vos sélections
+
+=== Étape 1 : Informations de Base
+
+. Sur la page de liste des projets, cliquez sur le bouton *+ Nouveau Projet*
+. Remplissez les informations essentielles :
+   * **Nom du projet** : Nom descriptif (ex: "Analyse Performances Étudiantes")
+   * **Description** : Contexte et objectifs de votre projet (optionnel)
+
+=== Étape 2 : Définir le Contexte
+
+==== Section "Contexte du Projet" 🎯
+
+Décrivez l'objectif de votre analyse :
+
+* **Description/Objectif** : Mots-clés décrivant votre analyse (ex: "prédiction réussite", "classification comportement")
+
+TIP: Utilisez des termes descriptifs de votre objectif métier plutôt que des noms techniques
+
+==== Section "Domaine d'Application" 🏢
+
+Précisez votre secteur d'activité :
+
+* **Secteurs d'activité** : Un ou plusieurs domaines avec icônes visuelles
+  - 🎓 Éducation
+  - 🏥 Santé  
+  - 💰 Finance
+  - 🚗 Transport
+  - 🛒 Commerce
+
+* **Type de tâche ML** : Algorithmes envisagés avec icônes
+  - 🎯 Classification
+  - 📈 Régression
+  - 🔄 Clustering
+  - 💬 NLP
+  - 👁️ Vision par ordinateur
+
+=== Étape 3 : Exigences Techniques (Optionnelles)
+
+==== Section "Exigences Techniques" ⚙️
+
+Spécifiez vos contraintes techniques si nécessaire :
+
+**Taille du Dataset :**
+* **Nombre d'instances** : Plage min-max d'exemples (ex: 1000 à 1M+)
+* **Nombre de variables** : Plage min-max de caractéristiques (ex: 5 à 100)
+
+**Période et Qualité :**
+* **Période de création** : Années de publication souhaitées (ex: 2015-2024)
+* **Score éthique minimum** : Seuil de conformité éthique
+  - Aucune exigence
+  - 30% - Acceptable
+  - 50% - Bon  
+  - 70% - Très bon
+  - 90% - Excellent
+
+**Caractéristiques Spéciales :**
+* ☑️ Déjà divisé (train/test)
+* ☑️ Anonymisé
+* ☑️ Accès public
+
+=== Étape 4 : Pondération des Critères
+
+==== Section "Pondération des Critères" ⚖️
+
+Ajustez l'importance de chaque critère avec des sliders intuitifs :
+
+* **Score Éthique** (0-100%) : Conformité éthique et respect des données
+* **Score Technique** (0-100%) : Qualité technique et documentation  
+* **Popularité** (0-100%) : Usage dans la communauté scientifique
+* **Anonymisation** (0-100%) : Protection des données personnelles
+* **Documentation** (0-100%) : Disponibilité de la documentation
+* **Qualité des Données** (0-100%) : Absence de valeurs manquantes
+
+**Fonctionnalités avancées :**
+* **Bouton "Valeurs par défaut"** : Restaure une configuration équilibrée
+* **Critères actifs** : Affichage des critères sélectionnés avec leurs poids
+* **Validation temps réel** : Vérification automatique de la cohérence
+
+=== Aperçu Temps Réel
+
+==== Panneau de Prévisualisation
+
+Pendant votre configuration, observez en temps réel :
+
+**Compteur Dynamique :**
+* Nombre de datasets trouvés avec vos critères
+* Mise à jour automatique à chaque modification
+
+**Top 3 Recommandations :**
+* Affichage des 3 meilleurs datasets
+* Informations essentielles : nom, objectif, taille
+* Score de compatibilité visuel avec codes couleur
+
+**Feedback Visuel :**
+* 🔍 Calcul des recommandations (spinner)
+* ❌ Aucun dataset trouvé (guidance pour ajuster)
+* ✅ Résultats trouvés (aperçu des recommendations)
+
+IMPORTANT: L'aperçu se met à jour automatiquement avec un délai de 800ms pour éviter trop d'appels serveur.
+
+=== Heat Map Intégrée
+
+==== Visualisation Avancée
+
+Une heat map apparaît automatiquement sous le formulaire quand des résultats sont disponibles :
+
+**Caractéristiques :**
+* **Légende colorée** : Du rouge (faible) au bleu (excellent)
+* **Datasets en lignes** : Noms et métadonnées essentielles
+* **Critères en colonnes** : Avec poids associés affichés
+* **Cellules interactives** : Hover pour détails, scores exacts
+* **Score total** : Colonne finale avec couleur correspondante
+
+**Interactivité :**
+* **Tooltips** : Informations détaillées au survol
+* **Zoom au survol** : Effet visuel sur les cellules
+* **Responsive** : Adapté aux écrans mobiles et tablettes
+
+=== Étape 5 : Sauvegarde
+
+. Vérifiez la configuration dans l'aperçu
+. Consultez la heat map pour valider la pertinence
+. Cliquez sur *Créer le Projet*
+. Redirection automatique vers la vue détaillée du projet
+
+== Modifications et Mises à Jour
+
+=== Edition Simplifiée
+
+L'interface d'édition conserve toutes les fonctionnalités :
+
+* **Formulaire pré-rempli** : Valeurs existantes chargées automatiquement
+* **Aperçu mis à jour** : Changements visibles en temps réel
+* **Sauvegarde intelligente** : Seules les modifications sont sauvegardées
+
+=== Optimisations Performance
+
+**Debouncing Automatique :**
+* Évite les appels API excessifs
+* Interface fluide sans "tremblements"
+* Mise à jour optimisée des recommandations
+
+**Gestion des États :**
+* Indicateurs de chargement appropriés
+* Gestion d'erreurs avec messages clairs
+* Validation côté client et serveur
+
+== Bonnes Pratiques Mises à Jour
+
+=== Configuration des Critères
+
+**Approche Progressive :**
+. Commencez par le contexte et le domaine (essentiels)
+. Ajoutez les exigences techniques si nécessaires
+. Ajustez les poids selon l'aperçu obtenu
+
+**Optimisation des Résultats :**
+* **Observez l'aperçu** : Ajustez si trop ou pas assez de résultats
+* **Utilisez la heat map** : Identifiez les patterns de scoring
+* **Testez différents poids** : Voyez l'impact sur les recommandations
+
+=== Analyse Visuelle
+
+**Lecture de la Heat Map :**
+* **Colonnes uniformes** : Tous les datasets se valent sur ce critère
+* **Lignes contrastées** : Dataset avec des forces/faiblesses marquées
+* **Patterns diagonaux** : Corrélation entre critères
+
+**Prise de Décision :**
+* **Score total élevé** ≠ toujours meilleur choix
+* **Analysez par critère** : Vérifiez la cohérence avec vos priorités
+* **Considérez le contexte** : Métadonnées au-delà des scores
+
+== Dépannage Amélioré
+
+=== Problèmes d'Interface
+
+**Aperçu qui ne se charge pas :**
+* Vérifiez votre connexion internet
+* Attendez la fin du delai de debouncing (800ms)
+* Rafraîchissez la page si l'erreur persiste
+
+**Heat map vide :**
+* Assurez-vous d'avoir des poids définis (> 0%)
+* Vérifiez qu'il y a des datasets dans l'aperçu
+* Les datasets sans données peuvent ne pas apparaître
+
+=== Optimisation des Résultats
+
+**Trop de résultats :**
+* Ajoutez des critères techniques plus restrictifs
+* Augmentez le score éthique minimum
+* Spécifiez une plage d'années plus restreinte
+
+**Pas assez de résultats :**
+* Élargissez les plages numériques (instances, features)
+* Réduisez le score éthique minimum
+* Supprimez des critères optionnels (cases à cocher)
+
+Pour plus d'assistance technique, consultez le xref:dev-guide/index.adoc[Guide Développeur] ou contactez le support. 

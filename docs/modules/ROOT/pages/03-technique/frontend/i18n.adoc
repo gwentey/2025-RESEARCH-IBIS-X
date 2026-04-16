@@ -1,0 +1,100 @@
+= Frontend — i18n FR/EN
+:description: Internationalisation obligatoire
+
+== Règle impérative
+
+**Aucune chaîne affichée en dur.** Toute chaîne destinée à l'utilisateur passe par une clé dans `src/assets/i18n/fr.json` + `src/assets/i18n/en.json`.
+
+Cette règle est contrôlée lors des revues de PR et par la convention documentée dans `CLAUDE.md` et `memory-bank/conventions.md`.
+
+== Outil — @ngx-translate
+
+[source,typescript]
+----
+// Dans un composant standalone
+import { TranslateModule } from '@ngx-translate/core';
+
+@Component({
+  standalone: true,
+  imports: [TranslateModule, ...],
+  template: `
+    <h1>{{ 'ml_pipeline.hero.title' | translate }}</h1>
+  `
+})
+----
+
+== Structure des clés
+
+Hiérarchique par domaine et par écran :
+
+[source,json]
+----
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer"
+  },
+  "ml_pipeline": {
+    "hero": {
+      "badge": "Nouveau",
+      "title": "Pipeline ML guidé",
+      "subtitle": "De la sélection à l'explication"
+    },
+    "wizard": { "step1": "..." }
+  }
+}
+----
+
+Nommage : `domaine.ecran.element` en snake_case. Pas de clés trop génériques (`button1`, `label2`).
+
+== Synchronisation FR / EN
+
+* Les deux fichiers doivent toujours avoir les **mêmes clés**.
+* Un script CI peut vérifier la symétrie (recommandé post-PoC) : `npm run i18n:check`.
+* En cas d'ajout : remplir **les deux** avant de commit.
+
+== Bascule de langue
+
+Sélecteur dans l'en-tête ou profil utilisateur. Préférence persistée dans `localStorage`.
+
+[source,typescript]
+----
+this.translate.use('en');
+----
+
+Au démarrage, la langue est déterminée par (dans l'ordre) :
+
+. préférence stockée (`localStorage`) ;
+. préférence utilisateur (`users.preferred_language` — post-PoC) ;
+. `navigator.language` ;
+. défaut `fr`.
+
+== Pluriels & interpolation
+
+[source,typescript]
+----
+// En JSON
+"items_count": "{{count}} élément(s)"
+
+// En TS
+{{ 'items_count' | translate: { count: 5 } }}
+----
+
+Cas plus complexes (règles ICU) : utiliser le module `ngx-translate-messageformat-compiler`.
+
+== Dates, nombres, devises
+
+* Angular Pipes natifs : `date`, `number`, `currency` avec la locale active (`registerLocaleData` pour FR).
+
+== Corrections récentes (2026-04)
+
+* FINDING-002 : traduction complète du hero ML Pipeline.
+* Reste à traduire : 8 descriptions d'étapes, section "Running Experiments", cartes tutoriel de `/app/ml-pipeline` (voir CHANGELOG.md Known issues).
+
+== Ajouter une langue (post-PoC)
+
+. Créer `src/assets/i18n/<locale>.json` avec toutes les clés.
+. Ajouter `<locale>` dans la liste `supportedLanguages` de `CoreModule`.
+. Importer la locale Angular si nécessaire.
+. Tester avec `translate.use('<locale>')`.

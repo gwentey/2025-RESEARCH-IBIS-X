@@ -1,0 +1,425 @@
+= 🚀 Installation et Démarrage d'IBIS-X
+
+== Prérequis
+
+Installez les outils suivants:
+
+[cols="1,3", options="header"]
+|===
+| Outil | Description
+| Docker Desktop | Moteur de conteneurisation - https://www.docker.com/products/docker-desktop/[Télécharger]
+| Minikube | Kubernetes local - `choco install minikube` (Windows) ou `brew install minikube` (macOS)
+| kubectl | CLI Kubernetes - `choco install kubernetes-cli` (Windows) ou `brew install kubectl` (macOS)
+| Skaffold | Workflow Kubernetes - `choco install skaffold` (Windows) ou `brew install skaffold` (macOS)
+| Python 3.8+ | Avec le package python-dotenv - `pip install python-dotenv`
+|===
+
+=== Lancement rapide
+
+**IMPORTANT:** Le Makefile utilise des commandes Unix et permet de remplacer l'ensemble des commandesq si dessous.
+
+[source,bash]
+----
+# Utiliser Git Bash au lieu de PowerShell
+# Dans Git Bash
+make dev
+# Installation complète + données de test
+make dev-with-data  
+----
+
+====  Commandes manuelles (PowerShell)
+Si vous ne pouvez pas utiliser WSL/Git Bash, utilisez les commandes détaillées ci-dessous.
+
+Pour Linux (Debian/Ubuntu):
+[source,bash]
+----
+# Minikube
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+# kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+# Skaffold
+curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
+sudo install skaffold /usr/local/bin/
+
+# Python-dotenv
+pip install python-dotenv
+----
+
+== Configuration des Secrets
+
+Pour le développement local et les déploiements, IBIS-X utilise un fichier `.env` à la racine et des scripts Python pour gérer les secrets Kubernetes.
+
+=== 1. Créer un fichier `.env`
+
+Créez un fichier `.env` à la racine du projet avec les variables suivantes :
+
+[source,properties]
+----
+# Clé secrète pour JWT (doit être identique à celle utilisée pour générer les tokens)
+JWT_SECRET_KEY=replace_with_64_char_hex_generated_via_openssl_rand_hex_32
+
+# URL Base de données (généralement pointant vers le service K8s)
+DATABASE_URL=postgresql+asyncpg://IBIS-X_user:password@postgresql-service.IBIS-X.svc.cluster.local:5432/IBIS-X_db
+
+# Identifiants Google OAuth
+GOOGLE_CLIENT_ID=votre-client-id-google
+GOOGLE_CLIENT_SECRET=votre-client-secret-google
+
+# URL de redirection OAuth (FRONTEND) pour le développement LOCAL
+# Cette valeur sera utilisée par défaut par l'API Gateway.
+# Elle sera surchargée en production par un secret GitHub Actions.
+# Utilisée par k8s/base/api-gateway/gateway-secrets.yaml (placeholder: REPLACE_WITH_OAUTH_REDIRECT_URL)
+OAUTH_REDIRECT_URL=http://localhost:8080/authentication/callback
+
+# URLs des services backend pour le reverse proxy de l'API Gateway
+# Ces URLs permettent à l'API Gateway de rediriger les requêtes vers les bons services
+
+# Service de sélection des datasets
+# Développement local (Minikube) - valeur par défaut
+SERVICE_SELECTION_URL=http://service-selection-service.IBIS-X.svc.cluster.local
+# Développement local (services en local)
+# SERVICE_SELECTION_URL=http://localhost:8001
+
+# Pipeline ML
+# Développement local (Minikube) - valeur par défaut
+ML_PIPELINE_URL=http://ml-pipeline-service.IBIS-X.svc.cluster.local
+# Développement local (services en local)
+# ML_PIPELINE_URL=http://localhost:8002
+
+# Moteur XAI
+# Développement local (Minikube) - valeur par défaut
+XAI_ENGINE_URL=http://xai-engine-service.IBIS-X.svc.cluster.local
+# Développement local (services en local)
+# XAI_ENGINE_URL=http://localhost:8003
+
+# Domaines de production pour la détection automatique HTTPS
+PRODUCTION_DOMAINS=your-domain.com,api.your-domain.com
+
+# Origins autorisées pour CORS (séparées par des virgules)
+BACKEND_CORS_ORIGINS=http://localhost:8080,https://your-domain.com,https://www.your-domain.com
+----
+
+NOTE: Le fichier `.env` est déjà ajouté à `.gitignore` pour éviter de commiter des secrets. Adaptez les valeurs à votre propre configuration, notamment les identifiants Google.
+
+=== 2. Mettre à jour les secrets Kubernetes
+
+Avant de démarrer l'application avec Skaffold ou de générer les manifestes finaux, exécutez :
+
+[source,bash]
+----
+# Met à jour les placeholders dans les fichiers secrets avec les valeurs du .env (encodées en base64)
+python -m scripts.update-local-secrets
+----
+
+Ce script (`scripts/update_local_secrets.py`) lit le fichier `.env` et remplace les placeholders correspondants dans les fichiers YAML de Kubernetes :
+- Il met à jour `k8s/base/api-gateway/gateway-secrets.yaml` avec les valeurs de `JWT_SECRET_KEY`, `DATABASE_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, et `OAUTH_REDIRECT_URL` (via `REPLACE_WITH_...`).
+- Il *ne modifie plus* de patch spécifique pour l'URL de redirection en production.
+
+IMPORTANT: Exécutez ce script chaque fois que vous modifiez le fichier `.env`.
+
+=== 3. Restaurer les placeholders avant de commiter
+
+Avant de pousser votre code vers le dépôt Git, il est recommandé d'exécuter le script inverse pour remettre les placeholders génériques dans les fichiers YAML. Cela évite de commiter accidentellement des valeurs spécifiques à votre environnement local.
+
+[source,bash]
+----
+# Restaure les placeholders génériques (REPLACE_WITH_...) dans les fichiers de secrets
+python -m scripts.reset-placeholders
+----
+
+== 🚀 Démarrage Ultra-Rapide
+
+[NOTE]
+====
+**Linux/macOS/WSL/Git Bash:** Toutes les étapes ci-dessous peuvent être réalisées en une seule commande :
+[source,bash]
+----
+make dev
+----
+Cette commande démarre Minikube, déploie l'application, exécute les migrations et affiche les logs.
+
+**Windows PowerShell:** Utilisez les commandes détaillées ci-dessous.
+====
+
+== 🪟 Démarrage Manuel (Windows PowerShell)
+
+Si vous ne pouvez pas utiliser WSL/Git Bash, voici les étapes détaillées :
+
+=== 1. Vérification des prérequis
+[source,powershell]
+----
+# Vérifier que les outils sont installés
+docker --version
+minikube version
+kubectl version --client
+skaffold version
+python --version
+
+# Vérifier le fichier .env
+if (Test-Path .env) { "✅ Fichier .env trouvé" } else { "❌ Fichier .env manquant" }
+----
+
+=== 2. Démarrage de Minikube
+[source,powershell]
+----
+# Démarrer Minikube
+minikube start --memory 4096 --cpus 2 --disk-size 20g
+minikube addons enable ingress
+minikube addons enable storage-provisioner
+----
+
+=== 3. Configuration
+[source,powershell]
+----
+# Créer le namespace
+kubectl create namespace IBIS-X
+
+# Mettre à jour les secrets
+python -m scripts.update-local-secrets
+
+# Configurer Docker pour Minikube
+& minikube -p minikube docker-env --shell powershell | Invoke-Expression
+----
+
+=== 4. Déploiement
+[source,powershell]
+----
+# Déployer l'application
+skaffold run --profile=local --namespace=IBIS-X
+----
+
+=== 5. Attendre que les services soient prêts
+[source,powershell]
+----
+# Attendre PostgreSQL
+kubectl wait --for=condition=ready pod -l app=postgresql -n IBIS-X --timeout=300s
+
+# Attendre API Gateway
+kubectl wait --for=condition=ready pod -l app=api-gateway -n IBIS-X --timeout=300s
+
+# Attendre Service Selection
+kubectl wait --for=condition=ready pod -l app=service-selection -n IBIS-X --timeout=300s
+----
+
+=== 6. Migrations
+[source,powershell]
+----
+# Supprimer les anciens jobs
+kubectl delete job api-gateway-migration-job -n IBIS-X --ignore-not-found=true
+kubectl delete job service-selection-migration-job -n IBIS-X --ignore-not-found=true
+
+# Lancer les migrations
+kubectl apply -f k8s/base/jobs/api-gateway-migration-job.yaml -n IBIS-X
+kubectl wait --for=condition=complete job/api-gateway-migration-job -n IBIS-X --timeout=300s
+
+kubectl apply -f k8s/base/jobs/service-selection-migration-job.yaml -n IBIS-X
+kubectl wait --for=condition=complete job/service-selection-migration-job -n IBIS-X --timeout=300s
+----
+
+=== 7. Accès aux services
+[source,powershell]
+----
+# Démarrer les logs et redirections de port
+skaffold dev --profile=local --namespace=IBIS-X
+----
+
+**Accès aux services :**
+- **Frontend:** http://localhost:8080
+- **API Gateway:** http://localhost:9000
+- **Documentation API:** http://localhost:9000/docs
+
+== Déploiement Local avec Minikube et Skaffold
+
+1.  **Cloner le dépôt** (si pas déjà fait):
++
+[source,bash]
+----
+git clone <URL_DU_DEPOT_GIT_IBIS-X>
+cd <NOM_DU_DOSSIER_PROJET_IBIS-X>
+----
+
+2.  **Démarrer Minikube**:
++
+[source,bash]
+----
+minikube start
+# Pour plus de ressources: minikube start --memory 4096 --cpus 2
+----
++
+[NOTE]
+====
+Assurez-vous que l'addon `ingress` est activé si vous comptez tester le déploiement avec Ingress plus tard (bien que non utilisé pour l'accès local par défaut décrit ici). L'addon `storage-provisioner` est également nécessaire et généralement activé par défaut.
+====
+
+3.  **Créer le namespace** (si pas déjà fait):
++
+[source,bash]
+----
+kubectl create namespace IBIS-X
+# Ignorez l'erreur si le namespace existe déjà.
+----
+
+4.  **Mettre à jour les secrets Kubernetes** (voir section précédente) :
++
+[source,bash]
+----
+python -m scripts.update-local-secrets
+----
+
+5.  **Configurer l'environnement Docker** :
++
+[source,bash]
+----
+# Linux/macOS
+eval $(minikube docker-env)
+
+# Windows (PowerShell)
+& minikube -p minikube docker-env --shell powershell | Invoke-Expression
+
+# Windows (cmd.exe)
+@FOR /f "tokens=*" %i IN ('minikube -p minikube docker-env --shell cmd') DO @%i
+----
+
+6. **Déployer avec Skaffold**:
++
+[source,bash]
+----
+# Pour le mode local (développement)
+skaffold dev --profile=local
+
+----
++
+Skaffold va :
++
+--
+* Détecter le contexte Minikube et utiliser son environnement Docker.
+* Construire les images Docker nécessaires (si le code a changé).
+* Déployer les manifestes Kubernetes définis dans `skaffold.yaml` pour le profil `local` (Base de données, API Gateway, Service Selection, Frontend) dans le namespace `IBIS-X`.
+* Mettre en place des redirections de port automatiques (voir section Accès).
+* Surveiller les changements de code et redéployer automatiquement.
+* Afficher les logs des conteneurs en temps réel dans la console.
+--
++
+[IMPORTANT]
+====
+Le premier déploiement peut prendre plusieurs minutes. Attendez que Skaffold indique `Deployments stabilized` ou que tous les pods principaux (`postgresql`, `api-gateway`, `service-selection`, `frontend`) passent à l'état `Running` (vous pouvez vérifier avec `kubectl get pods -n IBIS-X`).
+====
+
+=== Initialisation de la Base de Données
+
+L'architecture IBIS-X utilise une base de données PostgreSQL partagée par tous les microservices, chaque service gérant ses migrations spécifiques.
+
+Exécutez les migrations depuis les pods Kubernetes :
+
+==== Service de Sélection
+[source,bash]
+----
+# 1. Identifier le pod
+kubectl get pods -n IBIS-X -l app=service-selection
+
+# 2. Exécuter la migration (remplacer <pod-name>)
+kubectl exec -it <pod-name> -n IBIS-X -- bash -c "cd /app && DATABASE_URL='postgresql+asyncpg://IBIS-X_user:password@postgresql-service:5432/IBIS-X_db' alembic upgrade head"
+----
+
+==== API Gateway
+[source,bash]
+----
+# Identifier le pod et exécuter la migration
+kubectl get pods -n IBIS-X -l app=api-gateway
+kubectl exec -it <pod-name> -n IBIS-X -- bash -c "cd /app && DATABASE_URL='postgresql+asyncpg://IBIS-X_user:password@postgresql-service:5432/IBIS-X_db' alembic upgrade head"
+----
+
+[NOTE]
+====
+Ces commandes exécutent les migrations Alembic directement à l'intérieur des pods. Cela évite les problèmes de connectivité et assure que la configuration est identique à celle utilisée par l'application.
+
+Chaque service utilise sa propre table de version Alembic (`alembic_version_gateway` et `alembic_version_selection`) pour suivre ses migrations dans la base de données partagée.
+====
+
+=== Accéder à l'Application
+
+Avec le profil `local`, Skaffold configure automatiquement des redirections de port (`port-forward`) pour faciliter l'accès. **Il n'est PAS nécessaire d'utiliser `minikube service` ou `minikube tunnel` pour ce workflow local par défaut.**
+
+Les services sont accessibles directement sur `localhost` via les ports suivants (tant que `skaffold dev --profile=local` est actif) :
+
+*   **Frontend :** `http://localhost:8080`
+*   **API Gateway :** `http://localhost:9000`
+    **Documentation API (Swagger UI) :** `http://localhost:9000/docs`
+    **Documentation API (ReDoc) :** `http://localhost:9000/redoc`
+
+[NOTE]
+====
+Le frontend est configuré (via `frontend/src/environments/environment.ts`) pour appeler l'API Gateway sur `http://localhost:9000`.
+====
+
+== Workflow de Développement
+
+=== Structure des Fichiers Kubernetes
+
+Le projet utilise Kustomize pour gérer les configurations Kubernetes de manière structurée :
+
+```
+k8s/
+├── base/                      # Configurations communes à tous les environnements
+│   ├── api-gateway/           # Manifestes pour l'API Gateway (Deployment, Service, Secrets...)
+│   ├── frontend/              # Manifestes pour le Frontend
+│   ├── postgres/              # Manifestes pour PostgreSQL (StatefulSet, Service, PVC...)
+│   ├── service-selection/     # Manifestes pour le Service Selection
+│   └── kustomization.yaml     # Référence toutes les ressources de la base
+└── overlays/                  # Surcouches pour des environnements spécifiques
+    ├── minikube/              # Configurations pour le développement local (Minikube)
+    │   ├── kustomization.yaml # Référence la base et applique des patches spécifiques (ex: type Service)
+    │   └── ... (patches si nécessaire)
+    └── azure/                 # Configurations pour le déploiement en production (Azure)
+        ├── kustomization.yaml # Référence la base et applique des patches (ex: Ingress)
+        └── ... (autres patches ou ressources spécifiques)
+```
+
+Cette structure permet de :
+- Définir les ressources principales une seule fois dans `base/`.
+- Personnaliser la configuration pour chaque environnement (local, production) dans `overlays/` en utilisant des patches ou des ressources supplémentaires.
+- Pour la production (Azure), les secrets sensibles comme l'URL de la base de données ou l'URL de redirection OAuth sont injectés via le pipeline CI/CD (GitHub Actions) qui modifie directement les manifestes de base avant le déploiement par Skaffold/Kustomize.
+
+=== Cycle de Développement avec Skaffold
+1. Modifiez votre code dans l'un des microservices (frontend, api-gateway, service-selection)
+2. Skaffold détecte automatiquement les changements
+3. Reconstruction et redéploiement automatiques des images Docker affectées
+4. Services redémarrés avec le nouveau code
+5. Visualisez les logs en temps réel dans la console Skaffold
+
+[TIP]
+Pour un workflow plus fluide, utilisez des outils comme **Lens**, **k9s** ou le **Kubernetes Dashboard** (`minikube dashboard`).
+
+== Dépannage
+
+=== Problèmes Courants
+* *Minikube ne démarre pas* : Vérifiez Docker Desktop, essayez `minikube delete` puis `minikube start`
+* *Pod bloqué en `Pending`* : Augmentez les ressources (`minikube stop && minikube config set memory 4096 && minikube start`)
+* *Pod en `CrashLoopBackOff`* : Vérifiez les logs avec `kubectl logs -n IBIS-X <pod-name>`
+* *Services inaccessibles* : Vérifiez que `skaffold dev --profile=local` est en cours d'exécution et qu'aucun autre programme n'utilise les ports locaux `8080` ou `9000`. Vérifiez les logs Skaffold pour des erreurs de port-forwarding. Assurez-vous que les pods sont `Running` (`kubectl get pods -n IBIS-X`).
+* *Pod PostgreSQL bloqué en `Pending`* : Vérifiez les PVC (`kubectl get pvc -n IBIS-X`) et la StorageClass (`kubectl get sc`). Assurez-vous que la configuration du volume dans `k8s/base/postgres/postgresql-statefulset.yaml` utilise la bonne `storageClassName` (`standard` pour Minikube par défaut).
+* *Erreurs "MIME type" sur le frontend* : Assurez-vous que la configuration Nginx (`frontend/nginx.conf`), le Dockerfile (`frontend/Dockerfile`), et le `baseHref` dans `angular.json` sont cohérents pour un service à la racine (`/`).
+* *Secrets incorrects* : Si vous rencontrez des erreurs d'authentification, vérifiez que vous avez bien exécuté `python -m scripts.update-local-secrets` après avoir mis à jour votre fichier `.env`.
+
+=== Étapes de Diagnostic
+1. Logs Skaffold
+2. État des pods : `kubectl get pods -n IBIS-X`
+3. Détails d'un pod : `kubectl describe pod <pod-name> -n IBIS-X`
+4. Logs d'un pod : `kubectl logs -n IBIS-X <pod-name>`
+5. Logs Minikube : `minikube logs`
+
+== Arrêter l'environnement
+[source,bash]
+----
+# Arrêter Skaffold : Ctrl+C
+
+# Arrêter Minikube
+minikube stop
+
+# Supprimer complètement Minikube (supprime les données)
+minikube delete
+----

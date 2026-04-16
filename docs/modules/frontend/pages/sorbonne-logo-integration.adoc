@@ -1,0 +1,87 @@
+= Intégration du Logo Sorbonne Mini
+:page-layout: docs
+:page-title: Logo Sorbonne - IBIS X
+:page-description: Documentation du remplacement de l'icône SVG par le logo Sorbonne
+:page-keywords: logo, sorbonne, header, branding
+
+== Vue d'ensemble
+
+Le mini icône SVG générique dans le header de la page d'accueil a été remplacé par le logo officiel de la Sorbonne (`sorbonne-mini.png`) pour renforcer l'identité académique d'IBIS X.
+
+== Changements effectués
+
+=== 1. Remplacement HTML
+
+**Avant :**
+```html
+<div class="logo-icon">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <!-- Chemin SVG générique -->
+    </svg>
+</div>
+```
+
+**Après :**
+```html
+<div class="logo-icon">
+    <img src="assets/images/logos/sorbonne-mini.png" alt="Sorbonne Logo" width="20" height="20">
+</div>
+```
+
+=== 2. Styles CSS ajoutés
+
+```scss
+.logo-icon img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+```
+
+== Spécifications techniques
+
+=== Emplacement du fichier image
+- **Chemin :** `frontend/src/assets/images/logos/sorbonne-mini.png`
+- **Dimensions :** 20px × 20px (dans le rendu)
+- **Format :** PNG avec transparence
+
+=== Styles appliqués
+- **Taille :** Fixe à 20px × 20px pour cohérence avec l'ancien SVG
+- **Ajustement :** `object-fit: contain` pour préserver les proportions
+- **Effet :** Ombre portée subtile avec `drop-shadow`
+- **Conteneur :** Reste dans un cercle semi-transparent avec backdrop-filter
+
+== Avantages de ce changement
+
+✅ **Identité académique renforcée** : Logo officiel Sorbonne visible
+✅ **Cohérence visuelle** : Même dimensions et positionnement que l'ancien SVG
+✅ **Qualité d'affichage** : Image optimisée pour les petites tailles
+✅ **Accessibilité** : Alt text descriptif pour les lecteurs d'écran
+
+== Structure finale
+
+```html
+<header class="header">
+    <div class="logo">
+        <div class="logo-icon">
+            <img src="assets/images/logos/sorbonne-mini.png" alt="Sorbonne Logo" width="20" height="20">
+        </div>
+        Ibis X
+    </div>
+    <!-- Navigation -->
+</header>
+```
+
+== Notes de maintenance
+
+- L'image est stockée dans le dossier `logos/` avec les autres éléments de branding
+- Les dimensions sont fixées en HTML et CSS pour éviter les variations d'affichage
+- Le style s'adapte automatiquement au thème existant (ombre, arrière-plan transparent)
+
+== Compatibilité
+
+✅ **Navigateurs :** Tous les navigateurs modernes supportent PNG avec transparence
+✅ **Responsive :** L'image reste nette sur tous les types d'écrans
+✅ **Performance :** Fichier PNG optimisé, poids minimal
+✅ **SEO :** Alt text approprié pour l'indexation

@@ -1,0 +1,66 @@
+= Conventions de code
+:description: Backend Python / Frontend Angular / Kubernetes
+
+Référence complète : link:../../../../memory-bank/conventions.md[`memory-bank/conventions.md`]. Cette page en donne l'essentiel.
+
+== Backend Python (FastAPI)
+
+* `pydantic.BaseSettings` pour toute configuration. *Jamais* de hardcoding d'URL, secret, endpoint.
+* Pydantic schemas obligatoires pour `request_model` et `response_model` d'un endpoint.
+* Structure service :
++
+[source,text]
+----
+{service}/
+├── app/
+│   ├── models.py        # SQLAlchemy
+│   ├── schemas.py       # Pydantic
+│   ├── crud.py          # Opérations BDD (jamais dans les routes)
+│   ├── services/        # Logique métier
+│   ├── tasks.py         # @celery_app.task
+│   ├── core/
+│   │   ├── config.py    # BaseSettings
+│   │   └── celery_app.py
+│   └── main.py          # FastAPI app + routes
+├── alembic/
+└── requirements.txt
+----
+* Type hints systématiques (`Optional`, `List`, `Dict` de `typing`).
+* `pytest` + fixtures. Pas de `unittest.TestCase`.
+* Formatter : `black`. Linter : `ruff`.
+
+== Frontend Angular
+
+* Angular Material exclusif. *Pas de Tailwind, pas de Bootstrap.*
+* Reactive Forms uniquement (`FormBuilder`, `FormGroup`, `Validators`). *Jamais* de template-driven.
+* Pattern Smart/Dumb (conteneurs vs présentationnels).
+* Services HTTP retournant `Observable<T>`. Base URL via `environment.ts`.
+* Lazy loading pour les feature modules.
+* i18n FR + EN obligatoire via `@ngx-translate`. *Aucune chaîne en dur* dans les templates.
+* Linter : `ng lint` / ESLint Angular.
+
+== Kubernetes / Infrastructure
+
+* Kustomize strict : `k8s/base/` + `k8s/overlays/{minikube,azure}/`.
+* Namespace unique `ibis-x`.
+* Noms en kebab-case préfixés par service (`service-selection-deployment`).
+* ConfigMaps (non sensible) vs Secrets (sensible). Jamais de secret hardcodé.
+* Images `ibis-x-*` multi-stage, base slim, user non-root.
+* Ajout de service → déclaration dans `skaffold.yaml` + overlay.
+
+== Celery
+
+* Tâches dans `app/tasks.py` avec `@celery_app.task`.
+* Dispatch via `apply_async(queue='<queue>')`.
+* **3 queues valides** : `ml_queue`, `ai_queue`, `xai_queue`. *Aucune autre.*
+* Statut + résultats persistés en BDD (pas Redis).
+
+== Documentation (Asciidoc / Antora)
+
+Voir xref:06-contribution/conventions-doc.adoc[Conventions de documentation].
+
+== Outillage imposé
+
+* Python 3.11, Node 20+.
+* `make dev` = orchestrateur canonique (pas d'appel `kubectl`/`skaffold` direct sauf debug).
+* Pre-commit hooks recommandés : `black`, `ruff`, `gitleaks`.

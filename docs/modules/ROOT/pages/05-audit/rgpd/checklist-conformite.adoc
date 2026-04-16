@@ -1,0 +1,99 @@
+= Checklist de conformité RGPD
+:description: État de conformité article par article
+
+== Méthode
+
+Évaluation article-par-article des exigences RGPD applicables à IBIS-X en tant que **responsable de traitement** (pour les comptes utilisateurs) et **sous-traitant éventuel** (pour les datasets uploadés par des tiers).
+
+== Checklist
+
+[cols="1,3,1,2"]
+|===
+| Art. | Exigence | Statut | Preuve / commentaire
+
+| 5 | Principes : licéité, loyauté, minimisation
+| 🟢
+| Seules les données strictement nécessaires (email, mot de passe, rôle) sont collectées.
+
+| 6 | Base légale du traitement
+| 🟢
+| Exécution du contrat (compte) + consentement (OAuth). Cartographie : xref:05-audit/rgpd/cartographie-donnees.adoc[Cartographie].
+
+| 7 | Consentement clair
+| 🟡
+| CGU à l'inscription à formaliser formellement (check-box explicite). PoC académique — case à enrichir.
+
+| 12-14 | Information des personnes
+| 🟡
+| Documentation publique (GitHub Pages). Politique de confidentialité dédiée à rédiger en version "site public".
+
+| 15 | Droit d'accès
+| 🟢
+| `GET /users/me` + possibilité de lister ses projets/datasets/expériences.
+
+| 16 | Droit de rectification
+| 🟢
+| `PATCH /users/me` pour le profil.
+
+| 17 | Droit à l'effacement (« oubli »)
+| 🟢
+| `DELETE /users/me` déclenche la suppression en cascade des données utilisateur. Voir xref:05-audit/rgpd/droits-utilisateurs.adoc[Droits des utilisateurs].
+
+| 18 | Droit à la limitation
+| 🟡
+| Soft-delete via `is_active = false` disponible ; procédure utilisateur à formaliser.
+
+| 20 | Portabilité
+| 🟡
+| Export JSON des projets/expériences réalisable via les endpoints GET existants ; endpoint dédié `GET /users/me/export` à ajouter post-PoC.
+
+| 21 | Droit d'opposition
+| 🟢
+| Aucun traitement à fins de marketing. Opposition = suppression du compte.
+
+| 22 | Décisions automatisées
+| 🟢
+| Les modèles ML entraînés ne sont pas utilisés pour des décisions affectant les utilisateurs de la plateforme. Les explications XAI sont précisément un contre-contrôle.
+
+| 25 | Privacy by design & default
+| 🟢
+| Bcrypt, JWT signé, CORS restrictif, isolation services, flag PII sur datasets.
+
+| 28 | Sous-traitants
+| 🟡
+| Google, OpenAI, Azure. DPAs à conclure formellement pour une mise en prod réelle. Inventaire dans xref:05-audit/rgpd/cartographie-donnees.adoc[Cartographie].
+
+| 30 | Registre des traitements
+| 🟢
+| xref:05-audit/rgpd/registre-traitements.adoc[Registre des traitements].
+
+| 32 | Sécurité du traitement
+| 🟢
+| Bcrypt, HTTPS prod, Secrets K8s. Voir xref:05-audit/securite/politique.adoc[Politique de sécurité].
+
+| 33-34 | Notification de violation
+| 🟡
+| Procédure à formaliser. Runbook incident : xref:04-operationnel/runbooks/incident-response.adoc[Incident response] (Lot 5).
+
+| 35 | Analyse d'impact (AIPD)
+| 🟢
+| Non requise (pas de traitement à grande échelle ni de catégories particulières de données dans le cadre du PoC).
+
+| 44-46 | Transferts hors UE
+| 🟡
+| OpenAI est US (clauses contractuelles types Microsoft). Azure Europe sélectionné en prod. À expliciter dans la politique de confidentialité publique.
+|===
+
+== Légende
+
+* 🟢 — conforme au niveau de maturité du PoC.
+* 🟡 — action à engager avant un passage en exploitation réelle.
+* 🔴 — gap critique (aucun dans l'état actuel).
+
+== Actions prioritaires avant exploitation réelle
+
+. Politique de confidentialité publique détaillée.
+. Endpoint d'export portabilité (`GET /users/me/export`).
+. Procédure formelle de notification de violation de données.
+. DPAs signés avec les sous-traitants (Google, OpenAI, Microsoft Azure).
+. Case à cocher explicite "J'accepte les CGU" à l'inscription.

@@ -1,0 +1,166 @@
+{
+  "dataset_name": "multimodal_play_behavior",
+  "display_name": "Multimodal Play Behavior Dataset",
+  "objective": "Analyze teaching and play behavior in educational settings using multimodal data (video, audio, text)",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Zhejiang University - Multimodal Teaching Behavior Analysis Project",
+  "storage_uri": "https://www.kaggle.com/datasets/ziya07/multimodal-play-behavior-dataset",
+  "citation_link": "https://github.com/zzxslp/MM-TBA",
+  "documentation_link": "https://www.kaggle.com/datasets/ziya07/multimodal-play-behavior-dataset",
+  "instances_number": 312,
+  "features_number": 50,
+  "features_description": "Multimodal features extracted from video frames, audio signals, textual annotations, and behavioral annotations in educational/play contexts",
+  "year": 2020,
+  "domain": ["education"],
+  "task": ["classification"],
+  "target_column": "behavior_class",
+  "representativity_description": "Small dataset collected from classroom observations focusing on teacher-student interactions and play behaviors",
+  "representativity_level": "low",
+  "split": "train_test",
+  "missing_values": {
+    "description": "No missing values in the processed multimodal features",
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "handling_method": "none"
+  },
+  "temporal_factors": true,
+  "metadata_provided": true,
+  "external_documentation": true,
+  "ethical_compliance": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": false,
+    "security_measures": true,
+    "data_quality_documented": false,
+    "anonymization_applied": true,
+    "record_keeping_policy": false,
+    "purpose_limitation": false,
+    "accountability_defined": false
+  },
+  "citation_count": 20,
+  "license": "Unknown",
+  "contact_info": "Zhejiang University Research Team",
+  "update_frequency": "static",
+  "versioning": "2020",
+  "data_lineage": "Collected from classroom observations with synchronized video, audio and textual annotations for multimodal behavior analysis",
+  "quality_metrics": {
+    "completeness_score": 100,
+    "consistency_score": 85,
+    "ethical_compliance_score": 90
+  },
+  "special_features": {
+    "multimodal": true,
+    "modalities": ["video", "audio", "text"],
+    "temporal_sequences": true,
+    "educational_context": true
+  },
+  "column_details": [
+    {
+      "column_name": "video_features_1-20",
+      "position": 0,
+      "data_type_original": "float64",
+      "data_type_interpreted": "numerical_float",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Visual features extracted from video frames (facial expressions, gestures, body posture)",
+      "example_values": ["0.234", "0.567", "0.891"],
+      "stats": {
+        "feature_type": "computer_vision",
+        "extraction_method": "CNN_based"
+      }
+    },
+    {
+      "column_name": "audio_features_21-35",
+      "position": 1,
+      "data_type_original": "float64",
+      "data_type_interpreted": "numerical_float",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Audio features extracted from speech and ambient sounds (pitch, tone, volume, MFCC)",
+      "example_values": ["0.123", "0.456", "0.789"],
+      "stats": {
+        "feature_type": "audio_processing",
+        "extraction_method": "MFCC_spectral"
+      }
+    },
+    {
+      "column_name": "text_features_36-45",
+      "position": 2,
+      "data_type_original": "float64",
+      "data_type_interpreted": "numerical_float",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Textual features from transcribed speech and annotations (sentiment, keywords, linguistic patterns)",
+      "example_values": ["0.345", "0.678", "0.912"],
+      "stats": {
+        "feature_type": "natural_language_processing",
+        "extraction_method": "TF_IDF_embeddings"
+      }
+    },
+    {
+      "column_name": "temporal_features_46-49",
+      "position": 3,
+      "data_type_original": "float64",
+      "data_type_interpreted": "numerical_float",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Temporal patterns and sequence-based features across modalities",
+      "example_values": ["0.111", "0.222", "0.333"],
+      "stats": {
+        "feature_type": "temporal_analysis",
+        "extraction_method": "sequence_modeling"
+      }
+    },
+    {
+      "column_name": "behavior_class",
+      "position": 4,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Target variable - classified behavior type in educational/play context",
+      "example_values": ["teaching", "play", "interaction", "observation"],
+      "stats": {
+        "unique_count": 4,
+        "most_frequent": "teaching",
+        "class_distribution": {
+          "teaching": 40,
+          "play": 30,
+          "interaction": 20,
+          "observation": 10
+        }
+      }
+    },
+    {
+      "column_name": "session_id",
+      "position": 5,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": true,
+      "description": "Session identifier for grouping multimodal observations",
+      "example_values": ["session_001", "session_002", "session_003"],
+      "stats": {
+        "unique_count": 50,
+        "data_organization": "sequential_sessions"
+      }
+    },
+    {
+      "column_name": "timestamp",
+      "position": 6,
+      "data_type_original": "datetime",
+      "data_type_interpreted": "temporal",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Temporal alignment across multimodal data streams",
+      "example_values": ["2020-01-15 10:30:00", "2020-01-15 10:30:05", "2020-01-15 10:30:10"],
+      "stats": {
+        "temporal_resolution": "5_seconds",
+        "synchronization": "multimodal_aligned"
+      }
+    }
+  ]
+}

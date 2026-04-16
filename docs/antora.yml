@@ -1,0 +1,5 @@
+name: IBIS-X
+title: IBIS-X
+version: ~
+nav:
+- modules/ROOT/nav.adoc 

@@ -1,0 +1,57 @@
+= Module fonctionnel — Gestion de projets
+:description: Création, configuration, collaboration autour d'un projet ML
+
+== Objet
+
+Un *projet* IBIS-X regroupe une question métier + le dataset associé + les expériences ML lancées + les explications XAI générées.
+
+== Cycle de vie
+
+. Création (titre, description, dataset).
+. Configuration (critères d'intention : type de tâche, métrique privilégiée).
+. Ajout de collaborateurs (optionnel).
+. Lancement d'un ou plusieurs pipelines ML.
+. Comparaison des résultats entre expériences.
+. Génération d'explications XAI.
+. Conclusion / archivage.
+
+== Modèle de données
+
+Table `projects` :
+
+* `id` (UUID)
+* `user_id` (owner)
+* `name`, `description`
+* `criteria` (JSONB) — critères d'intention
+* `created_at`, `updated_at`
+
+Relations : `projects` 1-n `experiments` ; `projects` n-n `users` (via `project_collaborators` post-PoC).
+
+== Endpoints
+
+* `GET /projects` — listing
+* `GET /projects/{id}` — détail
+* `POST /projects` — création
+* `PUT /projects/{id}` — mise à jour
+* `DELETE /projects/{id}` — suppression (cascade expériences + explications)
+* `GET /projects/{id}/recommendations` — heatmap de recommandation de datasets
+
+== UI — écrans
+
+* `/app/projects` — liste avec filtres et cartes.
+* `/app/projects/new` — wizard création.
+* `/app/projects/{id}` — détail avec onglets :
+** *Informations*
+** *Expériences* (liste des pipelines ML lancés)
+** *Explications* (explications générées sur les expériences)
+** *Paramètres*
+
+== Droits
+
+* Propriétaire (`user_id`) : tout peut faire.
+* Collaborateurs (post-PoC) : lecture + commentaires.
+* Admin : lecture globale pour modération.
+
+== Référence technique
+
+Côté code : `service-selection` et `api-gateway` (routage). Pour les actions ML/XAI, délégation aux services respectifs.

@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-pipeline-celery-worker
+  namespace: ibis-x
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ml-pipeline-celery-worker
+  template:
+    metadata:
+      labels:
+        app: ml-pipeline-celery-worker
+    spec:
+      containers:
+      - name: celery-worker
+        image: ibis-x-ml-pipeline:latest
+        imagePullPolicy: IfNotPresent
+        command: ["celery", "-A", "app.core.celery_app", "worker", "--loglevel=info", "--queues=ml_queue,ai_queue", "--concurrency=2"]
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: ml-pipeline-secrets
+              key: database-url
+        - name: CELERY_BROKER_URL
+          value: "redis://redis:6379/0"
+        - name: CELERY_RESULT_BACKEND
+          value: "redis://redis:6379/0"
+        - name: STORAGE_TYPE
+          value: "minio"
+        - name: MINIO_ENDPOINT
+          value: "http://minio-service:80"
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ml-pipeline-secrets
+              key: minio-access-key
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ml-pipeline-secrets
+              key: minio-secret-key
+        - name: C_FORCE_ROOT
+          value: "1"
+        - name: SERVICE_SELECTION_URL
+          value: "http://service-selection-service.ibis-x.svc.cluster.local"
+        - name: PYTHONPATH
+          value: "/app"
+        - name: MAX_TRAINING_TIME
+          value: "7200"
+        - name: CELERY_WORKER_HIJACK_ROOT_LOGGER
+          value: "false"
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ml-pipeline-secrets
+              key: openai-api-key
+        - name: OPENAI_MODEL
+          value: "gpt-4o-mini"
+        - name: OPENAI_MAX_TOKENS
+          value: "1000"
+        - name: OPENAI_TEMPERATURE
+          value: "0.7"
+        resources:
+          requests:
+            memory: "512Mi"  # Augmenté de 256Mi → 512Mi
+            cpu: "200m"      # Augmenté de 100m → 200m  
+          limits:
+            memory: "2Gi"    # Augmenté de 1Gi → 2Gi
+            cpu: "1000m"     # Augmenté de 500m → 1000m
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - |
+              # HEALTH CHECK SIMPLIFIÉ ET STABLE
+              # Vérifier que Celery ping fonctionne
+              celery -A app.core.celery_app inspect ping > /dev/null 2>&1
+              if [ $? -ne 0 ]; then 
+                echo "HEALTH CHECK FAILED: Celery ping failed"
+                exit 1
+              fi
+              
+              # Vérifier que le worker voit la queue ml_queue
+              celery -A app.core.celery_app inspect active_queues > /tmp/queues_result 2>&1
+              if ! grep -q "ml_queue" /tmp/queues_result; then
+                echo "HEALTH CHECK FAILED: ml_queue not found in active queues"
+                exit 1
+              fi
+              
+              echo "HEALTH CHECK PASSED: Worker ready"
+              exit 0
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 15
+          failureThreshold: 3
+        livenessProbe:
+          exec:
+            command:
+            - "celery"
+            - "-A"
+            - "app.core.celery_app"
+            - "inspect"
+            - "ping"
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 10
+          failureThreshold: 3 

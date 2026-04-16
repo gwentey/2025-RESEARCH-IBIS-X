@@ -1,0 +1,144 @@
+= Flux de communication
+:description: Communication synchrone REST et asynchrone Celery
+
+IBIS-X combine deux modes de communication :
+
+* **Synchrone REST** via `api-gateway` pour les opérations rapides (CRUD, listing, auth).
+* **Asynchrone Celery/Redis** pour les tâches longues (training ML, analyse IA, génération XAI).
+
+== Séquence 1 — Authentification (JWT)
+
+[mermaid]
+----
+sequenceDiagram
+    actor U as Utilisateur
+    participant FE as Frontend
+    participant GW as api-gateway
+    participant DB as PostgreSQL
+
+    U->>FE: email + mot de passe
+    FE->>GW: POST /auth/jwt/login
+    GW->>DB: SELECT user WHERE email=...
+    DB-->>GW: user + hashed_password
+    GW->>GW: verify bcrypt
+    GW-->>FE: { access_token: JWT }
+    FE->>FE: store JWT (localStorage)
+    Note over FE,GW: Toutes les requêtes<br/>suivantes : Authorization: Bearer <JWT>
+----
+
+== Séquence 2 — Upload et import d'un dataset
+
+[mermaid]
+----
+sequenceDiagram
+    actor U as Utilisateur
+    participant FE as Frontend
+    participant GW as api-gateway
+    participant SEL as service-selection
+    participant BLOB as MinIO/Azure
+    participant DB as PostgreSQL
+    participant REDIS as Redis
+    participant MLW as ml-pipeline-worker
+    participant AI as OpenAI
+
+    U->>FE: Upload fichier + manifest
+    FE->>GW: POST /datasets (multipart)
+    GW->>SEL: proxy POST /datasets
+    SEL->>BLOB: PUT storage_path/file
+    SEL->>DB: INSERT datasets + dataset_files + file_columns
+    SEL-->>FE: 201 Created { dataset_id }
+
+    FE->>GW: POST /datasets/{id}/analyze
+    GW->>SEL: trigger analyze
+    SEL->>REDIS: enqueue(ai_queue, analyze_dataset_with_ai)
+    REDIS->>MLW: deliver task
+    MLW->>AI: prompt d'analyse qualité
+    AI-->>MLW: JSON analyse
+    MLW->>DB: INSERT data_quality_analyses (cache)
+    Note over FE,DB: Polling GET /datasets/{id}/analysis<br/>jusqu'à status=completed
+----
+
+== Séquence 3 — Entraînement d'un modèle ML
+
+[mermaid]
+----
+sequenceDiagram
+    actor U as Utilisateur
+    participant FE as Frontend
+    participant GW as api-gateway
+    participant ML as ml-pipeline-service
+    participant REDIS as Redis
+    participant MLW as ml-pipeline-worker
+    participant BLOB as MinIO/Azure
+    participant DB as PostgreSQL
+
+    U->>FE: Wizard pipeline → lancer training
+    FE->>GW: POST /experiments
+    GW->>ML: proxy POST /experiments
+    ML->>DB: INSERT experiments (status=pending)
+    ML->>REDIS: enqueue(ml_queue, train_model)
+    ML-->>FE: 202 Accepted { experiment_id, task_id }
+
+    REDIS->>MLW: deliver train_model
+    MLW->>DB: UPDATE status=running, progress
+    MLW->>BLOB: GET dataset (storage_path)
+    MLW->>MLW: preprocess + train (sklearn)
+    MLW->>BLOB: PUT modèle (artifact_uri)
+    MLW->>DB: UPDATE status=completed, metrics, artifact_uri
+
+    loop Polling
+        FE->>GW: GET /experiments/{id}
+        GW->>ML: proxy
+        ML->>DB: SELECT *
+        ML-->>FE: { status, progress, metrics }
+    end
+----
+
+== Séquence 4 — Génération d'une explication XAI
+
+[mermaid]
+----
+sequenceDiagram
+    actor U as Utilisateur
+    participant FE as Frontend
+    participant GW as api-gateway
+    participant XAI as xai-engine-service
+    participant REDIS as Redis
+    participant XAIW as xai-engine-worker
+    participant BLOB as MinIO/Azure
+    participant DB as PostgreSQL
+    participant LLM as OpenAI
+
+    U->>FE: Demander explication SHAP
+    FE->>GW: POST /explanations (experiment_id, method=shap)
+    GW->>XAI: proxy
+    XAI->>DB: INSERT explanation_request (pending)
+    XAI->>REDIS: enqueue(xai_queue, generate_explanation_task)
+    XAI-->>FE: 202 Accepted { request_id }
+
+    REDIS->>XAIW: deliver task
+    XAIW->>BLOB: GET artifact_uri (modèle)
+    XAIW->>XAIW: compute SHAP values
+    XAIW->>DB: UPDATE with SHAP results
+
+    opt Question utilisateur (max 5/session)
+        U->>FE: question contextuelle
+        FE->>GW: POST /explanations/{id}/chat
+        GW->>XAI: proxy
+        XAI->>REDIS: enqueue(xai_queue, process_chat_question)
+        REDIS->>XAIW: deliver
+        XAIW->>LLM: prompt + contexte SHAP
+        LLM-->>XAIW: réponse narrative
+        XAIW->>DB: append chat_message
+    end
+----
+
+== Règles & invariants
+
+* *3 queues Celery* actives : `ml_queue`, `ai_queue`, `xai_queue`. Aucune `llm_queue`.
+* *Worker xai séparé* : image `ibis-x-xai-engine-worker` (Dockerfile dédié `xai-engine-service/Dockerfile.worker`).
+* *Statut persisté en BDD*, jamais dans Redis (Redis = broker uniquement + cache applicatif ponctuel).
+* *Polling frontend* pour récupérer les résultats async (pas de WebSocket en PoC).
+* *5 questions max* par session de chat XAI pour maîtriser les coûts OpenAI.
+
+Voir xref:03-technique/celery-taches-async.adoc[Tâches Celery — référence complète].

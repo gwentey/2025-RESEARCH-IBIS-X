@@ -1,0 +1,94 @@
+= Correction de la Cohérence des Métriques de Qualité
+:page-description: Correction du problème de génération aléatoire des métriques de qualité causant des valeurs différentes entre les pages
+:page-tags: fix, backend, qualité, dataset, api, cohérence
+
+== Problème Identifié
+
+Les métriques de qualité (score global, consistance, précision) affichaient des valeurs différentes entre :
+- La page de détail du dataset : "Score Global: 75%"  
+- Le wizard ML Pipeline : "Qualité: 67/100"
+
+Cette incohérence empêchait les utilisateurs d'avoir une référence fiable sur la qualité de leurs données.
+
+== Analyse Technique
+
+=== Cause Racine
+
+La fonction `generate_quality_metrics()` dans `/service-selection/app/main.py` utilisait des valeurs aléatoires non déterministes :
+
+[source,python]
+----
+# Code problématique (avant)
+def generate_quality_metrics(dataset: models.Dataset):
+    import random
+    
+    # ❌ Génération aléatoire à chaque appel
+    consistency = 0.8 + random.uniform(-0.1, 0.15)
+    accuracy = 0.85 + random.uniform(-0.1, 0.1)
+    outliers_percentage = base_outliers + random.uniform(0, 0.03)
+    
+    if any(domain.lower() in high_pii_domains for domain in dataset.domain):
+        pii_risk = 0.3 + random.uniform(0, 0.2)
+----
+
+=== Conséquence
+
+Chaque appel API à `/datasets/{id}/details` générait des valeurs différentes :
+- Premier appel (page dataset) : `overall_score = 0.75` → 75%
+- Deuxième appel (wizard) : `overall_score = 0.67` → 67%
+
+== Solution Implémentée
+
+=== Approche Déterministe
+
+Utilisation d'une seed basée sur l'ID du dataset pour assurer des valeurs cohérentes :
+
+[source,python]
+----
+def generate_quality_metrics(dataset: models.Dataset):
+    import random
+    import hashlib
+    
+    # ✅ CORRECTION : Seed déterministe basée sur l'ID du dataset
+    dataset_id_str = str(dataset.id)
+    seed_hash = int(hashlib.md5(dataset_id_str.encode()).hexdigest()[:8], 16)
+    random.seed(seed_hash)
+    
+    # Maintenant les valeurs sont cohérentes entre les appels
+    consistency = 0.8 + random.uniform(-0.1, 0.15)  
+    accuracy = 0.85 + random.uniform(-0.1, 0.1)
+    outliers_percentage = base_outliers + random.uniform(0, 0.03)
+    
+    if any(domain.lower() in high_pii_domains for domain in dataset.domain):
+        pii_risk = 0.3 + random.uniform(0, 0.2)
+        
+    # Restaurer l'état aléatoire normal
+    import time
+    random.seed(int(time.time()))
+    
+    # Score global calculé
+    overall_score = (completeness * 0.3 + consistency * 0.25 + accuracy * 0.25 + ethical_score * 0.2)
+----
+
+=== Avantages de la Solution
+
+1. **Cohérence** : Même dataset ID → Mêmes métriques à chaque appel
+2. **Déterminisme** : Reproductibilité parfaite des résultats
+3. **Performance** : Pas de cache nécessaire, calcul rapide
+4. **Simplicité** : Solution légère sans impact sur l'architecture
+
+== Résultat
+
+Après cette correction :
+- **Page dataset** : "Score Global: 75%"
+- **Wizard ML Pipeline** : "Qualité: 75/100"  
+
+Les deux interfaces affichent maintenant exactement la même valeur, offrant une expérience utilisateur cohérente.
+
+== Fichiers Modifiés
+
+- `service-selection/app/main.py` (fonction `generate_quality_metrics()`)
+
+== Impact
+
+Cette correction assure que tous les utilisateurs voient les mêmes métriques de qualité pour un dataset donné, quelle que soit la page depuis laquelle ils l'consultent. Cela améliore la confiance dans le système et facilite la prise de décision pour les pipelines ML.

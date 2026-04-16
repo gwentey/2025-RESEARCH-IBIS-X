@@ -1,0 +1,118 @@
+= Démarrage local avec Minikube
+:description: De zéro à IBIS-X fonctionnel en 15 minutes
+
+== Prérequis
+
+Voir xref:04-operationnel/installation/prerequis.adoc[Prérequis].
+
+== Étape 1 — Cloner et configurer
+
+[source,bash]
+----
+git clone <URL_DU_DEPOT>
+cd 2025-research-exai
+cp .env.example .env
+# Éditer .env et remplir les 8 variables
+----
+
+== Étape 2 — Exports Windows (obligatoire)
+
+Uniquement sur Git Bash Windows, **avant** `make dev` :
+
+[source,bash]
+----
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+export PYTHONIOENCODING=utf-8 PYTHONUTF8=1
+----
+
+Sans ces exports : images arm64 sous QEMU → CrashLoop ; `update-local-secrets.py` crashe sur emojis cp1252.
+
+Détails : xref:04-operationnel/installation/windows-specificites.adoc[Spécificités Windows].
+
+== Étape 3 — `make dev`
+
+[source,bash]
+----
+make dev
+----
+
+Ce que fait `make dev` :
+
+. Vérifie les prérequis.
+. Démarre Minikube si nécessaire.
+. Synchronise `.env` → Secrets K8s (`update-local-secrets.py`).
+. Lance `skaffold dev` : build + push des 6 images + déploiement Kustomize.
+. Applique les migrations Alembic (initContainers des 4 services).
+. Ouvre les port-forwards :
+** Frontend → `http://localhost:8080`
+** API Gateway → `http://localhost:9000`
+. Affiche les logs en temps réel.
+
+Durée typique :
+
+* Premier run : 15-20 min (builds Docker + pulls images base).
+* Runs suivants : 1-3 min.
+
+== Étape 4 — Accès
+
+[cols="2,2"]
+|===
+| Frontend | http://localhost:8080
+| API Swagger UI | http://localhost:9000/docs
+| API ReDoc | http://localhost:9000/redoc
+|===
+
+== Commandes Makefile utiles
+
+[cols="2,3"]
+|===
+| `make dev` | Installation complète (par défaut)
+| `make dev-no-data` | Idem sans import de datasets
+| `make quick-dev` | Redéploiement rapide (Minikube déjà up)
+| `make dev-watch` | Mode watch Skaffold avancé
+| `make logs` | Logs temps réel (tous services)
+| `make quick-logs` | Logs compacts
+| `make stop` | Arrêter
+| `make clean` | Nettoyage
+| `make reset` | Reset complet (Minikube + images)
+| `make restart-minikube` | Redémarrer Minikube si cassé
+| `make fix-portforwards` | Relancer les port-forwards bloqués
+| `make healthcheck` | Vérifier la santé des services
+| `make migrate` | Appliquer migrations Alembic (tous services)
+| `make dev-data` | Import datasets Kaggle réels
+|===
+
+== Vérifier la santé
+
+[source,bash]
+----
+make healthcheck
+
+# ou manuellement
+kubectl get pods -n ibis-x
+kubectl logs -f deployment/api-gateway-deployment -n ibis-x
+----
+
+Tous les pods doivent être `Running` + `Ready` (`READY 1/1`). Sinon consulter xref:04-operationnel/troubleshooting.adoc[Troubleshooting].
+
+== Étape 5 — Créer un compte + premier parcours
+
+. http://localhost:8080 → Register.
+. Se connecter.
+. Parcourir `/app/datasets` → choisir un dataset (Iris est bon pour démarrer).
+. Créer un projet, lancer un pipeline ML.
+. Générer une explication SHAP.
+
+== Arrêt propre
+
+[source,bash]
+----
+make stop      # arrête les port-forwards et Skaffold
+# Minikube continue de tourner ; pour tout arrêter :
+minikube stop
+----
+
+== Suite
+
+* Comprendre l'architecture : xref:03-technique/architecture/vue-ensemble.adoc[Vue d'ensemble C4].
+* Contribuer : xref:06-contribution/onboarding-dev.adoc[Onboarding développeur].

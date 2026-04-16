@@ -1,0 +1,86 @@
+= Runbook — Migration base de données
+:description: Appliquer une migration Alembic (local / prod)
+
+== Quand utiliser ce runbook
+
+* Ajout / modification d'un modèle SQLAlchemy dans un service.
+* Renommage d'une colonne (ex. `model_uri` → `artifact_uri` en 2026).
+* Ajout d'une nouvelle table (ex. `data_quality_analyses`).
+
+== Prérequis
+
+* Accès au dépôt Git.
+* Docker + Kubernetes (Minikube local ou kubectl configuré sur AKS).
+* Connaissance du service impacté (1 migration = 1 service — voir xref:05-audit/adr/0003-postgres-partage-version-tables.adoc[ADR 0003]).
+
+== Procédure — création d'une migration
+
+. Modifier `{service}/app/models.py` (ajout/suppression de colonne, nouvelle table).
+. Générer la migration :
++
+[source,bash]
+----
+cd {service}
+alembic revision --autogenerate -m "description courte impérative"
+----
+. *Relire* le fichier `alembic/versions/<hash>_description.py` généré : Alembic se trompe parfois sur les renommages (il voit un DROP + ADD).
+. Ajouter les tests d'intégration qui exercent la migration.
+. Commit : `chore(migrations-{service}): description` puis push.
+
+== Procédure — application en local
+
+Les migrations s'appliquent automatiquement au `make dev` via les initContainers des Deployments. Pour forcer à la main :
+
+[source,bash]
+----
+# Depuis la racine
+make migrate
+
+# Ou par service (Minikube)
+kubectl exec -n ibis-x deployment/{service}-deployment -- alembic upgrade head
+----
+
+== Procédure — application en production (AKS)
+
+. *Backup* de la base avant migration (voir xref:04-operationnel/sauvegarde-restauration.adoc[Sauvegarde & restauration]).
+. Fusion de la PR contenant la migration → CI/CD déploie les nouvelles images.
+. Le Job K8s `{service}-migration-job` s'exécute **avant** le rollout des pods (initContainer).
+. Vérifier le statut :
++
+[source,bash]
+----
+kubectl get jobs -n ibis-x
+kubectl logs -n ibis-x job/{service}-migration-job
+----
+
+== Rollback
+
+Si la migration échoue ou casse la prod :
+
+. Identifier la `version_table` du service (ex. `alembic_version_ml_pipeline`).
+. Dans un pod avec accès DB :
++
+[source,bash]
+----
+alembic -x version_table=alembic_version_{service} downgrade -1
+----
+. Redéployer l'image précédente :
++
+[source,bash]
+----
+kubectl rollout undo deployment/{service}-deployment -n ibis-x
+----
+
+Voir aussi xref:04-operationnel/runbooks/rollback-deploiement.adoc[Rollback déploiement].
+
+== Pièges courants
+
+* **Oublier `version_table`** : si l'`alembic.ini` d'un service ne définit pas `version_table = alembic_version_{service}`, le service écrase la table par défaut et casse les autres services.
+* **Autogenerate incorrect** sur renommage : toujours re-lire et ajuster manuellement (`op.alter_column`).
+* **Ordre des migrations** : les migrations d'un même service sont linéaires (`down_revision` chaîné) — pas de branches sauvages.
+
+== Références
+
+* `{service}/alembic.ini` — configuration par service.
+* `{service}/alembic/versions/` — historique.
+* xref:05-audit/adr/0003-postgres-partage-version-tables.adoc[ADR 0003 — Postgres partagé].

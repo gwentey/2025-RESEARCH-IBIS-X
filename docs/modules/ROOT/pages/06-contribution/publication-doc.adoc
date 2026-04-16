@@ -1,0 +1,98 @@
+= Publier la documentation
+:description: Build Antora local + déploiement GitHub Pages
+
+== Architecture Antora
+
+* Playbook : `antora-playbook.yml` (racine).
+* Source : `docs/modules/`.
+* Sortie : `docs/build/site/` (ignorée par Git, publiée).
+* Publication : https://gwentey.github.io/2025-research-exai/ (GitHub Pages).
+
+== Build local
+
+=== Installation (première fois)
+
+[source,bash]
+----
+npm install -g @antora/cli @antora/site-generator
+----
+
+=== Build
+
+[source,bash]
+----
+# Depuis la racine du dépôt
+antora antora-playbook.yml
+
+# Résultat : docs/build/site/index.html
+----
+
+Ouvrir `docs/build/site/index.html` dans le navigateur pour relecture.
+
+=== Vérifications
+
+* [ ] Aucun warning dans la sortie console (pages manquantes, xref cassés).
+* [ ] Navigation (`nav.adoc`) affiche toutes les entrées.
+* [ ] Pages critiques :
+** `index.html` — hub 3 parcours.
+** `05-audit/dossier-audit.html` — dossier jury.
+** `03-technique/architecture/vue-ensemble.html` — C4.
+
+== Déploiement GitHub Pages
+
+Via GitHub Actions (`.github/workflows/docs.yml`) :
+
+. Déclencheur : push sur `main`.
+. Build Antora.
+. Push de `docs/build/site/` vers la branche `gh-pages`.
+. GitHub Pages sert automatiquement.
+
+Délai typique : 1-2 minutes après le merge.
+
+== Ajouter une page
+
+. Créer le fichier `.adoc` dans le pilier adéquat (voir xref:06-contribution/conventions-doc.adoc[Conventions de documentation]).
+. L'ajouter dans `docs/modules/ROOT/nav.adoc` à la bonne position.
+. `xref:` depuis au moins une autre page pour garantir la découvrabilité.
+. Build local pour valider.
+
+== Renommer / déplacer une page
+
+. `git mv` du fichier vers sa nouvelle location.
+. Mettre à jour `nav.adoc`.
+. Chercher et corriger tous les `xref:` pointant vers l'ancien chemin :
++
+[source,bash]
+----
+grep -rn "xref:ancien/chemin" docs/modules/
+----
+. Optionnel : créer un redirect Antora (si compatible avec le thème).
+
+== Supprimer une page
+
+. Si obsolète → déplacer vers `docs/ARCHIVE/` avec bannière "[ARCHIVÉ — voir xref:...]".
+. Si vraiment inutile → `git rm` + nettoyage `nav.adoc` + nettoyage des `xref:`.
+
+== Dépannage
+
+=== Warnings "target not found"
+
+Une page référencée par un `xref:` n'existe pas (encore).
+
+* Créer la page cible, ou
+* Remplacer `xref:` par un commentaire temporaire `// TODO: page à venir`, ou
+* Corriger le chemin si coquille.
+
+=== Le build échoue sur `antora.yml`
+
+Vérifier la syntaxe YAML. En particulier les listes et l'indentation (2 espaces).
+
+=== Mermaid non rendu
+
+Vérifier que l'extension est activée dans `antora-playbook.yml` (`ui.supplemental_files` ou plugin dédié).
+
+== Références
+
+* Antora : https://docs.antora.org/
+* Thème par défaut : https://gitlab.com/antora/antora-ui-default
+* Configuration : `antora-playbook.yml`, `docs/modules/ROOT/antora.yml`.

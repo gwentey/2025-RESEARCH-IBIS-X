@@ -1,0 +1,281 @@
+{
+  "dataset_name": "education_edge_iot_2024",
+  "display_name": "Education Edge IoT Dataset 2024",
+  "objective": "Provide simulated real-time educational activity data for 2024 academic year, capturing high-frequency time-stamped records of student attendance, lab activities, interactions, and engagement levels through IoT sensors and edge devices in educational environments",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "IoT Sensor Simulation - Educational Environment",
+  "storage_uri": "https://www.kaggle.com/datasets/ziya07/education-edge-iot-dataset",
+  "citation_link": "https://www.kaggle.com/datasets/ziya07/education-edge-iot-dataset",
+  "documentation_link": "https://www.kaggle.com/datasets/ziya07/education-edge-iot-dataset",
+  "instances_number": 1000,
+  "features_number": 14,
+  "features_description": "Time-stamped IoT sensor data including student identification, device information, location tracking, attendance status, lab equipment usage, interaction counts, engagement levels, biometric stress indicators, and behavior classification labels",
+  "domain": ["education", "iot"],
+  "representativity_description": "Simulated data for 2024 academic year from multiple IoT sensors and edge devices in educational environments - limited real-world representativity due to synthetic nature",
+  "representativity_level": "low",
+  "sample_balance_description": "Balanced distribution across different behavior states and engagement levels",
+  "sample_balance_level": "balanced",
+  "split": false,
+  "missing_values": {
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "description": "Complete dataset with no missing values as it contains simulated IoT sensor data",
+    "handling_method": "none"
+  },
+  "temporal_factors": true,
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": false,
+  "task": ["classification", "time_series_analysis"],
+  "year": 2024,
+  "license": "CC0: Public Domain",
+  "num_citations": 1,
+  "data_collection": {
+    "type": "simulated",
+    "frequency": "real_time_streaming",
+    "time_period": "2024_academic_year",
+    "sampling_interval": "10_seconds",
+    "simulation_framework": "iot_edge_educational_environment"
+  },
+  "iot_specifications": {
+    "sensor_types": [
+      "attendance_sensors",
+      "biometric_monitors", 
+      "interaction_trackers",
+      "equipment_usage_detectors",
+      "location_beacons",
+      "engagement_analyzers"
+    ],
+    "edge_devices": ["EDGE1", "EDGE2", "EDGE3", "EDGE4", "EDGE5", "EDGE6", "EDGE7", "EDGE8", "EDGE9"],
+    "locations": ["Library", "Classroom", "Lab", "Online"],
+    "inference_capabilities": "local_behavior_classification",
+    "data_streaming": "high_frequency_logs"
+  },
+  "behavioral_classification": {
+    "labels": ["Attentive", "Distracted", "Collaborative", "Cheating", "Idle", "Needs_Assistance"],
+    "detection_method": "multi_sensor_fusion",
+    "confidence_scoring": "biometric_correlation",
+    "real_time_inference": true
+  },
+  "ethics": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures_in_place": true,
+    "data_quality_documented": false,
+    "anonymization_applied": true,
+    "record_keeping_policy_exists": false,
+    "purpose_limitation_respected": true,
+    "accountability_defined": false
+  },
+  "column_details": [
+    {
+      "column_name": "timestamp",
+      "position": 0,
+      "data_type_interpreted": "datetime",
+      "description": "Time-stamped record of sensor reading (10-second intervals starting from 2024-01-15 09:00:00)",
+      "is_temporal": true,
+      "missing_percentage": 0.0,
+      "example_values": ["2024-01-15 09:00:00", "2024-01-15 09:00:10", "2024-01-15 09:00:20"],
+      "category": "temporal"
+    },
+    {
+      "column_name": "student_id",
+      "position": 1,
+      "data_type_interpreted": "categorical",
+      "description": "Unique identifier for each student (anonymized as numeric IDs 100-199)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 100,
+      "example_values": ["190", "173", "136", "168"],
+      "category": "identification"
+    },
+    {
+      "column_name": "session_id", 
+      "position": 2,
+      "data_type_interpreted": "categorical",
+      "description": "Learning session identifier (SES1-SES46 indicating different class sessions)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 46,
+      "example_values": ["SES22", "SES7", "SES33", "SES9"],
+      "category": "identification"
+    },
+    {
+      "column_name": "device_id",
+      "position": 3,
+      "data_type_interpreted": "categorical",
+      "description": "Edge device identifier capturing the sensor data (EDGE1-EDGE9)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 9,
+      "example_values": ["EDGE5", "EDGE9", "EDGE4", "EDGE1"],
+      "category": "device"
+    },
+    {
+      "column_name": "location",
+      "position": 4,
+      "data_type_interpreted": "categorical",
+      "description": "Physical or virtual location of the student activity",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 4,
+      "example_values": ["Library", "Lab", "Online", "Classroom"],
+      "category": "environment"
+    },
+    {
+      "column_name": "attendance_status",
+      "position": 5,
+      "data_type_interpreted": "binary",
+      "description": "Binary indicator of student presence/attendance (0=absent, 1=present)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 2,
+      "example_values": ["0", "1"],
+      "category": "attendance"
+    },
+    {
+      "column_name": "lab_equipment_usage",
+      "position": 6,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Continuous measure of lab equipment utilization (0.0-60.0 range)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 0.0,
+      "max_value": 60.0,
+      "mean_value": 30.0,
+      "category": "activity"
+    },
+    {
+      "column_name": "interaction_count",
+      "position": 7,
+      "data_type_interpreted": "numerical_integer",
+      "description": "Count of student interactions within the time window (0-9 range)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 0,
+      "max_value": 9,
+      "example_values": ["1", "0", "3", "8"],
+      "category": "interaction"
+    },
+    {
+      "column_name": "engagement_level",
+      "position": 8,
+      "data_type_interpreted": "categorical",
+      "description": "Categorical assessment of student engagement (Low, Medium, High)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 3,
+      "example_values": ["Medium", "High", "Low"],
+      "category": "engagement"
+    },
+    {
+      "column_name": "biometric_stress_level",
+      "position": 9,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Biometric stress indicator from wearable sensors (0.0-1.0 normalized scale)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "example_values": ["0.22", "0.94", "0.89", "0.29"],
+      "category": "biometric"
+    },
+    {
+      "column_name": "biometric_focus_level",
+      "position": 10,
+      "data_type_interpreted": "numerical_continuous", 
+      "description": "Biometric focus/attention indicator (0.0-1.0 normalized scale)",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "min_value": 0.0,
+      "max_value": 1.0,
+      "category": "biometric"
+    },
+    {
+      "column_name": "network_activity",
+      "position": 11,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Network usage patterns indicating digital engagement",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "digital_activity"
+    },
+    {
+      "column_name": "environmental_noise_level",
+      "position": 12,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Ambient noise level in the learning environment",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "environment"
+    },
+    {
+      "column_name": "behavior_label",
+      "position": 13,
+      "data_type_interpreted": "categorical",
+      "description": "Target variable: classified behavior state of the student",
+      "is_target": true,
+      "missing_percentage": 0.0,
+      "unique_values": 6,
+      "example_values": ["Attentive", "Distracted", "Collaborative", "Cheating", "Idle", "Needs_Assistance"],
+      "category": "target_behavior"
+    }
+  ],
+  "technical_specifications": {
+    "file_format": "CSV",
+    "file_size": "96.04_kB",
+    "compression": "none",
+    "encoding": "UTF-8",
+    "separator": "comma",
+    "streaming_capable": true,
+    "real_time_processing": true
+  },
+  "usage_notes": "This dataset represents simulated IoT sensor data from educational environments. While synthetic, it captures realistic patterns of student behavior, biometric responses, and environmental interactions. The high-frequency temporal nature makes it ideal for real-time analytics and edge inference research.",
+  "potential_applications": [
+    "Real-time student behavior classification",
+    "Educational engagement monitoring systems", 
+    "Biometric-based learning analytics",
+    "IoT-enabled smart classroom management",
+    "Edge computing in educational environments",
+    "Time-series analysis of learning patterns",
+    "Predictive modeling for academic intervention",
+    "Multi-sensor data fusion techniques",
+    "Privacy-preserving educational analytics",
+    "Automated attendance and activity tracking"
+  ],
+  "analytical_insights": [
+    "Strong correlation between biometric stress and engagement levels",
+    "Location-based patterns in student behavior",
+    "Temporal trends in attention and distraction cycles",
+    "Equipment usage correlation with collaborative behavior",
+    "Edge device performance varies by location type",
+    "Interaction count as predictor of engagement level"
+  ],
+  "iot_advantages": [
+    "Real-time monitoring capabilities",
+    "Multi-modal sensor data fusion",
+    "Edge-based inference for privacy",
+    "Scalable IoT architecture simulation",
+    "Behavioral pattern recognition",
+    "Automated data collection"
+  ],
+  "limitations": [
+    "Simulated data may not reflect real-world complexity",
+    "Limited academic citations and validation",
+    "Privacy concerns with biometric data collection",
+    "Potential bias in behavioral classifications",
+    "Technical challenges of IoT deployment in education",
+    "Need for consent frameworks in real implementations"
+  ],
+  "innovation_aspects": [
+    "Integration of IoT sensors with educational analytics",
+    "Real-time behavioral classification",
+    "Biometric integration for engagement measurement", 
+    "Edge computing for privacy-preserving analytics",
+    "Multi-location learning environment monitoring",
+    "High-frequency temporal data collection"
+  ]
+}

@@ -1,0 +1,389 @@
+{
+  "dataset_name": "global_tuition_fees_2024",
+  "display_name": "Global Tuition Fees & Education Trends 2024",
+  "objective": "Compare costs of private and public universities, enrollment rates, and scholarship availability across 50 countries for international education policy analysis and studying abroad financial planning",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "Global education data collection by Kathrina Roldan - tuition fees, university distribution, and enrollment statistics",
+  "storage_uri": "https://www.kaggle.com/datasets/kathrinaroldan/global-tuition-fees-and-education-trends-2024",
+  "citation_link": "https://www.kaggle.com/datasets/kathrinaroldan/global-tuition-fees-and-education-trends-2024",
+  "documentation_link": "https://www.kaggle.com/datasets/kathrinaroldan/global-tuition-fees-and-education-trends-2024",
+  "instances_number": 50,
+  "features_number": 16,
+  "features_description": "Comprehensive international education finance dataset with tuition fees (min/max/average), university distribution (public vs private), student enrollment patterns, cost of living indices, and scholarship availability across 50 countries",
+  "domain": ["education", "finance"],
+  "representativity_description": "50 countries representing major global education markets with diverse economic and educational systems from developed and developing nations",
+  "representativity_level": "medium",
+  "sample_balance_description": "Good geographic distribution covering Americas, Europe, Asia-Pacific, Africa, and Middle East with diverse economic development levels",
+  "sample_balance_level": "balanced",
+  "split": false,
+  "missing_values": {
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "description": "Clean dataset with complete data for all 50 countries across all 16 variables",
+    "handling_method": "none"
+  },
+  "temporal_factors": false,
+  "metadata_provided_with_dataset": true,
+  "external_documentation_available": true,
+  "task": ["comparative_analysis", "regression", "clustering"],
+  "year": 2024,
+  "license": "CC0: Public Domain",
+  "num_citations": 0,
+  "geographic_coverage": {
+    "countries_count": 50,
+    "regions_covered": [
+      "North America", "South America", "Europe", "Asia", 
+      "Africa", "Middle East", "Oceania"
+    ],
+    "major_economies": ["USA", "China", "Germany", "Japan", "UK", "France", "India", "Brazil", "Canada", "Australia"],
+    "currency_normalization": "All tuition fees converted to USD for comparison"
+  },
+  "financial_metrics": {
+    "tuition_range_usd": {
+      "minimum": 2696.56,
+      "maximum": 57519.74,
+      "average_global": "varies by country",
+      "currency_conversion": "2024 exchange rates"
+    },
+    "cost_indicators": [
+      "Average Tuition Fee (USD)",
+      "Min Tuition Fee (USD)", 
+      "Max Tuition Fee (USD)",
+      "Cost of Living Index",
+      "Scholarship Availability (%)"
+    ]
+  },
+  "education_structure": {
+    "university_types": ["Public Universities", "Private Universities"],
+    "metrics_tracked": [
+      "Number of Private Universities",
+      "Number of Public Universities", 
+      "Percentage of Private Universities",
+      "Total Students in Higher Education"
+    ],
+    "enrollment_patterns": "Public vs private distribution varies significantly by country"
+  },
+  "ethics": {
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures_in_place": true,
+    "data_quality_documented": true,
+    "anonymization_applied": false,
+    "record_keeping_policy_exists": false,
+    "purpose_limitation_respected": true,
+    "accountability_defined": false
+  },
+  "column_details": [
+    {
+      "column_name": "Country",
+      "position": 0,
+      "data_type_interpreted": "categorical",
+      "description": "Country name - 50 countries representing major global education markets",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 50,
+      "example_values": ["USA", "China", "Germany", "Brazil", "India", "UK", "France", "Japan", "Canada", "Australia"],
+      "category": "geographic_identifier",
+      "analysis_value": "primary_grouping_variable"
+    },
+    {
+      "column_name": "Year", 
+      "position": 1,
+      "data_type_interpreted": "temporal",
+      "description": "Reference year for all data - 2024 for consistency",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": 1,
+      "example_values": ["2024"],
+      "category": "temporal_reference"
+    },
+    {
+      "column_name": "Average Tuition Fee (USD)",
+      "position": 2,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Average private university tuition fee converted to USD for international comparison",
+      "is_target": true,
+      "missing_percentage": 0.0,
+      "stats": {
+        "min": 2696.56,
+        "max": 57519.74,
+        "currency_normalized": true
+      },
+      "category": "primary_financial_metric",
+      "analysis_value": "very_high"
+    },
+    {
+      "column_name": "Min Tuition Fee (USD)",
+      "position": 3,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Minimum private university tuition fee in USD",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "stats": {
+        "min": 1933.67,
+        "max": 19713.44
+      },
+      "category": "financial_range_indicator"
+    },
+    {
+      "column_name": "Max Tuition Fee (USD)",
+      "position": 4,
+      "data_type_interpreted": "numerical_continuous", 
+      "description": "Maximum private university tuition fee in USD",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "stats": {
+        "min": 25685.00,
+        "max": 79061.82
+      },
+      "category": "financial_range_indicator"
+    },
+    {
+      "column_name": "Currency",
+      "position": 5,
+      "data_type_interpreted": "categorical",
+      "description": "Local currency used in each country before USD conversion",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "unique_values": "multiple",
+      "example_values": ["USD", "EUR", "CNY", "INR", "GBP", "JPY", "CAD", "AUD"],
+      "category": "currency_reference"
+    },
+    {
+      "column_name": "No. of Private Universities",
+      "position": 6,
+      "data_type_interpreted": "numerical_integer",
+      "description": "Total number of private universities in each country",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "stats": {
+        "min": 177,
+        "max": 1976
+      },
+      "category": "education_infrastructure"
+    },
+    {
+      "column_name": "No. of Public Universities",
+      "position": 7,
+      "data_type_interpreted": "numerical_integer",
+      "description": "Total number of public universities in each country",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "stats": {
+        "min": 76,
+        "max": 1479
+      },
+      "category": "education_infrastructure"
+    },
+    {
+      "column_name": "Percentage of Private Universities (%)",
+      "position": 8,
+      "data_type_interpreted": "numerical_percentage",
+      "description": "Percentage of universities that are privately owned vs total universities",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "stats": {
+        "min": 21.5,
+        "max": 69.3
+      },
+      "category": "education_structure_ratio"
+    },
+    {
+      "column_name": "Total Students in Higher Education (millions)",
+      "position": 9,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Total enrollment in higher education (both public and private) in millions",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "stats": {
+        "min": 0.5,
+        "max": 29.7
+      },
+      "category": "enrollment_metrics",
+      "unit": "millions_of_students"
+    },
+    {
+      "column_name": "Students in Private Universities (millions)",
+      "position": 10,
+      "data_type_interpreted": "numerical_continuous", 
+      "description": "Number of students enrolled in private universities",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "enrollment_breakdown"
+    },
+    {
+      "column_name": "Students in Public Universities (millions)",
+      "position": 11,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Number of students enrolled in public universities", 
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "enrollment_breakdown"
+    },
+    {
+      "column_name": "Students in Vocational Courses (millions)",
+      "position": 12,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Number of students in vocational/technical education programs",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "alternative_education"
+    },
+    {
+      "column_name": "Students Not Studying (millions)",
+      "position": 13,
+      "data_type_interpreted": "numerical_continuous",
+      "description": "Population not participating in formal higher education",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "education_gap_indicator"
+    },
+    {
+      "column_name": "Cost of Living Index",
+      "position": 14,
+      "data_type_interpreted": "numerical_index",
+      "description": "Relative cost of living index for affordability assessment",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "economic_indicator",
+      "analysis_value": "high"
+    },
+    {
+      "column_name": "Scholarship Availability (%)",
+      "position": 15,
+      "data_type_interpreted": "numerical_percentage",
+      "description": "Percentage of students receiving financial aid or scholarships",
+      "is_target": false,
+      "missing_percentage": 0.0,
+      "category": "financial_accessibility",
+      "analysis_value": "high"
+    }
+  ],
+  "technical_specifications": {
+    "file_format": "CSV",
+    "file_size": "4.7 kB",
+    "encoding": "UTF-8",
+    "separator": "comma",
+    "data_quality": "very_high",
+    "completeness": "100%"
+  },
+  "comparative_analysis_capabilities": {
+    "regional_comparisons": "Americas vs Europe vs Asia-Pacific cost analysis",
+    "economic_development": "Developed vs developing nations education costs",
+    "public_private_balance": "Government vs private sector dominance patterns",
+    "affordability_assessment": "Tuition vs cost of living ratios",
+    "accessibility_metrics": "Scholarship availability correlation with costs"
+  },
+  "potential_applications": [
+    "International education policy analysis",
+    "Study abroad destination selection and financial planning",
+    "Global higher education market research",
+    "Educational accessibility and equity studies", 
+    "Government education budget allocation research",
+    "Private vs public education sector analysis",
+    "Cross-country education affordability comparisons",
+    "Scholarship program effectiveness evaluation",
+    "Economic development impact on education costs",
+    "International student mobility trend analysis",
+    "University sector competitiveness assessment",
+    "Education finance policy recommendations"
+  ],
+  "analytical_insights": [
+    "Significant variation in tuition costs across countries (factor of 20x)",
+    "USA has highest absolute costs but strong private sector presence",
+    "European countries show mixed public-private models",
+    "Asian markets demonstrate rapid private sector growth",
+    "Cost of living index crucial for real affordability assessment",
+    "Scholarship availability varies dramatically by country",
+    "Private university percentage correlates with economic development"
+  ],
+  "research_opportunities": [
+    "Education affordability index development",
+    "Public-private education sector balance optimization",
+    "International education policy effectiveness",
+    "Student mobility prediction modeling",
+    "Education finance sustainability analysis",
+    "Cross-cultural education value assessment",
+    "Global education market trend forecasting"
+  ],
+  "policy_implications": [
+    "Need for international education cost transparency",
+    "Scholarship program design based on best practices",
+    "Public-private partnership models in education",
+    "Education accessibility improvement strategies",
+    "International student support policy development",
+    "Cross-border education quality assurance",
+    "Economic development through education investment"
+  ],
+  "business_applications": [
+    "Education consultancy market analysis",
+    "International university partnership strategies", 
+    "EdTech market opportunity assessment",
+    "Student loan product development",
+    "Education insurance product design",
+    "Study abroad program cost optimization",
+    "International education marketing strategy"
+  ],
+  "statistical_analysis_ready": {
+    "regression_analysis": "Predict tuition costs based on economic factors",
+    "clustering_analysis": "Country grouping by education system characteristics",
+    "correlation_analysis": "Relationship between costs and accessibility",
+    "comparative_analysis": "Cross-country benchmarking",
+    "trend_analysis": "Education cost evolution patterns",
+    "outlier_detection": "Identify exceptional education systems"
+  },
+  "data_visualization_opportunities": [
+    "World map of tuition cost distribution",
+    "Public vs private university ratio by region",
+    "Cost of living vs tuition affordability scatter plots",
+    "Scholarship availability heat maps",
+    "Regional education cost comparison charts",
+    "University sector composition treemaps",
+    "Education accessibility index dashboards"
+  ],
+  "limitations": [
+    "Single year snapshot (2024) - no temporal trends",
+    "Limited to 50 countries - not comprehensive global coverage",
+    "Private university focus - limited public sector detail",
+    "Currency conversion point-in-time - exchange rate fluctuations",
+    "No quality metrics - cost only perspective",
+    "Limited demographic breakdown of students",
+    "No graduate outcome or employment data"
+  ],
+  "quality_indicators": {
+    "data_completeness": "100% - no missing values",
+    "geographic_coverage": "Global representation across continents",
+    "currency_standardization": "All fees converted to USD",
+    "methodology_consistency": "Standardized metrics across countries",
+    "source_credibility": "Public domain with transparent collection",
+    "temporal_relevance": "Current 2024 data"
+  },
+  "complementary_datasets": [
+    "THE World University Rankings for quality metrics",
+    "OECD education statistics for additional context",
+    "World Bank development indicators for economic correlates",
+    "UNESCO education data for broader educational context",
+    "Graduate employment statistics for ROI analysis",
+    "International student mobility data"
+  ],
+  "machine_learning_applications": [
+    "Tuition cost prediction models based on economic indicators",
+    "Country clustering by education system similarity",
+    "Outlier detection for exceptional education markets",
+    "Feature importance analysis for cost drivers",
+    "Regression analysis of affordability factors",
+    "Classification of education system types"
+  ],
+  "recommended_analysis_approach": [
+    "Start with exploratory data analysis of cost distributions",
+    "Examine public-private university ratios by region",
+    "Analyze correlation between costs and economic indicators",
+    "Investigate scholarship availability patterns",
+    "Create affordability indices combining costs and living expenses",
+    "Develop predictive models for education market characteristics"
+  ]
+}

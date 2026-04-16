@@ -1,0 +1,88 @@
+<!-- Interface XAI Simplifiée - Style Modern/Compact -->
+<div class="xai-compact-container">
+  
+  <!-- Interface Principale Simplifiée -->
+  <div class="main-section" *ngIf="!loadingState.isLoading && !hasError()">
+    <div class="xai-card modern-card">
+      <div class="card-icon">
+        <mat-icon>psychology</mat-icon>
+      </div>
+      <div class="card-content">
+        <h3>🔍 Générez votre Explication Personnalisée</h3>
+        <p>Notre système va analyser votre modèle <strong>{{ getModelDisplayName() }}</strong> avec <strong>{{ getRecommendedMethodName() }}</strong></p>
+        
+        <div class="features-preview">
+          <div class="feature-item">
+            <mat-icon>insights</mat-icon>
+            <span>Variables les plus influentes</span>
+          </div>
+          <div class="feature-item">
+            <mat-icon>share</mat-icon>
+            <span>Interactions entre variables</span>
+          </div>
+          <div class="feature-item">
+            <mat-icon>chat</mat-icon>
+            <span>Chat IA personnalisé</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-actions">
+        <button mat-flat-button 
+                color="primary" 
+                class="generate-btn"
+                (click)="requestExplanationSimple()"
+                [disabled]="!canRequestExplanation()">
+          <mat-icon>psychology</mat-icon>
+          Générer l'Explication IA
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- État de chargement moderne -->
+  <div class="loading-section" *ngIf="loadingState.isLoading">
+    <div class="loading-card">
+      <div class="loading-animation">
+        <div class="pulse-circle"></div>
+        <mat-icon class="brain-icon">psychology</mat-icon>
+      </div>
+      <h3>{{ 'XAI.LOADING.GENERATING' | translate }}</h3>
+      <p>{{ loadingState.message }}</p>
+      <div class="progress-container">
+        <mat-progress-bar [value]="loadingState.progress" mode="determinate"></mat-progress-bar>
+        <span class="progress-text">{{ loadingState.progress }}%</span>
+      </div>
+      <div class="loading-info">
+        <div class="info-item">
+          <mat-icon>schedule</mat-icon>
+          <span>{{ 'XAI.LOADING.ESTIMATED_TIME' | translate }}: 2-5 minutes</span>
+        </div>
+      </div>
+      <button mat-stroked-button color="warn" class="cancel-btn" (click)="cancelExplanation()">
+        <mat-icon>cancel</mat-icon>
+        {{ 'XAI.REQUEST.CANCEL' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Gestion des erreurs moderne -->
+  <div class="error-section" *ngIf="hasError()">
+    <div class="error-card">
+      <div class="error-icon">
+        <mat-icon>error_outline</mat-icon>
+      </div>
+      <h3>{{ 'XAI.ERROR.TITLE' | translate }}</h3>
+      <p>{{ getErrorMessage() }}</p>
+      <div class="error-actions">
+        <button mat-stroked-button (click)="clearError()">
+          {{ 'XAI.ERROR.DISMISS' | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="requestExplanation()" [disabled]="!canRequestExplanation()">
+          <mat-icon>refresh</mat-icon>
+          {{ 'XAI.ERROR.RETRY' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

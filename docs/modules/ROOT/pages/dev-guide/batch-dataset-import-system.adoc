@@ -1,0 +1,623 @@
+= Système d'Importation de Datasets en Batch - Architecture V2
+
+== Vue d'ensemble
+
+Le système d'importation de datasets en batch d'IBIS-X V2 permet d'intégrer facilement de multiples datasets réels avec **métadonnées enrichies spécifiques**. Il gère automatiquement :
+
+* La conversion CSV vers Parquet (gains de performance 10-50x)
+* **🆕 Métadonnées enrichies spécifiques par dataset (39+ champs)**
+* L'upload vers le stockage d'objets (MinIO/Azure) avec architecture UUID
+* L'insertion en base de données avec validation complète
+* **🆕 CLI de gestion et validation des métadonnées**
+* Le monitoring et reporting avancé
+
+[IMPORTANT]
+====
+**NOUVEAU SYSTÈME V2** : Les métadonnées sont maintenant **spécifiques par dataset** au lieu d'utiliser des templates génériques. Voir xref:enriched-metadata-system.adoc[Guide des Métadonnées Enrichies] pour les détails.
+====
+
+== Architecture du Système
+
+=== Structure des Dossiers V2
+
+[source]
+----
+datasets/
+└── kaggle-import/                      # Scripts d'importation Kaggle V2
+    ├── main.py                         # 🆕 Script principal unifié
+    ├── kaggle_metadata_mapper_v2.py    # 🆕 Nouveau mapper métadonnées
+    ├── metadata_manager.py             # 🆕 CLI de gestion métadonnées
+    ├── kaggle_datasets_config.yaml     # Configuration des datasets
+    ├── requirements.txt                # Dépendances Python
+    ├── Makefile                        # Commandes d'automatisation
+    ├── README.md                       # Guide d'utilisation
+    ├── enriched_metadata/              # 🆕 NOUVEAU SYSTÈME MÉTADONNÉES
+    │   ├── README.md                   # Documentation métadonnées
+    │   ├── schema.json                 # Validation JSON Schema
+    │   ├── datasets/                   # 📊 Métadonnées spécifiques
+    │   │   ├── academic_performance.json    # 39+ champs précis
+    │   │   ├── student_performance.json
+    │   │   ├── student_stress.json
+    │   │   ├── student_depression.json
+    │   │   ├── social_media_addiction.json
+    │   │   ├── riiid_answer_prediction.json
+    │   │   └── oulad_dataset.json
+    │   └── templates/                  # 📋 Templates d'aide
+    │       ├── education_template.json
+    │       ├── healthcare_template.json
+    │       └── default_template.json
+    ├── importer_lib/                   # Modules de traitement
+    │   ├── metadata_loader.py          # 🆕 Chargeur métadonnées JSON
+    │   ├── kaggle_api.py               # Interface API Kaggle
+    │   ├── file_processor.py           # Analyse et conversion fichiers
+    │   ├── db_manager.py               # Gestion base de données
+    │   └── storage.py                  # Gestion stockage objets
+    ├── templates/                      # 🗑️ OBSOLÈTE (à supprimer)
+    │   ├── ethical_defaults.yaml       # ❌ Remplacé par système JSON
+    │   └── auto_init.py                # ❌ Remplacé par metadata_loader
+    └── kaggle_metadata_mapper.py       # 🗑️ OBSOLÈTE (remplacé par V2)
+----
+
+=== Flux de Traitement V2
+
+1. **Configuration** : Définition des datasets Kaggle dans `kaggle_datasets_config.yaml`
+2. **Téléchargement** : Import automatique via API Kaggle
+3. **Analyse** : Extraction métadonnées automatique (colonnes, types, statistiques)
+4. **🆕 Enrichissement** : Chargement métadonnées spécifiques depuis JSON (39+ champs)
+5. **Conversion** : CSV → Parquet pour optimisation performances  
+6. **Upload** : Stockage vers MinIO (local) ou Azure Blob (production) avec UUID
+7. **🆕 Validation** : Validation métadonnées contre schéma JSON + modèle SQLAlchemy
+8. **Base de données** : Insertion des métadonnées enrichies complètes
+9. **Cache** : Système de cache intelligent (7 jours)
+10. **Nettoyage** : Suppression automatique des fichiers temporaires
+
+[NOTE]
+====
+**🆕 Différence clé V2** : Les métadonnées sont maintenant **chargées depuis des fichiers JSON spécifiques** au lieu d'être générées par templates génériques.
+====
+
+== Utilisation Pratique
+
+=== Configuration des Datasets
+
+==== 1. Fichier de Configuration
+
+Le fichier `kaggle_datasets_config.yaml` définit tous les datasets à importer :
+
+[source,yaml]
+----
+datasets:
+  student_performance:
+    kaggle_ref: "spscientist/students-performance-in-exams"
+    domain: "education"
+    description: "Student performance analysis"
+    ml_task: "classification"
+    target_column: "math_score"
+----
+
+==== 2. Credentials Kaggle
+
+Configuration des credentials API Kaggle :
+
+[source,bash]
+----
+# Créer le fichier de configuration
+mkdir -p ~/.kaggle
+echo '{"username":"YOUR_USERNAME","key":"YOUR_API_KEY"}' > ~/.kaggle/kaggle.json
+chmod 600 ~/.kaggle/kaggle.json
+----
+
+=== 🆕 Métadonnées Enrichies Spécifiques
+
+Le système V2 utilise des **métadonnées spécifiques par dataset** stockées en JSON :
+
+[source,json]
+----
+# Exemple : enriched_metadata/datasets/academic_performance.json
+{
+  "metadata_version": "1.0",
+  "dataset_info": {
+    "name": "academic_performance",
+    "source": "kaggle",
+    "kaggle_ref": "nikhil7280/student-performance-multiple-linear-regression"
+  },
+  "enriched_metadata": {
+    "dataset_name": "Student Academic Performance Dataset", 
+    "year": 2025,
+    "objective": "To help users explore how various factors affect student performance...",
+    "access": "public",
+    "availability": "online_download",
+    "num_citations": 0,
+    "instances_number": 1000,        # Calculé automatiquement
+    "features_number": 10,           # Calculé automatiquement  
+    "features_description": "student_id, name, gender, age, grade_level...",
+    "domain": ["education"],
+    "representativity_level": "moderate",
+    "sample_balance_level": "balanced",
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "task": ["classification", "regression"],
+    
+    // 🔒 Critères éthiques spécifiques (39+ champs au total)
+    "informed_consent": false,
+    "transparency": false,
+    "anonymization_applied": true,
+    "accountability_defined": false
+    // ... tous les autres champs éthiques et techniques
+  }
+}
+----
+
+[TIP]
+====
+**Avantages V2** : 39+ champs précis vs 6 champs génériques. Voir xref:enriched-metadata-system.adoc[Guide Complet des Métadonnées Enrichies].
+====
+
+=== Scripts d'Importation V2
+
+==== Script Principal (main.py)
+
+**Fonctionnalités V2** :
+* Import automatique depuis API Kaggle
+* **🆕 Chargement métadonnées enrichies spécifiques (JSON)**
+* Cache intelligent (7 jours)
+* Conversion CSV→Parquet automatique avec UUID
+* Upload parallèle vers stockage d'objets
+* **🆕 Validation métadonnées contre schéma JSON**
+* Gestion d'erreurs robuste avec fallback
+* Reporting détaillé
+
+**Usage** :
+[source,bash]
+----
+# Import de tous les datasets avec métadonnées enrichies
+python main.py
+
+# Import d'un dataset spécifique 
+python main.py --dataset student_performance
+
+# Forcer le re-téléchargement
+python main.py --force-refresh
+----
+
+==== 🆕 CLI de Gestion Métadonnées (metadata_manager.py)
+
+**Nouveaux outils de gestion** :
+
+[source,bash]
+----
+# Lister tous les datasets et leur statut métadonnées
+python metadata_manager.py list
+
+# Validation complète de toutes les métadonnées  
+python metadata_manager.py validate
+
+# Validation d'un dataset spécifique avec détails
+python metadata_manager.py validate academic_performance
+
+# Génération métadonnées depuis template
+python metadata_manager.py generate nouveau_dataset --domain education
+
+# Vérification champs manquants  
+python metadata_manager.py check-fills student_performance
+----
+
+=== Cache et Performance
+
+==== Cache Intelligent
+
+* **Durée** : 7 jours par défaut (configurable)
+* **Évite re-téléchargements** : Datasets déjà importés
+* **Stockage** : Fichiers JSON dans `cache/`
+* **Invalidation** : Automatique ou forcée via `--force-refresh`
+
+==== Optimisations
+
+* **Conversion Parquet** : Gains de performance 10-50x
+* **Upload parallèle** : 4 threads simultanés
+* **Retry logic** : 3 tentatives avec backoff exponentiel
+* **Nettoyage automatique** : Suppression fichiers temporaires
+
+=== Commandes Make Disponibles
+
+==== Installation et Configuration
+
+[source,bash]
+----
+# Installation des dépendances
+make install
+
+# Test authentification Kaggle
+make test-auth
+
+# Vérification configuration
+make check-config
+----
+
+==== Opérations d'Import
+
+[source,bash]
+----
+# Import de tous les datasets
+make import-all
+
+# Import des petits datasets seulement
+make import-small
+
+# Import d'un dataset spécifique
+make import-dataset DATASET=student_performance
+
+# Forcer le re-téléchargement
+make force-refresh
+----
+
+==== Monitoring et Maintenance V2
+
+[source,bash]
+----
+# Afficher l'état des imports
+make status
+
+# Lister les datasets configurés
+make list-datasets
+
+# 🆕 Validation complète des métadonnées enrichies
+cd datasets/kaggle-import
+python metadata_manager.py validate
+
+# 🆕 Afficher le statut détaillé de tous les datasets  
+python metadata_manager.py list
+
+# Test de connexion aux services
+make test-services
+
+# Nettoyage des fichiers temporaires
+make clean
+
+# 🆕 Nettoyage des fichiers obsolètes (templates YAML)
+make clean-legacy
+----
+
+==== 🆕 Nouvelles Commandes Métadonnées
+
+[source,bash]
+----
+# CLI spécialisé dans la gestion des métadonnées enrichies
+cd datasets/kaggle-import
+
+# Dashboard complet des datasets
+python metadata_manager.py list
+# Sortie :
+# Dataset                   Configuré  Métadonnées  Statut
+# ======================================================================
+# academic_performance      ✅          ✅            ✅ Prêt
+# oulad_dataset             ✅          ✅            ✅ Prêt
+# ... (7 datasets au total)
+
+# Validation avec détails par dataset
+python metadata_manager.py validate --verbose
+
+# Génération guidée pour nouveau dataset
+python metadata_manager.py generate mon_dataset --domain education
+
+# Diagnostic des champs manquants
+python metadata_manager.py check-fills --all
+----
+
+== Système de Validation
+
+=== Niveaux de Validation
+
+==== Niveau 1 : Métadonnées
+* Structure YAML valide
+* Champs obligatoires présents
+* Types de données cohérents
+
+==== Niveau 2 : Fichiers
+* Existence des fichiers CSV
+* Intégrité des données
+* Cohérence avec métadonnées
+
+==== Niveau 3 : Base de Données
+* Insertion réussie
+* Contraintes respectées
+* Relations valides
+
+==== Niveau 4 : Stockage
+* Upload réussi vers MinIO/Azure
+* Accessibilité des fichiers
+* Checksums validés
+
+=== Rapports de Validation
+
+Le système génère des rapports détaillés :
+
+[source,json]
+----
+{
+  "validation_summary": {
+    "total_datasets": 7,
+    "passed": 7,
+    "failed": 0,
+    "warnings": 2
+  },
+  "details": [
+    {
+      "dataset": "student-performance",
+      "status": "passed",
+      "checks": {
+        "metadata": "✓",
+        "files": "✓", 
+        "database": "✓",
+        "storage": "✓"
+      }
+    }
+  ]
+}
+----
+
+== Exemples Concrets
+
+=== Exemple 1 : Import Simple
+
+[source,bash]
+----
+# 1. Aller dans le dossier Kaggle
+cd datasets/kaggle-import
+
+# 2. Tester la configuration
+make test-auth
+make check-config
+
+# 3. Importer un dataset spécifique
+make import-dataset DATASET=student_performance
+
+# 4. Vérifier le statut
+make status
+----
+
+=== Exemple 2 : Import Multiple
+
+[source,bash]
+----
+# Import de tous les petits datasets
+make import-small
+
+# Ou import de tous les datasets
+make import-all
+
+# Suivre les logs
+tail -f kaggle_import.log
+----
+
+=== Exemple 3 : Ajouter un Nouveau Dataset (Procédure V2)
+
+[source,bash]
+----
+# 1. Ajouter dans kaggle_datasets_config.yaml
+# nouveau_dataset:
+#   kaggle_ref: "username/dataset-name"
+#   domain: "education" 
+#   description: "Description du dataset"
+#   ml_task: "classification"
+#   target_column: "target"
+
+# 2. 🆕 Générer les métadonnées spécifiques depuis template
+cd datasets/kaggle-import
+python metadata_manager.py generate nouveau_dataset \
+  --domain education \
+  --kaggle-ref username/dataset-name
+
+# 3. 🆕 Éditer le fichier JSON généré pour personnaliser
+# vim enriched_metadata/datasets/nouveau_dataset.json
+
+# 4. 🆕 Valider les métadonnées
+python metadata_manager.py validate nouveau_dataset
+
+# 5. Importer avec métadonnées enrichies
+make import-dataset DATASET=nouveau_dataset
+
+# 6. 🆕 Vérifier l'intégration complète  
+python metadata_manager.py list
+----
+
+[IMPORTANT]
+====
+**Procédure V2** : Il faut maintenant **générer et valider les métadonnées JSON** avant l'import. Voir xref:enriched-metadata-system.adoc[Guide Complet] pour la procédure détaillée.
+====
+
+== Configuration Avancée
+
+=== Variables d'Environnement
+
+[source,bash]
+----
+# Configuration MinIO (développement)
+MINIO_ENDPOINT=localhost:9000
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_BUCKET=IBIS-X-datasets
+
+# Configuration Azure (production)
+AZURE_STORAGE_CONNECTION_STRING=...
+AZURE_CONTAINER_NAME=datasets
+
+# Configuration base de données
+DATABASE_URL=postgresql://user:pass@localhost:5432/IBIS-Xdb
+----
+
+=== Optimisations Performance
+
+==== Conversion Parquet
+
+* **Compression** : Snappy par défaut (bon ratio vitesse/taille)
+* **Partitioning** : Par domaine pour accès optimisé
+* **Schema Evolution** : Support des changements de structure
+
+==== Upload Parallèle
+
+* **Threads** : 4 uploads simultanés par défaut
+* **Retry Logic** : 3 tentatives avec backoff exponentiel
+* **Checksum** : Validation MD5 automatique
+
+=== Gestion des Erreurs
+
+==== Types d'Erreurs Communes
+
+1. **Fichiers corrompus** : Validation CSV échoue
+2. **Métadonnées invalides** : Structure YAML incorrecte
+3. **Connexion stockage** : MinIO/Azure inaccessible
+4. **Contraintes DB** : Violation des règles métier
+
+==== Stratégies de Récupération
+
+* **Rollback automatique** : Annulation en cas d'échec partiel
+* **Mode dégradé** : Import sans upload si stockage indisponible
+* **Logs détaillés** : Traçabilité complète des opérations
+
+== Bonnes Pratiques
+
+=== Organisation des Datasets
+
+1. **Nommage cohérent** : `snake_case` pour fichiers et dossiers
+2. **Structure uniforme** : Même organisation pour tous les domaines
+3. **Documentation** : README.md dans chaque dossier de domaine
+
+=== Métadonnées de Qualité
+
+1. **Descriptions claires** : Explications compréhensibles
+2. **Tags pertinents** : Facilitent la recherche
+3. **Sources citées** : Traçabilité des données
+
+=== Monitoring et Maintenance
+
+1. **Validation régulière** : `make validate-all` hebdomadaire
+2. **Backup métadonnées** : Sauvegarde avant gros changements
+3. **Monitoring espace** : Surveillance stockage objets
+
+== Intégration avec IBIS-X
+
+=== Backend Integration
+
+Le backend lit exclusivement depuis le stockage d'objets :
+
+[source,python]
+----
+# common/storage_client.py
+async def get_dataset(dataset_id: str):
+    # Lecture depuis MinIO/Azure uniquement
+    return await storage_client.download_parquet(dataset_id)
+----
+
+=== Frontend Integration
+
+Interface utilisateur pour parcourir les datasets importés :
+
+* **Catalogue** : Liste tous les datasets disponibles
+* **Filtrage** : Par domaine, tâche ML, taille
+* **Prévisualisation** : Échantillon des données
+* **Statistiques** : Métriques automatiques
+
+== Dépannage
+
+=== Problèmes Courants
+
+==== Import Échoue
+[source,bash]
+----
+# Vérifier les logs
+tail -f kaggle_import.log
+
+# Tester l'authentification Kaggle
+make test-auth
+
+# Tester la connexion stockage
+make test-services
+----
+
+==== Dataset Introuvable
+[source,bash]
+----
+# Vérifier la référence Kaggle
+kaggle datasets list -s "nom_dataset"
+
+# Lister les datasets configurés
+make list-datasets
+----
+
+==== Cache Problématique
+[source,bash]
+----
+# Nettoyer le cache
+make clean
+
+# Forcer le re-téléchargement
+make force-refresh
+----
+
+=== Support et Maintenance
+
+* **Logs centralisés** : `kaggle_import.log`
+* **Configuration** : `kaggle_datasets_config.yaml`
+* **Documentation** : README.md complet dans `datasets/kaggle-import/`
+
+== Migration vers le Système V2
+
+=== 🚀 Nouveautés Révolutionnaires  
+
+[cols="2,1,1", options="header"]
+|===
+|Fonctionnalité |Ancien Système |Système V2
+
+|Métadonnées par dataset
+|6 champs génériques
+|**39+ champs spécifiques**
+
+|Précision des données
+|Templates par domaine
+|**Données réelles de la BDD**
+
+|Gestion métadonnées
+|Complexe (YAML partagés)
+|**Simple (JSON isolés)**
+
+|Validation
+|Manuelle
+|**CLI automatique complet**
+
+|Ajout nouveau dataset
+|30+ min (modification templates)
+|**2 min (génération JSON)**
+
+|Traçabilité
+|Limitée
+|**Complète avec Git**
+|===
+
+=== 📋 Checklist Migration
+
+Si vous migrez depuis l'ancien système :
+
+. ✅ **Vérifiez** que tous vos datasets ont leurs fichiers JSON dans `enriched_metadata/datasets/`
+. ✅ **Testez** la validation : `python metadata_manager.py validate`
+. ✅ **Supprimez** les fichiers obsolètes : `templates/ethical_defaults.yaml`, `kaggle_metadata_mapper.py`
+. ✅ **Mettez à jour** vos scripts pour utiliser `KaggleMetadataMapperV2`
+. ✅ **Documentez** vos nouveaux workflows avec le CLI `metadata_manager.py`
+
+== Conclusion
+
+Le système d'importation de datasets en batch d'IBIS-X **V2** révolutionne la gestion des métadonnées avec des **données spécifiques et réelles** pour chaque dataset. Avec ses 39+ champs enrichis, son CLI complet, et sa validation automatique, il garantit une qualité de données industrielle.
+
+**🎯 Bénéfices concrets** :
+* **✅ Métadonnées précises** : Fini les valeurs génériques
+* **✅ Maintenance simplifiée** : Un fichier JSON par dataset  
+* **✅ Validation robuste** : CLI complet avec diagnostics
+* **✅ Évolutivité** : Ajout de nouveaux datasets en 2 minutes
+* **✅ Traçabilité** : Historique complet via Git
+
+[IMPORTANT]
+====
+**Guide Complet** : Pour une procédure détaillée d'ajout de nouveau dataset, consultez xref:enriched-metadata-system.adoc[Système de Métadonnées Enrichies].
+====
+
+Pour toute question ou problème, consultez les logs détaillés et utilisez le nouveau CLI `metadata_manager.py` pour diagnostiquer les issues. 

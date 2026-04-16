@@ -1,0 +1,188 @@
+= Paramètres de Langue
+:toc:
+:toclevels: 2
+
+Ce guide explique comment changer la langue de l'interface et gérer vos préférences linguistiques dans l'application IBIS-X.
+
+== Langues disponibles
+
+L'application IBIS-X est disponible dans les langues suivantes :
+
+[cols="1,2,1"]
+|===
+|Langue |Nom natif |Code
+
+|🇫🇷 Français
+|Français
+|fr
+
+|🇺🇸 Anglais  
+|English
+|en
+
+|🇪🇸 Espagnol*
+|Español
+|es
+
+|🇩🇪 Allemand*
+|Deutsch
+|de
+|===
+
+[NOTE]
+====
+*Les langues marquées d'un astérisque sont en cours de traduction et peuvent contenir des textes en anglais.
+====
+
+== Changer la langue de l'interface
+
+=== Méthode 1 : Depuis le sélecteur de langue
+
+. **Localisez le sélecteur de langue** dans la barre de navigation en haut de l'écran
+. **Cliquez sur l'icône de langue** (🌐) ou le nom de la langue actuelle
+. **Sélectionnez votre langue préférée** dans le menu déroulant
+. L'interface se met à jour automatiquement
+
+.Sélecteur de langue dans la navigation
+image::language-selector.png[Sélecteur de langue, 300]
+
+=== Méthode 2 : Depuis le profil utilisateur
+
+. **Accédez à votre profil** en cliquant sur votre avatar en haut à droite
+. **Cliquez sur "Mon Profil"** dans le menu déroulant
+. Dans la section **"Informations Personnelles"** :
+.. Localisez le champ **"Langue préférée"**
+.. Sélectionnez votre langue dans la liste déroulante
+.. Cliquez sur **"Sauvegarder"**
+
+.Configuration de la langue dans le profil
+image::profile-language-setting.png[Paramètre de langue dans le profil, 600]
+
+== Persistance des préférences
+
+=== Sauvegarde automatique
+
+* Votre choix de langue est **automatiquement sauvegardé**
+* La préférence est stockée dans votre profil utilisateur
+* Elle sera appliquée à toutes vos sessions futures
+
+=== Synchronisation
+
+* La langue est **synchronisée entre vos appareils** si vous vous connectez avec le même compte
+* Les modifications sont **immédiatement prises en compte** sur l'interface
+
+== Éléments traduits
+
+L'internationalisation couvre tous les éléments de l'interface :
+
+=== Interface principale
+
+* **Navigation** : Menus, boutons, liens
+* **Tableaux de bord** : Titres, métriques, graphiques
+* **Formulaires** : Labels, placeholders, boutons
+
+=== Messages système
+
+* **Messages d'erreur** : Validation, erreurs serveur
+* **Messages de succès** : Confirmations d'actions
+* **Messages d'information** : Aides et conseils
+
+=== Contenu fonctionnel
+
+* **Gestion des datasets** : Listes, filtres, descriptions
+* **Projets** : Formulaires, détails, statuts
+* **Pipeline ML** : Étapes, configurations
+* **Explications XAI** : Résultats, analyses
+
+== Cas particuliers
+
+=== Données utilisateur
+
+Certains éléments ne sont **pas traduits** car ils correspondent à vos données personnelles :
+
+* **Noms des datasets** que vous avez créés
+* **Noms des projets** que vous avez définis  
+* **Descriptions personnalisées** que vous avez saisies
+* **Commentaires** et notes personnelles
+
+=== Dates et formats
+
+* **Dates** : Affichées selon les conventions de la langue sélectionnée
+* **Nombres** : Formatés selon les standards locaux
+* **Devises** : Adaptées aux conventions régionales (si applicable)
+
+== Dépannage
+
+=== La langue ne change pas
+
+**Problème** : L'interface reste dans l'ancienne langue après changement.
+
+**Solutions** :
+
+. **Actualisez la page** (F5 ou Ctrl+R)
+. **Videz le cache** de votre navigateur
+. **Vérifiez la sauvegarde** en retournant dans vos paramètres de profil
+
+=== Textes partiellement traduits  
+
+**Problème** : Certains textes restent en anglais ou dans une autre langue.
+
+**Explications** :
+
+* Les langues **espagnole et allemande** sont en cours de finalisation
+* Certaines **nouvelles fonctionnalités** peuvent nécessiter du temps pour être traduites
+* Les **données personnelles** (noms de projets, etc.) ne sont jamais traduites
+
+=== Performance lente après changement
+
+**Problème** : L'application semble plus lente après le changement de langue.
+
+**Explications** :
+
+* Le **premier chargement** d'une nouvelle langue peut prendre quelques secondes
+* Les traductions sont **mises en cache** pour les utilisations futures
+* **Actualisez la page** si le problème persiste
+
+== Contribuer aux traductions
+
+=== Signaler des erreurs
+
+Si vous trouvez des erreurs de traduction :
+
+. **Notez la page** où se trouve l'erreur
+. **Copiez le texte** problématique  
+. **Contactez l'équipe** via le support ou GitHub
+
+=== Proposer des améliorations
+
+Pour les utilisateurs avancés :
+
+* Le **code source** des traductions est disponible sur GitHub
+* Les **contributions** sont bienvenues via des Pull Requests
+* Consultez le **guide de développement** pour les détails techniques
+
+== Questions fréquentes
+
+**Q: Puis-je utiliser plusieurs langues en même temps ?**
+
+R: Non, une seule langue peut être active à la fois pour l'interface. Cependant, vos données (noms de projets, descriptions) peuvent être dans n'importe quelle langue.
+
+**Q: La langue affecte-t-elle les résultats des analyses ?**
+
+R: Non, seule l'interface est traduite. Les algorithmes et résultats d'analyse restent identiques quelle que soit la langue choisie.
+
+**Q: Comment revenir au français si je ne comprends plus l'interface ?**
+
+R: Cherchez l'icône 🌐 ou "Language" dans la navigation, puis sélectionnez "Français" ou "fr" dans la liste.
+
+**Q: Les nouvelles fonctionnalités sont-elles immédiatement traduites ?**
+
+R: Nous nous efforçons de traduire rapidement, mais il peut y avoir un décalage de quelques jours pour les nouvelles fonctionnalités selon la complexité.
+
+== Support
+
+Pour toute question ou problème lié aux langues :
+
+* **Documentation technique** : Consultez le guide développeur d'internationalisation
+* **Support utilisateur** : Contactez l'équipe via les canaux habituels
+* **Rapporter un bug** : Utilisez l'outil de rapport d'incident avec la mention "i18n" 

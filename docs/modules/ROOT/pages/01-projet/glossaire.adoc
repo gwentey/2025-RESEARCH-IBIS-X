@@ -1,0 +1,76 @@
+= Glossaire
+:description: Acronymes et concepts domaine
+
+Cette page reflète link:../../../../memory-bank/glossary.md[`memory-bank/glossary.md`] pour lecture intégrée à la documentation Antora.
+
+== Acronymes
+
+[cols="1,3"]
+|===
+| Sigle | Signification
+| IBIS-X | Nom de la plateforme
+| XAI | eXplainable Artificial Intelligence
+| ML | Machine Learning
+| PoC | Proof of Concept
+| MIAGE | Méthodes Informatiques Appliquées à la Gestion des Entreprises (Master)
+| SHAP | SHapley Additive exPlanations
+| LIME | Local Interpretable Model-agnostic Explanations
+| LLM | Large Language Model
+| JWT | JSON Web Token
+| ORM | Object-Relational Mapping
+| ERD | Entity-Relationship Diagram
+| ADR | Architecture Decision Record
+| MADR | Markdown Architectural Decision Records
+| RGPD | Règlement Général sur la Protection des Données (FR)
+| GDPR | General Data Protection Regulation (EN)
+| AKS | Azure Kubernetes Service
+| K8s | Kubernetes
+| IaC | Infrastructure as Code
+| CI/CD | Continuous Integration / Continuous Deployment
+| STRIDE | Spoofing · Tampering · Repudiation · Information disclosure · Denial of service · Elevation of privilege
+| OWASP | Open Web Application Security Project
+| C4 | Context, Containers, Components, Code
+| SLO / SLA | Service Level Objective / Agreement
+| PII | Personally Identifiable Information
+| AIPD | Analyse d'Impact relative à la Protection des Données
+|===
+
+== Concepts domaine
+
+*Dataset* — jeu de données tabulaire (CSV/Parquet/JSON). Peut être multi-fichiers. Référencé par `storage_path`, `dataset_files`, `file_columns`.
+
+*Experiment* — exécution d'un pipeline ML avec une config précise. Produit un artefact référencé par `artifact_uri`.
+
+*Artifact* — modèle sérialisé (joblib) dans le stockage objets. `artifact_uri` remplace l'ancien `model_uri`.
+
+*Explanation Request* — tâche async XAI (SHAP / LIME / LLM) routée sur `xai_queue`.
+
+*Chat* — conversation utilisateur ↔ LLM autour d'une explication. 5 questions max par session.
+
+*Score (éthique / technique / métier)* — évaluation 0-10 d'un dataset sur 3 dimensions, affichée dans le catalogue.
+
+*Manifest* — fichier accompagnant un upload, décrit structure + métadonnées éthiques.
+
+*DataQualityAnalysis* — cache des analyses IA pour éviter des appels OpenAI répétés. Invalidé par `dataset_version`.
+
+== Concepts techniques projet
+
+*`ibis_x_db`* — BDD unique partagée. Isolation des migrations via `version_table` Alembic par service.
+
+*`version_table`* — table Alembic par service : `alembic_version_gateway`, `alembic_version_selection`, `alembic_version_ml_pipeline`, `alembic_version_xai`.
+
+*Queue Celery* — 3 actives dans IBIS-X : `ml_queue`, `ai_queue`, `xai_queue`. **Pas de `llm_queue`.**
+
+*Port-forward Skaffold* — redirection locale 8080/9000. **Ne pas confondre** avec ports internes (8088, 8081, 8082, 8083).
+
+*Overlay Kustomize* — surcouche par environnement (`minikube`, `azure`).
+
+== Rôles utilisateur
+
+[cols="1,1,2"]
+|===
+| Rôle | Champ BDD | Description
+| Utilisateur standard | `role = 'user'` | Projets, pipelines, explications
+| Contributeur | `role = 'contributor'` | + upload datasets
+| Admin | `is_superuser` calculé (`role == 'admin'`) | Accès admin complet
+|===

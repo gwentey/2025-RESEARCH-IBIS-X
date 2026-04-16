@@ -1,0 +1,102 @@
+= Modèle de menaces — STRIDE (léger)
+:description: Analyse STRIDE par composant
+
+Analyse STRIDE simplifiée sur les 4 services backend + frontend + infrastructure. Approche PoC : identification des menaces + contrôle existant ou prévu.
+
+== Rappel — STRIDE
+
+* *S*poofing — usurpation d'identité.
+* *T*ampering — altération de données.
+* *R*epudiation — déni d'action.
+* *I*nformation disclosure — fuite d'information.
+* *D*enial of service — déni de service.
+* *E*levation of privilege — élévation de privilèges.
+
+== api-gateway
+
+[cols="1,3,2"]
+|===
+| Menace | Scénario | Contrôle
+
+| S | Usurpation d'un JWT volé | JWT courte durée (1h), HTTPS en prod, SameSite cookies si stockage cookie
+| S | OAuth callback détourné | `OAUTH_REDIRECT_URL` whitelisté côté Google Cloud Console
+| T | Payload d'auth modifié | Validation Pydantic stricte côté FastAPI
+| R | Utilisateur nie une action critique (suppression compte) | Trace horodatée en BDD (`created_at`, `updated_at`) — journal d'audit non encore centralisé
+| I | Dump de la table `users` | bcrypt sur les mots de passe, accès BDD interne cluster uniquement
+| D | Flood de logins | Rate limiting applicatif à prévoir (non implémenté PoC)
+| E | Escalade user → admin | `is_superuser` propriété calculée, pas de colonne manipulable directement ; modification de `role` réservée aux admins
+|===
+
+== service-selection
+
+[cols="1,3,2"]
+|===
+| Menace | Scénario | Contrôle
+
+| T | Upload de dataset malicieux (ex. zip-bomb, fichier exécutable) | Validation MIME + limite de taille, conteneur isolé, pas d'exécution du contenu
+| I | Accès au dataset d'un autre utilisateur | Vérification `user_id` dans les requêtes, ACL sur `storage_path`
+| I | Fuite via logs (contenu de dataset dans un traceback) | Pas de logs de payloads bruts, logs structurés
+| D | Upload massif saturant MinIO/Blob | Limite de taille par fichier, quota utilisateur à implémenter
+|===
+
+== ml-pipeline-service
+
+[cols="1,3,2"]
+|===
+| Menace | Scénario | Contrôle
+
+| T | Injection d'hyperparamètres malicieux (ex. pickle RCE via `preprocessing_config`) | Validation Pydantic stricte, JSONB contrôlé, pas de `eval()`/`pickle.loads` de données utilisateur
+| D | Training indéfiniment long ou consommant toute la mémoire | Timeout Celery, resource limits K8s, surveillance métrique `progress`
+| I | Fuite de données d'entraînement dans les métriques | Seules les métriques agrégées (accuracy, etc.) sont stockées, pas les échantillons
+| E | Worker Celery compromis (via payload malicieux dans un dataset) | Dataset traité en sandbox container, non-root user
+|===
+
+== xai-engine-service
+
+[cols="1,3,2"]
+|===
+| Menace | Scénario | Contrôle
+
+| T | Injection via chat utilisateur (prompt injection) | Prompt template fixe avec contexte SHAP injecté comme **data**, pas comme instruction ; limite 5 questions/session
+| I | Fuite de données via l'API OpenAI (données d'entraînement dans les prompts) | Contexte envoyé = métadonnées + importance features, jamais les échantillons bruts
+| D | Chat boucle infinie | Limite dure de 5 messages utilisateur par session ; compte au niveau SQL
+| D | Requêtes OpenAI massives (coût) | Quota applicatif + monitoring de facturation
+|===
+
+== Frontend
+
+[cols="1,3,2"]
+|===
+| Menace | Scénario | Contrôle
+
+| T | XSS via contenu utilisateur (nom de dataset, description) | Angular escape par défaut, pas de `innerHTML` sur contenu utilisateur
+| I | Token JWT exposé via devtools | Acceptable pour PoC ; token court (1h) ; HTTPS en prod
+| S | Extension navigateur malveillante | Hors contrôle — recommandation utilisateur
+|===
+
+== Infrastructure
+
+[cols="1,3,2"]
+|===
+| Menace | Scénario | Contrôle
+
+| I | Accès non autorisé aux Secrets K8s | RBAC K8s (admin cluster only), namespace isolé
+| I | Logs contenant des valeurs sensibles | Logs applicatifs filtrés ; pas de `print(settings)` en prod
+| E | Conteneur root + privilege escalation | Images non-root, pas de `privileged: true`
+| D | Minikube saturé | Resource requests/limits déclarés par Deployment
+|===
+
+== Priorités & suivi
+
+Items identifiés comme *à renforcer post-PoC* :
+
+. Rate limiting api-gateway (login, upload).
+. NetworkPolicies K8s pour isoler les services entre eux.
+. Journal d'audit applicatif centralisé (loki / ELK).
+. Quotas de stockage et de calcul par utilisateur.
+. Scan SAST/DAST automatique en CI (Trivy, Snyk).
+
+== Références
+
+* Checklist OWASP : xref:05-audit/securite/owasp-top10.adoc[OWASP Top 10]
+* Gestion secrets : xref:05-audit/securite/gestion-secrets.adoc[Gestion des secrets]

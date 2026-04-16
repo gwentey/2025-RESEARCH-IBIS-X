@@ -1,0 +1,85 @@
+= Conventions de documentation
+:description: Écrire une page Antora correctement placée
+
+== Où écrire ?
+
+Selon le type, la page va dans **un seul** pilier :
+
+[cols="1,3"]
+|===
+| Type de contenu | Pilier
+
+| Vision, périmètre, roadmap | `01-projet/`
+| Spec fonctionnelle, user-facing | `02-fonctionnel/`
+| Architecture, services, API, BDD | `03-technique/`
+| Installation, déploiement, runbook | `04-operationnel/`
+| ADR, sécurité, RGPD, éthique, tests, traçabilité | `05-audit/`
+| Onboarding, conventions, processus PR | `06-contribution/`
+|===
+
+Règle absolue : *un fait, un endroit*. Les autres pages pointent via `xref:` vers la canonique.
+
+== Structure d'une page
+
+[source,asciidoc]
+----
+= Titre de la page
+:description: Résumé d'une ligne (apparaît en SEO)
+:toc: left      // si page longue
+
+== Pourquoi cette page ?
+
+(contexte, ce que le lecteur va apprendre)
+
+== Sections thématiques
+
+...
+
+== Références
+
+* xref:autre-page.adoc[Texte du lien]
+* link:../../../../CLAUDE.md[CLAUDE.md]
+----
+
+== Liens
+
+* `xref:chemin/page.adoc[Libellé]` pour toute page Antora.
+* `link:URL[Libellé]` pour fichiers hors Antora ou externes.
+* Éviter les URLs brutes sans libellé (illisibles).
+
+== Diagrammes — Mermaid obligatoire
+
+Pas d'image statique (PNG/SVG). Toujours Mermaid dans un bloc Asciidoc :
+
+[source,asciidoc]
+----
+[mermaid]
+----
+flowchart LR
+    A --> B
+----
+----
+
+* Versionnable, éditable par tous.
+* Rendu automatique par le thème Antora (si extension activée) ou par un post-processor.
+
+== Code et blocs techniques
+
+* Langage toujours précisé : `[source,python]`, `[source,bash]`, `[source,yaml]`, `[source,asciidoc]`.
+* Chemins de fichiers en backticks : `` `ml-pipeline-service/app/tasks.py` ``.
+* Commandes shell avec `$` omis (lisibles à copier-coller).
+
+== Style
+
+* Français par défaut.
+* Termes techniques / nommage code → original (pas de traduction forcée).
+* Tutoyer dans les guides contribution, vouvoyer dans l'audit/jury.
+* Phrases courtes, listes à puces quand > 3 éléments.
+
+== Checklist avant PR
+
+* [ ] Page placée dans le bon pilier (voir tableau).
+* [ ] Référencée dans `docs/modules/ROOT/nav.adoc`.
+* [ ] Liens `xref:` fonctionnels (build Antora local OK).
+* [ ] Pas de duplication avec une page existante — sinon fusion.
+* [ ] Version canonique = la plus récente ; les versions abandonnées → `docs/ARCHIVE/`.

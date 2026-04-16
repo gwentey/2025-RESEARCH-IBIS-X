@@ -1,0 +1,64 @@
+= ADR 0003 — PostgreSQL unique partagé + `version_table` Alembic par service
+
+[cols="1,3"]
+|===
+| Statut | accepted
+| Date | 2025-Q1
+|===
+
+== Contexte & problème
+
+En microservices, la règle *canonique* veut une BDD par service. Elle est toutefois lourde à porter :
+
+* 4 instances PostgreSQL à provisionner (ou 4 databases dans un même cluster).
+* 4 jeux de credentials à gérer.
+* Jointures inter-services impossibles (par design) → tout passe par API.
+
+Dans le cadre d'un PoC académique de quelques mois, avec des besoins d'exploration analytique (requêtes transverses en admin), ce coût est disproportionné.
+
+== Décision
+
+Nous utilisons **une seule base PostgreSQL `ibis_x_db`** partagée par les 4 services backend. L'isolation des migrations Alembic se fait via une **`version_table` dédiée par service** :
+
+* `alembic_version_gateway`
+* `alembic_version_selection`
+* `alembic_version_ml_pipeline`
+* `alembic_version_xai`
+
+Chaque service gère ses propres migrations dans son dossier `alembic/` et ne touche **que** ses tables. Les tables de chaque service sont documentées dans xref:03-technique/architecture/modele-donnees.adoc[Modèle de données].
+
+== Alternatives envisagées
+
+=== A. Une BDD PostgreSQL par service
+
+* ✅ Avantages : isolation stricte, découplage total.
+* ❌ Rejet : coût opérationnel x4 (StatefulSets, backups, credentials, migrations), requêtes transverses d'admin impossibles, complexité pédagogique peu justifiée au PoC.
+
+=== B. BDD partagée sans `version_table` distincte (une seule `alembic_version`)
+
+* ✅ Avantages : simplicité apparente.
+* ❌ Rejet : conflit de migrations entre services (chacun pense être seul), blocage si deux services essaient de migrer en même temps. **Cassant en prod.**
+
+== Conséquences
+
+=== Positives
+
+* Un seul StatefulSet PostgreSQL à gérer.
+* Possibilité de jobs d'admin transverses (statistiques d'utilisation).
+* Migrations Alembic indépendantes par service : chaque service déclare `version_table = alembic_version_<service>` dans son `alembic.ini`.
+
+=== Négatives / coûts
+
+* Violation théorique du principe « DB par service ». **Assumé et documenté** pour le PoC.
+* Risque de couplage accidentel : un service qui lirait/écrirait les tables d'un autre. *Garde-fou* : chaque service ne déclare dans ses `models.py` que ses propres tables.
+* En cas de migration vers une architecture multi-BDD, refactor nécessaire (séparation des schémas, remplacement des futurs couplages par des appels API).
+
+=== Neutres
+
+* Les jobs de migration K8s s'exécutent comme `initContainers` avant le démarrage des Deployments du service correspondant.
+
+== Références
+
+* Configuration : `{service}/alembic.ini` avec `version_table = alembic_version_{service}`.
+* Manifests : `k8s/base/{service}/migration-job.yaml`.
+* StatefulSet : `k8s/base/postgres/postgresql-statefulset.yaml`.

@@ -1,0 +1,156 @@
+# Version de l'API Kubernetes utilisée pour cet objet.
+apiVersion: apps/v1
+# Type d'objet Kubernetes que nous définissons ici : un Deployment.
+# Un Deployment gère le déploiement et la mise à l'échelle d'un ensemble de Pods.
+kind: Deployment
+# Métadonnées associées au Deployment.
+metadata:
+  # Nom unique du Deployment dans le namespace.
+  name: service-selection
+  # Namespace Kubernetes dans lequel ce Deployment sera créé.
+  namespace: ibis-x
+  # Labels associées au Deployment.
+  labels:
+    app: service-selection
+# Spécification (spec) du Deployment : décrit l'état désiré.
+spec:
+  # Nombre de répliques (peut être augmenté car nous n'utilisons plus de PVC RWO)
+  replicas: 1
+  # Stratégie de mise à jour : RollingUpdate car nous n'avons plus de problème Multi-Attach avec PVC RWO
+  strategy:
+    type: RollingUpdate
+  # Sélecteur utilisé par le Deployment pour identifier les Pods qu'il doit gérer.
+  selector:
+    # Les Pods gérés doivent avoir ce label.
+    matchLabels:
+      app: service-selection
+  # Template (modèle) utilisé pour créer de nouveaux Pods lorsque nécessaire.
+  template:
+    # Métadonnées appliquées aux Pods créés par ce template.
+    metadata:
+      # Labels appliqués aux Pods. Doit correspondre au `selector.matchLabels` ci-dessus.
+      labels:
+        app: service-selection
+    # Spécification des Pods créés.
+    spec:
+      # 🚀 NOUVEAU: Init containers pour migrations automatiques
+      initContainers:
+      # Init container pour attendre PostgreSQL
+      - name: wait-for-postgres
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+          - |
+            echo "⏳ Attente de PostgreSQL..."
+            until nc -z postgresql-service.ibis-x.svc.cluster.local 5432; do
+              echo "PostgreSQL pas encore prêt..."
+              sleep 2
+            done
+            echo "✅ PostgreSQL est prêt!"
+      
+      # Init container pour exécuter les migrations Alembic
+      - name: run-migrations
+        image: service-selection
+        imagePullPolicy: Never
+        command: ["alembic", "upgrade", "head"]
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: database-url
+        - name: PYTHONPATH
+          value: "/app"
+        workingDir: /app
+      
+      # Liste des conteneurs à exécuter dans chaque Pod.
+      containers:
+        # Nom du conteneur dans le Pod.
+        - name: service-selection
+          # Image Docker à utiliser pour ce conteneur.
+          image: service-selection
+          imagePullPolicy: Never
+          # Liste des ports que le conteneur expose.
+          ports:
+            # Le conteneur écoute sur le port 8081 (port d'Uvicorn).
+            - containerPort: 8081
+          # Variables d'environnement injectées dans le conteneur.
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: database-url
+            # Active l'auto-initialisation des datasets en développement local
+            - name: AUTO_INIT_DATA
+              value: "true"
+            # Credentials Kaggle pour l'import automatique des vrais datasets
+            - name: KAGGLE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: kaggle-secrets
+                  key: username
+            - name: KAGGLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kaggle-secrets
+                  key: key
+            - name: STORAGE_BACKEND
+              value: "minio"
+            - name: STORAGE_ENDPOINT_URL
+              value: "http://minio-service.ibis-x.svc.cluster.local:9000"
+            - name: STORAGE_CONTAINER_NAME
+              value: "ibis-x-datasets"
+            - name: STORAGE_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: storage-secrets
+                  key: access-key
+            - name: STORAGE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: storage-secrets
+                  key: secret-key
+          # Vérifications de l'état de santé du conteneur.
+          readinessProbe:
+            # Requête HTTP pour vérifier si le conteneur est prêt.
+            httpGet:
+              path: /health
+              port: 8081
+            # Délai initial avant la première vérification (en secondes).
+            initialDelaySeconds: 10
+            # Fréquence des vérifications (en secondes).
+            periodSeconds: 10
+          livenessProbe:
+            # Requête HTTP pour vérifier si le conteneur est en vie.
+            httpGet:
+              path: /health
+              port: 8081
+            # Délai initial avant la première vérification (en secondes).
+            initialDelaySeconds: 30
+            # Fréquence des vérifications (en secondes).
+            periodSeconds: 30
+          # Définition des limites de ressources pour le conteneur.
+          resources:
+            # Ressources demandées par le conteneur.
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            # Limites maximales des ressources.
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          # Volumes montés dans le conteneur.
+          volumeMounts:
+            # Volume pour stocker les logs de l'application.
+            - name: app-logs
+              mountPath: /app/logs
+      # Définition des volumes utilisés par les conteneurs.
+      volumes:
+        # Volume temporaire pour les logs.
+        - name: app-logs
+          emptyDir: {}
+      # Politique de redémarrage des Pods en cas d'échec.
+      restartPolicy: Always
+      # Tolérance par défaut pour éviter l'éviction précoce par le scheduler.
+      terminationGracePeriodSeconds: 30

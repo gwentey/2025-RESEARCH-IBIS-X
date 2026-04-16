@@ -1,0 +1,90 @@
+= CI/CD GitHub Actions
+:description: Workflows automatisés — build, tests, déploiement
+
+== Workflows attendus
+
+Localisation : `.github/workflows/` à la racine du dépôt.
+
+[cols="1,3"]
+|===
+| Workflow | Rôle
+
+| `ci.yml` | Déclenché sur PR : lint + tests unitaires + tests d'intégration (BDD de test PostgreSQL).
+| `deploy-prod.yml` | Déclenché sur merge `main` : build + push images → Azure ACR, puis `kubectl apply` sur AKS.
+| `docs.yml` | Build Antora + publication GitHub Pages.
+| `dependabot.yml` | Mise à jour automatique des dépendances (PRs auto-créées).
+|===
+
+== Structure type `ci.yml`
+
+[source,yaml]
+----
+name: CI
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  backend-tests:
+    strategy:
+      matrix:
+        service: [api-gateway, service-selection, ml-pipeline-service, xai-engine-service]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env: { POSTGRES_DB: ibis_x_db, POSTGRES_PASSWORD: pwd }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: |
+          cd ${{ matrix.service }}
+          pip install -r requirements.txt
+          pytest --cov=app --cov-fail-under=50
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: |
+          cd frontend
+          npm ci
+          npm run lint
+          npm test -- --watch=false --browsers=ChromeHeadless
+----
+
+== Secrets GitHub Actions
+
+Configurés dans Settings → Secrets and variables → Actions :
+
+* `AZURE_CREDENTIALS` — service principal JSON.
+* `AZURE_ACR_LOGIN_SERVER`, `AZURE_ACR_USERNAME`, `AZURE_ACR_PASSWORD`.
+* `AZURE_AKS_RESOURCE_GROUP`, `AZURE_AKS_CLUSTER_NAME`.
+
+Les secrets applicatifs (JWT_SECRET_KEY, OPENAI_API_KEY…) restent dans Azure Key Vault — *jamais* dans GitHub secrets.
+
+== Déclencheurs
+
+[cols="1,2"]
+|===
+| Événement | Workflow
+| PR ouverte ou mise à jour | `ci.yml` + `dependabot.yml` si dep
+| Merge sur `main` | `ci.yml` + `deploy-prod.yml` + `docs.yml`
+| Tag `v*.*.*` | Release GitHub (post-PoC)
+|===
+
+== Gates obligatoires pour merge
+
+GitHub Branch Protection sur `main` :
+
+* ✅ Require pull request reviews (≥ 1).
+* ✅ Require status checks : `CI / backend-tests`, `CI / frontend-tests`.
+* ✅ Require branches to be up to date (rebase).
+* ✅ Include administrators.
+
+== Monitoring du CI
+
+* Badges dans `README.md` (statut CI + coverage).
+* Notifications Slack/Discord (post-PoC).

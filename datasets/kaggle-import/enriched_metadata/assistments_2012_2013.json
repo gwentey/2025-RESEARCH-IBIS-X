@@ -1,0 +1,210 @@
+{
+  "dataset_name": "assistments_2012_2013",
+  "display_name": "ASSISTments Data Set 2012-2013",
+  "objective": "Simple analysis of student math homework answers",
+  "access": "public",
+  "availability": "online",
+  "storage_path": "",
+  "sources": "WPI & Worcester Public Schools",
+  "storage_uri": "https://www.kaggle.com/datasets/nicolaswattiez/skillbuilder-data-2009-2010",
+  "citation_link": "https://www.kaggle.com/datasets/nicolaswattiez/skillbuilder-data-2009-2010",
+  "documentation_link": "https://www.kaggle.com/datasets/nicolaswattiez/skillbuilder-data-2009-2010",
+  "instances_number": 346860,
+  "features_number": 35,
+  "features_description": "Basic student answers and timing information",
+  "year": 2012,
+  "domain": ["education"],
+  "task": ["classification"],
+  "target_column": "original",
+  "representativity_description": "Some middle school students doing math exercises online",
+  "representativity_level": "low",
+  "split": "train_test",
+  "missing_values": {
+    "description": "Very few missing values in the dataset",
+    "has_missing_values": true,
+    "global_missing_percentage": 0.3,
+    "handling_method": "row_deletion"
+  },
+  "temporal_factors": true,
+  "metadata_provided": true,
+  "external_documentation": true,
+  "ethical_compliance": {
+    "informed_consent": false,
+    "transparency": false,
+    "user_control": false,
+    "equity_non_discrimination": false,
+    "security_measures": true,
+    "data_quality_documented": false,
+    "anonymization_applied": true,
+    "record_keeping_policy": false,
+    "purpose_limitation": false,
+    "accountability_defined": false
+  },
+  "citation_count": 600,
+  "license": "Unknown",
+  "contact_info": "Neil Heffernan - WPI (Worcester Polytechnic Institute)",
+  "update_frequency": "static",
+  "versioning": "2012-2013",
+  "data_lineage": "ASSISTments online learning platform data collected during 2012-2013 school year",
+  "quality_metrics": {
+    "completeness_score": 62,
+    "consistency_score": 55,
+    "ethical_compliance_score": 48
+  },
+  "column_details": [
+    {
+      "column_name": "problem_log_id",
+      "position": 0,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": true,
+      "description": "Unique identifier for each problem attempt log entry",
+      "example_values": ["137792159", "138083797", "142332619"],
+      "stats": {
+        "min": 136843143,
+        "max": 146235670,
+        "mean": 141500000,
+        "median": 141500000,
+        "std": 2800000
+      }
+    },
+    {
+      "column_name": "skill",
+      "position": 1,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Mathematics skill being practiced",
+      "example_values": ["Equation Solving Two or Fewer Steps", "Rounding", "Multiplication and Division Integers"],
+      "stats": {
+        "unique_count": 285,
+        "most_frequent": "Equation Solving Two or Fewer Steps"
+      }
+    },
+    {
+      "column_name": "problem_id",
+      "position": 2,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Unique identifier for the specific problem",
+      "example_values": ["557460", "365981", "426415"],
+      "stats": {
+        "min": 1,
+        "max": 767143,
+        "mean": 300000,
+        "median": 280000,
+        "std": 150000
+      }
+    },
+    {
+      "column_name": "user_id",
+      "position": 3,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": true,
+      "description": "Anonymous student identifier",
+      "example_values": ["61394", "76592", "77966"],
+      "stats": {
+        "min": 21421,
+        "max": 228213,
+        "mean": 120000,
+        "median": 115000,
+        "std": 45000
+      }
+    },
+    {
+      "column_name": "assignment_id",
+      "position": 4,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Identifier for the assignment containing this problem",
+      "example_values": ["565736", "573819", "734130"],
+      "stats": {
+        "min": 181456,
+        "max": 833054,
+        "mean": 600000,
+        "median": 580000,
+        "std": 180000
+      }
+    },
+    {
+      "column_name": "assistment_id",
+      "position": 5,
+      "data_type_original": "int64",
+      "data_type_interpreted": "numerical_integer",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Unique identifier for the ASSISTment item",
+      "example_values": ["341511", "204043", "247525"],
+      "stats": {
+        "min": 5,
+        "max": 492589,
+        "mean": 250000,
+        "median": 230000,
+        "std": 140000
+      }
+    },
+    {
+      "column_name": "start_time",
+      "position": 6,
+      "data_type_original": "datetime",
+      "data_type_interpreted": "temporal",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Timestamp when student started working on the problem",
+      "example_values": ["2012-09-28 15:11:27", "2012-10-09 11:01:52", "2013-03-07 10:53:20"],
+      "stats": {}
+    },
+    {
+      "column_name": "end_time",
+      "position": 7,
+      "data_type_original": "datetime",
+      "data_type_interpreted": "temporal",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Timestamp when student finished working on the problem",
+      "example_values": ["2012-09-28 15:11:36.856", "2012-10-09 11:02:13.182", "2013-03-07 10:53:28.661"],
+      "stats": {}
+    },
+    {
+      "column_name": "problem_type",
+      "position": 8,
+      "data_type_original": "object",
+      "data_type_interpreted": "categorical",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Type of problem (algebra, choose_1, fill_in_1, etc.)",
+      "example_values": ["choose_1", "algebra", "fill_in_1"],
+      "stats": {
+        "unique_count": 4,
+        "most_frequent": "algebra"
+      }
+    },
+    {
+      "column_name": "original",
+      "position": 9,
+      "data_type_original": "int64",
+      "data_type_interpreted": "binary",
+      "is_nullable": false,
+      "is_pii": false,
+      "description": "Target variable indicating if the student got the problem correct (1) or incorrect (0)",
+      "example_values": ["1", "0", "1"],
+      "stats": {
+        "unique_count": 2,
+        "most_frequent": "1",
+        "mean": 0.68,
+        "class_distribution": {
+          "0": 32,
+          "1": 68
+        }
+      }
+    }
+  ]
+}

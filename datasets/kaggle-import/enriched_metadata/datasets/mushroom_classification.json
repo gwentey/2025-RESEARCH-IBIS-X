@@ -1,0 +1,258 @@
+{
+  "metadata_version": "1.0",
+  "dataset_info": {
+    "name": "mushroom_classification",
+    "source": "kaggle",
+    "kaggle_ref": "uciml/mushroom-classification"
+  },
+  "enriched_metadata": {
+    "dataset_name": "mushroom_classification",
+    "display_name": "Mushroom Classification - Edible or Poisonous",
+    "objective": "Classify mushrooms as definitely edible or definitely poisonous based on 22 categorical features describing physical characteristics like cap shape, color, odor, gill properties, and habitat",
+    "access": "public",
+    "availability": "online",
+    "storage_path": "",
+    "sources": "Audubon Society Field Guide to North American Mushrooms (1981) - UCI Machine Learning Repository",
+    "storage_uri": "https://www.kaggle.com/datasets/uciml/mushroom-classification",
+    "citation_link": "https://www.kaggle.com/datasets/uciml/mushroom-classification",
+    "documentation_link": "https://www.kaggle.com/datasets/uciml/mushroom-classification",
+    "instances_number": 8124,
+    "features_number": 22,
+    "features_description": "22 categorical attributes describing mushroom physical characteristics: cap properties (shape, surface, color), gill properties (attachment, spacing, size, color), stalk properties (shape, root, surface, color), veil properties, ring properties, spore print color, population density, and habitat",
+    "domain": ["research"],
+    "representativity_description": "Hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota families drawn from field guide descriptions",
+    "representativity_level": "medium",
+    "sample_balance_description": "Binary classification with edible and poisonous mushrooms - balance not specified but derived from field guide entries",
+    "sample_balance_level": "moderate",
+    "split": false,
+    "missing_values_description": "No missing values - complete categorical data for all specimens",
+    "has_missing_values": false,
+    "global_missing_percentage": 0.0,
+    "missing_values_handling_method": "none",
+    "temporal_factors": false,
+    "metadata_provided_with_dataset": true,
+    "external_documentation_available": true,
+    "documentation_link": "https://www.kaggle.com/datasets/uciml/mushroom-classification",
+    "task": ["classification"],
+    "year": 1981,
+    "license": "CC0: Public Domain",
+    "num_citations": null,
+    "historical_significance": {
+      "source_publication": "Audubon Society Field Guide to North American Mushrooms",
+      "publication_year": 1981,
+      "donated_to_uci": "1987-04-27",
+      "significance": "One of the most famous datasets for categorical classification and rule-based learning algorithms",
+      "ml_applications": "Widely used for testing classification algorithms, especially those handling categorical data",
+      "educational_legacy": "Standard benchmark dataset for categorical classification and feature selection research"
+    },
+    "mycological_context": {
+      "taxonomic_families": ["Agaricus", "Lepiota"],
+      "species_count": 23,
+      "mushroom_types": "Gilled mushrooms only",
+      "classification_classes": [
+        {
+          "class": "edible",
+          "description": "Definitely safe to eat",
+          "encoding": "e"
+        },
+        {
+          "class": "poisonous", 
+          "description": "Definitely poisonous or of unknown edibility (not recommended)",
+          "encoding": "p"
+        }
+      ],
+      "important_note": "The Guide clearly states that there is no simple rule for determining the edibility of a mushroom",
+      "safety_disclaimer": "This is a learning dataset - never use machine learning models to determine mushroom edibility in real life"
+    },
+    "feature_categories": {
+      "cap_attributes": [
+        {
+          "name": "cap-shape",
+          "description": "Shape of the mushroom cap",
+          "values": ["bell", "conical", "convex", "flat", "knobbed", "sunken"]
+        },
+        {
+          "name": "cap-surface", 
+          "description": "Surface texture of the cap",
+          "values": ["fibrous", "grooves", "scaly", "smooth"]
+        },
+        {
+          "name": "cap-color",
+          "description": "Color of the mushroom cap",
+          "values": ["brown", "buff", "cinnamon", "gray", "green", "pink", "purple", "red", "white", "yellow"]
+        }
+      ],
+      "gill_attributes": [
+        {
+          "name": "gill-attachment",
+          "description": "How gills attach to the stalk",
+          "values": ["attached", "descending", "free", "notched"]
+        },
+        {
+          "name": "gill-spacing",
+          "description": "Spacing between gills",
+          "values": ["close", "crowded", "distant"]
+        },
+        {
+          "name": "gill-size",
+          "description": "Size of the gills",
+          "values": ["broad", "narrow"]
+        },
+        {
+          "name": "gill-color",
+          "description": "Color of the gills",
+          "values": ["black", "brown", "buff", "chocolate", "gray", "green", "orange", "pink", "purple", "red", "white", "yellow"]
+        }
+      ],
+      "stalk_attributes": [
+        {
+          "name": "stalk-shape",
+          "description": "Shape of the stalk",
+          "values": ["enlarging", "tapering"]
+        },
+        {
+          "name": "stalk-root",
+          "description": "Root characteristics of stalk",
+          "values": ["bulbous", "club", "cup", "equal", "rhizomorphs", "rooted", "missing"]
+        },
+        {
+          "name": "stalk-surface-above-ring",
+          "description": "Surface texture above the ring",
+          "values": ["fibrous", "scaly", "silky", "smooth"]
+        },
+        {
+          "name": "stalk-surface-below-ring",
+          "description": "Surface texture below the ring",
+          "values": ["fibrous", "scaly", "silky", "smooth"]
+        },
+        {
+          "name": "stalk-color-above-ring",
+          "description": "Stalk color above the ring",
+          "values": ["brown", "buff", "cinnamon", "gray", "orange", "pink", "red", "white", "yellow"]
+        },
+        {
+          "name": "stalk-color-below-ring",
+          "description": "Stalk color below the ring", 
+          "values": ["brown", "buff", "cinnamon", "gray", "orange", "pink", "red", "white", "yellow"]
+        }
+      ],
+      "other_attributes": [
+        {
+          "name": "bruises",
+          "description": "Does the mushroom bruise when damaged",
+          "values": ["bruises", "no"]
+        },
+        {
+          "name": "odor",
+          "description": "Smell of the mushroom",
+          "values": ["almond", "anise", "creosote", "fishy", "foul", "musty", "none", "pungent", "spicy"]
+        },
+        {
+          "name": "veil-type",
+          "description": "Type of veil",
+          "values": ["partial", "universal"]
+        },
+        {
+          "name": "veil-color",
+          "description": "Color of the veil",
+          "values": ["brown", "orange", "white", "yellow"]
+        },
+        {
+          "name": "ring-number",
+          "description": "Number of rings",
+          "values": ["none", "one", "two"]
+        },
+        {
+          "name": "ring-type",
+          "description": "Type of ring",
+          "values": ["cobwebby", "evanescent", "flaring", "large", "none", "pendant", "sheathing", "zone"]
+        },
+        {
+          "name": "spore-print-color",
+          "description": "Color of spore print",
+          "values": ["black", "brown", "buff", "chocolate", "green", "orange", "purple", "white", "yellow"]
+        },
+        {
+          "name": "population",
+          "description": "Population density where found",
+          "values": ["abundant", "clustered", "numerous", "scattered", "several", "solitary"]
+        },
+        {
+          "name": "habitat",
+          "description": "Where the mushroom grows",
+          "values": ["grasses", "leaves", "meadows", "paths", "urban", "waste", "woods"]
+        }
+      ]
+    },
+    "data_characteristics": {
+      "data_type": "categorical",
+      "all_features_categorical": true,
+      "numerical_features": 0,
+      "categorical_features": 22,
+      "target_variable": "class",
+      "binary_classification": true,
+      "multi_class": false,
+      "missing_values": false,
+      "balanced_dataset": "unknown",
+      "small_dataset": false,
+      "medium_dataset": true,
+      "large_dataset": false
+    },
+    "ml_applications": {
+      "primary_task": "Binary Classification",
+      "suitable_algorithms": [
+        "Decision Trees",
+        "Random Forest", 
+        "Naive Bayes",
+        "Logistic Regression",
+        "SVM",
+        "Rule-based learners"
+      ],
+      "learning_objectives": [
+        "Categorical feature handling",
+        "Binary classification",
+        "Feature importance analysis", 
+        "Rule extraction",
+        "Ensemble methods"
+      ],
+      "evaluation_metrics": ["Accuracy", "Precision", "Recall", "F1-Score", "ROC-AUC"],
+      "typical_results": "Very high accuracy achievable (>95%) due to clear distinguishing patterns"
+    },
+    "educational_value": {
+      "difficulty_level": "beginner_to_intermediate",
+      "learning_concepts": [
+        "Categorical data preprocessing",
+        "One-hot encoding",
+        "Binary classification", 
+        "Feature selection with categorical data",
+        "Rule-based classification",
+        "Decision tree interpretation"
+      ],
+      "common_exercises": [
+        "Compare different categorical encoding methods",
+        "Identify most important features for edibility",
+        "Build interpretable classification rules",
+        "Compare tree-based vs linear models on categorical data"
+      ]
+    },
+    "safety_considerations": {
+      "real_world_warning": "CRITICAL: Never use machine learning models to determine mushroom edibility in real life",
+      "educational_only": "This dataset is for educational and research purposes only",
+      "mushroom_foraging_safety": "Mushroom identification requires expert knowledge - consuming misidentified mushrooms can be fatal",
+      "liability_disclaimer": "No ML model should ever be used for actual mushroom consumption decisions"
+    },
+    "informed_consent": false,
+    "transparency": true,
+    "user_control": false,
+    "equity_non_discrimination": true,
+    "security_measures_in_place": true,
+    "data_quality_documented": true,
+    "data_errors_description": "Clean dataset with no identified data quality issues or errors",
+    "anonymization_applied": true,
+    "record_keeping_policy_exists": false,
+    "purpose_limitation_respected": true,
+    "accountability_defined": true,
+    "created_at": "2025-09-21T16:11:30",
+    "updated_at": "2025-09-21T16:11:30"
+  }
+}

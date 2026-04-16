@@ -1,0 +1,568 @@
+<!-- XAI Explanation Page - Style Linear/Stripe -->
+<div class="xai-explanation-page">
+
+  <!-- Hero Section Élégante -->
+  <div class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+
+        <!-- Badge et titre -->
+        <div class="status-badge">
+          <div class="badge-dot"></div>
+          <span>{{ 'XAI_EXPLANATION.HERO.BADGE' | translate }}</span>
+        </div>
+
+        <h1 class="hero-title">
+          {{ 'XAI_EXPLANATION.HERO.TITLE' | translate }}
+        </h1>
+
+        <p class="hero-subtitle">
+          {{ 'XAI_EXPLANATION.HERO.SUBTITLE' | translate }}
+        </p>
+
+        <!-- Quick Actions -->
+        <div class="hero-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            class="primary-action"
+            (click)="startXAIExperiment()">
+            <mat-icon>auto_awesome</mat-icon>
+            {{ 'XAI_EXPLANATION.HERO.TRY_NOW' | translate }}
+          </button>
+
+          <button
+            mat-stroked-button
+            class="secondary-action"
+            (click)="openDocumentation()">
+            <mat-icon>library_books</mat-icon>
+            {{ 'XAI_EXPLANATION.HERO.LEARN_MORE' | translate }}
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Visual Preview -->
+      <div class="hero-visual">
+        <div class="xai-preview-card">
+          <div class="preview-header">
+            <h4>{{ 'XAI_EXPLANATION.HERO.PREVIEW_TITLE' | translate }}</h4>
+            <div class="confidence-badge">94% {{ 'XAI_EXPLANATION.HERO.CONFIDENT' | translate }}</div>
+          </div>
+
+          <div class="prediction-result">
+            <div class="result-icon success">
+              <mat-icon>verified</mat-icon>
+            </div>
+            <div class="result-text">
+              <strong>{{ 'XAI_EXPLANATION.HERO.PREDICTION_RESULT' | translate }}</strong>
+              <span>{{ 'XAI_EXPLANATION.HERO.PREDICTION_DETAIL' | translate }}</span>
+            </div>
+          </div>
+
+          <!-- Mini Feature Importance -->
+          <div class="mini-explanation">
+            <h5>{{ 'XAI_EXPLANATION.HERO.WHY_TITLE' | translate }}</h5>
+            <div class="feature-bars">
+              <div class="feature-bar" *ngFor="let feature of interactiveExample.inputFeatures">
+                <div class="feature-label">{{ feature.name }}</div>
+                <div class="feature-importance">
+                  <div class="importance-bar" [style.width.%]="feature.importance"></div>
+                  <span class="importance-value">{{ feature.importance }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Méthodes XAI : LIME vs SHAP -->
+  <div class="methods-section">
+    <div class="container">
+
+      <div class="section-header">
+        <h2 class="section-title">{{ 'XAI_EXPLANATION.METHODS.TITLE' | translate }}</h2>
+        <p class="section-subtitle">{{ 'XAI_EXPLANATION.METHODS.SUBTITLE' | translate }}</p>
+      </div>
+
+      <!-- Method Selection Tabs -->
+      <div class="method-tabs">
+        <button 
+          class="method-tab"
+          [class.active]="selectedMethod === 'lime'"
+          (click)="selectMethod('lime')">
+          <span class="method-icon">🔍</span>
+          <span class="method-name">LIME</span>
+        </button>
+        
+        <button 
+          class="method-tab"
+          [class.active]="selectedMethod === 'shap'"
+          (click)="selectMethod('shap')">
+          <span class="method-icon">⚖️</span>
+          <span class="method-name">SHAP</span>
+        </button>
+        
+        <button 
+          class="method-tab"
+          [class.active]="selectedMethod === 'comparison'"
+          (click)="selectMethod('comparison')">
+          <span class="method-icon">🔄</span>
+          <span class="method-name">{{ 'XAI_EXPLANATION.METHODS.COMPARISON' | translate }}</span>
+        </button>
+      </div>
+
+      <!-- Method Details -->
+      <div class="method-details" [ngSwitch]="selectedMethod">
+
+        <!-- LIME Section -->
+        <div *ngSwitchCase="'lime'" class="method-content lime-content">
+          <div class="method-grid">
+            
+            <div class="method-info">
+              <div class="method-header">
+                <div class="method-icon-large">🔍</div>
+                <div class="method-titles">
+                  <h3>{{ getMethodById('lime')?.name }}</h3>
+                  <p class="method-full-name">{{ getMethodById('lime')?.fullName }}</p>
+                </div>
+              </div>
+
+              <p class="method-description">
+                {{ getMethodById('lime')?.description }}
+              </p>
+
+              <div class="method-how-it-works">
+                <h4>{{ 'XAI_EXPLANATION.METHODS.HOW_IT_WORKS' | translate }}</h4>
+                <p>{{ getMethodById('lime')?.howItWorks }}</p>
+              </div>
+
+              <div class="method-strengths">
+                <h4>{{ 'XAI_EXPLANATION.METHODS.STRENGTHS' | translate }}</h4>
+                <ul>
+                  <li *ngFor="let strength of getMethodById('lime')?.strengths">
+                    <mat-icon>check_circle</mat-icon>
+                    {{ strength }}
+                  </li>
+                </ul>
+              </div>
+
+              <div class="method-use-cases">
+                <h4>{{ 'XAI_EXPLANATION.METHODS.USE_CASES' | translate }}</h4>
+                <div class="use-case-chips">
+                  <mat-chip-set>
+                    <mat-chip *ngFor="let useCase of getMethodById('lime')?.useCases">
+                      {{ useCase }}
+                    </mat-chip>
+                  </mat-chip-set>
+                </div>
+              </div>
+            </div>
+
+            <!-- LIME Visual Example -->
+            <div class="method-visual">
+              <div class="visual-card lime-visual">
+                <div class="visual-header">
+                  <h4>{{ getMethodById('lime')?.example?.title || 'LIME Example' }}</h4>
+                  <div class="visual-type-badge">{{ 'XAI_EXPLANATION.METHODS.LOCAL_EXPLANATION' | translate }}</div>
+                </div>
+                
+                <div class="lime-example">
+                  <div class="prediction-instance">
+                    <h5>{{ 'XAI_EXPLANATION.METHODS.ANALYZED_INSTANCE' | translate }}</h5>
+                    <div class="instance-data">
+                      <div class="data-point">
+                        <span class="label">{{ 'XAI_EXPLANATION.EXAMPLES.INCOME' | translate }}:</span>
+                        <span class="value">€65,000</span>
+                      </div>
+                      <div class="data-point">
+                        <span class="label">{{ 'XAI_EXPLANATION.EXAMPLES.CREDIT_SCORE' | translate }}:</span>
+                        <span class="value">740</span>
+                      </div>
+                      <div class="data-point">
+                        <span class="label">{{ 'XAI_EXPLANATION.EXAMPLES.AGE' | translate }}:</span>
+                        <span class="value">32 {{ 'XAI_EXPLANATION.EXAMPLES.YEARS' | translate }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="lime-explanation-bars">
+                    <div class="explanation-bar positive">
+                      <div class="bar-label">{{ 'XAI_EXPLANATION.EXAMPLES.CREDIT_SCORE' | translate }}</div>
+                      <div class="bar-visual positive" style="width: 80%;"></div>
+                      <div class="bar-value">+0.3</div>
+                    </div>
+                    <div class="explanation-bar positive">
+                      <div class="bar-label">{{ 'XAI_EXPLANATION.EXAMPLES.STABLE_JOB' | translate }}</div>
+                      <div class="bar-visual positive" style="width: 60%;"></div>
+                      <div class="bar-value">+0.2</div>
+                    </div>
+                    <div class="explanation-bar neutral">
+                      <div class="bar-label">{{ 'XAI_EXPLANATION.EXAMPLES.AGE' | translate }}</div>
+                      <div class="bar-visual neutral" style="width: 20%;"></div>
+                      <div class="bar-value">+0.05</div>
+                    </div>
+                  </div>
+
+                  <div class="prediction-outcome">
+                    <div class="outcome-result approved">
+                      <mat-icon>check_circle</mat-icon>
+                      <span>{{ 'XAI_EXPLANATION.EXAMPLES.APPROVED' | translate }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SHAP Section -->
+        <div *ngSwitchCase="'shap'" class="method-content shap-content">
+          <div class="method-grid">
+            
+            <div class="method-info">
+              <div class="method-header">
+                <div class="method-icon-large">⚖️</div>
+                <div class="method-titles">
+                  <h3>{{ getMethodById('shap')?.name }}</h3>
+                  <p class="method-full-name">{{ getMethodById('shap')?.fullName }}</p>
+                </div>
+              </div>
+
+              <p class="method-description">
+                {{ getMethodById('shap')?.description }}
+              </p>
+
+              <div class="method-how-it-works">
+                <h4>{{ 'XAI_EXPLANATION.METHODS.HOW_IT_WORKS' | translate }}</h4>
+                <p>{{ getMethodById('shap')?.howItWorks }}</p>
+              </div>
+
+              <div class="method-strengths">
+                <h4>{{ 'XAI_EXPLANATION.METHODS.STRENGTHS' | translate }}</h4>
+                <ul>
+                  <li *ngFor="let strength of getMethodById('shap')?.strengths">
+                    <mat-icon>check_circle</mat-icon>
+                    {{ strength }}
+                  </li>
+                </ul>
+              </div>
+
+              <div class="method-use-cases">
+                <h4>{{ 'XAI_EXPLANATION.METHODS.USE_CASES' | translate }}</h4>
+                <div class="use-case-chips">
+                  <mat-chip-set>
+                    <mat-chip *ngFor="let useCase of getMethodById('shap')?.useCases">
+                      {{ useCase }}
+                    </mat-chip>
+                  </mat-chip-set>
+                </div>
+              </div>
+            </div>
+
+            <!-- SHAP Visual Example -->
+            <div class="method-visual">
+              <div class="visual-card shap-visual">
+                <div class="visual-header">
+                  <h4>{{ getMethodById('shap')?.example?.title || 'SHAP Example' }}</h4>
+                  <div class="visual-type-badge">{{ 'XAI_EXPLANATION.METHODS.GLOBAL_LOCAL_EXPLANATION' | translate }}</div>
+                </div>
+                
+                <div class="shap-example">
+                  <!-- SHAP Waterfall Chart -->
+                  <div class="shap-waterfall">
+                    <h5>{{ 'XAI_EXPLANATION.METHODS.SHAP_VALUES' | translate }}</h5>
+                    
+                    <div class="waterfall-chart">
+                      <div class="waterfall-item base">
+                        <div class="item-label">{{ 'XAI_EXPLANATION.EXAMPLES.BASE_VALUE' | translate }}</div>
+                        <div class="item-bar base" style="height: 40px;"></div>
+                        <div class="item-value">€180k</div>
+                      </div>
+                      
+                      <div class="waterfall-item positive">
+                        <div class="item-label">{{ 'XAI_EXPLANATION.EXAMPLES.SURFACE' | translate }}</div>
+                        <div class="item-bar positive" style="height: 60px;"></div>
+                        <div class="item-value">+€45k</div>
+                      </div>
+                      
+                      <div class="waterfall-item positive">
+                        <div class="item-label">{{ 'XAI_EXPLANATION.EXAMPLES.LOCATION' | translate }}</div>
+                        <div class="item-bar positive" style="height: 40px;"></div>
+                        <div class="item-value">+€30k</div>
+                      </div>
+                      
+                      <div class="waterfall-item negative">
+                        <div class="item-label">{{ 'XAI_EXPLANATION.EXAMPLES.AGE_BUILDING' | translate }}</div>
+                        <div class="item-bar negative" style="height: 20px;"></div>
+                        <div class="item-value">-€10k</div>
+                      </div>
+                      
+                      <div class="waterfall-item final">
+                        <div class="item-label">{{ 'XAI_EXPLANATION.EXAMPLES.PREDICTION' | translate }}</div>
+                        <div class="item-bar final" style="height: 80px;"></div>
+                        <div class="item-value">€245k</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Comparison Section -->
+        <div *ngSwitchCase="'comparison'" class="method-content comparison-content">
+          <div class="comparison-grid">
+            
+            <div class="comparison-card lime-card">
+              <div class="card-header">
+                <div class="method-icon">🔍</div>
+                <h3>LIME</h3>
+              </div>
+              <div class="comparison-items">
+                <div class="comparison-item">
+                  <strong>{{ 'XAI_EXPLANATION.COMPARISON.SCOPE' | translate }}:</strong>
+                  <span>{{ 'XAI_EXPLANATION.COMPARISON.LOCAL_ONLY' | translate }}</span>
+                </div>
+                <div class="comparison-item">
+                  <strong>{{ 'XAI_EXPLANATION.COMPARISON.APPROACH' | translate }}:</strong>
+                  <span>{{ 'XAI_EXPLANATION.COMPARISON.PERTURBATION' | translate }}</span>
+                </div>
+                <div class="comparison-item">
+                  <strong>{{ 'XAI_EXPLANATION.COMPARISON.BEST_FOR' | translate }}:</strong>
+                  <span>{{ 'XAI_EXPLANATION.COMPARISON.INDIVIDUAL_DECISIONS' | translate }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="comparison-card shap-card">
+              <div class="card-header">
+                <div class="method-icon">⚖️</div>
+                <h3>SHAP</h3>
+              </div>
+              <div class="comparison-items">
+                <div class="comparison-item">
+                  <strong>{{ 'XAI_EXPLANATION.COMPARISON.SCOPE' | translate }}:</strong>
+                  <span>{{ 'XAI_EXPLANATION.COMPARISON.GLOBAL_AND_LOCAL' | translate }}</span>
+                </div>
+                <div class="comparison-item">
+                  <strong>{{ 'XAI_EXPLANATION.COMPARISON.APPROACH' | translate }}:</strong>
+                  <span>{{ 'XAI_EXPLANATION.COMPARISON.GAME_THEORY' | translate }}</span>
+                </div>
+                <div class="comparison-item">
+                  <strong>{{ 'XAI_EXPLANATION.COMPARISON.BEST_FOR' | translate }}:</strong>
+                  <span>{{ 'XAI_EXPLANATION.COMPARISON.OVERALL_ANALYSIS' | translate }}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- When to use what -->
+          <div class="usage-guide">
+            <h3>{{ 'XAI_EXPLANATION.COMPARISON.WHEN_TO_USE' | translate }}</h3>
+            
+            <div class="usage-scenarios">
+              <div class="scenario-card">
+                <div class="scenario-header">
+                  <mat-icon>psychology</mat-icon>
+                  <h4>{{ 'XAI_EXPLANATION.SCENARIOS.USE_LIME.TITLE' | translate }}</h4>
+                </div>
+                <ul>
+                  <li>{{ 'XAI_EXPLANATION.SCENARIOS.USE_LIME.ITEM1' | translate }}</li>
+                  <li>{{ 'XAI_EXPLANATION.SCENARIOS.USE_LIME.ITEM2' | translate }}</li>
+                  <li>{{ 'XAI_EXPLANATION.SCENARIOS.USE_LIME.ITEM3' | translate }}</li>
+                </ul>
+              </div>
+
+              <div class="scenario-card">
+                <div class="scenario-header">
+                  <mat-icon>analytics</mat-icon>
+                  <h4>{{ 'XAI_EXPLANATION.SCENARIOS.USE_SHAP.TITLE' | translate }}</h4>
+                </div>
+                <ul>
+                  <li>{{ 'XAI_EXPLANATION.SCENARIOS.USE_SHAP.ITEM1' | translate }}</li>
+                  <li>{{ 'XAI_EXPLANATION.SCENARIOS.USE_SHAP.ITEM2' | translate }}</li>
+                  <li>{{ 'XAI_EXPLANATION.SCENARIOS.USE_SHAP.ITEM3' | translate }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Interactive Demo Section -->
+  <div class="interactive-demo-section">
+    <div class="container">
+
+      <div class="section-header">
+        <h2 class="section-title">{{ 'XAI_EXPLANATION.DEMO.TITLE' | translate }}</h2>
+        <p class="section-subtitle">{{ 'XAI_EXPLANATION.DEMO.SUBTITLE' | translate }}</p>
+      </div>
+
+      <div class="demo-container">
+        
+        <div class="demo-controls">
+          <button 
+            mat-flat-button 
+            [color]="isPlayingDemo ? 'warn' : 'primary'"
+            class="demo-play-button"
+            (click)="toggleDemo()">
+            <mat-icon>{{ isPlayingDemo ? 'pause' : 'play_arrow' }}</mat-icon>
+            {{ isPlayingDemo ? ('XAI_EXPLANATION.DEMO.PAUSE' | translate) : ('XAI_EXPLANATION.DEMO.PLAY' | translate) }}
+          </button>
+          
+          <div class="demo-info">
+            <span>{{ 'XAI_EXPLANATION.DEMO.INFO' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="demo-visualization" [class.playing]="isPlayingDemo">
+          <!-- Demo content would be here - could be an actual interactive visualization -->
+          <div class="demo-placeholder">
+            <mat-icon>smart_toy</mat-icon>
+            <p>{{ 'XAI_EXPLANATION.DEMO.PLACEHOLDER' | translate }}</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Benefits Section -->
+  <div class="benefits-section">
+    <div class="container">
+
+      <div class="section-header">
+        <h2 class="section-title">{{ 'XAI_EXPLANATION.BENEFITS.TITLE' | translate }}</h2>
+        <p class="section-subtitle">{{ 'XAI_EXPLANATION.BENEFITS.SUBTITLE' | translate }}</p>
+      </div>
+
+      <div class="benefits-grid">
+        <div class="benefit-card" *ngFor="let benefit of xaiBenefits">
+          <div class="benefit-icon">{{ benefit.icon }}</div>
+          <div class="benefit-content">
+            <h3>{{ benefit.title }}</h3>
+            <p>{{ benefit.description }}</p>
+          </div>
+          <div class="benefit-category">{{ benefit.category }}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Video Learning Section -->
+  <div class="video-section">
+    <div class="container">
+
+      <div class="section-header">
+        <h2 class="section-title">{{ 'XAI_EXPLANATION.VIDEOS.TITLE' | translate }}</h2>
+        <p class="section-subtitle">{{ 'XAI_EXPLANATION.VIDEOS.SUBTITLE' | translate }}</p>
+      </div>
+
+      <!-- Video Category Filter -->
+      <div class="video-filters">
+        <button 
+          mat-stroked-button 
+          [class.active]="selectedVideoCategory === 'all'"
+          (click)="selectVideoCategory('all')">
+          {{ 'XAI_EXPLANATION.VIDEOS.ALL' | translate }}
+        </button>
+        <button 
+          mat-stroked-button 
+          [class.active]="selectedVideoCategory === 'beginner'"
+          (click)="selectVideoCategory('beginner')">
+          {{ 'XAI_EXPLANATION.VIDEOS.BEGINNER' | translate }}
+        </button>
+        <button 
+          mat-stroked-button 
+          [class.active]="selectedVideoCategory === 'intermediate'"
+          (click)="selectVideoCategory('intermediate')">
+          {{ 'XAI_EXPLANATION.VIDEOS.INTERMEDIATE' | translate }}
+        </button>
+        <button 
+          mat-stroked-button 
+          [class.active]="selectedVideoCategory === 'advanced'"
+          (click)="selectVideoCategory('advanced')">
+          {{ 'XAI_EXPLANATION.VIDEOS.ADVANCED' | translate }}
+        </button>
+      </div>
+
+      <!-- Video Grid -->
+      <div class="video-grid">
+        <div class="video-card" *ngFor="let video of getFilteredVideos()" (click)="playVideo(video.id)">
+          
+          <div class="video-thumbnail">
+            <div class="thumbnail-image">
+              <mat-icon>play_circle</mat-icon>
+            </div>
+            <div class="video-duration">{{ video.duration }}</div>
+            <div class="video-level-badge" [class]="video.level">
+              {{ video.level }}
+            </div>
+          </div>
+
+          <div class="video-content">
+            <h4>{{ video.title }}</h4>
+            <p>{{ video.description }}</p>
+            
+            <div class="video-topics">
+              <mat-chip-set>
+                <mat-chip *ngFor="let topic of video.topics">
+                  {{ topic }}
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="cta-section">
+    <div class="container">
+
+      <div class="cta-content">
+        <h2>{{ 'XAI_EXPLANATION.CTA.TITLE' | translate }}</h2>
+        <p>{{ 'XAI_EXPLANATION.CTA.SUBTITLE' | translate }}</p>
+        
+        <div class="cta-actions">
+          <button 
+            mat-flat-button 
+            color="primary" 
+            class="primary-cta"
+            (click)="startXAIExperiment()">
+            <mat-icon>science</mat-icon>
+            {{ 'XAI_EXPLANATION.CTA.START_EXPERIMENT' | translate }}
+          </button>
+          
+          <button 
+            mat-stroked-button 
+            class="secondary-cta"
+            (click)="navigateToMLPipeline()">
+            <mat-icon>arrow_forward</mat-icon>
+            {{ 'XAI_EXPLANATION.CTA.EXPLORE_PIPELINE' | translate }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

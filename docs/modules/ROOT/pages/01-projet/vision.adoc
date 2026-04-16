@@ -1,0 +1,53 @@
+= Vision & objectifs
+:description: Pourquoi IBIS-X existe
+
+== Mission
+
+Offrir une plateforme pédagogique permettant d'**explorer l'IA explicable (XAI)** de bout en bout, sans exiger de compétences poussées en data science : de la sélection d'un dataset à l'interprétation des décisions d'un modèle.
+
+== Contexte académique
+
+Projet **Master 2 MIAGE**, *Proof of Concept* à visée :
+
+. *Démonstration technique* — maîtrise d'une architecture microservices moderne (FastAPI + Angular + Kubernetes).
+. *Exploration scientifique* — évaluation comparative des techniques XAI (SHAP, LIME, LLM).
+. *Réflexion éthique* — intégration de critères de conformité RGPD et d'évaluation éthique dès la sélection des datasets.
+
+== Objectifs fonctionnels
+
+. Faciliter la **sélection de datasets** selon des critères variés (techniques, éthiques, métier).
+. Guider les utilisateurs, même **non experts**, à travers un **pipeline ML complet**.
+. **Recommander et appliquer des techniques XAI** adaptées au contexte.
+
+== Principes directeurs
+
+* *Transparence par défaut* — aucun modèle ne s'utilise sans possibilité d'explication (xref:05-audit/ethique-ia/principes.adoc[Principes éthiques]).
+* *Conformité RGPD* — cartographie et droits utilisateurs implémentés (xref:05-audit/rgpd/cartographie-donnees.adoc[Cartographie]).
+* *Reproductibilité* — paramètres, preprocessing et artefacts persistés.
+* *Sobriété technique* — stack minimale, pas de complexité gratuite (voir xref:05-audit/adr/0001-microservices-vs-monolithe.adoc[ADR 0001]).
+
+== Valeur apportée par rapport aux outils existants
+
+[cols="1,2,2"]
+|===
+| Aspect | Outils usuels (Jupyter, H2O, DataRobot) | IBIS-X
+
+| Parcours guidé pour non-experts | Partiel ou absent | Wizard 5 étapes intégré
+| XAI intégré | Optionnel, configuration manuelle | SHAP + LIME + LLM en 1 clic
+| Évaluation éthique dataset | Absente | Obligatoire à l'upload
+| Reproductibilité | Dépend du notebook | Artefacts + config persistés en BDD
+| Architecture microservices démontrable | Non | Cas d'école pédagogique
+|===
+
+== Hors périmètre (par choix)
+
+* Modèles de deep learning (CNN, transformers).
+* Tuning automatique d'hyperparamètres.
+* Déploiement de modèles en production (inference as a service).
+* Collaboration temps réel (WebSocket) — polling suffit au PoC.
+
+Voir xref:01-projet/perimetre-poc.adoc[Périmètre PoC] pour la liste complète.
+
+== Roadmap
+
+Voir xref:01-projet/roadmap.adoc[Roadmap].

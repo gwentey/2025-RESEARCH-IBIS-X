@@ -1,0 +1,100 @@
+= Architecture — vue d'ensemble (C4)
+:description: Schémas C4 niveaux 1 (contexte) et 2 (conteneurs)
+
+Ce document donne la **vue d'ensemble** de l'architecture IBIS-X selon le modèle https://c4model.com[C4]. Les niveaux 3 (composants) et 4 (code) sont décrits dans les pages dédiées par service (xref:03-technique/services/api-gateway.adoc[api-gateway], xref:03-technique/services/ml-pipeline-service.adoc[ml-pipeline], etc.).
+
+== C4 niveau 1 — Contexte
+
+Positionnement d'IBIS-X dans son écosystème.
+
+[mermaid]
+----
+%%{init: {"theme": "default"}}%%
+flowchart LR
+    user([👤 Utilisateur<br/>chercheur / data scientist])
+    admin([🔧 Administrateur])
+
+    subgraph IBISX [IBIS-X — Plateforme XAI]
+        sys[[Microservices<br/>FastAPI + Angular + K8s]]
+    end
+
+    kaggle[(Kaggle<br/>source de datasets)]
+    google[(Google OAuth<br/>authentification)]
+    openai[(OpenAI API<br/>analyse + explications LLM)]
+    azure[(Azure Blob / MinIO<br/>stockage objets)]
+
+    user -->|utilise| sys
+    admin -->|administre| sys
+    sys -->|importe datasets| kaggle
+    sys -->|délègue login| google
+    sys -->|analyse & LLM| openai
+    sys -->|persiste artefacts| azure
+----
+
+== C4 niveau 2 — Conteneurs
+
+Décomposition en services déployés.
+
+[mermaid]
+----
+%%{init: {"theme": "default"}}%%
+flowchart TB
+    user([👤 Utilisateur])
+
+    subgraph frontend [Frontend]
+        ng[Angular 19 + Material<br/>nginx container]
+    end
+
+    subgraph gateway [API Gateway Layer]
+        apigw[api-gateway<br/>FastAPI · port 8088<br/>Auth JWT/OAuth · routage]
+    end
+
+    subgraph services [Services métier]
+        sel[service-selection<br/>FastAPI · port 8081<br/>Datasets · filtres]
+        ml[ml-pipeline-service<br/>FastAPI · port 8082<br/>Training & preprocessing]
+        xai[xai-engine-service<br/>FastAPI · port 8083<br/>SHAP · LIME · LLM]
+    end
+
+    subgraph workers [Workers Celery]
+        mlw[ml-pipeline-worker<br/>queues ml_queue + ai_queue]
+        xaiw[xai-engine-worker<br/>Dockerfile.worker<br/>queue xai_queue]
+    end
+
+    subgraph infra [Infrastructure]
+        pg[(PostgreSQL<br/>base unique ibis_x_db<br/>version_table par service)]
+        redis[(Redis<br/>broker Celery + cache)]
+        blob[(MinIO / Azure Blob<br/>datasets + artefacts)]
+    end
+
+    user --> ng
+    ng -->|REST /api/*| apigw
+    apigw --> sel
+    apigw --> ml
+    apigw --> xai
+    sel --> pg
+    sel --> blob
+    ml --> pg
+    ml --> blob
+    ml -->|enqueue| redis
+    xai --> pg
+    xai --> blob
+    xai -->|enqueue| redis
+    redis -->|ml_queue, ai_queue| mlw
+    redis -->|xai_queue| xaiw
+    mlw --> pg
+    mlw --> blob
+    xaiw --> pg
+    xaiw --> blob
+----
+
+== Lectures complémentaires
+
+* xref:03-technique/architecture/microservices.adoc[Microservices & responsabilités]
+* xref:03-technique/architecture/flux-communication.adoc[Flux de communication]
+* xref:03-technique/architecture/modele-donnees.adoc[Modèle de données (ERD)]
+* xref:03-technique/architecture/deploiement.adoc[Topologie de déploiement K8s]
+
+[TIP]
+====
+Source de vérité code : `memory-bank/architecture.md` (vérifié 2026-04-14). Les diagrammes sont versionnés en Mermaid — ne pas remplacer par des PNG.
+====

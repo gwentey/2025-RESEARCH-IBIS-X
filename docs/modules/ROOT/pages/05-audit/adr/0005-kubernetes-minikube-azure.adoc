@@ -1,0 +1,73 @@
+= ADR 0005 — Kubernetes (Minikube local + AKS Azure) avec Kustomize
+
+[cols="1,3"]
+|===
+| Statut | accepted
+| Date | 2025-Q1
+|===
+
+== Contexte & problème
+
+L'architecture microservices (xref:05-audit/adr/0001-microservices-vs-monolithe.adoc[ADR 0001]) implique 4 services backend + 2 workers Celery + frontend + PostgreSQL + Redis + MinIO. Le déploiement doit être :
+
+* Reproductible en local pour le développement.
+* Identique (autant que possible) en production.
+* Maîtrisé au niveau pédagogique (démonstration d'un skill attendu en Master 2 MIAGE).
+
+== Décision
+
+Nous adoptons **Kubernetes** comme plateforme unique :
+
+* *En local* : **Minikube** (un seul nœud) + **Skaffold** pour le build/deploy incrémental.
+* *En prod* : **Azure Kubernetes Service (AKS)** provisionné par **Terraform**.
+
+Configuration via **Kustomize** : `k8s/base/` (manifests communs) + overlays `k8s/overlays/minikube/` et `k8s/overlays/azure/` (spécificités par environnement).
+
+Un unique namespace `ibis-x`.
+
+== Alternatives envisagées
+
+=== A. Docker Compose seul
+
+* ✅ Avantages : simplicité radicale, pas de cluster à gérer.
+* ❌ Rejet : incapacité de démontrer Kubernetes (objectif pédagogique), pas de parité local/prod sur Azure.
+
+=== B. Serverless (Azure Container Apps + Azure Functions)
+
+* ✅ Avantages : ops minimales en prod.
+* ❌ Rejet : pas de parité locale (Minikube ≠ ACA), cold-starts pénalisants pour ML.
+
+=== C. Nomad + Consul
+
+* ✅ Avantages : plus léger que Kubernetes.
+* ❌ Rejet : hors écosystème attendu, moins de ressources académiques.
+
+=== D. OpenShift
+
+* ✅ Avantages : K8s avec outillage entreprise.
+* ❌ Rejet : surdimensionné, pas disponible côté client.
+
+== Conséquences
+
+=== Positives
+
+* Même `kubectl apply` pour local et prod (overlays près).
+* Skaffold orchestré par le Makefile : un seul `make dev` déploie l'intégralité.
+* Provisionning Azure reproductible via Terraform (IaC).
+
+=== Négatives / coûts
+
+* Courbe d'apprentissage K8s + Kustomize + Skaffold pour un nouveau dev.
+* Spécificités Windows (arm64/QEMU, encodage cp1252) documentées dans `memory-bank/windows-gotchas.md`.
+* MinIO local ≠ Azure Blob en prod : abstraction via variable `STORAGE_BACKEND`.
+
+=== Neutres
+
+* Secrets : Kubernetes Secrets en local + Azure Key Vault + External Secrets Operator en prod (évolution possible).
+
+== Références
+
+* Manifests : `k8s/base/`, `k8s/overlays/{minikube,azure}/`.
+* Skaffold : `skaffold.yaml` (6 artefacts).
+* IaC : `terraform/`.
+* Page : xref:04-operationnel/deploiement/azure-terraform.adoc[Déploiement Azure + Terraform].
